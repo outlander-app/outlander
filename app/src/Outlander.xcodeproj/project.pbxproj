@@ -1,0 +1,541 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
+		F9BCF2F022E177E100C7F7F0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2EF22E177E100C7F7F0 /* ViewController.swift */; };
+		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
+		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
+		F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */; };
+		F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF30F22E1791900C7F7F0 /* AuthenticationServer.swift */; };
+		F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF30F22E1791900C7F7F0 /* AuthenticationServer.swift */; };
+		F9BCF31322E17EA900C7F7F0 /* Frameworks in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF31222E17EA900C7F7F0 /* Frameworks */; };
+		F9BCF31422E17EA900C7F7F0 /* Frameworks in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF31222E17EA900C7F7F0 /* Frameworks */; };
+		F9BCF31622E17EEA00C7F7F0 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */; };
+		F9BCF31722E17EEA00C7F7F0 /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */; };
+		F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */; };
+		F9BCF31C22E212D300C7F7F0 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */; };
+		F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF31D22E28EC200C7F7F0 /* Socket.swift */; };
+		F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF31D22E28EC200C7F7F0 /* Socket.swift */; };
+		F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */; };
+		F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */; };
+		F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32322E28F2400C7F7F0 /* Regex.swift */; };
+		F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32322E28F2400C7F7F0 /* Regex.swift */; };
+		F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32622E2900B00C7F7F0 /* GameServer.swift */; };
+		F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32622E2900B00C7F7F0 /* GameServer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F9BCF2FD22E177E200C7F7F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9BCF2E222E177E100C7F7F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F9BCF2E922E177E100C7F7F0;
+			remoteInfo = Outlander;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F9BCF31822E17EEA00C7F7F0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F9BCF31722E17EEA00C7F7F0 /* CocoaAsyncSocket.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F9BCF2EF22E177E100C7F7F0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F9BCF2F422E177E200C7F7F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F9BCF2F622E177E200C7F7F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Outlander.entitlements; sourceTree = "<group>"; };
+		F9BCF2FC22E177E200C7F7F0 /* OutlanderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OutlanderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlanderTests.swift; sourceTree = "<group>"; };
+		F9BCF30222E177E200C7F7F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9BCF30F22E1791900C7F7F0 /* AuthenticationServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationServer.swift; sourceTree = "<group>"; };
+		F9BCF31222E17EA900C7F7F0 /* Frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Frameworks; sourceTree = "<group>"; };
+		F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Frameworks/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
+		F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		F9BCF31D22E28EC200C7F7F0 /* Socket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
+		F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
+		F9BCF32322E28F2400C7F7F0 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
+		F9BCF32622E2900B00C7F7F0 /* GameServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameServer.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F9BCF2E722E177E100C7F7F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31622E17EEA00C7F7F0 /* CocoaAsyncSocket.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9BCF2F922E177E200C7F7F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31C22E212D300C7F7F0 /* CocoaAsyncSocket.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F9BCF2E122E177E100C7F7F0 = {
+			isa = PBXGroup;
+			children = (
+				F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */,
+				F9BCF31222E17EA900C7F7F0 /* Frameworks */,
+				F9BCF2EC22E177E100C7F7F0 /* Outlander */,
+				F9BCF2FF22E177E200C7F7F0 /* OutlanderTests */,
+				F9BCF2EB22E177E100C7F7F0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F9BCF2EB22E177E100C7F7F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F9BCF2EA22E177E100C7F7F0 /* Outlander.app */,
+				F9BCF2FC22E177E200C7F7F0 /* OutlanderTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F9BCF2EC22E177E100C7F7F0 /* Outlander */ = {
+			isa = PBXGroup;
+			children = (
+				F9BCF30F22E1791900C7F7F0 /* AuthenticationServer.swift */,
+				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
+				F9BCF31D22E28EC200C7F7F0 /* Socket.swift */,
+				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
+				F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */,
+				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
+				F9BCF2EF22E177E100C7F7F0 /* ViewController.swift */,
+				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
+				F9BCF2F322E177E200C7F7F0 /* Main.storyboard */,
+				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
+				F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */,
+				F9BCF32622E2900B00C7F7F0 /* GameServer.swift */,
+			);
+			path = Outlander;
+			sourceTree = "<group>";
+		};
+		F9BCF2FF22E177E200C7F7F0 /* OutlanderTests */ = {
+			isa = PBXGroup;
+			children = (
+				F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */,
+				F9BCF30222E177E200C7F7F0 /* Info.plist */,
+			);
+			path = OutlanderTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F9BCF2E922E177E100C7F7F0 /* Outlander */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F9BCF30522E177E200C7F7F0 /* Build configuration list for PBXNativeTarget "Outlander" */;
+			buildPhases = (
+				F9BCF2E622E177E100C7F7F0 /* Sources */,
+				F9BCF2E722E177E100C7F7F0 /* Frameworks */,
+				F9BCF2E822E177E100C7F7F0 /* Resources */,
+				F9BCF31822E17EEA00C7F7F0 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Outlander;
+			productName = Outlander;
+			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F9BCF2FB22E177E200C7F7F0 /* OutlanderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F9BCF30822E177E200C7F7F0 /* Build configuration list for PBXNativeTarget "OutlanderTests" */;
+			buildPhases = (
+				F9BCF2F822E177E200C7F7F0 /* Sources */,
+				F9BCF2F922E177E200C7F7F0 /* Frameworks */,
+				F9BCF2FA22E177E200C7F7F0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F9BCF2FE22E177E200C7F7F0 /* PBXTargetDependency */,
+			);
+			name = OutlanderTests;
+			productName = OutlanderTests;
+			productReference = F9BCF2FC22E177E200C7F7F0 /* OutlanderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F9BCF2E222E177E100C7F7F0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+				ORGANIZATIONNAME = "Joe McBride";
+				TargetAttributes = {
+					F9BCF2E922E177E100C7F7F0 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					F9BCF2FB22E177E200C7F7F0 = {
+						CreatedOnToolsVersion = 11.0;
+						TestTargetID = F9BCF2E922E177E100C7F7F0;
+					};
+				};
+			};
+			buildConfigurationList = F9BCF2E522E177E100C7F7F0 /* Build configuration list for PBXProject "Outlander" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F9BCF2E122E177E100C7F7F0;
+			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F9BCF2E922E177E100C7F7F0 /* Outlander */,
+				F9BCF2FB22E177E200C7F7F0 /* OutlanderTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F9BCF2E822E177E100C7F7F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31322E17EA900C7F7F0 /* Frameworks in Resources */,
+				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
+				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9BCF2FA22E177E200C7F7F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31422E17EA900C7F7F0 /* Frameworks in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F9BCF2E622E177E100C7F7F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
+				F9BCF2F022E177E100C7F7F0 /* ViewController.swift in Sources */,
+				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
+				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
+				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
+				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
+				F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9BCF2F822E177E200C7F7F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
+				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
+				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
+				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
+				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
+				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F9BCF2FE22E177E200C7F7F0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F9BCF2E922E177E100C7F7F0 /* Outlander */;
+			targetProxy = F9BCF2FD22E177E200C7F7F0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F9BCF2F322E177E200C7F7F0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F9BCF2F422E177E200C7F7F0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F9BCF30322E177E200C7F7F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F9BCF30422E177E200C7F7F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F9BCF30622E177E200C7F7F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9TZ225FMST;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = Outlander/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F9BCF30722E177E200C7F7F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9TZ225FMST;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = Outlander/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F9BCF30922E177E200C7F7F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9TZ225FMST;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = OutlanderTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mcbride.OutlanderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Outlander.app/Contents/MacOS/Outlander";
+			};
+			name = Debug;
+		};
+		F9BCF30A22E177E200C7F7F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9TZ225FMST;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = OutlanderTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mcbride.OutlanderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Outlander.app/Contents/MacOS/Outlander";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F9BCF2E522E177E100C7F7F0 /* Build configuration list for PBXProject "Outlander" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9BCF30322E177E200C7F7F0 /* Debug */,
+				F9BCF30422E177E200C7F7F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F9BCF30522E177E200C7F7F0 /* Build configuration list for PBXNativeTarget "Outlander" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9BCF30622E177E200C7F7F0 /* Debug */,
+				F9BCF30722E177E200C7F7F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F9BCF30822E177E200C7F7F0 /* Build configuration list for PBXNativeTarget "OutlanderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9BCF30922E177E200C7F7F0 /* Debug */,
+				F9BCF30A22E177E200C7F7F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F9BCF2E222E177E100C7F7F0 /* Project object */;
+}
