@@ -54,20 +54,20 @@ class AuthenticationServer {
         _authInfo = authInfo
         _callback = callback
 
-        _socket = Socket({ state in
+        _socket = Socket({ [weak self] state in
             switch state {
             case .connected:
-                self._callback?(.connected)
-                self._socket?.writeAndRead("K\r\n", tag: AuthSocketState.password.rawValue)
+                self?._callback?(.connected)
+                self?._socket?.writeAndRead("K\r\n", tag: AuthSocketState.password.rawValue)
 
             case .data(let data, let str, let tag):
-                self.handleData(data: data, str: str, state: AuthSocketState(rawValue: tag)!)
+                self?.handleData(data: data, str: str, state: AuthSocketState(rawValue: tag)!)
 
             case .closed(let error):
                 if let error = error {
-                    self._callback?(.error(error.localizedDescription))
+                    self?._callback?(.error(error.localizedDescription))
                 }
-                else { self._callback?(.closed) }
+                else { self?._callback?(.closed) }
 
             default:
                 print("Auth Server socket state change \(state)")

@@ -18,31 +18,34 @@ class GameServer {
     var socket: Socket?
     var callback: ((GameServerState)-> Void)?
     var connection: String = ""
-    
+
     init(_ callback: @escaping (GameServerState)->Void) {
         self.callback = callback
     }
 
     func connect(host: String, port: UInt16, key: String) {
         self.connection = "\(key)\r\n/FE:STORMFRONT /VERSION:1.0.26 /P:OSX /XML\r\n"
-        
-        self.socket = Socket({ state in
+
+        self.socket = Socket({[weak self] state in
             switch state {
             case .connected:
-                self.callback?(.connected)
-                self.socket?.writeAndReadToNewline(self.connection)
+                self?.callback?(.connected)
+                if let connection = self?.connection {
+                    self?.socket?.writeAndReadToNewline(connection)
+                }
 
             case .data(_, let str, _):
-                self.callback?(.data(str ?? ""))
-                self.socket?.readToNewline()
+                self?.callback?(.data(str ?? ""))
+                self?.socket?.readToNewline()
 
             case .closed(let error):
-                self.callback?(.closed(error))
+                self?.callback?(.closed(error))
 
             default:
                 print("game sever: \(state)")
             }
         }, queue: DispatchQueue.global(qos: .default))
+
         self.socket?.connect(host: host, port: port)
     }
     
