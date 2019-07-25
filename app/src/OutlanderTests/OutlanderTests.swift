@@ -18,10 +18,10 @@ class OutlanderTests: XCTestCase {
     }
 
     func testExample() {
-        let testdata = "L    OK    UPPORT=5535    GAME=WIZ    GAMECODE=DR    FULLGAMENAME=Wizard Front End    GAMEFILE=WIZARD.EXE    GAMEHOST=dr.simutronics.net    GAMEPORT=4901    KEY=a6e653347ad0e0131d2e373bc70a3f3b"
+        let testdata = "L    OK    UPPORT=5535    GAME=WIZ    GAMECODE=DR    FULLGAMENAME=Wizard Front End    GAMEFILE=WIZARD.EXE    GAMEHOST=dr.simutronics.net    GAMEPORT=4901    KEY=a6e753347ae0e0131d2e373bc70a3f3b"
         let result = try? Regex("KEY=(\\w+)").matches(testdata)
         let data = testdata[result![1]]
-        XCTAssertEqual(data, "a6e653347ad0e0131d2e373bc70a3f3b")
+        XCTAssertEqual(data, "a6e753347ae0e0131d2e373bc70a3f3b")
     }
     
     func testAnotherExample() {

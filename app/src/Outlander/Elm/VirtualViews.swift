@@ -14,14 +14,20 @@ typealias Constraint = (_ child: NSView, _ parent: NSView) -> NSLayoutConstraint
 indirect enum View<Message> {
     case _button(Button<Message>)
     case _textField(TextField<Message>)
+    case _stackView(StackView<Message>)
     case _customLayout([(View<Message>, [Constraint])])
 
     func map<B>(_ transform: @escaping (Message) -> B) -> View<B> {
         switch self {
         case ._button(let b):
             return ._button(b.map(transform))
+
         case ._textField(let t):
             return ._textField(t.map(transform))
+
+        case let ._stackView(s):
+            return ._stackView(s.map(transform))
+
         case ._customLayout(let views):
             return ._customLayout(views.map { (v,c) in
                 (v.map(transform), c)
@@ -35,8 +41,12 @@ extension View {
         return ._button(Button(text: text, onClick: onClick))
     }
 
-    static func textField(text: String, onChange: ((String?) -> Message)? = nil, onEnd: ((String?) -> Message)? = nil) -> View {
+    static func textField(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) -> View {
         return ._textField(TextField(text: text, onChange: onChange, onEnd: onEnd))
+    }
+    
+    static func stackView(_ views: [View<Message>], axis: StackViewDirection = .vertical, backgroundColor: NSColor = .white) -> View {
+        return ._stackView(StackView(views: views, axis: axis, backgroundColor: backgroundColor))
     }
 }
 
@@ -56,11 +66,11 @@ struct Button<Message> {
 
 struct TextField<Message> {
     let text: String
-    let onChange: ((String?) -> Message)?
-    let onEnd: ((String?) -> Message)?
+    let onChange: ((String) -> Message)?
+    let onEnd: ((String) -> Message)?
     
     
-    init(text: String, onChange: ((String?) -> Message)? = nil, onEnd: ((String?) -> Message)? = nil) {
+    init(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) {
         self.text = text
         self.onChange = onChange
         self.onEnd = onEnd
@@ -68,5 +78,26 @@ struct TextField<Message> {
     
     func map<B>(_ transform: @escaping (Message) -> B) -> TextField<B> {
         return TextField<B>(text: text, onChange: onChange.map { x in { transform(x($0)) } }, onEnd: onEnd.map { x in { transform(x($0)) } })
+    }
+}
+
+enum StackViewDirection {
+    case horizontal
+    case vertical
+}
+
+struct StackView<Message> {
+    let views: [View<Message>]
+    let axis: StackViewDirection
+    let backgroundColor: NSColor
+
+    init(views: [View<Message>], axis: StackViewDirection = .vertical, backgroundColor: NSColor = .white) {
+        self.views = views
+        self.axis = axis
+        self.backgroundColor = backgroundColor
+    }
+
+    func map<B>(_ transform: @escaping (Message) -> B) -> StackView<B> {
+        return StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor)
     }
 }

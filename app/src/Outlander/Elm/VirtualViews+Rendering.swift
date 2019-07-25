@@ -76,6 +76,10 @@ extension NSTextField {
         self.delegate = target
         return target
     }
+
+    func removeDelegate() {
+        self.delegate = nil
+    }
 }
 
 struct Renderer<Message> {
@@ -95,13 +99,19 @@ struct Renderer<Message> {
     mutating func render(view: View<Message>) -> NSView {
         switch view {
         case let ._button(button):
-            let b = NSButton(frame: NSMakeRect(0, 0, 100, 100))
+            let b = NSButton()
             render(button, into: b)
             return b
 
         case let ._textField(textField):
             let result = NSTextField()
             render(textField, into: result)
+            return result
+
+        case let ._stackView(stackView):
+            let views = stackView.views.map { render(view: $0) }
+            let result = NSStackView(views: views)
+            render(stackView, into: result)
             return result
 
         case ._customLayout(let views):
@@ -128,6 +138,8 @@ struct Renderer<Message> {
         }
 
         b.title = button.text
+        b.setButtonType(.momentaryLight)
+        b.bezelStyle = .roundRect
 
 //        b.backgroundColor = .orangeTint
 //        b.setTitleColor(.white, for: .normal)
@@ -135,7 +147,27 @@ struct Renderer<Message> {
 //        b.layer.cornerRadius = 4
     }
 
-    private mutating func render(_ textField: TextField<Message>, into result: NSTextField) {
+    private mutating func render(_ textField: TextField<Message>, into f: NSTextField) {
+        f.removeDelegate()
+
+        f.stringValue = textField.text
+
+        if let action = textField.onChange {
+            let cb = self.callback
+            let target = f.onTextChanged { value in
+                cb(action(value))
+            }
+            strongReferences.append(target)
+        }
+    }
+    
+    // this does *not* render the children
+    private func render(_ stackView: StackView<Message>, into result: NSStackView) {
+        result.distribution = .fill
+        result.alignment = .top
+        result.orientation = stackView.axis == .vertical
+            ? NSUserInterfaceLayoutOrientation.vertical
+            : NSUserInterfaceLayoutOrientation.horizontal
     }
     
     mutating func removeChildViewController(for view: NSView) {
@@ -162,6 +194,32 @@ struct Renderer<Message> {
             }
             render(textField, into: result)
             return result
+            
+        case let ._stackView(stackView):
+            guard let result = existing as? NSStackView else {
+                removeChildViewController(for: existing)
+                return render(view: view)
+            }
+            
+            for (index, existingSubview) in result.arrangedSubviews.enumerated() {
+
+                guard index < stackView.views.count else {
+                    result.removeArrangedSubview(existingSubview)
+                    existingSubview.removeFromSuperview()
+                    continue
+                }
+
+                let sub = stackView.views[index]
+                let new = update(view: sub, into: existingSubview)
+                if new !== existingSubview {
+                    result.removeArrangedSubview(existingSubview)
+                    existingSubview.removeFromSuperview()
+                    result.insertArrangedSubview(new, at: Int(index))
+                }
+            }
+            
+            render(stackView, into: result)
+            return result
 
         case ._customLayout(_):
             fatalError()
@@ -178,7 +236,6 @@ extension ViewController {
                 }
 
                 var r = Renderer(callback: callback, container: change)
-//                change.view.backgroundColor = .white
                 let newView = r.update(view: view, into: change.view.subviews.first ?? OView())
 
                 if change.view.subviews.count == 0 || newView !== change.view.subviews[0] {
@@ -186,17 +243,17 @@ extension ViewController {
                         change.view.subviews[0].removeFromSuperview()
                     }
                     change.view.addSubview(newView)
-//                    newView.translatesAutoresizingMaskIntoConstraints = false
+                    newView.translatesAutoresizingMaskIntoConstraints = false
                     
                     if (useLayoutGuide) {
                     }
                     
-//                    let verticalAnchors: Anchors
-//                    let horizontalAnchors: Anchors = useLayoutGuide ? change.view.layoutMarginsGuide : change.view
-                    
-//                    change.view.addConstraints([
-//                        newView.topAnchor.constraint(equalTo: change.view)
-//                    ])
+                    change.view.addConstraints([
+                        newView.topAnchor.constraint(equalTo: change.view.topAnchor),
+                        newView.bottomAnchor.constraint(equalTo: change.view.bottomAnchor),
+                        newView.leadingAnchor.constraint(equalTo: change.view.leadingAnchor),
+                        newView.trailingAnchor.constraint(equalTo: change.view.trailingAnchor)
+                    ])
                 }
 
                 for removed in r.removedChildViewControllers {

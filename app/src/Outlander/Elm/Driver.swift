@@ -9,12 +9,6 @@
 import Foundation
 import Cocoa
 
-class OView : NSView {
-    override var isFlipped: Bool {
-        return true
-    }
-}
-
 final class Driver<Model, Message> {
     private var model: Model
     private var strongReferences: StrongReferences = StrongReferences()

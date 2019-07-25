@@ -21,17 +21,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
-            styleMask: [.fullSizeContentView, .titled, .resizable, .closable, .miniaturizable],
+            styleMask: [.titled, .resizable, .closable, .miniaturizable],
             backing: .buffered,
             defer: false)
-        window?.title = "New Window"
-        //window?.isOpaque = false
+        window?.title = "Outlander2"
         window?.center()
         window?.isMovableByWindowBackground = true
-//        window?.backgroundColor = NSColor(calibratedHue: 0, saturation: 1.0, brightness: 0, alpha: 0.7)
-        window?.makeKeyAndOrderFront(nil)
-//        window?.contentViewController = driver.viewController
         window?.contentView = driver.viewController.view
+        window?.makeKeyAndOrderFront(nil)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -39,14 +36,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 struct AppState {
+    
+    var fieldText = "testing"
+    
     enum Message: Equatable {
         case clicked
+        case text(String)
     }
 
     mutating func update(_ msg: Message) -> [Command<Message>] {
         switch msg {
         case .clicked:
-            print("clicked!")
+            print("clicked! \(fieldText)")
+            return []
+
+        case .text(let value):
+            print("field: \(value)")
+            self.fieldText = value
             return []
         }
     }
@@ -54,6 +60,14 @@ struct AppState {
 
 extension AppState {
     var viewController: ViewController<Message> {
-        return .viewController(.button(text: "click me", onClick: .clicked))
+        return .viewController(
+            .stackView([
+                .textField(text: self.fieldText, onChange: {value in .text(value)}),
+                .stackView([
+                    .button(text: "Cancel", onClick: .clicked),
+                    .button(text: "Connect", onClick: .clicked)
+                ], axis: .horizontal),
+            ], axis: .vertical)
+        )
     }
 }
