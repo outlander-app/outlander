@@ -102,6 +102,11 @@ struct Renderer<Message> {
             let b = NSButton()
             render(button, into: b)
             return b
+            
+        case let ._vitalBarItem(item):
+            let b = VitalBarItemView()
+            render(item, into: b)
+            return b
 
         case let ._textField(textField):
             let result = NSTextField()
@@ -160,14 +165,21 @@ struct Renderer<Message> {
             strongReferences.append(target)
         }
     }
-    
+
+    private mutating func render(_ vitalBarItem: VitalBarItem, into bar: VitalBarItemView) {
+        bar.text = vitalBarItem.text
+        bar.value = vitalBarItem.value
+        bar.backgroundColor = vitalBarItem.backgroundColor
+    }
+
     // this does *not* render the children
     private func render(_ stackView: StackView<Message>, into result: NSStackView) {
-        result.distribution = .fill
-        result.alignment = .top
+        result.distribution = stackView.distribution
+        result.alignment = stackView.alignment
         result.orientation = stackView.axis == .vertical
             ? NSUserInterfaceLayoutOrientation.vertical
             : NSUserInterfaceLayoutOrientation.horizontal
+        result.spacing = CGFloat(stackView.spacing)
     }
     
     mutating func removeChildViewController(for view: NSView) {
@@ -194,13 +206,21 @@ struct Renderer<Message> {
             }
             render(textField, into: result)
             return result
+
+        case let ._vitalBarItem(item):
+            guard let result = existing as? VitalBarItemView else {
+                removeChildViewController(for: existing)
+                return render(view: view)
+            }
+            render(item, into: result)
+            return result
             
         case let ._stackView(stackView):
             guard let result = existing as? NSStackView else {
                 removeChildViewController(for: existing)
                 return render(view: view)
             }
-            
+
             for (index, existingSubview) in result.arrangedSubviews.enumerated() {
 
                 guard index < stackView.views.count else {
@@ -208,7 +228,7 @@ struct Renderer<Message> {
                     existingSubview.removeFromSuperview()
                     continue
                 }
-
+                
                 let sub = stackView.views[index]
                 let new = update(view: sub, into: existingSubview)
                 if new !== existingSubview {

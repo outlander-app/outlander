@@ -39,6 +39,8 @@
 		F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E7D22E6A907008BC6E6 /* BasicView.swift */; };
 		F9D36E8722E6B13D008BC6E6 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */; };
 		F9D36E8822E6B13D008BC6E6 /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F9BCF31522E17EEA00C7F7F0 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */; };
+		F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +91,7 @@
 		F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualViewControllers.swift; sourceTree = "<group>"; };
 		F9BCF33722E5811C00C7F7F0 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 		F9D36E7D22E6A907008BC6E6 /* BasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicView.swift; sourceTree = "<group>"; };
+		F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +149,7 @@
 				F9BCF2F322E177E200C7F7F0 /* Main.storyboard */,
 				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
 				F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */,
+				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -287,6 +291,7 @@
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
 				F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
+				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +309,7 @@
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
+				F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,

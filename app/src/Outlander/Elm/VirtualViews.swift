@@ -15,6 +15,7 @@ indirect enum View<Message> {
     case _button(Button<Message>)
     case _textField(TextField<Message>)
     case _stackView(StackView<Message>)
+    case _vitalBarItem(VitalBarItem)
     case _customLayout([(View<Message>, [Constraint])])
 
     func map<B>(_ transform: @escaping (Message) -> B) -> View<B> {
@@ -27,6 +28,9 @@ indirect enum View<Message> {
 
         case let ._stackView(s):
             return ._stackView(s.map(transform))
+
+        case ._vitalBarItem(let v):
+            return ._vitalBarItem(v)
 
         case ._customLayout(let views):
             return ._customLayout(views.map { (v,c) in
@@ -44,9 +48,20 @@ extension View {
     static func textField(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) -> View {
         return ._textField(TextField(text: text, onChange: onChange, onEnd: onEnd))
     }
-    
-    static func stackView(_ views: [View<Message>], axis: StackViewDirection = .vertical, backgroundColor: NSColor = .white) -> View {
-        return ._stackView(StackView(views: views, axis: axis, backgroundColor: backgroundColor))
+
+    static func stackView(
+        _ views: [View<Message>],
+        axis: StackViewDirection = .vertical,
+        backgroundColor: NSColor? = .white,
+        distribution: NSStackView.Distribution = .fill,
+        alignment: NSLayoutConstraint.Attribute = .top,
+        spacing: Double = 5
+    ) -> View {
+        return ._stackView(StackView(views: views, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing))
+    }
+
+    static func vitalBarItem(_ text: String, value: Double, foreColor: NSColor = .white, backgroundColor: NSColor? = .red) -> View {
+        return ._vitalBarItem(VitalBarItem(text: text, value: value, foreColor: foreColor, backgroundColor: backgroundColor))
     }
 }
 
@@ -81,6 +96,20 @@ struct TextField<Message> {
     }
 }
 
+struct VitalBarItem {
+    let text: String
+    let value: Double
+    let foreColor: NSColor
+    let backgroundColor: NSColor?
+
+    init(text: String, value: Double, foreColor: NSColor, backgroundColor: NSColor?) {
+        self.text = text
+        self.value = value
+        self.foreColor = foreColor
+        self.backgroundColor = backgroundColor
+    }
+}
+
 enum StackViewDirection {
     case horizontal
     case vertical
@@ -89,15 +118,26 @@ enum StackViewDirection {
 struct StackView<Message> {
     let views: [View<Message>]
     let axis: StackViewDirection
-    let backgroundColor: NSColor
+    let backgroundColor: NSColor?
+    let distribution: NSStackView.Distribution
+    let alignment: NSLayoutConstraint.Attribute
+    let spacing: Double
 
-    init(views: [View<Message>], axis: StackViewDirection = .vertical, backgroundColor: NSColor = .white) {
+    init(views: [View<Message>],
+         axis: StackViewDirection,
+         backgroundColor: NSColor?,
+         distribution: NSStackView.Distribution,
+         alignment: NSLayoutConstraint.Attribute,
+         spacing: Double) {
         self.views = views
         self.axis = axis
         self.backgroundColor = backgroundColor
+        self.distribution = distribution
+        self.alignment = alignment
+        self.spacing = spacing
     }
 
     func map<B>(_ transform: @escaping (Message) -> B) -> StackView<B> {
-        return StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor)
+        return StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing)
     }
 }
