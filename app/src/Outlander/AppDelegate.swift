@@ -12,13 +12,47 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     var window: NSWindow?
-
-    let driver = Driver<AppState, AppState.Message>(
-        AppState(),
-        update: { state, message in state.update(message) },
-        view: { state in state.viewController })
     
+    var authServer: AuthenticationServer?
+    var gameServer: GameServer?
+
+    var driver: Driver<AppState, AppState.Message>?
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+
+        var state = AppState()
+        state.sendCommand = { [weak self] command in
+            print("\(command)")
+            self?.gameServer?.sendCommand(command)
+        }
+
+        state.login = {
+            self.authServer?.authenticate(
+                AuthInfo(
+                    host: "eaccess.play.net",
+                    port: 7900,
+                    account: "",
+                    password: "",
+                    game: "DR",
+                    character: ""),
+                callback: { result in
+
+                    switch result {
+                    case .success(let connection):
+                        self.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
+
+                    default:
+                        print("auth result: \(result)")
+                    }
+                }
+            )
+        }
+
+        driver = Driver<AppState, AppState.Message>(
+                state,
+                update: { state, message in state.update(message) },
+                view: { state in state.viewController })
+        
         window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
             styleMask: [.titled, .resizable, .closable, .miniaturizable],
@@ -27,8 +61,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window?.title = "Outlander2"
         window?.center()
         window?.isMovableByWindowBackground = true
-        window?.contentView = driver.viewController.view
+        window?.contentView = driver!.viewController.view
         window?.makeKeyAndOrderFront(nil)
+
+        authServer = AuthenticationServer()
+        gameServer = GameServer({ state in
+            switch state {
+            case .data(_, let str):
+                print(str)
+            default:
+                print("\(state)")
+            }
+        })
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -39,21 +83,30 @@ struct AppState {
     
     var fieldText = "testing"
     var showHealthBars = true
-    
+    var sendCommand: (String)->() = {c in }
+    var login: ()->() = {}
+
     enum Message: Equatable {
-        case clicked
+        case command
+        case login
         case text(String)
         case toggleHealthBars
     }
 
     mutating func update(_ msg: Message) -> [Command<Message>] {
         switch msg {
-        case .clicked:
-            print("clicked! \(fieldText)")
+        case .login:
+            login()
+            return []
+
+        case .command:
+            let command = fieldText
+            fieldText = ""
+            sendCommand(command)
             return []
 
         case .text(let value):
-            print("field: \(value)")
+//            print("field: \(value)")
             self.fieldText = value
             return []
 
@@ -78,10 +131,10 @@ extension AppState {
         var views: [View<AppState.Message>] = [
             .textField(text: self.fieldText, onChange: {value in .text(value)}),
             .stackView([
-                .button(text: "Cancel", onClick: .clicked),
-                .button(text: "Connect", onClick: .clicked)
+                .button(text: "Command", onClick: .command),
+                .button(text: "Login", onClick: .login)
             ], axis: .horizontal),
-            .button(text: "Toggle", onClick: .toggleHealthBars)
+//            .button(text: "Toggle", onClick: .toggleHealthBars)
         ]
 
         if showHealthBars {

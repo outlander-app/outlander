@@ -10,7 +10,7 @@ import Foundation
 
 enum GameServerState {
     case connected
-    case data(String)
+    case data(Data, String)
     case closed(Error?)
 }
 
@@ -34,8 +34,8 @@ class GameServer {
                     self?.socket?.writeAndReadToNewline(connection)
                 }
 
-            case .data(_, let str, _):
-                self?.callback?(.data(str ?? ""))
+            case .data(let data, let str, _):
+                self?.callback?(.data(data, str ?? ""))
                 self?.socket?.readToNewline()
 
             case .closed(let error):
@@ -53,7 +53,7 @@ class GameServer {
         self.socket?.disconnect()
     }
 
-    func sendCommand(command: String) {
+    func sendCommand(_ command: String) {
         guard self.socket?.isConnected == true else {
             return
         }
