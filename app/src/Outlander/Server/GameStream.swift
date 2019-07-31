@@ -22,7 +22,7 @@ extension StreamToken {
 
     func name() -> String? {
         switch self {
-        case .text: return nil
+        case .text: return "text"
         case .tag(let name, _, _):
             return name
         }
@@ -81,8 +81,10 @@ class ReaderBase<T> {
         guard modes.hasItems() else { return [] }
 
         let context = StreamContext([], text: text[...])
-        
+
         startNewMode(context)
+
+        self.push(TextMode())
         
         return context.target
     }
@@ -336,20 +338,204 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 }
 
+class GameContext {
+    var globalVars: [String:String] = [:]
+}
+
+struct TextTag {
+    var text: String
+    var color: String?
+    var backgroundColor: String?
+    var href: String?
+    var command: String?
+    var window: String
+    var mono: Bool = false
+    var bold: Bool = false
+    var preset: String?
+
+    static func tagFor(_ text: String, window: String = "main", mono: Bool = false, preset: String?) -> TextTag {
+        return TextTag(text: text, window: window)
+    }
+}
+
+enum StreamCommand {
+    case clearStream(String)
+    case createWindow(name: String, title: String, ifClosed: String)
+    case vitals(name: String, value: Int)
+    case launchUrl(String)
+    case spell(String)
+    case roundtime(Date)
+}
+
 class GameStream {
     var tokenizer: GameStreamTokenizer
+    var context: GameContext
+    
+    private var inStream = false
+    private var lastStreamId = ""
 
-    init() {
+    private var mono = false
+    private var bold = false
+    
+    private var lastToken:StreamToken?
+    
+    private var streamCommands: (StreamCommand) -> ()
+
+    init(context: GameContext, streamCommands: @escaping (StreamCommand) ->()) {
+        self.context = context
+        self.streamCommands = streamCommands
         tokenizer = GameStreamTokenizer()
     }
 
-    public func stream(_ data: Data) {
+    public func stream(_ data: Data) -> [TextTag] {
+        return self.stream(String(data: data, encoding: .utf8) ?? "")
     }
 
-    public func stream(_ data: String) {
-        let tokens = tokenizer.read(data)
-        for token in tokens {
-            print(token.value())
+    public func stream(_ data: String) -> [TextTag] {
+        let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
+
+        let tags = tokens.map { token -> TextTag? in
+            processToken(token)
+            return tagForToken(token)
         }
+        .filter { $0 != nil }
+        .map { $0! }
+
+        return tags
+    }
+
+    func processToken(_ token: StreamToken) {
+        guard case .tag(let tagName, _, _) = token else { return }
+        
+        switch tagName {
+        case "prompt":
+            self.context.globalVars["prompt"] = token.value()?.replacingOccurrences(of: "&gt;", with: ">") ?? ""
+            self.context.globalVars["gametime"] = token.attr("time") ?? ""
+
+            let today = Date().timeIntervalSince1970
+            self.context.globalVars["gametimeupdate"] = "\(today)"
+
+        case "left":
+            self.context.globalVars["lefthand"] = token.value() ?? "Empty"
+            self.context.globalVars["lefthandnoun"] = token.attr("noun") ?? ""
+
+        case "right":
+            self.context.globalVars["righthand"] = token.value() ?? "Empty"
+            self.context.globalVars["righthandnoun"] = token.attr("noun") ?? ""
+
+        case "spell":
+            if let spell = token.value() {
+                self.context.globalVars["preparedspell"] = spell
+                self.streamCommands(.spell(spell))
+            }
+            
+        case "roundtime":
+            if let num = Int(token.attr("value") ?? "") {
+                let rt = Date(timeIntervalSince1970: TimeInterval(num))
+                self.streamCommands(.roundtime(rt))
+            }
+
+        case "clearstream":
+            if let id = token.attr("id") {
+                self.streamCommands(.clearStream(id.lowercased()))
+            }
+
+        case "app":
+            self.context.globalVars["charactername"] = token.attr("char") ?? ""
+            self.context.globalVars["game"] = token.attr("game") ?? ""
+        
+        case "launchurl":
+            if let url = token.attr("src") {
+                self.streamCommands(.launchUrl(url))
+            }
+
+        default:
+            return
+        }
+    }
+
+    func tagForToken(_ token: StreamToken) -> TextTag? {
+        
+        var tag:TextTag?
+        
+        switch token.name() {
+            
+        case "text":
+            tag = createTag(token)
+            tag?.window = lastStreamId
+            
+            if inStream && (lastStreamId == "logons" || lastStreamId == "death") {
+                let trimmed = tag?.text.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""
+                tag?.text = trimmed
+            }
+
+            if lastToken?.name() == "style" && lastToken?.attr("id") == "roomName" {
+                tag?.preset = "roomname"
+            }
+
+        case "prompt":
+            tag = createTag(token)
+
+        case "pushbold":
+            self.bold = true
+            
+        case "popbold":
+            self.bold = false
+            
+        case "pushstream":
+            inStream = true
+            if let id = token.attr("id") {
+                lastStreamId = id.lowercased()
+            }
+            
+        case "popstream":
+            inStream = false
+            lastStreamId = ""
+
+        case "output":
+            if let style = token.attr("class") {
+                if style == "mono" {
+                    self.mono = true
+                } else {
+                    self.mono = false
+                }
+            }
+
+        case "a":
+            tag = createTag(token)
+            tag?.href = token.attr("href")
+            
+        case "b":
+            tag = createTag(token)
+
+            if inStream {
+                tag?.bold = true
+                tag?.window = lastStreamId
+            }
+
+        case "preset":
+            tag = createTag(token)
+            tag?.window = lastStreamId
+            tag?.preset = token.attr("id")
+
+        default:
+            tag = nil
+        }
+
+        self.lastToken = token
+        
+        return tag
+    }
+
+    func createTag(_ token: StreamToken) -> TextTag {
+        var text = token.value() ?? ""
+        text = text.replacingOccurrences(of: "&gt;", with: ">")
+        text = text.replacingOccurrences(of: "&lt;", with: "<")
+        var tag:TextTag = TextTag.tagFor(text, preset: "")
+
+        tag.bold = self.bold
+        tag.mono = self.mono
+        
+        return tag
     }
 }

@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     var authServer: AuthenticationServer?
     var gameServer: GameServer?
+    var gameStream: GameStream?
 
     var driver: Driver<AppState, AppState.Message>?
 
@@ -26,8 +27,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self?.gameServer?.sendCommand(command)
         }
 
-        state.login = {
-            self.authServer?.authenticate(
+        state.login = { [weak self] in
+            self?.authServer?.authenticate(
                 AuthInfo(
                     host: "eaccess.play.net",
                     port: 7900,
@@ -35,11 +36,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     password: "",
                     game: "DR",
                     character: ""),
-                callback: { result in
+                callback: { [weak self] result in
 
                     switch result {
                     case .success(let connection):
-                        self.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
+                        self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                     default:
                         print("auth result: \(result)")
@@ -68,10 +69,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         gameServer = GameServer({ state in
             switch state {
             case .data(_, let str):
-                print(str)
+                if let tags = self.gameStream?.stream(str) {
+                    for tag in tags {
+                        print(tag.text)
+                    }
+                }
             default:
                 print("\(state)")
             }
+        })
+        gameStream = GameStream(context: GameContext(), streamCommands: {command in
+            print(command)
         })
     }
 
@@ -81,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 struct AppState {
     
-    var fieldText = "testing"
+    var fieldText = ""
     var showHealthBars = true
     var sendCommand: (String)->() = {c in }
     var login: ()->() = {}
