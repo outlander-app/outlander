@@ -22,7 +22,7 @@ extension StreamToken {
 
     func name() -> String? {
         switch self {
-        case .text: return "text"
+        case .text(let text): return text == "\n" ? "eot" : "text"
         case .tag(let name, _, _):
             return name
         }
@@ -222,6 +222,7 @@ protocol StringView : Collection {
     static func string(_ elements: [Element]) -> String
 
     static var newline: Element { get }
+    static var carriageReturn: Element { get }
     static var space: Element { get }
     static var quote: Element { get }
     static var tick: Element { get }
@@ -239,6 +240,7 @@ extension Substring : StringView {
     }
 
     static let newline: Character  = "\n"
+    static let carriageReturn: Character  = "\r"
     static let space: Character = " "
     static let quote: Character = "\""
     static let tick: Character = "'"
@@ -332,6 +334,8 @@ extension StringView where SubSequence == Self, Element: Equatable {
         switch c {
         case Self.backslash:
             return popFirst()
+        case Self.carriageReturn:
+            return popFirst()
         default:
             return c
         }
@@ -359,6 +363,7 @@ struct TextTag {
 }
 
 enum StreamCommand {
+    case text([TextTag])
     case clearStream(String)
     case createWindow(name: String, title: String, ifClosed: String)
     case vitals(name: String, value: Int)
@@ -371,8 +376,10 @@ class GameStream {
     var tokenizer: GameStreamTokenizer
     var context: GameContext
     
+    private var isSetup = false
     private var inStream = false
     private var lastStreamId = ""
+    private var ignoreNextEot = false
 
     private var mono = false
     private var bold = false
@@ -380,6 +387,36 @@ class GameStream {
     private var lastToken:StreamToken?
     
     private var streamCommands: (StreamCommand) -> ()
+    
+    private var tags: [TextTag] = []
+    
+    private let ignoredEot = [
+        "app",
+        "clearstream",
+        "compass",
+        "compdef",
+        "component",
+        "dialogdata",
+        "endsetup",
+        "exposecontainer",
+        "indicator",
+        "left",
+        "mode",
+        "opendialog",
+        "nav",
+        "output",
+        "right",
+        "streamwindow",
+        "spell",
+        "switchquickbar"
+    ]
+    
+    private let ignoreNextEotList = [
+        "experience",
+        "inv",
+        "popstream",
+        "room"
+    ]
 
     init(context: GameContext, streamCommands: @escaping (StreamCommand) ->()) {
         self.context = context
@@ -387,25 +424,37 @@ class GameStream {
         tokenizer = GameStreamTokenizer()
     }
 
-    public func stream(_ data: Data) -> [TextTag] {
-        return self.stream(String(data: data, encoding: .utf8) ?? "")
+    public func resetSetup() {
+        self.isSetup = false
     }
 
-    public func stream(_ data: String) -> [TextTag] {
+    public func stream(_ data: Data) {
+        self.stream(String(data: data, encoding: .utf8) ?? "")
+    }
+
+    public func stream(_ data: String) {
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
-
-        let tags = tokens.map { token -> TextTag? in
+        
+        for token in tokens {
             processToken(token)
-            return tagForToken(token)
-        }
-        .filter { $0 != nil }
-        .map { $0! }
 
-        return tags
+            if let tag = tagForToken(token) {
+                let isPrompt = token.name() == "prompt"
+
+                if isPrompt && tags.count == 0 { return }
+
+                tags.append(tag)
+
+                if !self.isSetup || isPrompt {
+                    self.streamCommands(.text(tags))
+                    tags.removeAll()
+                }
+            }
+        }
     }
 
     func processToken(_ token: StreamToken) {
-        guard case .tag(let tagName, _, _) = token else { return }
+        guard case .tag(let tagName, _, let children) = token else { return }
         
         switch tagName {
         case "prompt":
@@ -434,12 +483,62 @@ class GameStream {
                 let rt = Date(timeIntervalSince1970: TimeInterval(num))
                 self.streamCommands(.roundtime(rt))
             }
+            
+        case "pushbold":
+            self.bold = true
+
+        case "popbold":
+            self.bold = false
 
         case "clearstream":
             if let id = token.attr("id") {
                 self.streamCommands(.clearStream(id.lowercased()))
             }
+ 
+        case "pushstream":
+            inStream = true
+            if let id = token.attr("id") {
+                lastStreamId = id.lowercased()
+            }
 
+        case "popstream":
+            ignoreNextEot = ignoreNextEotList.contains(lastStreamId)
+            inStream = false
+            lastStreamId = ""
+            
+        case "streamwindow":
+            let id = token.attr("id")
+            let subtitle = token.attr("subtitle")
+
+            if id == "main" && subtitle != nil && subtitle!.count > 3 {
+                self.context.globalVars["roomtitle"] = String(subtitle!.dropFirst(3))
+            }
+            
+            if let win = id {
+                self.streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", ifClosed: token.attr("ifClosed") ?? ""))
+            }
+            
+        case "indicator":
+            let id = token.attr("id")?.dropFirst(4).lowercased() ?? ""
+            let visible = token.attr("visible") == "y" ? "1" : "0"
+            
+            guard id.count > 0 else { break }
+            
+            print("indicator:  \(id):\(visible)")
+            
+            self.context.globalVars[id] = visible
+        
+        case "dialogdata":
+            let vitals = children.filter { $0.name() == "progressbar" && $0.hasAttr("id") }
+            
+            for vital in vitals {
+                let name = vital.attr("id") ?? ""
+                let value = vital.attr("value") ?? "0"
+
+                self.context.globalVars[name] = value
+                self.streamCommands(.vitals(name: name, value: Int(value)!))
+            }
+            
         case "app":
             self.context.globalVars["charactername"] = token.attr("char") ?? ""
             self.context.globalVars["game"] = token.attr("game") ?? ""
@@ -448,6 +547,9 @@ class GameStream {
             if let url = token.attr("src") {
                 self.streamCommands(.launchUrl(url))
             }
+
+        case "endsetup":
+            self.isSetup = true
 
         default:
             return
@@ -473,24 +575,22 @@ class GameStream {
                 tag?.preset = "roomname"
             }
 
+        case "eot":
+            guard let tokenName = lastToken?.name(), !self.ignoredEot.contains(tokenName) else {
+                break
+            }
+            guard !inStream else { break }
+            guard tokenName != "prompt" else { break }
+
+            guard !ignoreNextEot else {
+                ignoreNextEot = false
+                break
+            }
+
+            tag = TextTag(text: "\n", window: "")
+
         case "prompt":
             tag = createTag(token)
-
-        case "pushbold":
-            self.bold = true
-            
-        case "popbold":
-            self.bold = false
-            
-        case "pushstream":
-            inStream = true
-            if let id = token.attr("id") {
-                lastStreamId = id.lowercased()
-            }
-            
-        case "popstream":
-            inStream = false
-            lastStreamId = ""
 
         case "output":
             if let style = token.attr("class") {

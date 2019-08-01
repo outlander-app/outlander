@@ -66,20 +66,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window?.makeKeyAndOrderFront(nil)
 
         authServer = AuthenticationServer()
-        gameServer = GameServer({ state in
+        gameServer = GameServer({ [weak self] state in
             switch state {
             case .data(_, let str):
-                if let tags = self.gameStream?.stream(str) {
-                    for tag in tags {
-                        print(tag.text)
-                    }
-                }
+                self?.gameStream?.stream(str)
+            case .closed:
+                self?.gameStream?.resetSetup()
             default:
                 print("\(state)")
             }
         })
         gameStream = GameStream(context: GameContext(), streamCommands: {command in
-            print(command)
+            switch command {
+            case .text(let tags):
+                for tag in tags {
+                    print(tag.text)
+                }
+            default:
+                print(command)
+            }
         })
     }
 
