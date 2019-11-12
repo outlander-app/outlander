@@ -120,6 +120,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F90094DF22F4F20900174C26 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F9BCF2E122E177E100C7F7F0 = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +134,7 @@
 				F9BCF2EC22E177E100C7F7F0 /* Outlander */,
 				F9BCF2FF22E177E200C7F7F0 /* OutlanderTests */,
 				F9BCF2EB22E177E100C7F7F0 /* Products */,
+				F90094DF22F4F20900174C26 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -483,12 +491,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/Frameworks/Static",
 				);
 				INFOPLIST_FILE = Outlander/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -507,12 +517,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/Frameworks/Static",
 				);
 				INFOPLIST_FILE = Outlander/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -530,6 +542,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/Frameworks/Static",
 				);
 				INFOPLIST_FILE = OutlanderTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -555,6 +568,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/Frameworks/Static",
 				);
 				INFOPLIST_FILE = OutlanderTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

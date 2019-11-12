@@ -99,24 +99,35 @@ struct Renderer<Message> {
     mutating func render(view: View<Message>) -> NSView {
         switch view {
         case let ._button(button):
-            let b = NSButton()
+            let b = NSButton(frame: NSRect(x: 0, y: 0, width: 100, height: 25))
             render(button, into: b)
             return b
-            
+
         case let ._vitalBarItem(item):
             let b = VitalBarItemView()
             render(item, into: b)
             return b
 
         case let ._textField(textField):
-            let result = NSTextField()
+            let result = NSTextField(frame: NSRect(x: 0, y: 100, width: 100, height: 30))
             render(textField, into: result)
+            return result
+
+        case let ._textView(textView):
+            let result = ScrollableTextView(frame: NSRect(x: 0, y: 0, width: 500, height: 500))
+            render(textView, into: result)
             return result
 
         case let ._stackView(stackView):
             let views = stackView.views.map { render(view: $0) }
-            let result = NSStackView(views: views)
+            let result = NSStackView()
             render(stackView, into: result)
+
+            for view in views {
+//                result.append(view)
+                result.addArrangedSubview(view)
+            }
+
             return result
 
         case ._customLayout(let views):
@@ -145,11 +156,6 @@ struct Renderer<Message> {
         b.title = button.text
         b.setButtonType(.momentaryLight)
         b.bezelStyle = .roundRect
-
-//        b.backgroundColor = .orangeTint
-//        b.setTitleColor(.white, for: .normal)
-//        b.titleLabel?.font = .preferredFont(forTextStyle: .headline)
-//        b.layer.cornerRadius = 4
     }
 
     private mutating func render(_ textField: TextField<Message>, into f: NSTextField) {
@@ -164,6 +170,15 @@ struct Renderer<Message> {
             }
             strongReferences.append(target)
         }
+    }
+
+    private mutating func render(_ textView: TextView<Message>, into f: ScrollableTextView) {
+        let attributes = [
+            NSAttributedString.Key.foregroundColor : NSColor.white
+        ]
+        let str = NSAttributedString(string: textView.text, attributes: attributes)
+        f.textView.textStorage?.append(str)
+        f.textView.scrollToEndOfDocument(nil)
     }
 
     private mutating func render(_ vitalBarItem: VitalBarItem, into bar: VitalBarItemView) {
@@ -207,6 +222,14 @@ struct Renderer<Message> {
             render(textField, into: result)
             return result
 
+        case let ._textView(textView):
+            guard let result = existing as? ScrollableTextView else {
+                removeChildViewController(for: existing)
+                return render(view: view)
+            }
+            render(textView, into: result)
+            return result
+
         case let ._vitalBarItem(item):
             guard let result = existing as? VitalBarItemView else {
                 removeChildViewController(for: existing)
@@ -214,21 +237,21 @@ struct Renderer<Message> {
             }
             render(item, into: result)
             return result
-            
+
         case let ._stackView(stackView):
             guard let result = existing as? NSStackView else {
                 removeChildViewController(for: existing)
                 return render(view: view)
             }
 
-            for (index, existingSubview) in result.arrangedSubviews.enumerated() {
+            for (index, existingSubview) in result.subviews.enumerated() {
 
                 guard index < stackView.views.count else {
                     result.removeArrangedSubview(existingSubview)
                     existingSubview.removeFromSuperview()
                     continue
                 }
-                
+
                 let sub = stackView.views[index]
                 let new = update(view: sub, into: existingSubview)
                 if new !== existingSubview {
@@ -236,6 +259,8 @@ struct Renderer<Message> {
                     existingSubview.removeFromSuperview()
                     result.insertArrangedSubview(new, at: Int(index))
                 }
+
+                new.translatesAutoresizingMaskIntoConstraints = false
             }
             
             render(stackView, into: result)
@@ -264,10 +289,12 @@ extension ViewController {
                     }
                     change.view.addSubview(newView)
                     newView.translatesAutoresizingMaskIntoConstraints = false
-                    
+
                     if (useLayoutGuide) {
                     }
-                    
+
+//                    change.view.anchor.apply(to: [newView])
+
                     change.view.addConstraints([
                         newView.topAnchor.constraint(equalTo: change.view.topAnchor),
                         newView.bottomAnchor.constraint(equalTo: change.view.bottomAnchor),

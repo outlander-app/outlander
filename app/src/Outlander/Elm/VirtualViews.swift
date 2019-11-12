@@ -14,6 +14,7 @@ typealias Constraint = (_ child: NSView, _ parent: NSView) -> NSLayoutConstraint
 indirect enum View<Message> {
     case _button(Button<Message>)
     case _textField(TextField<Message>)
+    case _textView(TextView<Message>)
     case _stackView(StackView<Message>)
     case _vitalBarItem(VitalBarItem)
     case _customLayout([(View<Message>, [Constraint])])
@@ -25,6 +26,9 @@ indirect enum View<Message> {
 
         case ._textField(let t):
             return ._textField(t.map(transform))
+
+        case ._textView(let t):
+            return ._textView(t.map(transform))
 
         case let ._stackView(s):
             return ._stackView(s.map(transform))
@@ -47,6 +51,10 @@ extension View {
 
     static func textField(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) -> View {
         return ._textField(TextField(text: text, onChange: onChange, onEnd: onEnd))
+    }
+
+    static func textView(text: String) -> View {
+        return ._textView(TextView(text: text))
     }
 
     static func stackView(
@@ -139,5 +147,14 @@ struct StackView<Message> {
 
     func map<B>(_ transform: @escaping (Message) -> B) -> StackView<B> {
         return StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing)
+    }
+}
+
+struct TextView<Message> {
+    let text: String
+//    let append: (String) -> ()
+
+    func map<B>(_ transform: @escaping (Message) -> B) -> TextView<B> {
+        return TextView<B>(text: text)
     }
 }

@@ -559,7 +559,7 @@ class GameStream {
     func tagForToken(_ token: StreamToken) -> TextTag? {
         
         var tag:TextTag?
-        
+
         switch token.name() {
             
         case "text":
@@ -611,6 +611,23 @@ class GameStream {
             if inStream {
                 tag?.bold = true
                 tag?.window = lastStreamId
+            }
+        
+        case "d":
+            guard case let .tag(_, _, children) = token else { break }
+
+            if children.count > 0 {
+
+                if children[0].name() == "b" || children[0].name() == "text" {
+                    tag = createTag(children[0])
+                }
+
+            } else {
+                tag = createTag(token)
+            }
+            
+            if let cmd = token.attr("cmd") {
+                tag?.command = cmd
             }
 
         case "preset":

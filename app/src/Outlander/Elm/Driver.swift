@@ -25,7 +25,9 @@ final class Driver<Model, Message> {
         self.updateState = update
         self.computeView = view
 
-        viewController.view = OView()
+        let subview = OView()
+
+        viewController.view = subview
         
         strongReferences = view(model).render(callback: self.asyncSend, change: &viewController)
     }
