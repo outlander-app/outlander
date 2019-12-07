@@ -52,6 +52,14 @@ extension StreamToken {
             return children.compactMap({$0.value()}).joined(separator: ",")
         }
     }
+
+    func children() -> [StreamToken] {
+        switch self {
+        case .text: return []
+        case .tag(_, _, let children):
+            return children
+        }
+    }
 }
 
 protocol IReaderMode: class {
@@ -185,11 +193,12 @@ class TagMode: IReaderMode {
 
     func readChildren(_ context: StreamContext) -> [StreamToken] {
         let childContext = StreamContext([], text: context.text)
-
+    
         _ = TextMode().read(childContext)
 
         while !isClosingTagNext(childContext) {
             _ = TagMode().read(childContext)
+            _ = TextMode().read(childContext)
         }
 
         context.text = childContext.text

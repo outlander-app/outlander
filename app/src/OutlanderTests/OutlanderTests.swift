@@ -17,14 +17,14 @@ class OutlanderTests: XCTestCase {
     override func tearDown() {
     }
 
-    func testExample() {
+    func testAuthRegex() {
         let testdata = "L    OK    UPPORT=5535    GAME=WIZ    GAMECODE=DR    FULLGAMENAME=Wizard Front End    GAMEFILE=WIZARD.EXE    GAMEHOST=dr.simutronics.net    GAMEPORT=4901    KEY=a6e753347ae0e0131d2e373bc70a3f3b"
         let result = try? Regex("KEY=(\\w+)").matches(testdata)
         let data = testdata[result![1]]
         XCTAssertEqual(data, "a6e753347ae0e0131d2e373bc70a3f3b")
     }
-    
-    func testAnotherExample() {
+
+    func testAccountRegex() {
         let testdata = "C\t1\t1\t0\t0\tW_ACCT_000\tCharName"
         let result = try? Regex("(\\S_\\S[\\S0-9]+)\tCharName").matches(testdata)
         let data = testdata[result![1]]

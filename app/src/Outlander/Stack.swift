@@ -15,7 +15,7 @@ public class Stack<T>
     }
 
     public func pop() -> T {
-        return stack.removeLast()
+        stack.remove(at: stack.count - 1)
     }
 
     public func peek() -> T? {

@@ -44,7 +44,7 @@ class GameServer {
             default:
                 print("game sever: \(state)")
             }
-        }, queue: DispatchQueue.global(qos: .default))
+        }, queue: DispatchQueue(label: "GameServer"))
 
         self.socket?.connect(host: host, port: port)
     }
@@ -57,7 +57,7 @@ class GameServer {
         guard self.socket?.isConnected == true else {
             return
         }
-
-        self.socket?.write("\(command)\r\n")
+        
+        self.socket?.writeAndReadToNewline("\(command)\r\n")
     }
 }

@@ -12,7 +12,7 @@ import XCTest
 class GameStreamTests : XCTestCase {
     
     func testBasics() {
-        var context = GameContext()
+        let context = GameContext()
         let stream = GameStream(context: context) { cmd in }
         stream.stream("Please wait for connection to game server.\r\n")
     }
@@ -26,6 +26,16 @@ class GameStreamTokenizerTests : XCTestCase {
     }
 
     override func tearDown() {
+    }
+    
+    func testHandlesText() {
+        let tokens = reader.read("Copyright 2019 Simutronics Corp.\n")
+        XCTAssertEqual(tokens.count, 1)
+        let token = tokens[0]
+        XCTAssertEqual(token.name(), "text")
+        
+        let tokens2 = reader.read("Copyright 2019 Simutronics Corp.\n")
+        XCTAssertEqual(tokens2[0].name(), "text")
     }
 
     func testReadsSelfClosingTag() {
@@ -164,5 +174,17 @@ class GameStreamTokenizerTests : XCTestCase {
 
         XCTAssertTrue(token.hasAttr("subtitle"))
         XCTAssertEqual(token.attr("subtitle"), " - [\"Kertigen's Honor\"]")
+    }
+    
+    func testParsesRoomExits() {
+        let tokens = reader.read(
+            "<component id='room exits'>Obvious paths: <d>northeast</d>, <d>south</d>, <d>northwest</d>.<compass></compass></component>\n"
+        )
+        
+        XCTAssertEqual(tokens.count, 2)
+        
+        let token = tokens[0]
+        XCTAssertEqual(token.name(), "component")
+        XCTAssertEqual(token.children().count, 8)
     }
 }
