@@ -53,7 +53,7 @@ class GameViewController : NSViewController {
                 self?.gameStream?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
-                self?.logText("Disconnected")
+                self?.logText("Disconnected from game server")
             default:
                 print("\(state)")
             }
@@ -70,37 +70,43 @@ class GameViewController : NSViewController {
             }
         })
     }
-    
+
     @IBAction func Send(_ sender: Any) {
         let command = self.commandInput.stringValue
+        
+        if command.count == 0 { return }
+        
         self.commandInput.stringValue = ""
         self.logText("\(command)\n")
         self.gameServer?.sendCommand(command)
     }
     
     @IBAction func Login(_ sender: Any) {
-        
+
         let account = accountInput.stringValue
         let password = passwordInput.stringValue
         let character = characterInput.stringValue
-        
-        self.logText("Connecting to authentication server ...\n")
+
+        let authHost = "eaccess.play.net"
+        let authPort:UInt16 = 7900
+
+        self.logText("Connecting to authentication server at \(authHost):\(authPort) ...\n")
 
         self.authServer?.authenticate(
             AuthInfo(
-                host: "eaccess.play.net",
-                port: 7900,
+                host: authHost,
+                port: authPort,
                 account: account,
                 password: password,
                 game: "DR",
                 character: character),
             callback: { [weak self] result in
-                
+
                 switch result {
                 case .success(let connection):
                     self?.logText("Connecting to game server at \(connection.host):\(connection.port) ...\n")
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
-                    
+
                 default:
                     self?.logText("auth result: \(result)\n")
                 }

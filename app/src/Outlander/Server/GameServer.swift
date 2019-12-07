@@ -18,6 +18,7 @@ class GameServer {
     var socket: Socket?
     var callback: ((GameServerState)-> Void)?
     var connection: String = ""
+    var matchedToken = false
 
     init(_ callback: @escaping (GameServerState)->Void) {
         self.callback = callback
@@ -35,11 +36,25 @@ class GameServer {
                 }
 
             case .data(let data, let str, _):
+                if self?.matchedToken == false && str?.contains("GSw") == true {
+                    self?.matchedToken = true
+
+                    if let index = str!.index(of: "GSw") {
+                        let substring = str![..<index]
+                        self?.callback?(.data(data, String(substring)))
+                    }
+
+                    self?.socket?.write("\r\n")
+                    self?.socket?.readToNewline()
+                    return
+                }
+
                 self?.callback?(.data(data, str ?? ""))
                 self?.socket?.readToNewline()
 
             case .closed(let error):
                 self?.callback?(.closed(error))
+                self?.matchedToken = false
 
             default:
                 print("game sever: \(state)")
@@ -48,16 +63,17 @@ class GameServer {
 
         self.socket?.connect(host: host, port: port)
     }
-    
+
     func disconnect() {
         self.socket?.disconnect()
+        self.matchedToken = false
     }
 
     func sendCommand(_ command: String) {
         guard self.socket?.isConnected == true else {
             return
         }
-        
-        self.socket?.writeAndReadToNewline("\(command)\r\n")
+
+        self.socket?.write("\(command)\r\n")
     }
 }
