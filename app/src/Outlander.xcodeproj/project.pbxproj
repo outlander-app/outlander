@@ -11,6 +11,10 @@
 		F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
 		F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
+		F969A0E8239C7F9B00408CE5 /* Window.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E7239C7F9B00408CE5 /* Window.storyboard */; };
+		F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E7239C7F9B00408CE5 /* Window.storyboard */; };
+		F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0EA239C812900408CE5 /* WindowViewController.swift */; };
+		F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0EA239C812900408CE5 /* WindowViewController.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -78,6 +82,8 @@
 /* Begin PBXFileReference section */
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
+		F969A0EA239C812900408CE5 /* WindowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowViewController.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -170,6 +176,8 @@
 				F9D36E9822EFF7BB008BC6E6 /* Stack.swift */,
 				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
 				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
+				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
+				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -290,6 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F969A0E8239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
@@ -300,6 +309,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -319,6 +329,7 @@
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
+				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
@@ -343,6 +354,7 @@
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
+				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,

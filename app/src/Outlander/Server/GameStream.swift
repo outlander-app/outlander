@@ -353,6 +353,23 @@ extension StringView where SubSequence == Self, Element: Equatable {
 
 class GameContext {
     var globalVars: [String:String] = [:]
+    
+    var presets: [String:String] = [
+        "automapper": "#66FFFF",
+        "chatter": "#66FFFF",
+        "creatures": "#FFFF00",
+        "roomdesc": "#cccccc",
+        "roomname": "#0000FF",
+        "scriptecho": "#66FFFF",
+        "scripterror": "#efefef", // "#ff3300",
+        "scriptinfo": "#0066cc",
+        "scriptinput": "#acff2f",
+        "sendinput": "#acff2f",
+        "speech": "#66FFFF",
+        "thought": "#66FFFF",
+        "whisper": "#66FFFF",
+        "exptracker": "#66FFFF"
+    ]
 }
 
 struct TextTag {

@@ -16,33 +16,21 @@ class GameViewController : NSViewController {
     @IBOutlet weak var accountInput: NSTextField!
     @IBOutlet weak var passwordInput: NSSecureTextField!
     @IBOutlet weak var characterInput: NSTextField!
-    @IBOutlet var gameText: NSTextView!
+    @IBOutlet weak var gameWindowContainer: OView!
+    
+    var gameWindows:[String:WindowViewController] = [:]
     
     var authServer: AuthenticationServer?
     var gameServer: GameServer?
     var gameStream: GameStream?
-    
-    var presets: [String:String] = [
-        "automapper": "#66FFFF",
-        "chatter": "#66FFFF",
-        "creatures": "#FFFF00",
-        "roomdesc": "#cccccc",
-        "roomname": "#0000FF",
-        "scriptecho": "#66FFFF",
-        "scripterror": "#efefef", // "#ff3300",
-        "scriptinfo": "#0066cc",
-        "scriptinput": "#acff2f",
-        "sendinput": "#acff2f",
-        "speech": "#66FFFF",
-        "thought": "#66FFFF",
-        "whisper": "#66FFFF",
-        "exptracker": "#66FFFF"
-    ]
+    var gameContext = GameContext()
     
     override func viewDidLoad() {
         
         accountInput.stringValue = ""
         characterInput.stringValue = ""
+        
+        gameWindowContainer.backgroundColor = NSColor.blue
         
         authServer = AuthenticationServer()
         
@@ -53,13 +41,13 @@ class GameViewController : NSViewController {
                 self?.gameStream?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
-                self?.logText("Disconnected from game server")
+                self?.logText("Disconnected from game server\n\n")
             default:
                 print("\(state)")
             }
         })
-        
-        gameStream = GameStream(context: GameContext(), streamCommands: {command in
+
+        gameStream = GameStream(context: self.gameContext, streamCommands: {command in
             switch command {
             case .text(let tags):
                 for tag in tags {
@@ -69,6 +57,12 @@ class GameViewController : NSViewController {
                 print(command)
             }
         })
+
+        let main = WindowSettings(name: "main", closedTarget: nil, x: 0, y: 0, height: 600, width: 800)
+        addWindow(main)
+        
+        let logons = WindowSettings(name: "logons", closedTarget: nil, x: 800, y: 0, height: 200, width: 300)
+        addWindow(logons)
     }
 
     @IBAction func Send(_ sender: Any) {
@@ -113,61 +107,41 @@ class GameViewController : NSViewController {
             }
         )
     }
-    
+
+    func windowFor(name: String) -> String? {
+        if name == "inv" { return nil }
+        if name == "logons" { return "logons" }
+
+        return "main"
+    }
+
+    func addWindow(_ settings: WindowSettings) {
+        if let window = createWindow(settings) {
+            self.gameWindowContainer.addSubview(window.view)
+            self.gameWindows[settings.name] = window
+        }
+    }
+
+    func createWindow(_ settings: WindowSettings) -> WindowViewController? {
+        let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
+        let controller = storyboard.instantiateController(withIdentifier: "Window") as? WindowViewController
+
+        controller?.name = settings.name
+        controller?.gameContext = self.gameContext
+
+        controller?.view.setFrameSize(NSSize(width: settings.width, height: settings.height))
+        controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))
+
+        return controller
+    }
+
+    func logText(_ text: String) {
+        logTag(TextTag(text: text, window: "main"))
+    }
+
     func logTag(_ tag: TextTag) {
-        
-        if tag.window == "inv" {
-            return
-        }
-        
-        var foregroundColor = NSColor.white
-        
-        if tag.bold {
-            foregroundColor = NSColor(hex: self.presets["creatures"]!)!
-        }
-        
-        if let preset = tag.preset {
-            if let value = self.presets[preset] {
-                foregroundColor = NSColor(hex: value) ?? foregroundColor
-            }
-        }
-        
-        var font = NSFont(name: "Helvetica", size: 14)!
-        
-        if tag.mono {
-            font = NSFont(name: "Menlo", size: 13)!
-        }
-
-        let  attributes:[NSAttributedString.Key:Any] = [
-            NSAttributedString.Key.foregroundColor: foregroundColor,
-            NSAttributedString.Key.font: font
-        ]
-        let str = NSAttributedString(string: tag.text, attributes: attributes)
-        
-        appendText(str)
-    }
-    
-    func logText(_ text: String, window:String = "main") {
-        let font = NSFont(name: "Helvetica", size: 14)!
-        let  attributes = [
-            NSAttributedString.Key.foregroundColor: NSColor.white,
-            NSAttributedString.Key.font: font
-        ]
-        let str = NSAttributedString(string: text, attributes: attributes)
-        
-        appendText(str)
-    }
-
-    func appendText(_ text: NSAttributedString) {
-        DispatchQueue.main.async {
-
-            let smartScroll = self.gameText.visibleRect.maxY == self.gameText.bounds.maxY
-
-            self.gameText.textStorage?.append(text)
-
-            if smartScroll {
-                self.gameText.scrollToEndOfDocument(self)
-            }
+        if let windowName = windowFor(name: tag.window), let window = self.gameWindows[windowName] {
+            window.append(tag)
         }
     }
 }

@@ -24,7 +24,7 @@ class OView : NSView {
     }
 
     required init?(coder decoder: NSCoder) {
-        fatalError()
+        super.init(coder: decoder)
     }
 
     override var isFlipped: Bool {

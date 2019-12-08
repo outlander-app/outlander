@@ -12,13 +12,13 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     var window: NSWindow?
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
         let bundle = Bundle(for: GameViewController.self)
         let storyboard = NSStoryboard(name: "Game", bundle: bundle)
         let controller = storyboard.instantiateInitialController() as? GameViewController
-        
+
         window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
             styleMask: [.titled, .resizable, .closable, .miniaturizable],
@@ -28,9 +28,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window?.center()
         window?.isMovableByWindowBackground = true
         window?.makeKeyAndOrderFront(nil)
-        
-        window?.contentViewController = controller
 
+        window?.contentViewController = controller
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

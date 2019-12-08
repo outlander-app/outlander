@@ -35,32 +35,6 @@
                                     <action selector="Send:" target="tny-JT-jcH" id="al0-pT-0P5"/>
                                 </connections>
                             </textField>
-                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elF-q3-jUH">
-                                <rect key="frame" x="17" y="94" width="655" height="410"/>
-                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Njj-dn-XVb">
-                                    <rect key="frame" x="0.0" y="0.0" width="655" height="410"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="Vhq-tb-V1R">
-                                            <rect key="frame" x="0.0" y="0.0" width="655" height="410"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="655" height="410"/>
-                                            <size key="maxSize" width="655" height="10000000"/>
-                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                        </textView>
-                                    </subviews>
-                                </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Ib5-ea-JmU">
-                                    <rect key="frame" x="-100" y="-100" width="225" height="15"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="MKP-E7-HLO">
-                                    <rect key="frame" x="639" y="0.0" width="16" height="410"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                            </scrollView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SCO-ND-oWC">
                                 <rect key="frame" x="604" y="13" width="74" height="32"/>
                                 <buttonCell key="cell" type="push" title="Login" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5rA-uJ-w2k">
@@ -104,25 +78,28 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="fNy-Zq-dAH" customClass="OView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="94" width="692" height="430"/>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="SCO-ND-oWC" firstAttribute="top" secondItem="Y11-r9-8Wr" secondAttribute="bottom" constant="12" id="2vV-kv-GC0"/>
-                            <constraint firstItem="elF-q3-jUH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="17" id="8We-3x-Qqt"/>
                             <constraint firstAttribute="bottom" secondItem="foG-9o-Xs2" secondAttribute="bottom" constant="20" id="9Vt-OE-QjX"/>
                             <constraint firstAttribute="trailing" secondItem="SCO-ND-oWC" secondAttribute="trailing" constant="20" id="9zQ-mv-sFu"/>
                             <constraint firstAttribute="bottom" secondItem="Ls6-NJ-xcZ" secondAttribute="bottom" constant="20" id="Cxc-4P-clO"/>
                             <constraint firstItem="Kn2-GV-Dzd" firstAttribute="leading" secondItem="Ls6-NJ-xcZ" secondAttribute="trailing" constant="8" symbolic="YES" id="Dim-6R-JHp"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="elF-q3-jUH" secondAttribute="bottom" constant="22" id="GcR-IR-wxh"/>
                             <constraint firstItem="foG-9o-Xs2" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="10" id="JV0-MW-phr"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="17" id="Mbv-Bv-gWU"/>
+                            <constraint firstItem="Y11-r9-8Wr" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="20" symbolic="YES" id="NtN-57-i19"/>
+                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="PYY-at-9US"/>
                             <constraint firstAttribute="bottom" secondItem="SCO-ND-oWC" secondAttribute="bottom" constant="20" id="RGA-oX-Be5"/>
-                            <constraint firstAttribute="trailing" secondItem="elF-q3-jUH" secondAttribute="trailing" constant="20" id="SnI-Ce-xN5"/>
                             <constraint firstItem="Y11-r9-8Wr" firstAttribute="leading" secondItem="9lN-eF-asn" secondAttribute="trailing" constant="11" id="Wgg-U9-pcC"/>
                             <constraint firstAttribute="trailing" secondItem="Y11-r9-8Wr" secondAttribute="trailing" constant="20" id="Wms-m1-pDU"/>
-                            <constraint firstItem="elF-q3-jUH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" constant="20" id="Wot-Jw-4Ze"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="elF-q3-jUH" secondAttribute="leading" id="YxH-fX-EK8"/>
                             <constraint firstItem="SCO-ND-oWC" firstAttribute="leading" secondItem="foG-9o-Xs2" secondAttribute="trailing" constant="8" id="Zm9-7O-ZNl"/>
                             <constraint firstItem="foG-9o-Xs2" firstAttribute="leading" secondItem="Kn2-GV-Dzd" secondAttribute="trailing" constant="8" symbolic="YES" id="g46-QP-RbV"/>
+                            <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="g4N-q3-fOd"/>
                             <constraint firstItem="Kn2-GV-Dzd" firstAttribute="firstBaseline" secondItem="9lN-eF-asn" secondAttribute="baseline" constant="31" id="kok-W1-zLF"/>
+                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" id="n9Y-cE-8bG"/>
                             <constraint firstAttribute="bottom" secondItem="Kn2-GV-Dzd" secondAttribute="bottom" constant="20" id="o8L-iZ-QnB"/>
                             <constraint firstItem="Ls6-NJ-xcZ" firstAttribute="firstBaseline" secondItem="9lN-eF-asn" secondAttribute="baseline" constant="31" id="qXa-G6-bwW"/>
                             <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Ls6-NJ-xcZ" secondAttribute="leading" id="rEU-PA-FlY"/>
@@ -132,7 +109,7 @@
                         <outlet property="accountInput" destination="Ls6-NJ-xcZ" id="PSS-gc-eBa"/>
                         <outlet property="characterInput" destination="foG-9o-Xs2" id="DnX-DX-Rqj"/>
                         <outlet property="commandInput" destination="9lN-eF-asn" id="Rba-0x-y94"/>
-                        <outlet property="gameText" destination="Vhq-tb-V1R" id="FI1-f3-hEN"/>
+                        <outlet property="gameWindowContainer" destination="fNy-Zq-dAH" id="6uE-dP-w64"/>
                         <outlet property="passwordInput" destination="Kn2-GV-Dzd" id="oGp-n8-acr"/>
                     </connections>
                 </viewController>
