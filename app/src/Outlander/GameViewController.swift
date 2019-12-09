@@ -11,22 +11,22 @@ import Cocoa
 
 
 class GameViewController : NSViewController {
-    
+
     @IBOutlet weak var commandInput: NSTextField!
     @IBOutlet weak var accountInput: NSTextField!
     @IBOutlet weak var passwordInput: NSSecureTextField!
     @IBOutlet weak var characterInput: NSTextField!
     @IBOutlet weak var gameWindowContainer: OView!
-    
+
     var gameWindows:[String:WindowViewController] = [:]
-    
+
     var authServer: AuthenticationServer?
     var gameServer: GameServer?
     var gameStream: GameStream?
     var gameContext = GameContext()
-    
+
     override func viewDidLoad() {
-        
+
         accountInput.stringValue = ""
         characterInput.stringValue = ""
         
@@ -60,8 +60,8 @@ class GameViewController : NSViewController {
 
         let main = WindowSettings(name: "main", closedTarget: nil, x: 0, y: 0, height: 600, width: 800)
         addWindow(main)
-        
-        let logons = WindowSettings(name: "logons", closedTarget: nil, x: 800, y: 0, height: 200, width: 300)
+
+        let logons = WindowSettings(name: "logons", closedTarget: nil, x: 800, y: 0, height: 200, width: 350)
         addWindow(logons)
     }
 
@@ -84,7 +84,7 @@ class GameViewController : NSViewController {
         let authHost = "eaccess.play.net"
         let authPort:UInt16 = 7900
 
-        self.logText("Connecting to authentication server at \(authHost):\(authPort) ...\n")
+        self.logText("Connecting to authentication server at \(authHost):\(authPort)\n")
 
         self.authServer?.authenticate(
             AuthInfo(
@@ -97,12 +97,21 @@ class GameViewController : NSViewController {
             callback: { [weak self] result in
 
                 switch result {
+//                case .connected:
+//                    self?.logText("Connected to authentication server\n")
+
                 case .success(let connection):
-                    self?.logText("Connecting to game server at \(connection.host):\(connection.port) ...\n")
+                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n")
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
+//                case .closed:
+//                    self?.logText("Authentication connection closed\n")
+
+                case .error(let error):
+                    self?.logText("\(error)\n")
+
                 default:
-                    self?.logText("auth result: \(result)\n")
+                    print("auth result: \(result)")
                 }
             }
         )
@@ -124,7 +133,8 @@ class GameViewController : NSViewController {
 
     func createWindow(_ settings: WindowSettings) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
-        let controller = storyboard.instantiateController(withIdentifier: "Window") as? WindowViewController
+//        let controller = storyboard.instantiateController(withIdentifier: "Window") as? WindowViewController
+        let controller = storyboard.instantiateInitialController() as? WindowViewController
 
         controller?.name = settings.name
         controller?.gameContext = self.gameContext

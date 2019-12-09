@@ -129,10 +129,15 @@ class AuthenticationServer {
                 return
             }
 
+            guard result.count > 1 else {
+                self.disconnectWithError("unable to find character \(self._authInfo!.character)")
+                return
+            }
+
             let characterId = str[result[1]]
             print(characterId)
             _socket?.writeAndRead("L\t\(characterId)\tPLAY\r\n", tag: AuthSocketState.character.rawValue)
-            
+
         case .character:
             print("socket data: \(str ?? "")")
             
@@ -142,8 +147,8 @@ class AuthenticationServer {
             }
 
             let info = getConnection(str)
-            _callback?(.success(info))
             _socket?.disconnect()
+            _callback?(.success(info))
         }
     }
 

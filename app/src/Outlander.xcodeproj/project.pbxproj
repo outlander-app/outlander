@@ -164,10 +164,10 @@
 			children = (
 				F9D36E9122EF76D8008BC6E6 /* Server */,
 				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
-				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
-				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
 				F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */,
+				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
+				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
 				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
 				F9BCF2F322E177E200C7F7F0 /* Main.storyboard */,
 				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
@@ -196,8 +196,8 @@
 			isa = PBXGroup;
 			children = (
 				F9D36E7D22E6A907008BC6E6 /* BasicView.swift */,
-				F9BCF32922E4D33E00C7F7F0 /* Elm.swift */,
 				F9BCF33722E5811C00C7F7F0 /* Driver.swift */,
+				F9BCF32922E4D33E00C7F7F0 /* Elm.swift */,
 				F9BCF32D22E4D9CF00C7F7F0 /* VirtualViews.swift */,
 				F9BCF33022E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift */,
 				F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */,
