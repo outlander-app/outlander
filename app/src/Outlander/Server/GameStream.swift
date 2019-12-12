@@ -472,6 +472,7 @@ class GameStream {
                 tags.append(tag)
 
                 if !self.isSetup || isPrompt {
+                    // TODO: combine text tags sent to same windows
                     self.streamCommands(.text(tags))
                     tags.removeAll()
                 }
@@ -630,15 +631,20 @@ class GameStream {
         case "a":
             tag = createTag(token)
             tag?.href = token.attr("href")
+
+            if inStream {
+                tag?.window = lastStreamId
+            }
             
         case "b":
+            // <b>You yell,</b> Hogs!
             tag = createTag(token)
 
             if inStream {
                 tag?.bold = true
                 tag?.window = lastStreamId
             }
-        
+
         case "d":
             guard case let .tag(_, _, children) = token else { break }
 
@@ -659,7 +665,7 @@ class GameStream {
         case "preset":
             tag = createTag(token)
             tag?.window = lastStreamId
-            tag?.preset = token.attr("id")
+            tag?.preset = token.attr("id")?.lowercased()
 
         default:
             tag = nil
@@ -674,6 +680,8 @@ class GameStream {
         var text = token.value() ?? ""
         text = text.replacingOccurrences(of: "&gt;", with: ">")
         text = text.replacingOccurrences(of: "&lt;", with: "<")
+//        text = text.replacingOccurrences(of: "&amp;", with: "&")
+
         var tag:TextTag = TextTag.tagFor(text, preset: "")
 
         tag.bold = self.bold

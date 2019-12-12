@@ -9,7 +9,6 @@
 import Foundation
 import Cocoa
 
-
 class GameViewController : NSViewController {
 
     @IBOutlet weak var commandInput: NSTextField!
@@ -17,7 +16,8 @@ class GameViewController : NSViewController {
     @IBOutlet weak var passwordInput: NSSecureTextField!
     @IBOutlet weak var characterInput: NSTextField!
     @IBOutlet weak var gameWindowContainer: OView!
-
+    @IBOutlet weak var vitalsBar: VitalsBar!
+    
     var gameWindows:[String:WindowViewController] = [:]
 
     var authServer: AuthenticationServer?
@@ -30,7 +30,7 @@ class GameViewController : NSViewController {
         accountInput.stringValue = ""
         characterInput.stringValue = ""
         
-        gameWindowContainer.backgroundColor = NSColor.blue
+//        gameWindowContainer.backgroundColor = NSColor.blue
         
         authServer = AuthenticationServer()
         
@@ -53,21 +53,23 @@ class GameViewController : NSViewController {
                 for tag in tags {
                     self.logTag(tag)
                 }
+
+            case .vitals(let name, let value):
+                self.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%", value: value)
+    
             default:
                 print(command)
             }
         })
 
-        let main = WindowSettings(name: "main", closedTarget: nil, x: 0, y: 0, height: 600, width: 800)
-        addWindow(main)
-
-        let logons = WindowSettings(name: "logons", closedTarget: nil, x: 800, y: 0, height: 200, width: 350)
-        addWindow(logons)
+        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 0, height: 600, width: 800))
+        addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
+        addWindow(WindowSettings(name: "thoughts", visible: true, closedTarget: nil, x: 800, y: 200, height: 200, width: 350))
+        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
     }
 
     @IBAction func Send(_ sender: Any) {
         let command = self.commandInput.stringValue
-        
         if command.count == 0 { return }
         
         self.commandInput.stringValue = ""
@@ -108,7 +110,7 @@ class GameViewController : NSViewController {
 //                    self?.logText("Authentication connection closed\n")
 
                 case .error(let error):
-                    self?.logText("\(error)\n")
+                    self?.logError("\(error)\n")
 
                 default:
                     print("auth result: \(result)")
@@ -118,26 +120,42 @@ class GameViewController : NSViewController {
     }
 
     func windowFor(name: String) -> String? {
-        if name == "inv" { return nil }
-        if name == "logons" { return "logons" }
+        
+//        guard name.count > 0 else {
+//            return nil
+//        }
 
+        if let window = self.gameWindows[name] {
+            if window.visible { return name }
+            
+            if let closedTarget = window.closedTarget, closedTarget.count > 0 {
+                return windowFor(name: closedTarget)
+            }
+
+            return nil
+        }
+        
         return "main"
     }
 
     func addWindow(_ settings: WindowSettings) {
         if let window = createWindow(settings) {
-            self.gameWindowContainer.addSubview(window.view)
+            if window.visible {
+                self.gameWindowContainer.addSubview(window.view)
+            }
             self.gameWindows[settings.name] = window
         }
     }
 
     func createWindow(_ settings: WindowSettings) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
-//        let controller = storyboard.instantiateController(withIdentifier: "Window") as? WindowViewController
         let controller = storyboard.instantiateInitialController() as? WindowViewController
+        
+        controller?.gameContext = self.gameContext
 
         controller?.name = settings.name
-        controller?.gameContext = self.gameContext
+        controller?.visible = settings.visible
+        controller?.closedTarget = settings.closedTarget
 
         controller?.view.setFrameSize(NSSize(width: settings.width, height: settings.height))
         controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))
@@ -146,6 +164,10 @@ class GameViewController : NSViewController {
     }
 
     func logText(_ text: String) {
+        logTag(TextTag(text: text, window: "main"))
+    }
+
+    func logError(_ text: String) {
         logTag(TextTag(text: text, window: "main"))
     }
 
