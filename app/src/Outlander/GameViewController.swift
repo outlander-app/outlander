@@ -11,7 +11,7 @@ import Cocoa
 
 class GameViewController : NSViewController {
 
-    @IBOutlet weak var commandInput: NSTextField!
+    @IBOutlet weak var commandInput: HistoryTextField!
     @IBOutlet weak var accountInput: NSTextField!
     @IBOutlet weak var passwordInput: NSSecureTextField!
     @IBOutlet weak var characterInput: NSTextField!
@@ -71,6 +71,11 @@ class GameViewController : NSViewController {
             }
         })
 
+        self.commandInput.executeCommand = {command in
+            self.logText("\(command)\n", playerCommand: true)
+            self.gameServer?.sendCommand(command)
+        }
+
         addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
         addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
         addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
@@ -80,12 +85,7 @@ class GameViewController : NSViewController {
     }
 
     @IBAction func Send(_ sender: Any) {
-        let command = self.commandInput.stringValue
-        if command.count == 0 { return }
-        
-        self.commandInput.stringValue = ""
-        self.logText("\(command)\n", playerCommand: true)
-        self.gameServer?.sendCommand(command)
+        self.commandInput.commitHistory()
     }
     
     @IBAction func Login(_ sender: Any) {
@@ -169,8 +169,6 @@ class GameViewController : NSViewController {
         if let window = self.gameWindows["room"] {
             window.clearAndAppend(tags)
         }
-        
-        // TODO: update cardinal directions
     }
 
     func windowFor(name: String) -> String? {

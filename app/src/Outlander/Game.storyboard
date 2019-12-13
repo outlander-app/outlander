@@ -20,25 +20,15 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="I6A-aq-awz" customClass="VitalsBar" customModule="Outlander" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="712" height="25"/>
                             </customView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y11-r9-8Wr">
-                                <rect key="frame" x="640" y="59" width="71" height="32"/>
-                                <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2Gr-Uu-9aD">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Send:" target="tny-JT-jcH" id="YoM-cx-aWg"/>
-                                </connections>
-                            </button>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn">
-                                <rect key="frame" x="7" y="66" width="631" height="21"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="command" drawsBackground="YES" id="GhR-6i-hCN">
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn" customClass="HistoryTextField" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="7" y="66" width="698" height="21"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="command" drawsBackground="YES" id="GhR-6i-hCN">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
-                                    <action selector="Send:" target="tny-JT-jcH" id="al0-pT-0P5"/>
+                                    <action selector="Send:" target="tny-JT-jcH" id="A98-hr-ILs"/>
                                 </connections>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SCO-ND-oWC">
@@ -86,29 +76,28 @@
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Y11-r9-8Wr" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="15" id="0A0-Hy-oXR"/>
-                            <constraint firstItem="Ls6-NJ-xcZ" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="10" id="2Hl-TV-Sdq"/>
                             <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="2cr-cT-1h1"/>
-                            <constraint firstAttribute="trailing" secondItem="Y11-r9-8Wr" secondAttribute="trailing" constant="7" id="9AH-Cq-k6m"/>
-                            <constraint firstItem="Y11-r9-8Wr" firstAttribute="leading" secondItem="9lN-eF-asn" secondAttribute="trailing" constant="8" id="Dfc-4R-KsH"/>
+                            <constraint firstItem="Ls6-NJ-xcZ" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="7ry-sv-YIq"/>
                             <constraint firstItem="SCO-ND-oWC" firstAttribute="leading" secondItem="foG-9o-Xs2" secondAttribute="trailing" constant="5" id="DyV-pv-62P"/>
+                            <constraint firstItem="SCO-ND-oWC" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="12" id="K9H-nY-BBO"/>
                             <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" id="MaX-uX-scV"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="RNk-ab-d5B"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="StY-8g-K1L"/>
+                            <constraint firstItem="SCO-ND-oWC" firstAttribute="leading" secondItem="foG-9o-Xs2" secondAttribute="trailing" constant="5" id="TOC-Tk-iGw"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="SCO-ND-oWC" secondAttribute="bottom" constant="8" id="XeU-26-56J"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="Ls6-NJ-xcZ" secondAttribute="bottom" constant="10" id="atF-n8-LGA"/>
+                            <constraint firstAttribute="trailing" secondItem="9lN-eF-asn" secondAttribute="trailing" constant="7" id="cQs-Ux-LjR"/>
+                            <constraint firstItem="foG-9o-Xs2" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="10" id="dhh-cg-rgy"/>
                             <constraint firstAttribute="bottom" secondItem="I6A-aq-awz" secondAttribute="bottom" id="dmn-AY-d8r"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="Kn2-GV-Dzd" secondAttribute="bottom" constant="10" id="eM4-mZ-NYq"/>
-                            <constraint firstItem="foG-9o-Xs2" firstAttribute="trailing" secondItem="9lN-eF-asn" secondAttribute="trailing" id="iye-a8-55x"/>
-                            <constraint firstItem="Kn2-GV-Dzd" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="10" id="jjc-Pq-MeA"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="15" id="g4S-j1-Uwj"/>
                             <constraint firstAttribute="trailing" secondItem="I6A-aq-awz" secondAttribute="trailing" id="onT-wP-xdb"/>
                             <constraint firstItem="Kn2-GV-Dzd" firstAttribute="leading" secondItem="Ls6-NJ-xcZ" secondAttribute="trailing" constant="8" id="pIX-r5-K4u"/>
                             <constraint firstItem="Kn2-GV-Dzd" firstAttribute="baseline" secondItem="foG-9o-Xs2" secondAttribute="baseline" id="rV9-iY-kZm"/>
                             <constraint firstItem="fNy-Zq-dAH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="sSA-DG-QUL"/>
                             <constraint firstAttribute="bottom" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="102" id="sp9-4f-fCn"/>
                             <constraint firstItem="foG-9o-Xs2" firstAttribute="leading" secondItem="Kn2-GV-Dzd" secondAttribute="trailing" constant="8" id="ssu-Xh-xJw"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="txz-iF-bdS"/>
-                            <constraint firstItem="Y11-r9-8Wr" firstAttribute="baseline" secondItem="9lN-eF-asn" secondAttribute="baseline" id="uQo-Ui-Dp6"/>
-                            <constraint firstItem="Ls6-NJ-xcZ" firstAttribute="leading" secondItem="9lN-eF-asn" secondAttribute="leading" id="zeI-U8-IUW"/>
+                            <constraint firstAttribute="trailing" secondItem="SCO-ND-oWC" secondAttribute="trailing" constant="7" id="vwm-0G-Vah"/>
                         </constraints>
                     </view>
                     <connections>

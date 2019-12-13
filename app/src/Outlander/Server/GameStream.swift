@@ -445,6 +445,8 @@ enum StreamCommand : CustomStringConvertible {
     case spell(String)
     case roundtime(Date)
     case room
+    case compass([String:String])
+    case hands(String, String)
 
     var description: String {
         switch self {
@@ -510,6 +512,20 @@ class GameStream {
         "roomextra"
     ]
 
+    private let compassMap = [
+        "n": "north",
+        "s": "south",
+        "e": "east",
+        "w": "west",
+        "ne": "northeast",
+        "nw": "northwest",
+        "se": "southeast",
+        "sw": "southwest",
+        "up": "up",
+        "down": "down",
+        "out": "out"
+    ]
+
     init(context: GameContext, streamCommands: @escaping (StreamCommand) ->()) {
         self.context = context
         self.streamCommands = streamCommands
@@ -566,9 +582,19 @@ class GameStream {
             self.context.globalVars["lefthand"] = token.value() ?? "Empty"
             self.context.globalVars["lefthandnoun"] = token.attr("noun") ?? ""
 
+            self.streamCommands(.hands(
+                self.context.globalVars["lefthand"] ?? "Empty",
+                self.context.globalVars["righthand"] ?? "Empty"
+            ))
+
         case "right":
             self.context.globalVars["righthand"] = token.value() ?? "Empty"
             self.context.globalVars["righthandnoun"] = token.attr("noun") ?? ""
+
+            self.streamCommands(.hands(
+                self.context.globalVars["lefthand"] ?? "Empty",
+                self.context.globalVars["righthand"] ?? "Empty"
+            ))
 
         case "spell":
             if let spell = token.value() {
@@ -625,13 +651,35 @@ class GameStream {
                 }
             }
 
+        case "compass":
+            let directions = token.children().filter { $0.name() == "dir" && $0.hasAttr("value") }
+            
+            var found:[String] = []
+            var settings:[String:String] = [:]
+            
+            for dir in directions {
+                let mapped = self.compassMap[dir.attr("value")!]!
+                found.append(mapped)
+                settings[mapped] = "1"
+            }
+
+            let notFound = self.compassMap.values.filter { !found.contains($0) }
+
+            for dir in notFound {
+                settings[dir] = "0"
+            }
+
+            for (key, value) in settings {
+                self.context.globalVars[key] = value
+            }
+
+            self.streamCommands(.compass(settings))
+
         case "indicator":
             let id = token.attr("id")?.dropFirst(4).lowercased() ?? ""
             let visible = token.attr("visible") == "y" ? "1" : "0"
             
             guard id.count > 0 else { break }
-            
-            print("indicator:  \(id):\(visible)")
             
             self.context.globalVars[id] = visible
         

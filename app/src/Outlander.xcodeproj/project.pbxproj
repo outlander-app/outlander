@@ -17,6 +17,8 @@
 		F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0EA239C812900408CE5 /* WindowViewController.swift */; };
 		F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0ED23A21BD400408CE5 /* ProgressBar.swift */; };
 		F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0ED23A21BD400408CE5 /* ProgressBar.swift */; };
+		F969A0F123A41DD000408CE5 /* HistoryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0F023A41DD000408CE5 /* HistoryTextField.swift */; };
+		F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0F023A41DD000408CE5 /* HistoryTextField.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -87,6 +89,7 @@
 		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
 		F969A0EA239C812900408CE5 /* WindowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowViewController.swift; sourceTree = "<group>"; };
 		F969A0ED23A21BD400408CE5 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		F969A0F023A41DD000408CE5 /* HistoryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTextField.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -182,6 +185,7 @@
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
+				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -325,6 +329,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F969A0F123A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 				F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
@@ -357,6 +362,7 @@
 				F9D36E9A22EFF7BB008BC6E6 /* Stack.swift in Sources */,
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
+				F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,

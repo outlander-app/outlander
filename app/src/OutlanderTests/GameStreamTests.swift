@@ -97,6 +97,31 @@ class GameStreamTests : XCTestCase {
             XCTFail()
         }
     }
+
+    func testStreamCompass() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<compass><dir value=\"sw\"/><dir value=\"nw\"/></compass>"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 1)
+
+        switch commands.first {
+        case .compass:
+            XCTAssertEqual(context.globalVars["north"], "0")
+            XCTAssertEqual(context.globalVars["south"], "0")
+            XCTAssertEqual(context.globalVars["east"], "0")
+            XCTAssertEqual(context.globalVars["west"], "0")
+            XCTAssertEqual(context.globalVars["southwest"], "1")
+            XCTAssertEqual(context.globalVars["southeast"], "0")
+            XCTAssertEqual(context.globalVars["northwest"], "1")
+            XCTAssertEqual(context.globalVars["northeast"], "0")
+            XCTAssertEqual(context.globalVars["out"], "0")
+            XCTAssertEqual(context.globalVars["down"], "0")
+        default:
+            XCTFail()
+        }
+    }
 }
 
 class GameStreamTokenizerTests : XCTestCase {
