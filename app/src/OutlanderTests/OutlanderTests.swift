@@ -30,4 +30,25 @@ class OutlanderTests: XCTestCase {
         let data = testdata[result![1]]
         XCTAssertEqual(data, "W_ACCT_000")
     }
+
+    func testCombineMatchingTextTags() {
+        let tag1 = TextTag(text: "testing1", window: "main")
+        let tag2 = TextTag(text: "testing2", window: "main")
+
+        let results = TextTag.combine(tags: [tag1, tag2])
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results[0].text, "testing1testing2")
+    }
+    
+    func testDoesNotCombineUnMatchingTextTags() {
+        let tag1 = TextTag(text: "testing1", window: "main")
+        let tag2 = TextTag(text: "testing2", window: "other")
+        
+        let results = TextTag.combine(tags: [tag1, tag2])
+        
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results[0].text, "testing1")
+        XCTAssertEqual(results[1].text, "testing2")
+    }
 }

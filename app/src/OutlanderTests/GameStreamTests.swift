@@ -11,10 +11,91 @@ import XCTest
 
 class GameStreamTests : XCTestCase {
     
+    func streamCommands(_ lines: [String], context: GameContext = GameContext()) -> [StreamCommand] {
+        var commands:[StreamCommand] = []
+        let context = context
+
+        let stream = GameStream(context: context) { cmd in
+            commands.append(cmd)
+        }
+
+        stream.resetSetup(true)
+        
+        for line in lines {
+            stream.stream(line)
+        }
+        
+        return commands
+    }
+
     func testBasics() {
         let context = GameContext()
         let stream = GameStream(context: context) { cmd in }
         stream.stream("Please wait for connection to game server.\r\n")
+    }
+
+    func testCombinedTags() {
+        let commands = streamCommands([
+            "Please wait for connection to game server.\r\n",
+            "<prompt time=\"1576081991\">&gt;</prompt>\r\n"
+        ])
+
+        XCTAssertEqual(commands.count, 1)
+        
+        switch commands[0] {
+        case .text(let tags):
+            XCTAssertEqual(tags.count, 2)
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testStreamRoomObjTags() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room objs'>You also see a stick.</component>\r\n"
+        ], context: context)
+        
+        XCTAssertEqual(commands.count, 1)
+
+        switch commands[0] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomobjs"], "You also see a stick.")
+        default:
+            XCTFail()
+        }
+    }
+
+    func testStreamRoomExitsTags() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room exits'>Obvious paths: <d>north</d>, <d>south</d>.<compass></compass></component>\r\n"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 1)
+
+        switch commands[0] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomexits"], "Obvious paths: north, south.")
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testStreamRoomDescTags() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room desc'>The stone road, once the pinnacle of craftsmanship, is cracked and worn.</component>\r\n"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 1)
+
+        switch commands[0] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomdesc"], "The stone road, once the pinnacle of craftsmanship, is cracked and worn.")
+        default:
+            XCTFail()
+        }
     }
 }
 

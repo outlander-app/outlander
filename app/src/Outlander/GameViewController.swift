@@ -41,7 +41,7 @@ class GameViewController : NSViewController {
                 self?.gameStream?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
-                self?.logText("Disconnected from game server\n\n")
+                self?.logText("\nDisconnected from game server\n\n")
             default:
                 print("\(state)")
             }
@@ -55,17 +55,28 @@ class GameViewController : NSViewController {
                 }
 
             case .vitals(let name, let value):
-                self.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%", value: value)
-    
+                self.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
+                
+            case .clearStream(let name):
+                self.clearWindow(name)
+
+            case .createWindow(let name, _, _):
+                self.maybeCreateWindow(name)
+
+            case .room:
+                self.updateRoom()
+
             default:
                 print(command)
             }
         })
 
-        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 0, height: 600, width: 800))
+        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
+        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
         addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
         addWindow(WindowSettings(name: "thoughts", visible: true, closedTarget: nil, x: 800, y: 200, height: 200, width: 350))
-        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
+        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
+        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
     }
 
     @IBAction func Send(_ sender: Any) {
@@ -73,7 +84,7 @@ class GameViewController : NSViewController {
         if command.count == 0 { return }
         
         self.commandInput.stringValue = ""
-        self.logText("\(command)\n")
+        self.logText("\(command)\n", playerCommand: true)
         self.gameServer?.sendCommand(command)
     }
     
@@ -119,12 +130,50 @@ class GameViewController : NSViewController {
         )
     }
 
-    func windowFor(name: String) -> String? {
-        
-//        guard name.count > 0 else {
-//            return nil
-//        }
+    func updateRoom() {
+        let name = self.gameContext.globalVars["roomtitle"]
+        let desc = self.gameContext.globalVars["roomdesc"]
+        let objects = self.gameContext.globalVars["roomobjs"]
+        let players = self.gameContext.globalVars["roomplayers"]
+        let exits = self.gameContext.globalVars["roomexits"]
 
+        var tags:[TextTag] = []
+        var room = ""
+        
+        if name != nil && name?.count ?? 0 > 0 {
+            let tag = TextTag.tagFor(name!, preset: "roomname")
+            tags.append(tag)
+            room += "\n"
+        }
+
+        if desc != nil && desc?.count ?? 0 > 0 {
+            let tag = TextTag.tagFor("\(room)\(desc!)\n", preset: "roomdesc")
+            tags.append(tag)
+            room = ""
+        }
+
+        if objects != nil && objects?.count ?? 0 > 0 {
+            room += "\(objects!)\n"
+        }
+        
+        if players != nil && players?.count ?? 0 > 0 {
+            room += "\(players!)\n"
+        }
+
+        if exits != nil && exits?.count ?? 0 > 0 {
+            room += "\(exits!)\n"
+        }
+
+        tags.append(TextTag.tagFor(room))
+
+        if let window = self.gameWindows["room"] {
+            window.clearAndAppend(tags)
+        }
+        
+        // TODO: update cardinal directions
+    }
+
+    func windowFor(name: String) -> String? {
         if let window = self.gameWindows[name] {
             if window.visible { return name }
             
@@ -138,12 +187,28 @@ class GameViewController : NSViewController {
         return "main"
     }
 
+    func maybeCreateWindow(_ name: String) {
+        guard self.gameWindows[name] == nil else {
+            return
+        }
+
+        self.addWindow(WindowSettings(name: name, visible: false, closedTarget: nil, x: 0, y: 0, height: 200, width: 200))
+    }
+
+    func clearWindow(_ name: String) {
+        if let window = self.gameWindows[name] {
+            window.clear()
+        }
+    }
+
     func addWindow(_ settings: WindowSettings) {
-        if let window = createWindow(settings) {
-            if window.visible {
-                self.gameWindowContainer.addSubview(window.view)
+        DispatchQueue.main.async {
+            if let window = self.createWindow(settings) {
+                if window.visible {
+                    self.gameWindowContainer.addSubview(window.view)
+                }
+                self.gameWindows[settings.name] = window
             }
-            self.gameWindows[settings.name] = window
         }
     }
 
@@ -163,8 +228,8 @@ class GameViewController : NSViewController {
         return controller
     }
 
-    func logText(_ text: String) {
-        logTag(TextTag(text: text, window: "main"))
+    func logText(_ text: String, playerCommand: Bool = false) {
+        logTag(TextTag(text: text, window: "main", playerCommand: playerCommand))
     }
 
     func logError(_ text: String) {

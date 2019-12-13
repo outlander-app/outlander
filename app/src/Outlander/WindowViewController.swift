@@ -42,26 +42,42 @@ class WindowViewController : NSViewController {
     var defaultFont = NSFont(name: "Helvetica", size: 14)!
     var monoFont = NSFont(name: "Menlo", size: 13)!
     
+    var lastTag:TextTag?
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
     func clear() {
-        self.textView.string = ""
+        DispatchQueue.main.async {
+            self.textView.string = ""
+        }
+    }
+
+    func clearAndAppend(_ tags: [TextTag]) {
+        let target = NSMutableAttributedString()
+
+        for tag in tags {
+            if let str = stringFromTag(tag) {
+                target.append(str)
+            }
+        }
+        
+        set(target)
     }
     
-    func append(_ tag: TextTag) {
+    func stringFromTag(_ tag: TextTag) -> NSAttributedString? {
         
         guard let context = self.gameContext else {
-            return
+            return nil
         }
-
+        
         var foregroundColor = NSColor.white
         
         if tag.bold {
             foregroundColor = NSColor(hex: context.presets["creatures"]!)!
         }
-
+        
         if let preset = tag.preset {
             if let value = context.presets[preset] {
                 foregroundColor = NSColor(hex: value) ?? foregroundColor
@@ -77,9 +93,27 @@ class WindowViewController : NSViewController {
             NSAttributedString.Key.foregroundColor: foregroundColor,
             NSAttributedString.Key.font: font
         ]
-        let str = NSAttributedString(string: tag.text, attributes: attributes)
-        
+
+        return NSAttributedString(string: tag.text, attributes: attributes)
+    }
+
+    func append(_ tag: TextTag) {
+
+        if self.lastTag?.isPrompt == true && !tag.playerCommand {
+            // skip multiple prompts of the same type
+            if tag.isPrompt && self.lastTag?.text == tag.text {
+                return
+            }
+            
+            // TODO: ignore highlights, etc.
+            append(NSAttributedString(string: "\n"))
+        }
+
+        guard let str = stringFromTag(tag) else { return }
+
         append(str)
+
+        self.lastTag = tag
     }
 
     func append(_ text: NSAttributedString) {
@@ -87,6 +121,18 @@ class WindowViewController : NSViewController {
             let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
             
             self.textView.textStorage?.append(text)
+            
+            if smartScroll {
+                self.textView.scrollToEndOfDocument(self)
+            }
+        }
+    }
+
+    func set(_ text: NSAttributedString) {
+        DispatchQueue.main.async {
+            let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
+
+            self.textView.textStorage?.setAttributedString(text)
             
             if smartScroll {
                 self.textView.scrollToEndOfDocument(self)

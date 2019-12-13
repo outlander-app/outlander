@@ -45,11 +45,11 @@ extension StreamToken {
         }
     }
 
-    func value() -> String? {
+    func value(_ separator:String = ",") -> String? {
         switch self {
         case .text(let text): return text
         case .tag(_, _, let children):
-            return children.compactMap({$0.value()}).joined(separator: ",")
+            return children.compactMap({$0.value()}).joined(separator: separator)
         }
     }
 
@@ -374,21 +374,69 @@ class GameContext {
 
 struct TextTag {
     var text: String
+    var window: String
     var color: String?
     var backgroundColor: String?
     var href: String?
     var command: String?
-    var window: String
     var mono: Bool = false
     var bold: Bool = false
+    var isPrompt: Bool = false
     var preset: String?
+    var playerCommand: Bool = false
 
-    static func tagFor(_ text: String, window: String = "main", mono: Bool = false, preset: String?) -> TextTag {
-        return TextTag(text: text, window: window)
+    func canCombineWith(_ tag: TextTag) -> Bool {
+        guard window == tag.window else { return false }
+        guard isPrompt == tag.isPrompt else { return false }
+        guard mono == tag.mono else { return false }
+        guard bold == tag.bold else { return false }
+        guard preset == tag.preset else { return false }
+        guard color == tag.color else { return false }
+        guard backgroundColor == tag.backgroundColor else { return false }
+        guard href == tag.href else { return false }
+        guard command == tag.command else { return false }
+        guard playerCommand == tag.playerCommand else { return false }
+
+        return true
+    }
+
+    func combine(_ tag: TextTag) -> [TextTag] {
+        guard canCombineWith(tag) else { return [self, tag] }
+
+        return [TextTag(
+            text: text + tag.text,
+            window: window,
+            color: color,
+            backgroundColor: backgroundColor,
+            href: href,
+            command: command,
+            mono: mono,
+            bold: bold,
+            preset: preset)]
+    }
+
+    static func tagFor(_ text: String, window: String = "", mono: Bool = false, preset: String? = nil) -> TextTag {
+        return TextTag(text: text, window: window, mono: mono, preset: preset)
+    }
+
+    static func combine(tags: [TextTag]) -> [TextTag] {
+
+        let start:[TextTag] = []
+
+        let combined = tags.reduce(start) { (list, next) in
+
+            if let last = list.last {
+                return list.dropLast() + last.combine(next)
+            }
+
+            return [next]
+        }
+        
+        return combined
     }
 }
 
-enum StreamCommand {
+enum StreamCommand : CustomStringConvertible {
     case text([TextTag])
     case clearStream(String)
     case createWindow(name: String, title: String, ifClosed: String)
@@ -396,6 +444,16 @@ enum StreamCommand {
     case launchUrl(String)
     case spell(String)
     case roundtime(Date)
+    case room
+
+    var description: String {
+        switch self {
+        case .text:
+            return "text"
+        default:
+            return "other"
+        }
+    }
 }
 
 class GameStream {
@@ -444,14 +502,22 @@ class GameStream {
         "room"
     ]
 
+    private let roomTags = [
+        "roomdesc",
+        "roomobjs",
+        "roomplayers",
+        "roomexits",
+        "roomextra"
+    ]
+
     init(context: GameContext, streamCommands: @escaping (StreamCommand) ->()) {
         self.context = context
         self.streamCommands = streamCommands
         tokenizer = GameStreamTokenizer()
     }
 
-    public func resetSetup() {
-        self.isSetup = false
+    public func resetSetup(_ isSetup:Bool = false) {
+        self.isSetup = isSetup
     }
 
     public func stream(_ data: Data) {
@@ -472,8 +538,7 @@ class GameStream {
                 tags.append(tag)
 
                 if !self.isSetup || isPrompt {
-                    // TODO: combine text tags sent to same windows
-                    self.streamCommands(.text(tags))
+                    self.streamCommands(.text(TextTag.combine(tags: tags)))
                     tags.removeAll()
                 }
             }
@@ -490,6 +555,12 @@ class GameStream {
 
             let today = Date().timeIntervalSince1970
             self.context.globalVars["gametimeupdate"] = "\(today)"
+            
+        case "roundtime":
+            if let num = Int(token.attr("value") ?? "") {
+                let rt = Date(timeIntervalSince1970: TimeInterval(num))
+                self.streamCommands(.roundtime(rt))
+            }
 
         case "left":
             self.context.globalVars["lefthand"] = token.value() ?? "Empty"
@@ -504,13 +575,7 @@ class GameStream {
                 self.context.globalVars["preparedspell"] = spell
                 self.streamCommands(.spell(spell))
             }
-            
-        case "roundtime":
-            if let num = Int(token.attr("value") ?? "") {
-                let rt = Date(timeIntervalSince1970: TimeInterval(num))
-                self.streamCommands(.roundtime(rt))
-            }
-            
+
         case "pushbold":
             self.bold = true
 
@@ -532,7 +597,7 @@ class GameStream {
             ignoreNextEot = ignoreNextEotList.contains(lastStreamId)
             inStream = false
             lastStreamId = ""
-            
+
         case "streamwindow":
             let id = token.attr("id")
             let subtitle = token.attr("subtitle")
@@ -540,11 +605,26 @@ class GameStream {
             if id == "main" && subtitle != nil && subtitle!.count > 3 {
                 self.context.globalVars["roomtitle"] = String(subtitle!.dropFirst(3))
             }
-            
-            if let win = id {
+
+            if !self.isSetup, let win = id {
                 self.streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", ifClosed: token.attr("ifClosed") ?? ""))
             }
-            
+
+        case "component":
+            guard var id = token.attr("id") else { return }
+
+            if !id.hasPrefix("exp") {
+
+                id = id.replacingOccurrences(of: " ", with: "")
+                
+                let value = token.value("") ?? ""
+                self.context.globalVars[id] = value
+
+                if roomTags.contains(id) {
+                    self.streamCommands(.room)
+                }
+            }
+
         case "indicator":
             let id = token.attr("id")?.dropFirst(4).lowercased() ?? ""
             let visible = token.attr("visible") == "y" ? "1" : "0"
@@ -598,6 +678,12 @@ class GameStream {
                 tag?.text = trimmed
             }
 
+            if lastToken?.name() == "preset" && tag!.text.count > 0 && tag!.text.hasPrefix("  You also see") {
+                tag?.preset = lastToken?.attr("id")
+                let text = "\n\(tag!.text.dropFirst(2))"
+                tag?.text = text
+            }
+
             if lastToken?.name() == "style" && lastToken?.attr("id") == "roomName" {
                 tag?.preset = "roomname"
             }
@@ -618,6 +704,7 @@ class GameStream {
 
         case "prompt":
             tag = createTag(token)
+            tag?.isPrompt = true
 
         case "output":
             if let style = token.attr("class") {
@@ -662,6 +749,10 @@ class GameStream {
                 tag?.command = cmd
             }
 
+            if inStream {
+                tag?.window = lastStreamId
+            }
+
         case "preset":
             tag = createTag(token)
             tag?.window = lastStreamId
@@ -680,7 +771,7 @@ class GameStream {
         var text = token.value() ?? ""
         text = text.replacingOccurrences(of: "&gt;", with: ">")
         text = text.replacingOccurrences(of: "&lt;", with: "<")
-//        text = text.replacingOccurrences(of: "&amp;", with: "&")
+        text = text.replacingOccurrences(of: "&amp;", with: "&")
 
         var tag:TextTag = TextTag.tagFor(text, preset: "")
 
