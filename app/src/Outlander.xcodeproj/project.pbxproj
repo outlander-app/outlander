@@ -21,6 +21,10 @@
 		F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0F023A41DD000408CE5 /* HistoryTextField.swift */; };
 		F969A0F723A45B0200408CE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F969A0F623A45B0200408CE5 /* MainMenu.xib */; };
 		F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F969A0F623A45B0200408CE5 /* MainMenu.xib */; };
+		F969A0FB23A4B7CF00408CE5 /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0FA23A4B7CF00408CE5 /* WindowSettings.swift */; };
+		F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0FA23A4B7CF00408CE5 /* WindowSettings.swift */; };
+		F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0FD23A4C85700408CE5 /* BookmarkHelper.swift */; };
+		F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0FD23A4C85700408CE5 /* BookmarkHelper.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -93,6 +97,8 @@
 		F969A0ED23A21BD400408CE5 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		F969A0F023A41DD000408CE5 /* HistoryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTextField.swift; sourceTree = "<group>"; };
 		F969A0F623A45B0200408CE5 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		F969A0FA23A4B7CF00408CE5 /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
+		F969A0FD23A4C85700408CE5 /* BookmarkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkHelper.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -148,6 +154,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F969A0F923A4B7A000408CE5 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F969A0FA23A4B7CF00408CE5 /* WindowSettings.swift */,
+				F969A0FD23A4C85700408CE5 /* BookmarkHelper.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		F9BCF2E122E177E100C7F7F0 = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +186,7 @@
 		F9BCF2EC22E177E100C7F7F0 /* Outlander */ = {
 			isa = PBXGroup;
 			children = (
+				F969A0F923A4B7A000408CE5 /* Settings */,
 				F9D36E9122EF76D8008BC6E6 /* Server */,
 				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
 				F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */,
@@ -344,6 +360,7 @@
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
+				F969A0FB23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
@@ -353,6 +370,7 @@
 				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
 				F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 			);
@@ -373,6 +391,7 @@
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9D36E9722EFC73B008BC6E6 /* GameStreamTests.swift in Sources */,
@@ -382,6 +401,7 @@
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,
+				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,7 +12,8 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     var windows: [NSWindow] = []
-    
+    var applicationSettings:ApplicationSettings = ApplicationSettings()
+
     var activeController: GameViewController? {
         get {
             var win = NSApplication.shared.keyWindow
@@ -26,9 +27,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 
+        Preferences.workingDirectoryBookmark = nil
+
+        if let rootUrl = BookmarkHelper().promptOrRestore() {
+            applicationSettings.paths.rootUrl = rootUrl
+        }
+        
         makeWindow()
     }
 
@@ -36,6 +42,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let bundle = Bundle(for: GameViewController.self)
         let storyboard = NSStoryboard(name: "Game", bundle: bundle)
         let controller = storyboard.instantiateInitialController() as? GameViewController
+        controller?.applicationSettings = applicationSettings
 
         let window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
@@ -92,6 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
        }
        return nib
     }
+
 }
 
 struct AppState {

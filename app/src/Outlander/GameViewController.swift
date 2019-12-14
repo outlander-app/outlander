@@ -17,6 +17,8 @@ class GameViewController : NSViewController {
     @IBOutlet weak var characterInput: NSTextField!
     @IBOutlet weak var gameWindowContainer: OView!
     @IBOutlet weak var vitalsBar: VitalsBar!
+
+    var applicationSettings:ApplicationSettings?
     
     var gameWindows:[String:WindowViewController] = [:]
 
@@ -75,6 +77,8 @@ class GameViewController : NSViewController {
             self.logText("\(command)\n", playerCommand: true)
             self.gameServer?.sendCommand(command)
         }
+        
+        self.commandInput.becomeFirstResponder()
 
         addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
         addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
@@ -86,6 +90,12 @@ class GameViewController : NSViewController {
 
     public func command(_ command: String) {
         print("command: \(command)")
+
+        if command == "layout:LoadDefault" {
+            if let layout = WindowLayoutLoader().load(self.applicationSettings!, file: "default.cfg") {
+                print("yep")
+            }
+        }
     }
 
     @IBAction func Send(_ sender: Any) {
