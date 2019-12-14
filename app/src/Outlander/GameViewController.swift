@@ -84,6 +84,10 @@ class GameViewController : NSViewController {
         addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
     }
 
+    public func command(_ command: String) {
+        print("command: \(command)")
+    }
+
     @IBAction func Send(_ sender: Any) {
         self.commandInput.commitHistory()
     }

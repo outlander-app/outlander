@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-public class HistoryTextField : NSTextField, NSTextFieldDelegate {
+public class HistoryTextField : NSTextField {
     
     var currentHistoryIndex = -1
 

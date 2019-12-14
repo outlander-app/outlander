@@ -19,6 +19,8 @@
 		F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0ED23A21BD400408CE5 /* ProgressBar.swift */; };
 		F969A0F123A41DD000408CE5 /* HistoryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0F023A41DD000408CE5 /* HistoryTextField.swift */; };
 		F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0F023A41DD000408CE5 /* HistoryTextField.swift */; };
+		F969A0F723A45B0200408CE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F969A0F623A45B0200408CE5 /* MainMenu.xib */; };
+		F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F969A0F623A45B0200408CE5 /* MainMenu.xib */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -90,6 +92,7 @@
 		F969A0EA239C812900408CE5 /* WindowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowViewController.swift; sourceTree = "<group>"; };
 		F969A0ED23A21BD400408CE5 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		F969A0F023A41DD000408CE5 /* HistoryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTextField.swift; sourceTree = "<group>"; };
+		F969A0F623A45B0200408CE5 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -186,6 +189,7 @@
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
 				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
+				F969A0F623A45B0200408CE5 /* MainMenu.xib */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -310,6 +314,7 @@
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
+				F969A0F723A45B0200408CE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +324,7 @@
 			files = (
 				F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
+				F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
