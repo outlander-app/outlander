@@ -11,8 +11,7 @@ import Foundation
 class ApplicationPaths {
 
     init() {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        rootUrl = paths[0]
+        rootUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     }
 
     var rootUrl: URL
@@ -90,16 +89,18 @@ class WindowLayoutLoader {
 
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
         
-        if !fileUrl.startAccessingSecurityScopedResource() {
+        if !settings.paths.rootUrl.startAccessingSecurityScopedResource() {
             print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
         }
 
-        guard let data = try? Data(contentsOf: fileUrl) else {
-            fileUrl.stopAccessingSecurityScopedResource()
-            return nil
-        }
+//        guard let data = try? Data(contentsOf: fileUrl) else {
+//            fileUrl.stopAccessingSecurityScopedResource()
+//            return nil
+//        }
 
-        fileUrl.stopAccessingSecurityScopedResource()
+        let data = try! Data(contentsOf: fileUrl)
+
+        settings.paths.rootUrl.stopAccessingSecurityScopedResource()
         
         let decoder = JSONDecoder()
 //        guard let jsonData = try? decoder.decode(WindowLayout.self, from: data) else {

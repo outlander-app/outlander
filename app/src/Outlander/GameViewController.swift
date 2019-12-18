@@ -31,9 +31,8 @@ class GameViewController : NSViewController {
 
         accountInput.stringValue = ""
         characterInput.stringValue = ""
-        
-//        gameWindowContainer.backgroundColor = NSColor.blue
-        
+        passwordInput.stringValue = ""
+
         authServer = AuthenticationServer()
         
         gameServer = GameServer({ [weak self] state in
@@ -68,6 +67,13 @@ class GameViewController : NSViewController {
             case .room:
                 self.updateRoom()
 
+            case .character(let game, let character):
+                DispatchQueue.main.async {
+                    if let win = self.view.window {
+                        win.title = "\(game): \(character) - Outlander 2"
+                    }
+                }
+
             default:
                 print(command)
             }
@@ -77,24 +83,23 @@ class GameViewController : NSViewController {
             self.logText("\(command)\n", playerCommand: true)
             self.gameServer?.sendCommand(command)
         }
-        
-        self.commandInput.becomeFirstResponder()
 
-        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
-        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
-        addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
-        addWindow(WindowSettings(name: "thoughts", visible: true, closedTarget: nil, x: 800, y: 200, height: 200, width: 350))
-        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
-        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
+        self.commandInput.becomeFirstResponder()
+        self.reloadWindows()
+
+//        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
+//        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
+//        addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
+//        addWindow(WindowSettings(name: "thoughts", visible: true, closedTarget: nil, x: 800, y: 200, height: 200, width: 350))
+//        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
+//        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
     }
 
     public func command(_ command: String) {
         print("command: \(command)")
 
         if command == "layout:LoadDefault" {
-            if let layout = WindowLayoutLoader().load(self.applicationSettings!, file: "default.cfg") {
-                print("yep")
-            }
+            self.reloadWindows()
         }
     }
 
@@ -185,6 +190,21 @@ class GameViewController : NSViewController {
         }
     }
 
+    func reloadWindows() {
+        if let layout = WindowLayoutLoader().load(self.applicationSettings!, file: "mobile.cfg") {
+
+            if let mainView = self.view as? OView {
+                mainView.setFrameSize(NSSize(width: layout.primary.width, height: layout.primary.height))
+                mainView.setFrameOrigin(NSPoint(x: layout.primary.x, y: layout.primary.y))
+                mainView.backgroundColor = NSColor(hex: layout.primary.backgroundColor)
+            }
+
+            for win in layout.windows {
+                self.addWindow(win)
+            }
+        }
+    }
+
     func windowFor(name: String) -> String? {
         if let window = self.gameWindows[name] {
             if window.visible { return name }
@@ -203,8 +223,16 @@ class GameViewController : NSViewController {
         guard self.gameWindows[name] == nil else {
             return
         }
-
-        self.addWindow(WindowSettings(name: name, visible: false, closedTarget: nil, x: 0, y: 0, height: 200, width: 200))
+        
+        let settings = WindowData()
+        settings.name = name
+        settings.visible = 0
+        settings.x = 0
+        settings.y = 0
+        settings.height = 200
+        settings.width = 200
+        
+        self.addWindow(settings)
     }
 
     func clearWindow(_ name: String) {
@@ -213,7 +241,7 @@ class GameViewController : NSViewController {
         }
     }
 
-    func addWindow(_ settings: WindowSettings) {
+    func addWindow(_ settings: WindowData) {
         DispatchQueue.main.async {
             if let window = self.createWindow(settings) {
                 if window.visible {
@@ -224,15 +252,17 @@ class GameViewController : NSViewController {
         }
     }
 
-    func createWindow(_ settings: WindowSettings) -> WindowViewController? {
+    func createWindow(_ settings: WindowData) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
         let controller = storyboard.instantiateInitialController() as? WindowViewController
         
         controller?.gameContext = self.gameContext
 
         controller?.name = settings.name
-        controller?.visible = settings.visible
+        controller?.visible = settings.visible == 1
         controller?.closedTarget = settings.closedTarget
+        controller?.backgroundColor = settings.backgroundColor
+        controller?.borderColor = settings.borderColor
 
         controller?.view.setFrameSize(NSSize(width: settings.width, height: settings.height))
         controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))

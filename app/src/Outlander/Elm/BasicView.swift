@@ -10,17 +10,21 @@ import Foundation
 import Cocoa
 
 class OView : NSView {
-    public var backgroundColor: NSColor?
+    public var backgroundColor: NSColor? {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
 
     init() {
         super.init(frame: NSRect.zero)
-        self.translatesAutoresizingMaskIntoConstraints = false
+//        self.translatesAutoresizingMaskIntoConstraints = false
     }
 
     init(color: NSColor, frame: NSRect) {
         super.init(frame: frame)
         self.backgroundColor = color
-        self.translatesAutoresizingMaskIntoConstraints = false
+//        self.translatesAutoresizingMaskIntoConstraints = false
     }
 
     required init?(coder decoder: NSCoder) {

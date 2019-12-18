@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 
-        Preferences.workingDirectoryBookmark = nil
+//        Preferences.workingDirectoryBookmark = nil
 
         if let rootUrl = BookmarkHelper().promptOrRestore() {
             applicationSettings.paths.rootUrl = rootUrl
@@ -50,7 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false)
 
-        window.title = "Outlander2"
+        window.title = "Outlander 2"
         window.center()
         window.isMovableByWindowBackground = true
         

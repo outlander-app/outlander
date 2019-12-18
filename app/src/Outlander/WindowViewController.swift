@@ -9,17 +9,6 @@
 import Cocoa
 import Foundation
 
-struct WindowSettings {
-    var name:String
-    var visible:Bool
-    var closedTarget:String?
-    
-    var x:Int
-    var y:Int
-    var height:Int
-    var width:Int
-}
-
 class OLScrollView : NSScrollView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -32,6 +21,7 @@ class OLScrollView : NSScrollView {
 }
 
 class WindowViewController : NSViewController {
+    @IBOutlet var mainView: OView!
     @IBOutlet var textView: NSTextView!
 
     public var gameContext: GameContext?
@@ -39,13 +29,32 @@ class WindowViewController : NSViewController {
     public var visible:Bool = true
     public var closedTarget:String?
 
-    var defaultFont = NSFont(name: "Helvetica", size: 14)!
-    var monoFont = NSFont(name: "Menlo", size: 13)!
-    
+    public var borderColor: String =  "#cccccc" {
+        didSet {
+            self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
+        }
+    }
+
+    public var backgroundColor: String = "#1e1e1e" {
+        didSet {
+            self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? NSColor(hex: "#1e1e1e")!
+        }
+    }
+
+    static var defaultFont = NSFont(name: "Helvetica", size: 14)!
+    static var defaultMonoFont = NSFont(name: "Menlo", size: 13)!
+    static var defaultCreatureColor = NSColor(hex: "#ffff00")!
+
     var lastTag:TextTag?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.updateTheme()
+    }
+    
+    func updateTheme() {
+        self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
+        self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? NSColor(hex: "#1e1e1e")!
     }
 
     func clear() {
@@ -73,20 +82,22 @@ class WindowViewController : NSViewController {
         }
         
         var foregroundColor = NSColor.white
-        
+
         if tag.bold {
-            foregroundColor = NSColor(hex: context.presets["creatures"]!)!
-        }
-        
-        if let preset = tag.preset {
-            if let value = context.presets[preset] {
-                foregroundColor = NSColor(hex: value) ?? foregroundColor
+            if let value = context.presetFor(setting: "creatures") {
+                foregroundColor = NSColor(hex: value.color) ?? WindowViewController.defaultCreatureColor
             }
         }
-        
-        var font = defaultFont
+
+        if let preset = tag.preset {
+            if let value = context.presetFor(setting: preset) {
+                foregroundColor = NSColor(hex: value.color) ?? foregroundColor
+            }
+        }
+
+        var font = WindowViewController.defaultFont
         if tag.mono {
-            font = monoFont
+            font = WindowViewController.defaultMonoFont
         }
         
         let  attributes:[NSAttributedString.Key:Any] = [

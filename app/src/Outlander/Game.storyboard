@@ -10,7 +10,7 @@
         <scene sceneID="Nmc-dr-hcW">
             <objects>
                 <viewController id="tny-JT-jcH" customClass="GameViewController" customModule="Outlander" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="Q0T-R8-6Fc">
+                    <view key="view" id="Q0T-R8-6Fc" customClass="OView" customModule="Outlander" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="712" height="670"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>

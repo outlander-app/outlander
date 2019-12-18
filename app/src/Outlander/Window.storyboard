@@ -10,22 +10,22 @@
         <scene sceneID="SoV-5u-6JC">
             <objects>
                 <viewController storyboardIdentifier="Window" id="bhD-Jz-R1g" customClass="WindowViewController" customModule="Outlander" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="jUa-IV-QfE">
+                    <view key="view" id="jUa-IV-QfE" customClass="OView" customModule="Outlander" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="557" height="397"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SdJ-Bz-55Q" customClass="OLScrollView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="557" height="397"/>
+                                <rect key="frame" x="1" y="1" width="555" height="395"/>
                                 <clipView key="contentView" copiesOnScroll="NO" id="Bpv-ZZ-KHl">
-                                    <rect key="frame" x="0.0" y="0.0" width="542" height="397"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="555" height="395"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="lBI-Mr-Wzx">
-                                            <rect key="frame" x="0.0" y="0.0" width="542" height="397"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="555" height="395"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="542" height="397"/>
+                                            <size key="minSize" width="555" height="395"/>
                                             <size key="maxSize" width="557" height="10000000"/>
                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         </textView>
@@ -36,19 +36,20 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="FgD-Bg-wTs">
-                                    <rect key="frame" x="542" y="0.0" width="15" height="397"/>
+                                    <rect key="frame" x="539" y="0.0" width="16" height="395"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="SdJ-Bz-55Q" secondAttribute="bottom" id="2aU-sx-rt6"/>
-                            <constraint firstItem="SdJ-Bz-55Q" firstAttribute="top" secondItem="jUa-IV-QfE" secondAttribute="top" id="IWi-DH-jWP"/>
-                            <constraint firstItem="SdJ-Bz-55Q" firstAttribute="leading" secondItem="jUa-IV-QfE" secondAttribute="leading" id="cP5-fP-WAy"/>
-                            <constraint firstAttribute="trailing" secondItem="SdJ-Bz-55Q" secondAttribute="trailing" id="vzh-fn-X8v"/>
+                            <constraint firstAttribute="bottom" secondItem="SdJ-Bz-55Q" secondAttribute="bottom" constant="1" id="2aU-sx-rt6"/>
+                            <constraint firstItem="SdJ-Bz-55Q" firstAttribute="top" secondItem="jUa-IV-QfE" secondAttribute="top" constant="1" id="IWi-DH-jWP"/>
+                            <constraint firstItem="SdJ-Bz-55Q" firstAttribute="leading" secondItem="jUa-IV-QfE" secondAttribute="leading" constant="1" id="cP5-fP-WAy"/>
+                            <constraint firstAttribute="trailing" secondItem="SdJ-Bz-55Q" secondAttribute="trailing" constant="1" id="vzh-fn-X8v"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="mainView" destination="jUa-IV-QfE" id="89h-mV-60t"/>
                         <outlet property="textView" destination="lBI-Mr-Wzx" id="mDe-bb-N52"/>
                     </connections>
                 </viewController>
