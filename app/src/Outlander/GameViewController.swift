@@ -82,10 +82,13 @@ class GameViewController : NSViewController {
         self.commandInput.executeCommand = {command in
             self.logText("\(command)\n", playerCommand: true)
             self.gameServer?.sendCommand(command)
+            
+//            let commands = command.split(separator: " ")
+//            self.processWindowCommand(String(commands[0]), window: String(commands[1]))
         }
 
         self.commandInput.becomeFirstResponder()
-        self.reloadWindows()
+        self.reloadWindows("default.cfg")
 
 //        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
 //        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
@@ -99,8 +102,54 @@ class GameViewController : NSViewController {
         print("command: \(command)")
 
         if command == "layout:LoadDefault" {
-            self.reloadWindows()
+            self.reloadWindows("default.cfg")
         }
+        
+        if command == "layout:Load" {
+            let openPanel = NSOpenPanel()
+            openPanel.message = "Choose your Outlander layout file"
+            openPanel.prompt = "Choose"
+            openPanel.allowedFileTypes = ["cfg"]
+            openPanel.allowsMultipleSelection = false
+            openPanel.allowsOtherFileTypes = false
+            openPanel.canChooseFiles = true
+            openPanel.canChooseDirectories = false
+
+            if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
+                // TODO: reload theme
+                self.removeAllWindows()
+                self.reloadWindows(url.lastPathComponent)
+            }
+        }
+    }
+
+    public func processWindowCommand(_ action: String, window: String) {
+        
+        guard !window.isEmpty else {
+            return
+        }
+        
+        if action == "clear" {
+            self.clearWindow(window)
+        }
+        
+        if action == "add" {}
+        
+        if action == "reload" {
+            // TODO: reload theme
+            self.removeAllWindows()
+            self.reloadWindows("default.cfg")
+        }
+        
+        if action == "hide" {
+            self.hideWindow(window)
+        }
+        
+        if action == "show" {
+            self.showWindow(window)
+        }
+        
+        if action == "list" {}
     }
 
     @IBAction func Send(_ sender: Any) {
@@ -189,16 +238,32 @@ class GameViewController : NSViewController {
             window.clearAndAppend(tags)
         }
     }
+    
+    func removeAllWindows() {
+        for (_, win) in self.gameWindows {
+            self.hideWindow(win.name, withNotification: true)
+        }
+        
+        self.gameWindows.removeAll()
+    }
 
-    func reloadWindows() {
-        if let layout = WindowLayoutLoader().load(self.applicationSettings!, file: "mobile.cfg") {
+    func reloadWindows(_ file:String) {
+        if let layout = WindowLayoutLoader().load(self.applicationSettings!, file: file) {
+            DispatchQueue.main.async {
+                if let mainView = self.view as? OView {
+                    mainView.backgroundColor = NSColor(hex: layout.primary.backgroundColor)
+                }
 
-            if let mainView = self.view as? OView {
-                mainView.setFrameSize(NSSize(width: layout.primary.width, height: layout.primary.height))
-                mainView.setFrameOrigin(NSPoint(x: layout.primary.x, y: layout.primary.y))
-                mainView.backgroundColor = NSColor(hex: layout.primary.backgroundColor)
+                if let mainWindow = self.view.window {
+                    mainWindow.setFrame(NSRect(
+                        x: layout.primary.x,
+                        y: layout.primary.y,
+                        width: layout.primary.width,
+                        height: layout.primary.height),
+                                 display: true)
+                }
             }
-
+            
             for win in layout.windows {
                 self.addWindow(win)
             }
@@ -268,6 +333,31 @@ class GameViewController : NSViewController {
         controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))
 
         return controller
+    }
+
+    func showWindow(_ name: String) {
+        DispatchQueue.main.async {
+            if let window = self.gameWindows[name] {
+
+                if !window.view.isDescendant(of: self.gameWindowContainer) {
+                    self.gameWindowContainer.addSubview(window.view)
+                }
+    
+                window.visible = false
+                // TODO: bring window to front
+            }
+        }
+    }
+    
+    func hideWindow(_ name: String, withNotification:Bool = true) {
+        if let win = self.gameWindows[name] {
+            win.view.removeFromSuperview()
+            win.visible = false
+        }
+    
+        if withNotification {
+            self.logText("\(name) window closed\n")
+        }
     }
 
     func logText(_ text: String, playerCommand: Bool = false) {

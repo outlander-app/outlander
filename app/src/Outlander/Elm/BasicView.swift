@@ -6,25 +6,45 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
 
 class OView : NSView {
-    public var backgroundColor: NSColor? {
+    @IBInspectable var backgroundColor: NSColor? {
         didSet {
             self.needsDisplay = true
         }
     }
 
+    @IBInspectable var borderColor: NSColor? = NSColor(hex: "#cccccc") {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
+
+    // dynamic allows for animation
+    @IBInspectable dynamic var borderWidth: CGFloat = 0 {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
+    
+    @IBInspectable dynamic var cornerRadius: CGFloat = 0 {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
+
+    override var wantsUpdateLayer: Bool {
+        return true
+    }
+
     init() {
         super.init(frame: NSRect.zero)
-//        self.translatesAutoresizingMaskIntoConstraints = false
     }
 
     init(color: NSColor, frame: NSRect) {
         super.init(frame: frame)
         self.backgroundColor = color
-//        self.translatesAutoresizingMaskIntoConstraints = false
     }
 
     required init?(coder decoder: NSCoder) {
@@ -34,10 +54,23 @@ class OView : NSView {
     override var isFlipped: Bool {
         return true
     }
+    
+    override func animation(forKey key: NSAnimatablePropertyKey) -> Any? {
+        switch key {
+        case "borderWidth":
+            return CABasicAnimation()
+        default:
+            return super.animation(forKey: key)
+        }
+    }
 
-    override func draw(_ dirtyRect: NSRect) {
-        self.wantsLayer = true
-        self.layer?.backgroundColor = self.backgroundColor?.cgColor
+    override func updateLayer() {
+        guard let layer = layer else { return }
+        
+        layer.backgroundColor = backgroundColor?.cgColor
+        layer.borderColor = borderColor?.cgColor
+        layer.cornerRadius = cornerRadius
+        layer.borderWidth = borderWidth
     }
 }
 

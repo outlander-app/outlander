@@ -12,11 +12,22 @@ import Foundation
 class OLScrollView : NSScrollView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        
+        self.verticalScroller?.scrollerStyle = .overlay
+        self.horizontalScroller?.scrollerStyle = .overlay
     }
 
     override open var scrollerStyle: NSScroller.Style {
         get { return .overlay }
-        set { }
+        set
+        {
+            self.verticalScroller?.scrollerStyle = .overlay
+            self.horizontalScroller?.scrollerStyle = .overlay
+        }
+    }
+
+    override var isFlipped: Bool {
+        get { return true }
     }
 }
 
@@ -31,7 +42,13 @@ class WindowViewController : NSViewController {
 
     public var borderColor: String =  "#cccccc" {
         didSet {
-            self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
+            self.mainView?.borderColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
+        }
+    }
+
+    public var borderWidth: CGFloat =  1 {
+        didSet {
+            self.mainView?.borderWidth = self.borderWidth
         }
     }
 
@@ -50,6 +67,12 @@ class WindowViewController : NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.updateTheme()
+
+        self.textView.linkTextAttributes = [
+            NSAttributedString.Key.foregroundColor: NSColor(hex: "#cccccc")!,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+            NSAttributedString.Key.cursor: NSCursor.pointingHand
+        ]
     }
     
     func updateTheme() {
@@ -99,11 +122,19 @@ class WindowViewController : NSViewController {
         if tag.mono {
             font = WindowViewController.defaultMonoFont
         }
-        
-        let  attributes:[NSAttributedString.Key:Any] = [
+
+        var attributes:[NSAttributedString.Key:Any] = [
             NSAttributedString.Key.foregroundColor: foregroundColor,
             NSAttributedString.Key.font: font
         ]
+
+        if let href = tag.href {
+            attributes[NSAttributedString.Key.link] = href
+        }
+
+        if let command = tag.command {
+            attributes[NSAttributedString.Key.link] = "command:\(command)"
+        }
 
         return NSAttributedString(string: tag.text, attributes: attributes)
     }
