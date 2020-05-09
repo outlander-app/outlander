@@ -16,14 +16,15 @@ class VarCommandHandler : ICommandHandler {
 
     func handle(command: String, withContext: GameContext) {
         var commands = command[4...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
-        
+
         if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "save":
                 print("save vars")
                 return
             case "load", "reload":
-                print("reload vars")
+                VariablesLoader(LocalFileSystem(withContext.applicationSettings)).load(withContext.applicationSettings, context: withContext)
+                print("reload vars \(withContext.globalVars.count)")
                 return
             default:
                 return

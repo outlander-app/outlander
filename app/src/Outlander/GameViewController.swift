@@ -31,7 +31,7 @@ class GameViewController : NSViewController {
     var gameStream: GameStream?
     var gameContext = GameContext()
     
-    let windowLayoutLoader = WindowLayoutLoader()
+    var windowLayoutLoader: WindowLayoutLoader?
     
     var commandHandler = CommandHandlerProcesssor()
 
@@ -40,6 +40,8 @@ class GameViewController : NSViewController {
         accountInput.stringValue = ""
         characterInput.stringValue = ""
         passwordInput.stringValue = ""
+
+        self.windowLayoutLoader = WindowLayoutLoader(LocalFileSystem(self.gameContext.applicationSettings))
 
         authServer = AuthenticationServer()
         
@@ -136,7 +138,7 @@ class GameViewController : NSViewController {
         
         if command == "layout:SaveDefault" {
             let layout = buildWindowsLayout()
-            self.windowLayoutLoader.save(
+            self.windowLayoutLoader?.save(
                 self.applicationSettings!,
                 file: "default.cfg",
                 windows: layout
@@ -169,10 +171,10 @@ class GameViewController : NSViewController {
             openPanel.allowsOtherFileTypes = false
             openPanel.canChooseFiles = true
             openPanel.canChooseDirectories = false
-            
+
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
                 let layout = buildWindowsLayout()
-                self.windowLayoutLoader.save(
+                self.windowLayoutLoader?.save(
                     self.applicationSettings!,
                     file: url.lastPathComponent,
                     windows: layout

@@ -8,27 +8,35 @@
 
 import Foundation
 
-protocol FileSystem {
-    func load(file:URL) -> String?
-    func save(file:URL, content:String)
-}
-
 class VariablesLoader {
     
-    let files:FileSystem
+    let filename = "variables.cfg"
+    
+    let files: FileSystem
+    
+    let regex = try? Regex("^#var \\{(.*)\\} \\{(.*)\\}$", options: [.anchorsMatchLines, .caseInsensitive])
 
     init(_ files:FileSystem) {
         self.files = files
     }
 
     func load(_ settings:ApplicationSettings, context: GameContext) {
-        let fileUrl = settings.paths.profiles.appendingPathComponent("variable.cfg")
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
 
-        let content = self.files.load(file: fileUrl) ?? ""
-
-        guard let matches = try? Regex("^#var \\{(.*)\\} \\{(.*)\\}$", options: [.anchorsMatchLines]).allMatches(content) else {
+        guard let data = self.files.load(file: fileUrl) else {
             return
         }
+
+        guard var content = String(data: data, encoding: .utf8) else {
+            return
+        }
+
+        guard let matches = self.regex?.allMatches(&content) else {
+            return
+        }
+        
+        context.globalVars.removeAll()
+        self.setDefaults(context)
 
         for match in matches {
             if match.count > 1 {
@@ -40,8 +48,19 @@ class VariablesLoader {
                 context.globalVars[key] = value
             }
         }
+
+        context.globalVars["roundtime"] = "0"
     }
 
     func save(_ settings:ApplicationSettings, variables:[String:String]) {
+//        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    }
+
+    func setDefaults(_ context:GameContext) {
+        context.globalVars["prompt"] = ">"
+        context.globalVars["lefthand"] = "Empty"
+        context.globalVars["righthand"] = "Empty"
+        context.globalVars["preparedspell"] = "None"
+        context.globalVars["tdp"] = "0"
     }
 }

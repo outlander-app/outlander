@@ -8,49 +8,6 @@
 
 import Foundation
 
-class ApplicationPaths {
-
-    init() {
-        rootUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    }
-
-    var rootUrl: URL
-
-    var config: URL {
-        get {
-            return rootUrl.appendingPathComponent("Config")
-        }
-    }
-
-    var profiles: URL {
-        get {
-            return config.appendingPathComponent("Profiles")
-        }
-    }
-
-    var layout: URL {
-        get {
-            return config.appendingPathComponent("Layout")
-        }
-    }
-
-    var maps: URL {
-        get {
-            return rootUrl.appendingPathComponent("Maps")
-        }
-    }
-
-    var logs: URL {
-        get {
-            return rootUrl.appendingPathComponent("Logs")
-        }
-    }
-}
-
-class ApplicationSettings {
-    var paths:ApplicationPaths = ApplicationPaths()
-}
-
 class WindowData : Decodable {
     public var name: String = ""
     public var x:Double = 0
@@ -88,21 +45,21 @@ struct WindowLayout : Codable {
 }
 
 class WindowLayoutLoader {
+    
+    let files: FileSystem
+
+    init(_ files: FileSystem) {
+        self.files = files
+    }
+    
     func load(_ settings:ApplicationSettings, file:String) -> WindowLayout? {
 
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
-        
-        if !settings.paths.rootUrl.startAccessingSecurityScopedResource() {
-            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
-        }
 
-        guard let data = try? Data(contentsOf: fileUrl) else {
-            fileUrl.stopAccessingSecurityScopedResource()
+        guard let data = self.files.load(file: fileUrl) else {
             return nil
         }
 
-        settings.paths.rootUrl.stopAccessingSecurityScopedResource()
-        
         let decoder = JSONDecoder()
         guard var jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
             return nil
@@ -117,15 +74,11 @@ class WindowLayoutLoader {
 
     func save(_ settings:ApplicationSettings, file:String, windows:WindowLayout) {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
-        
-        if !settings.paths.rootUrl.startAccessingSecurityScopedResource() {
-            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
-        }
 
-        if let encodedData = try? JSONEncoder().encode(windows) {
-            try? encodedData.write(to: fileUrl)
+        self.files.access {
+            if let encodedData = try? JSONEncoder().encode(windows) {
+                try? encodedData.write(to: fileUrl)
+            }
         }
-        
-        settings.paths.rootUrl.stopAccessingSecurityScopedResource()
     }
 }

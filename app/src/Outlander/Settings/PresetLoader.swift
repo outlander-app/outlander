@@ -16,7 +16,7 @@ struct ColorPreset {
 }
 
 extension GameContext {
-   public func presetFor(setting: String) -> ColorPreset? {
+   public func presetFor(_ setting: String) -> ColorPreset? {
         let settingToCheck = setting.lowercased()
 
         if settingToCheck.count == 0 {
@@ -29,12 +29,91 @@ extension GameContext {
 
         return nil
     }
+
+    public func addPreset(_ name:String, color: String, backgroundColor: String? = nil) {
+        let preset = ColorPreset(name: name, color: color, backgroundColor: backgroundColor)
+        self.presets[name] = preset
+    }
 }
 
 class PresetLoader {
+    
+    let filename = "presets.cfg"
+    
+    let files: FileSystem
+    
+    let regex = try? Regex("^#preset \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    
+    init(_ files:FileSystem) {
+        self.files = files
+    }
+
     func load(_ settings:ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+        
+        context.presets.removeAll()
+        
+        guard let data = self.files.load(file: fileUrl) else {
+            self.setupDefaults(context)
+            return
+        }
+        
+        guard var content = String(data: data, encoding: .utf8) else {
+            self.setupDefaults(context)
+            return
+        }
+        
+        guard let matches = self.regex?.allMatches(&content) else {
+            self.setupDefaults(context)
+            return
+        }
+
+        for match in matches {
+            if match.count == 4 {
+                let name = match.valueAt(index: 1) ?? ""
+                
+                guard name.count > 0 else {
+                    continue
+                }
+
+                var color = match.valueAt(index: 2) ?? ""
+                var backgroundColor = ""
+                let className = match.valueAt(index: 3)
+
+                let colors = color.components(separatedBy: ",")
+                
+                if colors.count > 1 {
+                    color = colors[0]
+                    backgroundColor = colors[1]
+                }
+
+                let preset = ColorPreset(name: name, color: color, backgroundColor: backgroundColor, presetClass: className)
+                context.presets[name] = preset
+            }
+        }
+
+        if context.presetFor("exptracker") == nil {
+            context.addPreset("exptracker", color: "#66ffff")
+        }
     }
 
     func save(_ settings:ApplicationSettings, presets:[String:ColorPreset]) {
+    }
+
+    func setupDefaults(_ context: GameContext) {
+        context.addPreset("automapper", color: "#66ffff")
+        context.addPreset("chatter", color: "#66ffff")
+        context.addPreset("creatures", color: "#ffff00")
+        context.addPreset("roomdesc", color: "#cccccc")
+        context.addPreset("roomname", color: "#0000ff")
+        context.addPreset("scriptecho", color: "#66ffff")
+        context.addPreset("scripterror", color: "#efefef", backgroundColor: "#ff3300")
+        context.addPreset("scriptinfo", color: "#0066cc")
+        context.addPreset("scriptinput", color: "#acff2f")
+        context.addPreset("sendinput", color: "#acff2f")
+        context.addPreset("speech", color: "#66ffff")
+        context.addPreset("thought", color: "#66ffff")
+        context.addPreset("whisper", color: "#66ffff")
+        context.addPreset("exptracker", color: "#66ffff")
     }
 }

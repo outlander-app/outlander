@@ -36,11 +36,13 @@ class WindowCommandHandler : ICommandHandler {
 
     let validCommands = ["add", "clear", "hide", "list", "reload", "show"]
 
+    let regex = try? Regex("^(\\w+)(\\s(\\w+))?$")
+
     func handle(command: String, withContext: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+        var commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
 
         if commands.hasPrefix("reload") {
-            let loader = WindowLayoutLoader()
+            let loader = WindowLayoutLoader(LocalFileSystem(withContext.applicationSettings))
             if let layout = loader.load(withContext.applicationSettings, file: "default.cfg") {
                 withContext.layout = layout
                 withContext.events.post("ol:window", data: ["action":"reload", "window":""])
@@ -48,7 +50,7 @@ class WindowCommandHandler : ICommandHandler {
             return
         }
 
-        guard let matches = try? Regex("^(\\w+)(\\s(\\w+))?$").matches2(commands) else {
+        guard let matches = self.regex?.firstMatch(&commands) else {
             return
         }
 

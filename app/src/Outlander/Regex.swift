@@ -34,18 +34,18 @@ class Regex {
         return ranges
     }
 
-    public func matches2(_ input: String) -> MatchResult? {
+    public func firstMatch(_ input: inout String) -> MatchResult? {
         guard let result = self.expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
             return nil
         }
 
-        return MatchResult(input, result: result)
+        return MatchResult(&input, result: result)
     }
 
-    public func allMatches(_ input: String) -> [MatchResult] {
+    public func allMatches(_ input: inout String) -> [MatchResult] {
         let results = self.expression.matches(in: input, range: NSRange(location: 0, length: input.utf8.count))
         return results.map { res in
-            return MatchResult(input, result: res)
+            return MatchResult(&input, result: res)
         }
     }
 }
@@ -53,8 +53,8 @@ class Regex {
 class MatchResult {
     private let input: String
     private let result: NSTextCheckingResult
-    
-    init(_ input:String, result: NSTextCheckingResult) {
+
+    init(_ input: inout String, result: NSTextCheckingResult) {
         self.input = input
         self.result = result
     }
