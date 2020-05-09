@@ -20,21 +20,21 @@ extension GameContext {
         let settingToCheck = setting.lowercased()
 
         if settingToCheck.count == 0 {
-            return ColorPreset(name: "", color: "#cccccc")
+            return nil
         }
 
         if let preset = self.presets[settingToCheck] {
             return preset
         }
 
-        return ColorPreset(name: "", color: "#cccccc")
+        return nil
     }
 }
 
 class PresetLoader {
-    func load(_ settings:ApplicationSettings) {
+    func load(_ settings:ApplicationSettings, context: GameContext) {
     }
 
-    func save(_ settings:ApplicationSettings) {
+    func save(_ settings:ApplicationSettings, presets:[String:ColorPreset]) {
     }
 }

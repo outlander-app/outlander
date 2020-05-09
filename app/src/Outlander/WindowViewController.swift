@@ -39,10 +39,12 @@ class WindowViewController : NSViewController {
     public var name:String = ""
     public var visible:Bool = true
     public var closedTarget:String?
+    
+    private var foregroundNSColor: NSColor = WindowViewController.defaultFontColor
 
     public var borderColor: String =  "#cccccc" {
         didSet {
-            self.mainView?.borderColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
+            self.mainView?.borderColor = NSColor(hex: self.borderColor) ?? WindowViewController.defaultFontColor
         }
     }
 
@@ -51,16 +53,24 @@ class WindowViewController : NSViewController {
             self.mainView?.borderWidth = self.borderWidth
         }
     }
-
-    public var backgroundColor: String = "#1e1e1e" {
+    
+    public var foregroundColor: String = "#cccccc" {
         didSet {
-            self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? NSColor(hex: "#1e1e1e")!
+            self.foregroundNSColor = NSColor(hex: self.foregroundColor) ?? WindowViewController.defaultFontColor
         }
     }
 
+    public var backgroundColor: String = "#1e1e1e" {
+        didSet {
+            self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? WindowViewController.defaultBorderColor
+        }
+    }
+
+    static var defaultFontColor = NSColor(hex: "#cccccc")!
     static var defaultFont = NSFont(name: "Helvetica", size: 14)!
     static var defaultMonoFont = NSFont(name: "Menlo", size: 13)!
     static var defaultCreatureColor = NSColor(hex: "#ffff00")!
+    static var defaultBorderColor = NSColor(hex: "#1e1e1e")!
 
     var lastTag:TextTag?
 
@@ -69,15 +79,15 @@ class WindowViewController : NSViewController {
         self.updateTheme()
 
         self.textView.linkTextAttributes = [
-            NSAttributedString.Key.foregroundColor: NSColor(hex: "#cccccc")!,
+            NSAttributedString.Key.foregroundColor: WindowViewController.defaultFontColor,
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
             NSAttributedString.Key.cursor: NSCursor.pointingHand
         ]
     }
     
     func updateTheme() {
-        self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? NSColor(hex: "#cccccc")!
-        self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? NSColor(hex: "#1e1e1e")!
+        self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? WindowViewController.defaultFontColor
+        self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? WindowViewController.defaultBorderColor
     }
 
     func clear() {
@@ -104,17 +114,17 @@ class WindowViewController : NSViewController {
             return nil
         }
         
-        var foregroundColor = NSColor.white
-
+        var foregroundColorToUse = self.foregroundNSColor
+        
         if tag.bold {
             if let value = context.presetFor(setting: "creatures") {
-                foregroundColor = NSColor(hex: value.color) ?? WindowViewController.defaultCreatureColor
+                foregroundColorToUse = NSColor(hex: value.color) ?? WindowViewController.defaultCreatureColor
             }
         }
 
         if let preset = tag.preset {
             if let value = context.presetFor(setting: preset) {
-                foregroundColor = NSColor(hex: value.color) ?? foregroundColor
+                foregroundColorToUse = NSColor(hex: value.color) ?? self.foregroundNSColor
             }
         }
 
@@ -124,9 +134,13 @@ class WindowViewController : NSViewController {
         }
 
         var attributes:[NSAttributedString.Key:Any] = [
-            NSAttributedString.Key.foregroundColor: foregroundColor,
+            NSAttributedString.Key.foregroundColor: foregroundColorToUse,
             NSAttributedString.Key.font: font
         ]
+        
+        if let bgColor = tag.backgroundColor {
+            attributes[NSAttributedString.Key.backgroundColor] = NSColor(hex: bgColor) ?? nil
+        }
 
         if let href = tag.href {
             attributes[NSAttributedString.Key.link] = href

@@ -352,6 +352,10 @@ extension StringView where SubSequence == Self, Element: Equatable {
 }
 
 class GameContext {
+    var events: Events = SwiftEventBusEvents()
+    
+    var applicationSettings: ApplicationSettings = ApplicationSettings()
+    var layout: WindowLayout?
     var globalVars: [String:String] = [:]
     var presets: [String:ColorPreset] = [:]
 

@@ -74,13 +74,16 @@ class WindowData : Decodable {
     public var order: Int = 0
 }
 
-class WindowLayout : Decodable {
+struct WindowLayout : Codable {
     var primary: WindowData
     var windows: [WindowData]
 
     init(primary: WindowData, windows: [WindowData]) {
         self.primary = primary
         self.windows = windows
+    }
+    
+    func encode(to encoder: Encoder) throws {
     }
 }
 
@@ -93,26 +96,36 @@ class WindowLayoutLoader {
             print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
         }
 
-//        guard let data = try? Data(contentsOf: fileUrl) else {
-//            fileUrl.stopAccessingSecurityScopedResource()
-//            return nil
-//        }
-
-        let data = try! Data(contentsOf: fileUrl)
+        guard let data = try? Data(contentsOf: fileUrl) else {
+            fileUrl.stopAccessingSecurityScopedResource()
+            return nil
+        }
 
         settings.paths.rootUrl.stopAccessingSecurityScopedResource()
         
         let decoder = JSONDecoder()
-//        guard let jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
-//            return nil
-//        }
+        guard var jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
+            return nil
+        }
 
-        let jsonData = try! decoder.decode(WindowLayout.self, from: data)
-        
         jsonData.windows = jsonData.windows.sorted(by: { (a, b) -> Bool in
             return a.order < b.order
         })
 
         return jsonData
+    }
+
+    func save(_ settings:ApplicationSettings, file:String, windows:WindowLayout) {
+        let fileUrl = settings.paths.layout.appendingPathComponent(file)
+        
+        if !settings.paths.rootUrl.startAccessingSecurityScopedResource() {
+            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
+        }
+
+        if let encodedData = try? JSONEncoder().encode(windows) {
+            try? encodedData.write(to: fileUrl)
+        }
+        
+        settings.paths.rootUrl.stopAccessingSecurityScopedResource()
     }
 }
