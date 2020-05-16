@@ -80,8 +80,8 @@ class PresetLoader {
                 let colors = color.components(separatedBy: ",")
 
                 if colors.count > 1 {
-                    color = colors[0]
-                    backgroundColor = colors[1]
+                    color = colors[0].trimmingCharacters(in: NSCharacterSet.whitespaces)
+                    backgroundColor = colors[1].trimmingCharacters(in: NSCharacterSet.whitespaces)
                 }
 
                 let preset = ColorPreset(name: name.lowercased(), color: color.lowercased(), backgroundColor: backgroundColor.lowercased(), presetClass: className)

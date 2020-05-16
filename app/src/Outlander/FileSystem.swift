@@ -9,6 +9,7 @@
 import Foundation
 
 protocol FileSystem {
+    func fileExists(_ file:URL) -> Bool
     func load(_ file:URL) -> Data?
     func write(_ content:String, to fileUrl:URL)
     func access(_ handler: @escaping ()->Void)
@@ -22,10 +23,15 @@ class LocalFileSystem: FileSystem {
         self.settings = settings
     }
 
+    func fileExists(_ file:URL) -> Bool {
+        let path = file.path
+        return FileManager.default.fileExists(atPath: path)
+    }
+
     func load(_ file: URL) -> Data? {
         var data:Data? = nil
 
-        self.settings.paths.rootUrl.access {
+        self.access {
            data = try? Data(contentsOf: file)
         }
 
@@ -33,6 +39,12 @@ class LocalFileSystem: FileSystem {
     }
 
     func write(_ content:String, to fileUrl:URL) {
+        self.access {
+            do {
+                try content.write(to: fileUrl, atomically: true, encoding: .utf8)
+            } catch {
+            }
+        }
     }
 
     func access(_ handler: @escaping ()->Void) {

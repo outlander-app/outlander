@@ -34,7 +34,7 @@ class GameViewController : NSViewController {
     var windowLayoutLoader: WindowLayoutLoader?
     var fileSystem: FileSystem?
     
-    var commandHandler = CommandHandlerProcesssor()
+    var commandHandler:CommandHandlerProcesssor?
 
     override func viewDidLoad() {
 
@@ -44,6 +44,7 @@ class GameViewController : NSViewController {
 
         self.fileSystem = LocalFileSystem(self.gameContext.applicationSettings)
         self.windowLayoutLoader = WindowLayoutLoader(self.fileSystem!)
+        self.commandHandler = CommandHandlerProcesssor(self.fileSystem!)
 
         authServer = AuthenticationServer()
         
@@ -92,7 +93,7 @@ class GameViewController : NSViewController {
         })
 
         self.commandInput.executeCommand = {command in
-            guard !self.commandHandler.handled(command: command, withContext: self.gameContext) else {
+            guard !self.commandHandler!.handled(command: command, withContext: self.gameContext) else {
                 return
             }
 

@@ -71,4 +71,10 @@ class ApplicationPaths {
             return rootUrl.appendingPathComponent("Logs")
         }
     }
+
+    var sounds: URL {
+        get {
+            return rootUrl.appendingPathComponent("Sounds")
+        }
+    }
 }

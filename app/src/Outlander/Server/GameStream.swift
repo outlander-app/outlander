@@ -360,6 +360,10 @@ class GameContext {
     var presets: [String:ColorPreset] = [:]
     var classes: ClassSettings = ClassSettings()
     var gags: [Gag] = []
+    var aliases: [Alias] = []
+    var highlights: [Highlight] = []
+    var substitutes: [Substitute] = []
+    var triggers: [Trigger] = []
 }
 
 struct TextTag {

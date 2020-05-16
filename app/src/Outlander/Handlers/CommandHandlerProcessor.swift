@@ -20,6 +20,10 @@ class CommandHandlerProcesssor {
         BugCommandHandler()
     ]
 
+    init(_ files: FileSystem) {
+        handlers.append(PlayCommandHandler(files))
+    }
+
     func handled(command:String, withContext: GameContext) -> Bool {
         
         for handler in self.handlers {

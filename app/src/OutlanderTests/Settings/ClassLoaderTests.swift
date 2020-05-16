@@ -24,6 +24,14 @@ class ClassLoaderTests: XCTestCase {
         loader!.load(context.applicationSettings, context: context)
 
         XCTAssertEqual(context.classes.all().count, 2)
+
+        let app = context.classes.all()[0]
+        XCTAssertEqual(app.key, "app")
+        XCTAssertFalse(app.value)
+        
+        let combat = context.classes.all()[1]
+        XCTAssertEqual(combat.key, "combat")
+        XCTAssertTrue(combat.value)
     }
 
     func test_save() {
