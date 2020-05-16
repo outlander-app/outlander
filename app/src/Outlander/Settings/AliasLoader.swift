@@ -8,16 +8,10 @@
 
 import Foundation
 
-class Alias {
+struct Alias {
     var pattern: String
     var replace: String
-    var className: String
-
-    init(_ pattern:String, _ replace:String, _ className:String) {
-        self.pattern = pattern
-        self.replace = replace
-        self.className = className
-    }
+    var className: String?
 }
 
 class AliasLoader {
@@ -55,9 +49,9 @@ class AliasLoader {
                 }
                 
                 let replace = match.valueAt(index: 2) ?? ""
-                let className = match.valueAt(index: 3) ?? ""
+                let className = match.valueAt(index: 3)
 
-                context.aliases.append(Alias(pattern, replace, className))
+                context.aliases.append(Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
             }
         }
     }
@@ -69,13 +63,13 @@ class AliasLoader {
         for alias in aliases {
             content += "#alias {\(alias.pattern)} {\(alias.replace)}"
 
-            if alias.className.count > 0 {
-                content += " {\(alias.className)}"
+            if let className = alias.className , className.count > 0 {
+                content += " {\(className.lowercased())}"
             }
 
             content += "\n"
         }
-        
+
         self.files.write(content, to: fileUrl)
     }
 }

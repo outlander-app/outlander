@@ -18,15 +18,29 @@ extension Events {
     func echoText(_ text: String) {
         self.post("ol:text", data: "\(text)\n")
     }
+
+    func echoError(_ text: String) {
+        self.post("ol:error", data: "\(text)\n")
+    }
 }
 
 class SwiftEventBusEvents : Events {
+    
+    public static var instance: Int = 0
+    
+    var id: Int = 0
+
+    init() {
+        SwiftEventBusEvents.instance += 1
+        self.id = SwiftEventBusEvents.instance
+    }
+
     func post(_ channel: String, data: Any?) {
-        SwiftEventBus.post(channel, sender: data)
+        SwiftEventBus.post("\(self.id)_\(channel)", sender: data)
     }
 
     func handle(_ target: AnyObject, channel:String, handler: @escaping (Any?)-> Void) {
-        SwiftEventBus.onMainThread(target, name: channel) { notification in
+        SwiftEventBus.onMainThread(target, name: "\(self.id)_\(channel)") { notification in
             handler(notification?.object)
         }
     }

@@ -16,6 +16,15 @@ struct Highlight {
     var soundFile: String
 }
 
+extension GameContext {
+    func activeHighlights() -> [Highlight] {
+        let disabled = self.classes.disabled()
+        return self.highlights
+            .filter {h in (h.className.count == 0 || !disabled.contains(h.className)) && h.pattern.count > 0}
+            .sorted { $0.pattern.count > $1.pattern.count }
+    }
+}
+
 class HighlightLoader {
     let filename = "highlights.cfg"
 
@@ -31,7 +40,7 @@ class HighlightLoader {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
 
         context.highlights.removeAll()
-
+        
         guard let data = self.files.load(fileUrl) else {
             return
         }
@@ -67,7 +76,7 @@ class HighlightLoader {
                         foreColor: color.lowercased(),
                         backgroundColor: backgroundColor.lowercased(),
                         pattern: pattern,
-                        className: className,
+                        className: className.lowercased(),
                         soundFile: soundFile
                     )
                 )
@@ -90,7 +99,7 @@ class HighlightLoader {
             content += "#highlight {\(color)} {\(highlight.pattern)}"
 
             if highlight.className.count > 0 {
-                content += " {\(highlight.className)}"
+                content += " {\(highlight.className.lowercased())}"
             }
             
             if highlight.soundFile.count > 0 {

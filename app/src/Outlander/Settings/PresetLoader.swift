@@ -84,7 +84,7 @@ class PresetLoader {
                     backgroundColor = colors[1].trimmingCharacters(in: NSCharacterSet.whitespaces)
                 }
 
-                let preset = ColorPreset(name: name.lowercased(), color: color.lowercased(), backgroundColor: backgroundColor.lowercased(), presetClass: className)
+                let preset = ColorPreset(name: name.lowercased(), color: color.lowercased(), backgroundColor: backgroundColor.lowercased(), presetClass: className?.lowercased())
                 context.presets[name] = preset
             }
         }

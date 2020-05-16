@@ -12,7 +12,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     var windows: [NSWindow] = []
-    var applicationSettings:ApplicationSettings = ApplicationSettings()
+    var rootUrl: URL?
 
     var activeController: GameViewController? {
         get {
@@ -32,17 +32,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        Preferences.workingDirectoryBookmark = nil
 
         if let rootUrl = BookmarkHelper().promptOrRestore() {
-            applicationSettings.paths.rootUrl = rootUrl
+            self.rootUrl = rootUrl
         }
-        
-        makeWindow()
+
+        makeWindow(self.rootUrl)
     }
 
-    func makeWindow() {
+    func makeWindow(_ rootUrl: URL?) {
         let bundle = Bundle(for: GameViewController.self)
         let storyboard = NSStoryboard(name: "Game", bundle: bundle)
         let controller = storyboard.instantiateInitialController() as? GameViewController
-        controller?.applicationSettings = applicationSettings
+
+        let settings = ApplicationSettings()
+        if let root = rootUrl {
+            settings.paths.rootUrl = root
+        }
+        controller?.applicationSettings = settings
 
         let window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
@@ -70,9 +75,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func newGame(_ sender: Any) {
-        self.makeWindow()
+        self.makeWindow(self.rootUrl)
     }
-    
+
     @IBAction func loadDefaultLayoutAction(_ sender: Any) {
         sendCommand("layout:LoadDefault")
     }

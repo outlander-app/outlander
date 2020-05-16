@@ -44,6 +44,7 @@
 		F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B4915246FA520000E2D92 /* TriggerLoaderTests.swift */; };
 		F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */; };
 		F98B4919246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */; };
+		F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491A24709CAE000E2D92 /* RegexTester.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -163,6 +164,7 @@
 		F98B4912246FA438000E2D92 /* TriggerLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerLoader.swift; sourceTree = "<group>"; };
 		F98B4915246FA520000E2D92 /* TriggerLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerLoaderTests.swift; sourceTree = "<group>"; };
 		F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCommandHandler.swift; sourceTree = "<group>"; };
+		F98B491A24709CAE000E2D92 /* RegexTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTester.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				F9CA206A2466761B00A92736 /* InMemoryHelpers.swift */,
 				F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */,
 				F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */,
+				F98B491A24709CAE000E2D92 /* RegexTester.swift */,
 				F9BCF30222E177E200C7F7F0 /* Info.plist */,
 			);
 			path = OutlanderTests;
@@ -576,6 +579,7 @@
 				F9CA206B2466761B00A92736 /* InMemoryHelpers.swift in Sources */,
 				F9CA2064246669DB00A92736 /* FileSystem.swift in Sources */,
 				F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */,
+				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,

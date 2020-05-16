@@ -131,6 +131,12 @@ class GameViewController : NSViewController {
             }
         }
 
+        self.gameContext.events.handle(self, channel: "ol:error") { result in
+            if let text = result as? String {
+                self.logError(text)
+            }
+        }
+
         self.loadSettings()
         self.reloadWindows("default.cfg")
     }
@@ -308,43 +314,46 @@ class GameViewController : NSViewController {
     }
 
     func updateRoom() {
-        let name = self.gameContext.globalVars["roomtitle"]
-        let desc = self.gameContext.globalVars["roomdesc"]
-        let objects = self.gameContext.globalVars["roomobjs"]
-        let players = self.gameContext.globalVars["roomplayers"]
-        let exits = self.gameContext.globalVars["roomexits"]
+        // TODO: got access error with this
+        DispatchQueue.global(qos: .utility).async {
+            let name = self.gameContext.globalVars["roomtitle"]
+            let desc = self.gameContext.globalVars["roomdesc"]
+            let objects = self.gameContext.globalVars["roomobjs"]
+            let players = self.gameContext.globalVars["roomplayers"]
+            let exits = self.gameContext.globalVars["roomexits"]
 
-        var tags:[TextTag] = []
-        var room = ""
-        
-        if name != nil && name?.count ?? 0 > 0 {
-            let tag = TextTag.tagFor(name!, preset: "roomname")
-            tags.append(tag)
-            room += "\n"
-        }
+            var tags:[TextTag] = []
+            var room = ""
+    
+            if name != nil && name?.count ?? 0 > 0 {
+                let tag = TextTag.tagFor(name!, preset: "roomname")
+                tags.append(tag)
+                room += "\n"
+            }
 
-        if desc != nil && desc?.count ?? 0 > 0 {
-            let tag = TextTag.tagFor("\(room)\(desc!)\n", preset: "roomdesc")
-            tags.append(tag)
-            room = ""
-        }
+            if desc != nil && desc?.count ?? 0 > 0 {
+                let tag = TextTag.tagFor("\(room)\(desc!)\n", preset: "roomdesc")
+                tags.append(tag)
+                room = ""
+            }
 
-        if objects != nil && objects?.count ?? 0 > 0 {
-            room += "\(objects!)\n"
-        }
-        
-        if players != nil && players?.count ?? 0 > 0 {
-            room += "\(players!)\n"
-        }
+            if objects != nil && objects?.count ?? 0 > 0 {
+                room += "\(objects!)\n"
+            }
+    
+            if players != nil && players?.count ?? 0 > 0 {
+                room += "\(players!)\n"
+            }
 
-        if exits != nil && exits?.count ?? 0 > 0 {
-            room += "\(exits!)\n"
-        }
+            if exits != nil && exits?.count ?? 0 > 0 {
+                room += "\(exits!)\n"
+            }
 
-        tags.append(TextTag.tagFor(room))
+            tags.append(TextTag.tagFor(room))
 
-        if let window = self.gameWindows["room"] {
-            window.clearAndAppend(tags)
+            if let window = self.gameWindows["room"] {
+                window.clearAndAppend(tags)
+            }
         }
     }
     

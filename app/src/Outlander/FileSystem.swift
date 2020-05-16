@@ -24,8 +24,7 @@ class LocalFileSystem: FileSystem {
     }
 
     func fileExists(_ file:URL) -> Bool {
-        let path = file.path
-        return FileManager.default.fileExists(atPath: path)
+        return file.checkFileExist()
     }
 
     func load(_ file: URL) -> Data? {
@@ -48,14 +47,15 @@ class LocalFileSystem: FileSystem {
     }
 
     func access(_ handler: @escaping ()->Void) {
+        self.settings.paths.rootUrl.access(handler)
 
-        if !self.settings.paths.rootUrl.startAccessingSecurityScopedResource() {
-            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
-        }
-
-        handler()
-        
-        self.settings.paths.rootUrl.stopAccessingSecurityScopedResource()
+//        if !self.settings.paths.rootUrl.startAccessingSecurityScopedResource() {
+//            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
+//        }
+//
+//        handler()
+//
+//        self.settings.paths.rootUrl.stopAccessingSecurityScopedResource()
     }
 }
 
@@ -70,5 +70,9 @@ extension URL {
         handler()
 
         self.stopAccessingSecurityScopedResource()
+    }
+
+    func checkFileExist() -> Bool {
+        return FileManager.default.fileExists(atPath: self.path)
     }
 }

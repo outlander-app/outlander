@@ -17,6 +17,11 @@ class Regex {
         self.expression = try NSRegularExpression(pattern: pattern, options: options)
     }
 
+    public func replace(_ input: String, with template: String) -> String {
+        let range = NSRange(input.startIndex..., in: input)
+        return self.expression.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: template)
+    }
+
     public func matches(_ input: String) -> [Range<String.Index>] {
         guard let result = self.expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
             return []
@@ -63,6 +68,14 @@ class MatchResult {
         get {
             return self.result.numberOfRanges
         }
+    }
+
+    func rangeOf(index: Int) -> NSRange? {
+        guard index < self.result.numberOfRanges else {
+            return nil
+        }
+
+        return self.result.range(at: index)
     }
 
     func valueAt(index: Int) -> String? {

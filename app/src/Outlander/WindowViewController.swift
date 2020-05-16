@@ -73,6 +73,7 @@ class WindowViewController : NSViewController {
     static var defaultBorderColor = NSColor(hex: "#1e1e1e")!
 
     var lastTag:TextTag?
+    var queue: DispatchQueue?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +84,8 @@ class WindowViewController : NSViewController {
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
             NSAttributedString.Key.cursor: NSCursor.pointingHand
         ]
+
+        self.queue = DispatchQueue(label: "ol:\(self.name):window", qos: .userInteractive)
     }
     
     func updateTheme() {
@@ -97,24 +100,32 @@ class WindowViewController : NSViewController {
     }
 
     func clearAndAppend(_ tags: [TextTag]) {
-        let target = NSMutableAttributedString()
+        self.queue?.async {
+            let target = NSMutableAttributedString()
 
-        for tag in tags {
-            if let str = stringFromTag(tag) {
-                target.append(str)
+            for tag in tags {
+                let text = self.processSubs(tag.text)
+                if let str = self.stringFromTag(tag, text: text) {
+                    target.append(str)
+                }
             }
+
+            self.processHighlights(target)
+
+//            self.queue?.sync(flags: .barrier) {
+                self.setWithoutProcessing(target)
+//            }
         }
-        
-        set(target)
     }
-    
-    func stringFromTag(_ tag: TextTag) -> NSAttributedString? {
+
+    func stringFromTag(_ tag: TextTag, text: String) -> NSMutableAttributedString? {
         
         guard let context = self.gameContext else {
             return nil
         }
         
         var foregroundColorToUse = self.foregroundNSColor
+        var backgroundHex = tag.backgroundColor
         
         if tag.bold {
             if let value = context.presetFor("creatures") {
@@ -125,6 +136,7 @@ class WindowViewController : NSViewController {
         if let preset = tag.preset {
             if let value = context.presetFor(preset) {
                 foregroundColorToUse = NSColor(hex: value.color) ?? self.foregroundNSColor
+                backgroundHex = value.backgroundColor
             }
         }
 
@@ -137,8 +149,8 @@ class WindowViewController : NSViewController {
             NSAttributedString.Key.foregroundColor: foregroundColorToUse,
             NSAttributedString.Key.font: font
         ]
-        
-        if let bgColor = tag.backgroundColor {
+
+        if let bgColor = backgroundHex {
             attributes[NSAttributedString.Key.backgroundColor] = NSColor(hex: bgColor) ?? nil
         }
 
@@ -150,41 +162,104 @@ class WindowViewController : NSViewController {
             attributes[NSAttributedString.Key.link] = "command:\(command)"
         }
 
-        return NSAttributedString(string: tag.text, attributes: attributes)
+        return NSMutableAttributedString(string: text, attributes: attributes)
+    }
+
+    func processHighlights(_ text: NSMutableAttributedString) {
+        guard let context = self.gameContext else {
+            return
+        }
+        let highlights = context.activeHighlights()
+
+        var str = text.string
+
+        for h in highlights {
+            guard let regex = try? Regex(h.pattern) else {
+                continue
+            }
+
+            let matches = regex.allMatches(&str)
+            for match in matches {
+                guard let range = match.rangeOf(index: 0), range.length > 0 else {
+                    continue
+                }
+
+                text.addAttribute(
+                    NSAttributedString.Key.foregroundColor,
+                    value: NSColor(hex: h.foreColor) ?? WindowViewController.defaultFontColor,
+                    range: range)
+
+                if h.backgroundColor.count > 0 {
+                    guard let bgColor = NSColor(hex: h.backgroundColor) else {
+                        continue
+                    }
+
+                    text.addAttribute(
+                        NSAttributedString.Key.backgroundColor,
+                        value: bgColor,
+                        range: range)
+                }
+            }
+        }
+    }
+
+    func processSubs(_ text: String) -> String {
+        
+        guard let context = self.gameContext else {
+            return text
+        }
+
+        var result = text
+
+        for sub in context.activeSubs() {
+            guard let regex = try? Regex(sub.pattern, options: [.caseInsensitive]) else {
+                continue
+            }
+
+            result = regex.replace(result, with: sub.action)
+        }
+
+        return result
     }
 
     func append(_ tag: TextTag) {
+        self.queue?.async {
+            if self.lastTag?.isPrompt == true && !tag.playerCommand {
+                // skip multiple prompts of the same type
+                if tag.isPrompt && self.lastTag?.text == tag.text {
+                    return
+                }
 
-        if self.lastTag?.isPrompt == true && !tag.playerCommand {
-            // skip multiple prompts of the same type
-            if tag.isPrompt && self.lastTag?.text == tag.text {
-                return
+                self.appendWithoutProcessing(NSAttributedString(string: "\n"))
             }
-            
-            // TODO: ignore highlights, etc.
-            append(NSAttributedString(string: "\n"))
-        }
 
-        guard let str = stringFromTag(tag) else { return }
+            self.lastTag = tag
 
-        append(str)
+            let text = self.processSubs(tag.text)
+            guard let str = self.stringFromTag(tag, text: text) else { return }
+            self.processHighlights(str)
 
-        self.lastTag = tag
-    }
-
-    func append(_ text: NSAttributedString) {
-        DispatchQueue.main.async {
-            let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
-            
-            self.textView.textStorage?.append(text)
-            
-            if smartScroll {
-                self.textView.scrollToEndOfDocument(self)
-            }
+            self.appendWithoutProcessing(str)
         }
     }
 
-    func set(_ text: NSAttributedString) {
+    func appendWithoutProcessing(_ text: NSAttributedString) {
+        // DO NOT add highlights, etc.
+//        self.queue?.sync(flags: .barrier) {
+            DispatchQueue.main.async {
+                let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
+
+                self.textView.textStorage?.append(text)
+    
+                if smartScroll {
+                    self.textView.scrollToEndOfDocument(self)
+                }
+            }
+//        }
+    }
+
+    func setWithoutProcessing(_ text: NSMutableAttributedString) {
+        // DO NOT add highlights, etc.
         DispatchQueue.main.async {
             let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
 

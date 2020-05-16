@@ -8,14 +8,9 @@
 
 import Foundation
 
-class Gag {
+struct Gag {
     var pattern: String
     var className: String
-
-    init(_ pattern:String, _ className:String) {
-        self.pattern = pattern
-        self.className = className
-    }
 }
 
 class GagLoader {
@@ -53,7 +48,7 @@ class GagLoader {
                 }
 
                 let className = match.valueAt(index: 2) ?? ""
-                context.gags.append(Gag(pattern, className))
+                context.gags.append(Gag(pattern: pattern, className: className.lowercased()))
             }
         }
     }
@@ -66,7 +61,7 @@ class GagLoader {
             content += "#gag {\(gag.pattern)}"
 
             if gag.className.count > 0 {
-                content += " {\(gag.className)}"
+                content += " {\(gag.className.lowercased())}"
             }
 
             content += "\n"

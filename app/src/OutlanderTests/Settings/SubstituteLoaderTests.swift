@@ -38,7 +38,7 @@ class SubstituteLoaderTests: XCTestCase {
         sub = context.substitutes[1]
         XCTAssertEqual(sub.pattern, "blinding mana to the")
         XCTAssertEqual(sub.action, "blinding mana (21/21) to the")
-        XCTAssertEqual(sub.className, "")
+        XCTAssertNil(sub.className)
     }
 
     func test_save() {

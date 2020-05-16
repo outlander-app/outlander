@@ -51,24 +51,25 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
 
         var file = URL(fileURLWithPath: soundFile)
 
-        if !self.files.fileExists(file) {
-            file = context.applicationSettings.paths.sounds.appendingPathComponent(soundFile)
+        if !file.checkFileExist() {
+            let outlanderFile = context.applicationSettings.paths.sounds.appendingPathComponent(soundFile)
 
-            if !self.files.fileExists(file) {
-                print("could not find \(file)")
+            if !outlanderFile.checkFileExist() {
+                context.events.echoError("Could not find audio file at '\(file.path)' or '\(outlanderFile.path)'.")
                 return
             }
+
+            file = outlanderFile
         }
 
         self.files.access {
             if let sound = NSSound(contentsOf: file, byReference: true) {
-                print("playing sound \(file)")
                 sound.setName(file.lastPathComponent)
                 sound.delegate = self
                 self.sounds.append(sound)
                 sound.play()
             } else {
-                print("could not play \(file)")
+                context.events.echoError("Could not play audio file at '\(file.path)'")
             }
         }
     }
