@@ -117,13 +117,13 @@ class WindowViewController : NSViewController {
         var foregroundColorToUse = self.foregroundNSColor
         
         if tag.bold {
-            if let value = context.presetFor(setting: "creatures") {
+            if let value = context.presetFor("creatures") {
                 foregroundColorToUse = NSColor(hex: value.color) ?? WindowViewController.defaultCreatureColor
             }
         }
 
         if let preset = tag.preset {
-            if let value = context.presetFor(setting: preset) {
+            if let value = context.presetFor(preset) {
                 foregroundColorToUse = NSColor(hex: value.color) ?? self.foregroundNSColor
             }
         }

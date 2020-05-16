@@ -13,15 +13,15 @@ class InMemoryFileSystem : FileSystem {
     var contentToLoad:String?
     var savedContent:String?
     
-    func load(file: URL) -> Data? {
+    func load(_ file: URL) -> Data? {
         return contentToLoad?.data(using: .utf8)
     }
-    
-    func save(file: URL, content: String) {
+
+    func write(_ content: String, to fileUrl: URL) {
         self.savedContent = content
     }
     
-    func access(handler: @escaping ()->Void) {
+    func access(_ handler: @escaping ()->Void) {
         handler()
     }
 }

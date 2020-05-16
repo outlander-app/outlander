@@ -57,4 +57,21 @@ extension String {
         }
         return result
     }
+    
+    private static let trueValues = ["true", "yes", "1", "on", "+"]
+    private static let falseValues = ["false", "no", "0", "off", "-"]
+
+    func toBool() -> Bool? {
+        let lowerSelf = self.lowercased()
+
+        if String.trueValues.contains(lowerSelf) {
+            return true
+        }
+
+        if String.falseValues.contains(lowerSelf) {
+            return false
+        }
+        
+        return nil
+    }
 }

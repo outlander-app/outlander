@@ -25,7 +25,7 @@ class ApplicationSettings {
 }
 
 class ProfileSettings {
-    var name = "Default"
+    var name = "Saracus"
     var account = ""
     var game = ""
     var character = ""

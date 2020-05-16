@@ -9,9 +9,9 @@
 import Foundation
 
 protocol FileSystem {
-    func load(file:URL) -> Data?
-    func save(file:URL, content:String)
-    func access(handler: @escaping ()->Void)
+    func load(_ file:URL) -> Data?
+    func write(_ content:String, to fileUrl:URL)
+    func access(_ handler: @escaping ()->Void)
 }
 
 class LocalFileSystem: FileSystem {
@@ -22,7 +22,7 @@ class LocalFileSystem: FileSystem {
         self.settings = settings
     }
 
-    func load(file: URL) -> Data? {
+    func load(_ file: URL) -> Data? {
         var data:Data? = nil
 
         self.settings.paths.rootUrl.access {
@@ -32,11 +32,11 @@ class LocalFileSystem: FileSystem {
         return data
     }
 
-    func save(file: URL, content: String) {
+    func write(_ content:String, to fileUrl:URL) {
     }
-    
-    func access(handler: @escaping ()->Void) {
-        
+
+    func access(_ handler: @escaping ()->Void) {
+
         if !self.settings.paths.rootUrl.startAccessingSecurityScopedResource() {
             print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
         }
@@ -49,7 +49,7 @@ class LocalFileSystem: FileSystem {
 
 extension URL {
 
-    func access(handler: @escaping ()->Void) {
+    func access(_ handler: @escaping ()->Void) {
 
         if !self.startAccessingSecurityScopedResource() {
             print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")

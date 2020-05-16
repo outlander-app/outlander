@@ -14,6 +14,12 @@ protocol Events {
     func unregister(_ target: AnyObject)
 }
 
+extension Events {
+    func echoText(_ text: String) {
+        self.post("ol:text", data: "\(text)\n")
+    }
+}
+
 class SwiftEventBusEvents : Events {
     func post(_ channel: String, data: Any?) {
         SwiftEventBus.post(channel, sender: data)
@@ -34,14 +40,14 @@ class WindowCommandHandler : ICommandHandler {
 
     let command = "#window"
 
-    let validCommands = ["add", "clear", "hide", "list", "reload", "show"]
+    let validCommands = ["add", "clear", "hide", "list", "reload", "load", "show"]
 
     let regex = try? Regex("^(\\w+)(\\s(\\w+))?$")
 
     func handle(command: String, withContext: GameContext) {
         var commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
 
-        if commands.hasPrefix("reload") {
+        if commands.hasPrefix("reload") || commands.hasPrefix("load") {
             let loader = WindowLayoutLoader(LocalFileSystem(withContext.applicationSettings))
             if let layout = loader.load(withContext.applicationSettings, file: "default.cfg") {
                 withContext.layout = layout

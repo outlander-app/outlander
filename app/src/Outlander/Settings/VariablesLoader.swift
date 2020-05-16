@@ -9,9 +9,8 @@
 import Foundation
 
 class VariablesLoader {
-    
     let filename = "variables.cfg"
-    
+
     let files: FileSystem
     
     let regex = try? Regex("^#var \\{(.*)\\} \\{(.*)\\}$", options: [.anchorsMatchLines, .caseInsensitive])
@@ -23,7 +22,7 @@ class VariablesLoader {
     func load(_ settings:ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
 
-        guard let data = self.files.load(file: fileUrl) else {
+        guard let data = self.files.load(fileUrl) else {
             return
         }
 
@@ -53,7 +52,14 @@ class VariablesLoader {
     }
 
     func save(_ settings:ApplicationSettings, variables:[String:String]) {
-//        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+
+        var content = ""
+        for (key, value) in variables.sorted(by: { $0.key < $1.key }) {
+            content += "#var {\(key)} {\(value)}\n"
+        }
+
+        self.files.write(content, to: fileUrl)
     }
 
     func setDefaults(_ context:GameContext) {

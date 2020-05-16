@@ -13,6 +13,7 @@ class CommandHandlerProcesssor {
     var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
+        ClassCommandHandler(),
         WindowCommandHandler(),
         FlashCommandHandler(),
         BeepCommandHandler(),

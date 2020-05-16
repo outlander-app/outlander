@@ -358,29 +358,8 @@ class GameContext {
     var layout: WindowLayout?
     var globalVars: [String:String] = [:]
     var presets: [String:ColorPreset] = [:]
-
-    init() {
-        let list = [
-            ColorPreset(name: "automapper", color: "#66ffff"),
-            ColorPreset(name: "chatter", color: "#66ffff"),
-            ColorPreset(name: "creatures", color: "#ffff00"),
-            ColorPreset(name: "roomdesc", color: "#cccccc"),
-            ColorPreset(name: "roomname", color: "#0000FF"),
-            ColorPreset(name: "scriptecho", color: "#66FFFF"),
-            ColorPreset(name: "scripterror", color: "#efefef", backgroundColor: "#ff3300", presetClass: nil),
-            ColorPreset(name: "scriptinfo", color: "#0066cc"),
-            ColorPreset(name: "scriptinput", color: "#acff2f"),
-            ColorPreset(name: "sendinput", color: "#acff2f"),
-            ColorPreset(name: "speech", color: "#66FFFF"),
-            ColorPreset(name: "thought", color: "#66FFFF"),
-            ColorPreset(name: "whisper", color: "#66FFFF"),
-            ColorPreset(name: "exptracker", color: "#66FFFF")
-        ]
-
-        for item in list {
-            presets[item.name] = item
-        }
-    }
+    var classes: ClassSettings = ClassSettings()
+    var gags: [Gag] = []
 }
 
 struct TextTag {

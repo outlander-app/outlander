@@ -32,6 +32,7 @@ class GameViewController : NSViewController {
     var gameContext = GameContext()
     
     var windowLayoutLoader: WindowLayoutLoader?
+    var fileSystem: FileSystem?
     
     var commandHandler = CommandHandlerProcesssor()
 
@@ -41,7 +42,8 @@ class GameViewController : NSViewController {
         characterInput.stringValue = ""
         passwordInput.stringValue = ""
 
-        self.windowLayoutLoader = WindowLayoutLoader(LocalFileSystem(self.gameContext.applicationSettings))
+        self.fileSystem = LocalFileSystem(self.gameContext.applicationSettings)
+        self.windowLayoutLoader = WindowLayoutLoader(self.fileSystem!)
 
         authServer = AuthenticationServer()
         
@@ -100,7 +102,6 @@ class GameViewController : NSViewController {
         }
 
         self.commandInput.becomeFirstResponder()
-        self.reloadWindows("default.cfg")
 
 //        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
 //        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
@@ -122,11 +123,24 @@ class GameViewController : NSViewController {
                 self.processWindowCommand(action, window: window)
             }
         }
+
+        self.gameContext.events.handle(self, channel: "ol:text") { result in
+            if let text = result as? String {
+                self.logText(text)
+            }
+        }
+
+        self.loadSettings()
+        self.reloadWindows("default.cfg")
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
         self.gameContext.events.unregister(self)
+    }
+
+    func loadSettings() {
+        ProfileLoader(self.fileSystem!).load(self.gameContext)
     }
 
     public func command(_ command: String) {

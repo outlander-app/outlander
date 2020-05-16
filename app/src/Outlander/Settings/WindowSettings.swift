@@ -51,12 +51,12 @@ class WindowLayoutLoader {
     init(_ files: FileSystem) {
         self.files = files
     }
-    
+
     func load(_ settings:ApplicationSettings, file:String) -> WindowLayout? {
 
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
-        guard let data = self.files.load(file: fileUrl) else {
+        guard let data = self.files.load(fileUrl) else {
             return nil
         }
 
@@ -77,7 +77,7 @@ class WindowLayoutLoader {
 
         self.files.access {
             if let encodedData = try? JSONEncoder().encode(windows) {
-                try? encodedData.write(to: fileUrl)
+                try? encodedData.write(to: fileUrl, options: .atomicWrite)
             }
         }
     }

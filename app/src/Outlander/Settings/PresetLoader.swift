@@ -37,7 +37,6 @@ extension GameContext {
 }
 
 class PresetLoader {
-    
     let filename = "presets.cfg"
     
     let files: FileSystem
@@ -50,21 +49,19 @@ class PresetLoader {
 
     func load(_ settings:ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
-        
+
         context.presets.removeAll()
-        
-        guard let data = self.files.load(file: fileUrl) else {
-            self.setupDefaults(context)
+        self.setupDefaults(context)
+
+        guard let data = self.files.load(fileUrl) else {
             return
         }
-        
+
         guard var content = String(data: data, encoding: .utf8) else {
-            self.setupDefaults(context)
             return
         }
-        
+
         guard let matches = self.regex?.allMatches(&content) else {
-            self.setupDefaults(context)
             return
         }
 
@@ -81,13 +78,13 @@ class PresetLoader {
                 let className = match.valueAt(index: 3)
 
                 let colors = color.components(separatedBy: ",")
-                
+
                 if colors.count > 1 {
                     color = colors[0]
                     backgroundColor = colors[1]
                 }
 
-                let preset = ColorPreset(name: name, color: color, backgroundColor: backgroundColor, presetClass: className)
+                let preset = ColorPreset(name: name.lowercased(), color: color.lowercased(), backgroundColor: backgroundColor.lowercased(), presetClass: className)
                 context.presets[name] = preset
             }
         }
@@ -98,6 +95,28 @@ class PresetLoader {
     }
 
     func save(_ settings:ApplicationSettings, presets:[String:ColorPreset]) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+
+        var content = ""
+        for (_, preset) in presets.sorted(by: {$0.key < $1.key}) {
+            var color = preset.color
+            let backgroundColor = preset.backgroundColor ?? ""
+            let className = preset.presetClass ?? ""
+            
+            if backgroundColor.count > 0 {
+                color = "\(color),\(backgroundColor)"
+            }
+
+            content += "#preset {\(preset.name)} {\(color)}"
+
+            if className.count > 0 {
+                content += " {\(className)}"
+            }
+            
+            content += "\n"
+        }
+
+        self.files.write(content, to: fileUrl)
     }
 
     func setupDefaults(_ context: GameContext) {
