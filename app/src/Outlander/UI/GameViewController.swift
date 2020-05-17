@@ -35,6 +35,9 @@ class GameViewController : NSViewController {
     var fileSystem: FileSystem?
     
     var commandProcessor:CommandProcesssor?
+    
+    var roundtime: IntervalTimer?
+    var spelltime: IntervalTimer?
 
     override func viewDidLoad() {
 
@@ -42,12 +45,28 @@ class GameViewController : NSViewController {
         characterInput.stringValue = ""
         passwordInput.stringValue = ""
 
+        self.roundtime = IntervalTimer(self.gameContext, variable: "roundtime")
+        self.roundtime?.interval = {value in
+            DispatchQueue.main.async {
+                print("RT: \(value.value) / \(value.percent)")
+                self.commandInput.progress = value.percent
+            }
+        }
+
+        // TODO: this needs to tick up not down
+        self.spelltime = IntervalTimer(self.gameContext, variable: "spelltime")
+        self.spelltime?.interval = {value in
+            DispatchQueue.main.async {
+                print("Spell RT: \(value.value) / \(value.percent)")
+            }
+        }
+
         self.fileSystem = LocalFileSystem(self.gameContext.applicationSettings)
         self.windowLayoutLoader = WindowLayoutLoader(self.fileSystem!)
         self.commandProcessor = CommandProcesssor(self.fileSystem!)
 
         authServer = AuthenticationServer()
-        
+
         gameServer = GameServer({ [weak self] state in
             switch state {
             case .data(_, let str):
@@ -70,7 +89,21 @@ class GameViewController : NSViewController {
 
             case .vitals(let name, let value):
                 self.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
+
+            case .roundtime(let date):
+                let time = self.gameContext.globalVars["gametime"] ?? ""
+                let updated = self.gameContext.globalVars["gametimeupdate"] ?? ""
+
+                let t = date.timeIntervalSince(Date(timeIntervalSince1970: Double(time) ?? 0))
+                let offset = Date().timeIntervalSince(Date(timeIntervalSince1970: Double(updated) ?? 0))
+
+                let diff = t - offset - 0.5
+                let rounded = ceil(diff)
                 
+                DispatchQueue.main.async {
+                    self.roundtime?.set(value: Int(rounded))
+                }
+
             case .clearStream(let name):
                 self.clearWindow(name)
 
@@ -149,7 +182,10 @@ class GameViewController : NSViewController {
         }
 
         self.loadSettings()
-        self.reloadWindows("default.cfg")
+        self.reloadWindows(self.gameContext.applicationSettings.profile.layout)
+
+        self.accountInput.stringValue = self.gameContext.applicationSettings.profile.account
+        self.characterInput.stringValue = self.gameContext.applicationSettings.profile.character
     }
 
     override func viewWillDisappear() {
@@ -165,10 +201,13 @@ class GameViewController : NSViewController {
         print("command: \(command)")
 
         if command == "layout:LoadDefault" {
+            self.gameContext.applicationSettings.profile.layout = "default.cfg"
+            self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: "default.cfg")
             self.reloadWindows("default.cfg")
         }
-        
+
         if command == "layout:SaveDefault" {
+            self.gameContext.applicationSettings.profile.layout = "default.cfg"
             let layout = buildWindowsLayout()
             self.windowLayoutLoader?.save(
                 self.applicationSettings!,
@@ -188,7 +227,9 @@ class GameViewController : NSViewController {
             openPanel.canChooseDirectories = false
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
+                self.gameContext.applicationSettings.profile.layout = url.lastPathComponent
                 // TODO: reload theme
+                self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: url.lastPathComponent)
                 self.removeAllWindows()
                 self.reloadWindows(url.lastPathComponent)
             }
@@ -205,6 +246,8 @@ class GameViewController : NSViewController {
             openPanel.canChooseDirectories = false
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
+                self.gameContext.applicationSettings.profile.layout = url.lastPathComponent
+
                 let layout = buildWindowsLayout()
                 self.windowLayoutLoader?.save(
                     self.applicationSettings!,

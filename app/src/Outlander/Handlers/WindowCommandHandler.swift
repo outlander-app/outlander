@@ -21,7 +21,7 @@ class WindowCommandHandler : ICommandHandler {
 
         if commands.hasPrefix("reload") || commands.hasPrefix("load") {
             let loader = WindowLayoutLoader(LocalFileSystem(context.applicationSettings))
-            if let layout = loader.load(context.applicationSettings, file: "default.cfg") {
+            if let layout = loader.load(context.applicationSettings, file: context.applicationSettings.profile.layout) {
                 context.layout = layout
                 context.events.post("ol:window", data: ["action":"reload", "window":""])
             }

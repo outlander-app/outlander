@@ -21,7 +21,8 @@ class ProfileLoader {
     }
 
     func load(_ context: GameContext) {
-        let layout = WindowLayoutLoader(self.files).load(context.applicationSettings, file: "default.cfg")
+        let layout = WindowLayoutLoader(self.files)
+            .load(context.applicationSettings, file: context.applicationSettings.profile.layout)
         context.layout = layout
 
         AliasLoader(self.files).load(context.applicationSettings, context: context)

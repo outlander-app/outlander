@@ -50,6 +50,8 @@
 		F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */; };
 		F98B49262470F685000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
 		F98B49272471B950000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
+		F98B49292471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
+		F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -173,6 +175,7 @@
 		F98B491C2470AF16000E2D92 /* GameContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContext.swift; sourceTree = "<group>"; };
 		F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamTokenTests.swift; sourceTree = "<group>"; };
 		F98B49252470F685000E2D92 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		F98B49282471CC76000E2D92 /* IntervalTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimer.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -274,6 +277,7 @@
 				F9CA204B245CAA9700A92736 /* EventBus.swift */,
 				F9CA2062246669D800A92736 /* FileSystem.swift */,
 				F98B491C2470AF16000E2D92 /* GameContext.swift */,
+				F98B49282471CC76000E2D92 /* IntervalTimer.swift */,
 				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
 				F9D36E9822EFF7BB008BC6E6 /* Stack.swift */,
@@ -520,6 +524,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F98B49292471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0F123A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 				F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */,
@@ -626,6 +631,7 @@
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
+				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,

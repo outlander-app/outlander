@@ -25,13 +25,13 @@ class ApplicationSettings {
 }
 
 class ProfileSettings {
-    var name = "Saracus"
-    var account = ""
+    var name = "Weath"
+    var account = "outlander-bard"
     var game = ""
-    var character = ""
+    var character = "Weath"
     var logging = false
     var rawLogging = false
-    var layout = "default.cfg"
+    var layout = "mobile.cfg"
 }
 
 class ApplicationPaths {
