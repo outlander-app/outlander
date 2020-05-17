@@ -11,13 +11,14 @@ import XCTest
 
 class GameStreamTests : XCTestCase {
     
-    func streamCommands(_ lines: [String], context: GameContext = GameContext()) -> [StreamCommand] {
+    func streamCommands(_ lines: [String], context: GameContext = GameContext(), monsterIgnoreList:String = "") -> [StreamCommand] {
         var commands:[StreamCommand] = []
         let context = context
 
         let stream = GameStream(context: context) { cmd in
             commands.append(cmd)
         }
+        stream.monsterCountIgnoreList = monsterIgnoreList
 
         stream.resetSetup(true)
         
@@ -121,6 +122,44 @@ class GameStreamTests : XCTestCase {
         default:
             XCTFail()
         }
+    }
+
+    func test_stream_room_objs_with_monsters() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 1)
+        
+        switch commands[0] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomobjs"], "You also see a juvenile wyvern, a juvenile wyvern, a rocky path, a juvenile wyvern and some junk.")
+        default:
+            XCTFail()
+        }
+
+        XCTAssertEqual(context.globalVars["monstercount"], "3")
+        XCTAssertEqual(context.globalVars["monsterlist"], "a juvenile wyvern|a juvenile wyvern|a juvenile wyvern")
+    }
+
+    func test_stream_room_objs_with_monsters_with_ignore_list() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and <pushBold/>a great horned owl<popBold/>.</component>\n"
+        ], context: context, monsterIgnoreList: "great horned owl")
+
+        XCTAssertEqual(commands.count, 1)
+
+        switch commands[0] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomobjs"], "You also see a juvenile wyvern, a juvenile wyvern, a rocky path, a juvenile wyvern and a great horned owl.")
+        default:
+            XCTFail()
+        }
+
+        XCTAssertEqual(context.globalVars["monstercount"], "3")
+        XCTAssertEqual(context.globalVars["monsterlist"], "a juvenile wyvern|a juvenile wyvern|a juvenile wyvern")
     }
 }
 
@@ -292,5 +331,17 @@ class GameStreamTokenizerTests : XCTestCase {
         let token = tokens[0]
         XCTAssertEqual(token.name(), "component")
         XCTAssertEqual(token.children().count, 8)
+    }
+
+    func test_room_objs() {
+        let tokens = reader.read(
+            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n"
+        )
+
+        XCTAssertEqual(tokens.count, 2)
+        
+        let token = tokens[0]
+        XCTAssertEqual(token.name(), "component")
+        XCTAssertEqual(token.children().count, 13)
     }
 }

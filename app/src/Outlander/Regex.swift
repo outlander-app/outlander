@@ -39,6 +39,11 @@ class Regex {
         return ranges
     }
 
+    public func hasMatches(_ input: String) -> Bool {
+        var input2 = input
+        return self.firstMatch(&input2) != nil
+    }
+
     public func firstMatch(_ input: inout String) -> MatchResult? {
         guard let result = self.expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
             return nil

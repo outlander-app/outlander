@@ -45,6 +45,9 @@
 		F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */; };
 		F98B4919246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */; };
 		F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491A24709CAE000E2D92 /* RegexTester.swift */; };
+		F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491C2470AF16000E2D92 /* GameContext.swift */; };
+		F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491C2470AF16000E2D92 /* GameContext.swift */; };
+		F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -165,6 +168,8 @@
 		F98B4915246FA520000E2D92 /* TriggerLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerLoaderTests.swift; sourceTree = "<group>"; };
 		F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCommandHandler.swift; sourceTree = "<group>"; };
 		F98B491A24709CAE000E2D92 /* RegexTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTester.swift; sourceTree = "<group>"; };
+		F98B491C2470AF16000E2D92 /* GameContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContext.swift; sourceTree = "<group>"; };
+		F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamTokenTests.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -304,6 +309,7 @@
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
 				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
 				F969A0F623A45B0200408CE5 /* MainMenu.xib */,
+				F98B491C2470AF16000E2D92 /* GameContext.swift */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -316,6 +322,7 @@
 				F9CA206A2466761B00A92736 /* InMemoryHelpers.swift */,
 				F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */,
 				F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */,
+				F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */,
 				F98B491A24709CAE000E2D92 /* RegexTester.swift */,
 				F9BCF30222E177E200C7F7F0 /* Info.plist */,
 			);
@@ -516,6 +523,7 @@
 				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F9CA2063246669D800A92736 /* FileSystem.swift in Sources */,
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
+				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
@@ -552,6 +560,7 @@
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
+				F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F9CA2050245FC4B600A92736 /* CommandHandlerProcessor.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA20562466066400A92736 /* EchoCommandHandlerTests.swift in Sources */,
@@ -591,6 +600,7 @@
 				F98B490F246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
 				F9CA20702466796100A92736 /* ApplicationLoader.swift in Sources */,
 				F9CA20672466719600A92736 /* ApplicationSettings.swift in Sources */,
+				F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */,
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,

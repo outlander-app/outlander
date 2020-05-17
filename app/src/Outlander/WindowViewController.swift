@@ -99,7 +99,7 @@ class WindowViewController : NSViewController {
         }
     }
 
-    func clearAndAppend(_ tags: [TextTag]) {
+    func clearAndAppend(_ tags: [TextTag], highlightMonsters:Bool = false) {
         self.queue?.async {
             let target = NSMutableAttributedString()
 
@@ -110,7 +110,7 @@ class WindowViewController : NSViewController {
                 }
             }
 
-            self.processHighlights(target)
+            self.processHighlights(target, highlightMonsters: highlightMonsters)
 
 //            self.queue?.sync(flags: .barrier) {
                 self.setWithoutProcessing(target)
@@ -165,13 +165,21 @@ class WindowViewController : NSViewController {
         return NSMutableAttributedString(string: text, attributes: attributes)
     }
 
-    func processHighlights(_ text: NSMutableAttributedString) {
+    func processHighlights(_ text: NSMutableAttributedString, highlightMonsters:Bool = false) {
         guard let context = self.gameContext else {
             return
         }
-        let highlights = context.activeHighlights()
+        var highlights = context.activeHighlights()
 
         var str = text.string
+
+        if highlightMonsters {
+            if let ignore = context.globalVars["monsterlist"] {
+                if let creatures = context.presetFor("creatures") {
+                    highlights.append(Highlight(foreColor: creatures.color, backgroundColor: creatures.backgroundColor ?? "", pattern: ignore, className: "", soundFile: ""))
+                }
+            }
+        }
 
         for h in highlights {
             guard let regex = try? Regex(h.pattern) else {

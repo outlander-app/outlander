@@ -60,6 +60,41 @@ extension StreamToken {
             return children
         }
     }
+
+    func monsters(_ ignore: Regex? = nil) -> [StreamToken] {
+        switch self {
+        case .text: return []
+        case .tag(_, _, let children):
+            return filterBetweenTags(children, start: "pushbold", end: "popbold", ignore: ignore)
+        }
+    }
+
+    func filterBetweenTags(_ tokens: [StreamToken], start: String, end: String, ignore: Regex?) -> [StreamToken] {
+        guard tokens.count > 0 else {
+            return []
+        }
+
+        var results: [StreamToken] = []
+        var capture = false
+
+        for item in tokens {
+            if item.name()?.lowercased() == start {
+                capture = true
+                continue
+            } else if item.name()?.lowercased() == end {
+                capture = false
+                continue
+            }
+
+            let match = ignore?.hasMatches(item.value() ?? "") ?? false
+
+            if capture && !match {
+                results.append(item)
+            }
+        }
+
+        return results
+    }
 }
 
 protocol IReaderMode: class {
@@ -351,21 +386,6 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 }
 
-class GameContext {
-    var events: Events = SwiftEventBusEvents()
-    
-    var applicationSettings: ApplicationSettings = ApplicationSettings()
-    var layout: WindowLayout?
-    var globalVars: [String:String] = [:]
-    var presets: [String:ColorPreset] = [:]
-    var classes: ClassSettings = ClassSettings()
-    var gags: [Gag] = []
-    var aliases: [Alias] = []
-    var highlights: [Highlight] = []
-    var substitutes: [Substitute] = []
-    var triggers: [Trigger] = []
-}
-
 struct TextTag {
     var text: String
     var window: String
@@ -521,6 +541,14 @@ class GameStream {
         "out": "out"
     ]
 
+    var monsterCountIgnoreList: String = "" {
+        didSet {
+            self.monsterCountIgnoreRegex = try? Regex(self.monsterCountIgnoreList)
+        }
+    }
+    
+    var monsterCountIgnoreRegex: Regex?
+
     init(context: GameContext, streamCommands: @escaping (StreamCommand) ->()) {
         self.context = context
         self.streamCommands = streamCommands
@@ -640,6 +668,12 @@ class GameStream {
                 
                 let value = token.value("") ?? ""
                 self.context.globalVars[id] = value
+
+                if id == "roomobjs" {
+                    let monsters = token.monsters(self.monsterCountIgnoreRegex)
+                    context.globalVars["monsterlist"] = monsters.map {t in t.value() ?? ""}.joined(separator: "|")
+                    context.globalVars["monstercount"] = "\(monsters.count)"
+                }
 
                 if roomTags.contains(id) {
                     self.streamCommands(.room)
