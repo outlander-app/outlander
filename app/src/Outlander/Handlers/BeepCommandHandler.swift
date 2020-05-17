@@ -10,28 +10,28 @@ import Foundation
 import AppKit
 
 class BeepCommandHandler : ICommandHandler {
-    
+
     var command = "#beep"
-    
-    func handle(command: String, withContext: GameContext) {
+
+    func handle(_ command: String, with: GameContext) {
         NSSound.beep()
     }
 }
 
 class FlashCommandHandler : ICommandHandler {
-    
+
     var command = "#flash"
-    
-    func handle(command: String, withContext: GameContext) {
+
+    func handle(_ command: String, with: GameContext) {
         NSApplication.shared.requestUserAttention(.criticalRequest)
     }
 }
 
 class BugCommandHandler : ICommandHandler {
-    
+
     var command = "#bug"
 
-    func handle(command: String, withContext: GameContext) {
+    func handle(_ command: String, with: GameContext) {
         NSWorkspace.shared.open(URL(string: "https://github.com/joemcbride/outlander-osx/issues/new")!)
     }
 }

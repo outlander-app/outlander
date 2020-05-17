@@ -34,7 +34,7 @@ class GameViewController : NSViewController {
     var windowLayoutLoader: WindowLayoutLoader?
     var fileSystem: FileSystem?
     
-    var commandHandler:CommandHandlerProcesssor?
+    var commandProcessor:CommandProcesssor?
 
     override func viewDidLoad() {
 
@@ -44,7 +44,7 @@ class GameViewController : NSViewController {
 
         self.fileSystem = LocalFileSystem(self.gameContext.applicationSettings)
         self.windowLayoutLoader = WindowLayoutLoader(self.fileSystem!)
-        self.commandHandler = CommandHandlerProcesssor(self.fileSystem!)
+        self.commandProcessor = CommandProcesssor(self.fileSystem!)
 
         authServer = AuthenticationServer()
         
@@ -93,13 +93,7 @@ class GameViewController : NSViewController {
         })
 
         self.commandInput.executeCommand = {command in
-            guard !self.commandHandler!.handled(command: command, withContext: self.gameContext) else {
-                return
-            }
-
-            self.logText("\(command)\n", playerCommand: true)
-
-            self.gameServer?.sendCommand(command)
+            self.commandProcessor!.process(command, with: self.gameContext)
         }
 
         self.commandInput.becomeFirstResponder()
@@ -110,6 +104,23 @@ class GameViewController : NSViewController {
 //        addWindow(WindowSettings(name: "thoughts", visible: true, closedTarget: nil, x: 800, y: 200, height: 200, width: 350))
 //        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
 //        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
+
+        self.gameContext.events.handle(self, channel: "ol:gamecommand") { result in
+            guard let command = result as? Command2 else {
+                return
+            }
+
+            self.logText("\(command.command)\n", playerCommand: !command.isSystemCommand)
+            self.gameServer?.sendCommand(command.command)
+        }
+        
+        self.gameContext.events.handle(self, channel: "ol:command") { result in
+            guard let command = result as? Command2 else {
+                return
+            }
+            
+            self.commandProcessor?.process(command, with: self.gameContext)
+        }
 
         self.gameContext.events.handle(self, channel: "ol:echo") { result in
             if let tag = result as? TextTag {

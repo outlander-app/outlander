@@ -11,10 +11,10 @@ import Foundation
 class EchoCommandHandler : ICommandHandler {
 
     var command = "#echo"
-    
+
     let regex = try? Regex("^(>(\\w+)\\s)?((#[a-fA-F0-9]+)(,(#[a-fA-F0-9]+))?\\s)?(.*)")
 
-    func handle(command: String, withContext: GameContext) {
+    func handle(_ command: String, with: GameContext) {
         var commands = command[5...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
 
         guard let groups = self.regex?.firstMatch(&commands) else {
@@ -32,6 +32,6 @@ class EchoCommandHandler : ICommandHandler {
         tag.mono = true
         tag.preset = "scriptecho"
 
-        withContext.events.post("ol:echo", data: tag)
+        with.events.post("ol:echo", data: tag)
     }
 }

@@ -14,18 +14,18 @@ class VarCommandHandler : ICommandHandler {
 
     let validCommands = ["save", "load", "reload"]
 
-    func handle(command: String, withContext: GameContext) {
+    func handle(_ command: String, with context: GameContext) {
         var commands = command[4...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
         if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "save":
-                VariablesLoader(LocalFileSystem(withContext.applicationSettings)).save(withContext.applicationSettings, variables: withContext.globalVars)
-                withContext.events.echoText("saved variables")
+                VariablesLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, variables: context.globalVars)
+                context.events.echoText("saved variables")
                 return
             case "load", "reload":
-                VariablesLoader(LocalFileSystem(withContext.applicationSettings)).load(withContext.applicationSettings, context: withContext)
-                withContext.events.echoText("reloaded variables \(withContext.globalVars.count)")
+                VariablesLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
+                context.events.echoText("reloaded variables \(context.globalVars.count)")
                 return
             default:
                 return
@@ -37,7 +37,7 @@ class VarCommandHandler : ICommandHandler {
             commands.remove(at: 0)
             let value = commands.joined(separator: " ")
             
-            withContext.globalVars[key] = value
+            context.globalVars[key] = value
         }
     }
 }

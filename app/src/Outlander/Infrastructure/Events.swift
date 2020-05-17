@@ -22,6 +22,10 @@ extension Events {
     func echoError(_ text: String) {
         self.post("ol:error", data: "\(text)\n")
     }
+
+    func sendCommand(_ command: Command2) {
+        self.post("ol:command", data: command)
+    }
 }
 
 class SwiftEventBusEvents : Events {

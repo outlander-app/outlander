@@ -49,6 +49,7 @@
 		F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491C2470AF16000E2D92 /* GameContext.swift */; };
 		F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */; };
 		F98B49262470F685000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
+		F98B49272471B950000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -82,8 +83,8 @@
 		F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */; };
 		F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204B245CAA9700A92736 /* EventBus.swift */; };
 		F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204B245CAA9700A92736 /* EventBus.swift */; };
-		F9CA204F245FC4B600A92736 /* CommandHandlerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204E245FC4B600A92736 /* CommandHandlerProcessor.swift */; };
-		F9CA2050245FC4B600A92736 /* CommandHandlerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204E245FC4B600A92736 /* CommandHandlerProcessor.swift */; };
+		F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204E245FC4B600A92736 /* CommandProcessor.swift */; };
+		F9CA2050245FC4B600A92736 /* CommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA204E245FC4B600A92736 /* CommandProcessor.swift */; };
 		F9CA20562466066400A92736 /* EchoCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */; };
 		F9CA205824662B5500A92736 /* BeepCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA205724662B5500A92736 /* BeepCommandHandler.swift */; };
 		F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA205724662B5500A92736 /* BeepCommandHandler.swift */; };
@@ -196,7 +197,7 @@
 		F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA204B245CAA9700A92736 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
-		F9CA204E245FC4B600A92736 /* CommandHandlerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandHandlerProcessor.swift; sourceTree = "<group>"; };
+		F9CA204E245FC4B600A92736 /* CommandProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandProcessor.swift; sourceTree = "<group>"; };
 		F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F9CA205724662B5500A92736 /* BeepCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA205A2466322B00A92736 /* VarCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarCommandHandler.swift; sourceTree = "<group>"; };
@@ -317,11 +318,11 @@
 		F9BCF2EC22E177E100C7F7F0 /* Outlander */ = {
 			isa = PBXGroup;
 			children = (
-				F98B49222470F502000E2D92 /* Infrastructure */,
+				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
 				F9CA20442453ACDC00A92736 /* Handlers */,
+				F98B49222470F502000E2D92 /* Infrastructure */,
 				F969A0F923A4B7A000408CE5 /* Settings */,
 				F9D36E9122EF76D8008BC6E6 /* Server */,
-				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
 				F98B49232470F57C000E2D92 /* UI */,
 				F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */,
 				F969A0F623A45B0200408CE5 /* MainMenu.xib */,
@@ -364,7 +365,7 @@
 		F9CA20442453ACDC00A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
-				F9CA204E245FC4B600A92736 /* CommandHandlerProcessor.swift */,
+				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
 				F9CA205724662B5500A92736 /* BeepCommandHandler.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
@@ -559,7 +560,7 @@
 				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
-				F9CA204F245FC4B600A92736 /* CommandHandlerProcessor.swift in Sources */,
+				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
 			);
@@ -581,7 +582,7 @@
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */,
-				F9CA2050245FC4B600A92736 /* CommandHandlerProcessor.swift in Sources */,
+				F9CA2050245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA20562466066400A92736 /* EchoCommandHandlerTests.swift in Sources */,
 				F98B490A246F9668000E2D92 /* HighlightLoader.swift in Sources */,
@@ -597,6 +598,7 @@
 				F98B4902246F6AD1000E2D92 /* GagLoaderTests.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,

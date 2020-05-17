@@ -21,7 +21,7 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
         self.files = files
     }
 
-    func handle(command: String, withContext context: GameContext) {
+    func handle(_ command: String, with context: GameContext) {
         let commands = command[5...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
         guard commands.count > 0 else {
@@ -33,15 +33,18 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
             switch commands[0].lowercased() {
             case "clear", "stop":
                 self.stop()
-                NSSound.beep()
-                return
+                break
             default:
-                NSSound.beep()
+                break
+            }
+        } else {
+            let joined = commands.joined(separator: " ")
+            guard joined.count > 0 else {
+                context.events.echoError("Usage: #play <file name.mp3>")
                 removeStoppedSounds()
                 return
             }
-        } else {
-            self.play(commands.joined(separator: " "), context: context)
+            self.play(joined, context: context)
         }
 
         removeStoppedSounds()

@@ -14,40 +14,40 @@ class ClassCommandHandler : ICommandHandler {
 
     let validCommands = ["clear", "load", "reload", "list", "save"]
 
-    func handle(command: String, withContext: GameContext) {
+    func handle(_ command: String, with context: GameContext) {
         let commands = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
         if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "clear":
-                withContext.classes.clear()
-                withContext.events.echoText("Classes cleared")
+                context.classes.clear()
+                context.events.echoText("Classes cleared")
                 return
 
             case "load", "reload":
-                ClassLoader(LocalFileSystem(withContext.applicationSettings)).load(withContext.applicationSettings, context: withContext)
-                withContext.events.echoText("Classes reloaded")
+                ClassLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
+                context.events.echoText("Classes reloaded")
                 return
 
             case "list":
-                withContext.events.echoText("")
-                withContext.events.echoText("Classes:")
-                for c in withContext.classes.all() {
+                context.events.echoText("")
+                context.events.echoText("Classes:")
+                for c in context.classes.all() {
                     let val = c.value ? "on" : "off"
-                    withContext.events.echoText("\(c.key): \(val)")
+                    context.events.echoText("\(c.key): \(val)")
                 }
-                withContext.events.echoText("")
+                context.events.echoText("")
                 return
 
             case "save":
-                ClassLoader(LocalFileSystem(withContext.applicationSettings)).save(withContext.applicationSettings, classes: withContext.classes)
-                withContext.events.echoText("Classes saved")
+                ClassLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, classes: context.classes)
+                context.events.echoText("Classes saved")
                 return
             default:
                 return
             }
         } else {
-            withContext.classes.parse(commands.joined(separator: " "))
+            context.classes.parse(commands.joined(separator: " "))
         }
     }
 }

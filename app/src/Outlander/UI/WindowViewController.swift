@@ -176,7 +176,8 @@ class WindowViewController : NSViewController {
         if highlightMonsters {
             if let ignore = context.globalVars["monsterlist"] {
                 if let creatures = context.presetFor("creatures") {
-                    highlights.append(Highlight(foreColor: creatures.color, backgroundColor: creatures.backgroundColor ?? "", pattern: ignore, className: "", soundFile: ""))
+                    let hl = Highlight(foreColor: creatures.color, backgroundColor: creatures.backgroundColor ?? "", pattern: ignore, className: "", soundFile: "")
+                    highlights.insert(hl, at: 0)
                 }
             }
         }
@@ -206,6 +207,10 @@ class WindowViewController : NSViewController {
                         NSAttributedString.Key.backgroundColor,
                         value: bgColor,
                         range: range)
+                }
+
+                if h.soundFile.count > 0 {
+                    context.events.sendCommand(Command2(command: "#play \(h.soundFile)", isSystemCommand: true))
                 }
             }
         }

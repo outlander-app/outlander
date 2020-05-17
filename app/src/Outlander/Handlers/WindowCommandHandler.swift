@@ -16,14 +16,14 @@ class WindowCommandHandler : ICommandHandler {
 
     let regex = try? Regex("^(\\w+)(\\s(\\w+))?$")
 
-    func handle(command: String, withContext: GameContext) {
+    func handle(_ command: String, with context: GameContext) {
         var commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
 
         if commands.hasPrefix("reload") || commands.hasPrefix("load") {
-            let loader = WindowLayoutLoader(LocalFileSystem(withContext.applicationSettings))
-            if let layout = loader.load(withContext.applicationSettings, file: "default.cfg") {
-                withContext.layout = layout
-                withContext.events.post("ol:window", data: ["action":"reload", "window":""])
+            let loader = WindowLayoutLoader(LocalFileSystem(context.applicationSettings))
+            if let layout = loader.load(context.applicationSettings, file: "default.cfg") {
+                context.layout = layout
+                context.events.post("ol:window", data: ["action":"reload", "window":""])
             }
             return
         }
@@ -36,7 +36,7 @@ class WindowCommandHandler : ICommandHandler {
         let window = matches.valueAt(index: 3) ?? ""
         
         if validCommands.contains(action) {
-            withContext.events.post("ol:window", data: ["action":action, "window":window])
+            context.events.post("ol:window", data: ["action":action, "window":window])
         }
     }
 }
