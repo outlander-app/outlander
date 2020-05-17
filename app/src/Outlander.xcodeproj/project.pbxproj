@@ -48,6 +48,7 @@
 		F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491C2470AF16000E2D92 /* GameContext.swift */; };
 		F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491C2470AF16000E2D92 /* GameContext.swift */; };
 		F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */; };
+		F98B49262470F685000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -170,6 +171,7 @@
 		F98B491A24709CAE000E2D92 /* RegexTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTester.swift; sourceTree = "<group>"; };
 		F98B491C2470AF16000E2D92 /* GameContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContext.swift; sourceTree = "<group>"; };
 		F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamTokenTests.swift; sourceTree = "<group>"; };
+		F98B49252470F685000E2D92 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -193,7 +195,7 @@
 		F9BCF33722E5811C00C7F7F0 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 		F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCommandHandler.swift; sourceTree = "<group>"; };
-		F9CA204B245CAA9700A92736 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventBus.swift; path = Infrastructure/EventBus.swift; sourceTree = "<group>"; };
+		F9CA204B245CAA9700A92736 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		F9CA204E245FC4B600A92736 /* CommandHandlerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandHandlerProcessor.swift; sourceTree = "<group>"; };
 		F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F9CA205724662B5500A92736 /* BeepCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepCommandHandler.swift; sourceTree = "<group>"; };
@@ -263,6 +265,35 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		F98B49222470F502000E2D92 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
+				F98B49252470F685000E2D92 /* Events.swift */,
+				F9CA204B245CAA9700A92736 /* EventBus.swift */,
+				F9CA2062246669D800A92736 /* FileSystem.swift */,
+				F98B491C2470AF16000E2D92 /* GameContext.swift */,
+				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
+				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
+				F9D36E9822EFF7BB008BC6E6 /* Stack.swift */,
+				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		F98B49232470F57C000E2D92 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
+				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
+				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
+				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
+				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
+				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		F9BCF2E122E177E100C7F7F0 = {
 			isa = PBXGroup;
 			children = (
@@ -286,30 +317,18 @@
 		F9BCF2EC22E177E100C7F7F0 /* Outlander */ = {
 			isa = PBXGroup;
 			children = (
+				F98B49222470F502000E2D92 /* Infrastructure */,
 				F9CA20442453ACDC00A92736 /* Handlers */,
 				F969A0F923A4B7A000408CE5 /* Settings */,
 				F9D36E9122EF76D8008BC6E6 /* Server */,
 				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
+				F98B49232470F57C000E2D92 /* UI */,
 				F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */,
-				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
-				F9CA204B245CAA9700A92736 /* EventBus.swift */,
-				F9CA2062246669D800A92736 /* FileSystem.swift */,
-				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
-				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
-				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
+				F969A0F623A45B0200408CE5 /* MainMenu.xib */,
 				F9BCF2F322E177E200C7F7F0 /* Main.storyboard */,
+				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
 				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
 				F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */,
-				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
-				F9D36E9822EFF7BB008BC6E6 /* Stack.swift */,
-				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
-				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
-				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
-				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
-				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
-				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
-				F969A0F623A45B0200408CE5 /* MainMenu.xib */,
-				F98B491C2470AF16000E2D92 /* GameContext.swift */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -504,6 +523,7 @@
 				F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 				F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
+				F98B49262470F685000E2D92 /* Events.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
