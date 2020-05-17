@@ -10,7 +10,7 @@ import Foundation
 import Cocoa
 
 public class HistoryTextField : NSTextField {
-    
+
     var currentHistoryIndex = -1
 
     public var history:[String] = []
@@ -19,8 +19,32 @@ public class HistoryTextField : NSTextField {
 
     public var executeCommand: (String) -> () = {cmd in}
 
+    @IBInspectable
+    public var progress: Float = 0.0 {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
+
+    @IBInspectable
+    public var progressColor: NSColor = NSColor(hex: "#003366")! {
+        didSet {
+            self.needsDisplay = true
+        }
+    }
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    override public func draw(_ dirtyRect: NSRect) {
+        var progressRect = self.bounds
+        progressRect.size.width *= CGFloat(self.progress)
+
+        self.progressColor.setFill()
+        progressRect.fill(using: .sourceOver)
+
+        super.draw(dirtyRect)
     }
 
     override public func performKeyEquivalent(with event: NSEvent) -> Bool {
