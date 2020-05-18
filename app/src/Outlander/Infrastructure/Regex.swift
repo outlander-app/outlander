@@ -8,7 +8,18 @@
 
 import Foundation
 
+extension Regex : Hashable {
+    static func == (lhs: Regex, rhs: Regex) -> Bool {
+        return lhs.pattern == rhs.pattern
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.pattern)
+    }
+}
+
 class Regex {
+
     var pattern: String
     var expression: NSRegularExpression
 
@@ -16,7 +27,7 @@ class Regex {
         self.pattern = pattern
         self.expression = try NSRegularExpression(pattern: pattern, options: options)
     }
-
+    
     public func replace(_ input: String, with template: String) -> String {
         let range = NSRange(input.startIndex..., in: input)
         return self.expression.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: template)

@@ -52,6 +52,8 @@
 		F98B49272471B950000E2D92 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49252470F685000E2D92 /* Events.swift */; };
 		F98B49292471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
 		F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
+		F98B492C2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
+		F98B492D2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -118,8 +120,8 @@
 		F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9222EF76E8008BC6E6 /* GameStream.swift */; };
 		F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9222EF76E8008BC6E6 /* GameStream.swift */; };
 		F9D36E9722EFC73B008BC6E6 /* GameStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */; };
-		F9D36E9922EFF7BB008BC6E6 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9822EFF7BB008BC6E6 /* Stack.swift */; };
-		F9D36E9A22EFF7BB008BC6E6 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9822EFF7BB008BC6E6 /* Stack.swift */; };
+		F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */; };
+		F9D36E9A22EFF7BB008BC6E6 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */; };
 		F9D78D3023A9E3A500FE2343 /* PresetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D78D2F23A9E3A500FE2343 /* PresetLoader.swift */; };
 		F9D78D3123A9E3A500FE2343 /* PresetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D78D2F23A9E3A500FE2343 /* PresetLoader.swift */; };
 /* End PBXBuildFile section */
@@ -176,6 +178,7 @@
 		F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamTokenTests.swift; sourceTree = "<group>"; };
 		F98B49252470F685000E2D92 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		F98B49282471CC76000E2D92 /* IntervalTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimer.swift; sourceTree = "<group>"; };
+		F98B492B2471F38E000E2D92 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -219,7 +222,7 @@
 		F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtensions.swift; sourceTree = "<group>"; };
 		F9D36E9222EF76E8008BC6E6 /* GameStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStream.swift; sourceTree = "<group>"; };
 		F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStreamTests.swift; sourceTree = "<group>"; };
-		F9D36E9822EFF7BB008BC6E6 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
+		F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		F9D78D2F23A9E3A500FE2343 /* PresetLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -278,10 +281,11 @@
 				F9CA2062246669D800A92736 /* FileSystem.swift */,
 				F98B491C2470AF16000E2D92 /* GameContext.swift */,
 				F98B49282471CC76000E2D92 /* IntervalTimer.swift */,
+				F98B492B2471F38E000E2D92 /* Logger.swift */,
 				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
-				F9D36E9822EFF7BB008BC6E6 /* Stack.swift */,
 				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
+				F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -533,7 +537,7 @@
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
-				F9D36E9922EFF7BB008BC6E6 /* Stack.swift in Sources */,
+				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F9BCF33822E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F9CA2075246776E100A92736 /* ClassLoader.swift in Sources */,
@@ -564,6 +568,7 @@
 				F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
+				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
@@ -582,7 +587,7 @@
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F98B490C246F967B000E2D92 /* HighlightLoaderTests.swift in Sources */,
-				F9D36E9A22EFF7BB008BC6E6 /* Stack.swift in Sources */,
+				F9D36E9A22EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
@@ -616,6 +621,7 @@
 				F9CA2064246669DB00A92736 /* FileSystem.swift in Sources */,
 				F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */,
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
+				F98B492D2471F38E000E2D92 /* Logger.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,

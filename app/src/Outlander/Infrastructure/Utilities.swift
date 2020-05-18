@@ -34,3 +34,20 @@ public class Stack<T>
         stack.removeAll(keepingCapacity: true)
     }
 }
+
+class RegexFactory {
+    static let get: (String) -> (Regex?) = memoize { (pattern:String) in try? Regex(pattern, options: [.caseInsensitive])}
+}
+
+func memoize<T: Hashable, U>(work: @escaping (T)->U) -> (T)->U {
+    var memo = Dictionary<T, U>()
+
+    return { x in
+        if let q = memo[x] {
+            return q
+        }
+        let r = work(x)
+        memo[x] = r
+        return r
+    }
+}

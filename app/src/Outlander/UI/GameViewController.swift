@@ -18,6 +18,8 @@ class GameViewController : NSViewController {
     @IBOutlet weak var gameWindowContainer: OView!
     @IBOutlet weak var vitalsBar: VitalsBar!
 
+    var log = LogManager.getLog(String(describing: GameViewController.self))
+
     var applicationSettings:ApplicationSettings? {
         didSet {
             self.gameContext.applicationSettings = self.applicationSettings!
@@ -46,18 +48,18 @@ class GameViewController : NSViewController {
         passwordInput.stringValue = ""
 
         self.roundtime = IntervalTimer(self.gameContext, variable: "roundtime")
-        self.roundtime?.interval = {value in
+        self.roundtime?.interval = {[weak self]value in
             DispatchQueue.main.async {
-                print("RT: \(value.value) / \(value.percent)")
-                self.commandInput.progress = value.percent
+                self?.log.info("RT: \(value.value) / \(value.percent)")
+                self?.commandInput.progress = value.percent
             }
         }
 
         // TODO: this needs to tick up not down
         self.spelltime = IntervalTimer(self.gameContext, variable: "spelltime")
-        self.spelltime?.interval = {value in
+        self.spelltime?.interval = {[weak self]value in
             DispatchQueue.main.async {
-                print("Spell RT: \(value.value) / \(value.percent)")
+                self?.log.info("Spell RT: \(value.value) / \(value.percent)")
             }
         }
 
@@ -70,58 +72,58 @@ class GameViewController : NSViewController {
         gameServer = GameServer({ [weak self] state in
             switch state {
             case .data(_, let str):
-                print(str)
+                self?.log.rawStream(str)
                 self?.gameStream?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
                 self?.logText("\nDisconnected from game server\n\n")
             default:
-                print("\(state)")
+                self?.log.info("\(state)")
             }
         })
 
-        gameStream = GameStream(context: self.gameContext, streamCommands: {command in
+        gameStream = GameStream(context: self.gameContext, streamCommands: {[weak self] command in
             switch command {
             case .text(let tags):
                 for tag in tags {
-                    self.logTag(tag)
+                    self?.logTag(tag)
                 }
 
             case .vitals(let name, let value):
-                self.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
+                self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
 
             case .roundtime(let date):
-                let time = self.gameContext.globalVars["gametime"] ?? ""
-                let updated = self.gameContext.globalVars["gametimeupdate"] ?? ""
+                let time = self?.gameContext.globalVars["gametime"] ?? ""
+                let updated = self?.gameContext.globalVars["gametimeupdate"] ?? ""
 
                 let t = date.timeIntervalSince(Date(timeIntervalSince1970: Double(time) ?? 0))
                 let offset = Date().timeIntervalSince(Date(timeIntervalSince1970: Double(updated) ?? 0))
 
                 let diff = t - offset - 0.5
                 let rounded = ceil(diff)
-                
+
                 DispatchQueue.main.async {
-                    self.roundtime?.set(value: Int(rounded))
+                    self?.roundtime?.set(value: Int(rounded))
                 }
 
             case .clearStream(let name):
-                self.clearWindow(name)
+                self?.clearWindow(name)
 
             case .createWindow(let name, _, _):
-                self.maybeCreateWindow(name)
+                self?.maybeCreateWindow(name)
 
             case .room:
-                self.updateRoom()
+                self?.updateRoom()
 
             case .character(let game, let character):
                 DispatchQueue.main.async {
-                    if let win = self.view.window {
+                    if let win = self?.view.window {
                         win.title = "\(game): \(character) - Outlander 2"
                     }
                 }
 
             default:
-                print(command)
+                self?.log.warn("\(command)")
             }
         })
 
@@ -198,7 +200,6 @@ class GameViewController : NSViewController {
     }
 
     public func command(_ command: String) {
-        print("command: \(command)")
 
         if command == "layout:LoadDefault" {
             self.gameContext.applicationSettings.profile.layout = "default.cfg"
@@ -361,7 +362,7 @@ class GameViewController : NSViewController {
                     self?.logError("\(error)\n")
 
                 default:
-                    print("auth result: \(result)")
+                    self?.log.info("auth result: \(result)")
                 }
             }
         )

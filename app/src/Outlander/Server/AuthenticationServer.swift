@@ -47,6 +47,8 @@ class AuthenticationServer {
     var _authInfo: AuthInfo?
     var _callback: ((AuthenticationState) -> Void)?
 
+    var log = LogManager.getLog(String(describing: AuthenticationServer.self))
+
     init() {
     }
 
@@ -70,14 +72,14 @@ class AuthenticationServer {
                 else { self?._callback?(.closed) }
 
             default:
-                print("Auth Server socket state change \(state)")
+                self?.log.info("Auth Server socket state change \(state)")
             }
         })
         _socket?.connect(host: authInfo.host, port: authInfo.port)
     }
 
     func handleData(data: Data, str: String?, state: AuthSocketState) {
-        print("state: \(state)")
+        self.log.info("state: \(state)")
         switch state {
         case .password:
             var request = "A\t\(_authInfo!.account)\t".data(using: .ascii, allowLossyConversion: true)!
@@ -115,7 +117,7 @@ class AuthenticationServer {
             
         case .characterlist:
             
-            print("socket data: \(str ?? "")")
+            self.log.info("socket data: \(str ?? "")")
             
             guard let str = str else {
                 self.disconnectWithError("unable to get character list")
@@ -135,12 +137,11 @@ class AuthenticationServer {
             }
 
             let characterId = str[result[1]]
-            print(characterId)
             _socket?.writeAndRead("L\t\(characterId)\tPLAY\r\n", tag: AuthSocketState.character.rawValue)
 
         case .character:
-            print("socket data: \(str ?? "")")
-            
+            self.log.info("socket data: \(str ?? "")")
+
             guard let str = str else {
                 self.disconnectWithError("unable to get login key")
                 return
@@ -180,7 +181,7 @@ class AuthenticationServer {
 
         return Data(hexString: hexHash)
     }
-    
+
     func getConnection(_ input: String) -> GameConnectionInfo {
         let game = getData(input, pattern: "GAMECODE=(\\S+)")
         let key = getData(input, pattern: "KEY=(\\w+)")

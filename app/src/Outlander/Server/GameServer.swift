@@ -20,6 +20,8 @@ class GameServer {
     var connection: String = ""
     var matchedToken = false
 
+    var log = LogManager.getLog(String(describing: GameServer.self))
+
     init(_ callback: @escaping (GameServerState)->Void) {
         self.callback = callback
     }
@@ -57,7 +59,7 @@ class GameServer {
                 self?.matchedToken = false
 
             default:
-                print("game sever: \(state)")
+                self?.log.info("game sever: \(state)")
             }
         }, queue: DispatchQueue(label: "GameServer"))
 

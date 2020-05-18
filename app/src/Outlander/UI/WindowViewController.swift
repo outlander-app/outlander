@@ -111,10 +111,7 @@ class WindowViewController : NSViewController {
             }
 
             self.processHighlights(target, highlightMonsters: highlightMonsters)
-
-//            self.queue?.sync(flags: .barrier) {
-                self.setWithoutProcessing(target)
-//            }
+            self.setWithoutProcessing(target)
         }
     }
 
@@ -183,7 +180,8 @@ class WindowViewController : NSViewController {
         }
 
         for h in highlights {
-            guard let regex = try? Regex(h.pattern) else {
+
+            guard let regex = RegexFactory.get(h.pattern) else {
                 continue
             }
 
@@ -217,7 +215,6 @@ class WindowViewController : NSViewController {
     }
 
     func processSubs(_ text: String) -> String {
-        
         guard let context = self.gameContext else {
             return text
         }
@@ -225,7 +222,7 @@ class WindowViewController : NSViewController {
         var result = text
 
         for sub in context.activeSubs() {
-            guard let regex = try? Regex(sub.pattern, options: [.caseInsensitive]) else {
+            guard let regex = RegexFactory.get(sub.pattern) else {
                 continue
             }
 
