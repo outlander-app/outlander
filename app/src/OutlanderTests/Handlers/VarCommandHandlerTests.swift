@@ -20,17 +20,17 @@ class VarCommandHandlerTests: XCTestCase {
     }
 
     func test_basic() {
-        handler.handle(command: "#var one two", withContext: self.context)
+        handler.handle("#var one two", with: self.context)
         XCTAssertEqual(self.context.globalVars["one"], "two")
     }
-    
+
     func test_multi_value() {
-        handler.handle(command: "#var one two three", withContext: self.context)
+        handler.handle("#var one two three", with: self.context)
         XCTAssertEqual(self.context.globalVars["one"], "two three")
     }
 
     func test_identifier_value() {
-        handler.handle(command: "#var one.two three four", withContext: self.context)
+        handler.handle("#var one.two three four", with: self.context)
         XCTAssertEqual(self.context.globalVars["one.two"], "three four")
     }
 }

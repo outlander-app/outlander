@@ -37,9 +37,9 @@ class GameViewController : NSViewController {
     var fileSystem: FileSystem?
     
     var commandProcessor:CommandProcesssor?
-    
-    var roundtime: IntervalTimer?
-    var spelltime: IntervalTimer?
+
+    var roundtime: RoundtimeTimer?
+    var spelltime: SpellTimer?
 
     override func viewDidLoad() {
 
@@ -47,7 +47,7 @@ class GameViewController : NSViewController {
         characterInput.stringValue = ""
         passwordInput.stringValue = ""
 
-        self.roundtime = IntervalTimer(self.gameContext, variable: "roundtime")
+        self.roundtime = RoundtimeTimer(self.gameContext, variable: "roundtime")
         self.roundtime?.interval = {[weak self]value in
             DispatchQueue.main.async {
                 self?.log.info("RT: \(value.value) / \(value.percent)")
@@ -55,8 +55,7 @@ class GameViewController : NSViewController {
             }
         }
 
-        // TODO: this needs to tick up not down
-        self.spelltime = IntervalTimer(self.gameContext, variable: "spelltime")
+        self.spelltime = SpellTimer(self.gameContext, variable: "spelltime")
         self.spelltime?.interval = {[weak self]value in
             DispatchQueue.main.async {
                 self?.log.info("Spell RT: \(value.value) / \(value.percent)")
@@ -103,7 +102,7 @@ class GameViewController : NSViewController {
                 let rounded = ceil(diff)
 
                 DispatchQueue.main.async {
-                    self?.roundtime?.set(value: Int(rounded))
+                    self?.roundtime?.set(Int(rounded))
                 }
 
             case .clearStream(let name):
@@ -120,6 +119,10 @@ class GameViewController : NSViewController {
                     if let win = self?.view.window {
                         win.title = "\(game): \(character) - Outlander 2"
                     }
+                }
+            case .spell(let spell):
+                DispatchQueue.main.async {
+                    self?.spelltime?.set(spell)
                 }
 
             default:

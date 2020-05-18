@@ -29,11 +29,11 @@ extension Events {
 }
 
 class SwiftEventBusEvents : Events {
-    
+
     public static var instance: Int = 0
 
-    var id: Int = 0
-    
+    let id: Int
+
     init() {
         SwiftEventBusEvents.instance += 1
         self.id = SwiftEventBusEvents.instance

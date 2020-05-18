@@ -23,15 +23,15 @@ class WindowCommandHandlerTests: XCTestCase {
     }
 
     func test_can_handle_window_command() {
-        XCTAssertTrue(handler.canHandle(command: "#window list"))
+        XCTAssertTrue(handler.canHandle("#window list"))
     }
     
     func test_can_handle_does_not_match_window1() {
-        XCTAssertFalse(handler.canHandle(command: "#window1 hi"))
+        XCTAssertFalse(handler.canHandle("#window1 hi"))
     }
     
     func test_handles_list_command() {
-        handler.handle(command: "#window list", withContext: self.context)
+        handler.handle("#window list", with: self.context)
         
         if let data = self.events.lastData as? [String:String] {
             XCTAssertEqual(data["action"], "list")
@@ -43,7 +43,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
     
     func test_handles_reload_command() {
-        handler.handle(command: "#window reload", withContext: self.context)
+        handler.handle("#window reload", with: self.context)
         
         if let data = self.events.lastData as? [String:String] {
             XCTAssertEqual(data["action"], "reload")
@@ -55,7 +55,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
     
     func test_handles_add_command() {
-        handler.handle(command: "#window add log", withContext: self.context)
+        handler.handle("#window add log", with: self.context)
         
         if let data = self.events.lastData as? [String:String] {
             XCTAssertEqual(data["action"], "add")
@@ -67,7 +67,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
     
     func test_handles_show_command() {
-        handler.handle(command: "#window show log", withContext: self.context)
+        handler.handle("#window show log", with: self.context)
         
         if let data = self.events.lastData as? [String:String] {
             XCTAssertEqual(data["action"], "show")
@@ -79,7 +79,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
     
     func test_handles_hide_command() {
-        handler.handle(command: "#window hide log", withContext: self.context)
+        handler.handle("#window hide log", with: self.context)
         
         if let data = self.events.lastData as? [String:String] {
             XCTAssertEqual(data["action"], "hide")
