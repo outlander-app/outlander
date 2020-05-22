@@ -29,7 +29,8 @@
 - [ ] Macros
 - [ ] Map Window
 - [ ] Preferences Window
-- [ ] Window context menus
+- [ ] Window context menus + commands (display name, clear, toggle border, toggle timestamp, close)
+- [ ] Window timestamps
 - [ ] Direction pinwheel
 - [ ] Hands, RT, status (bleeding, poisoned, etc.) display
 - [ ] Script Bar
