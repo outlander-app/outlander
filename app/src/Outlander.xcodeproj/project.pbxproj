@@ -54,6 +54,8 @@
 		F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
 		F98B492C2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
 		F98B492D2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
+		F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */; };
+		F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -179,6 +181,8 @@
 		F98B49252470F685000E2D92 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		F98B49282471CC76000E2D92 /* IntervalTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimer.swift; sourceTree = "<group>"; };
 		F98B492B2471F38E000E2D92 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLoaderTests.swift; sourceTree = "<group>"; };
+		F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileConfigLoaderTests.swift; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -398,10 +402,12 @@
 			isa = PBXGroup;
 			children = (
 				F98B4903246F8EF0000E2D92 /* AliasLoaderTests.swift */,
+				F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */,
 				F9CA2072246776B800A92736 /* ClassLoaderTests.swift */,
 				F98B4901246F6AD1000E2D92 /* GagLoaderTests.swift */,
 				F98B490B246F967B000E2D92 /* HighlightLoaderTests.swift */,
 				F98B48FA246F5C93000E2D92 /* PresetLoaderTests.swift */,
+				F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */,
 				F98B4910246FA149000E2D92 /* SubstituteLoaderTests.swift */,
 				F98B4915246FA520000E2D92 /* TriggerLoaderTests.swift */,
 				F9CA2068246675E200A92736 /* VariablesLoaderTests.swift */,
@@ -609,6 +615,7 @@
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
+				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
@@ -626,6 +633,7 @@
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,
 				F9D78D3123A9E3A500FE2343 /* PresetLoader.swift in Sources */,
+				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
 				F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,

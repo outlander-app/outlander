@@ -47,7 +47,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let root = rootUrl {
             settings.paths.rootUrl = root
         }
-        controller?.applicationSettings = settings
+        controller!.applicationSettings = settings
+
+        ApplicationLoader(LocalFileSystem(settings)).load(settings.paths, context: controller!.gameContext)
 
         let window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),

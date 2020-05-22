@@ -16,22 +16,32 @@ class ApplicationSettings {
     var checkForApplicationUpdates = false
     var variableTimeFormat = "hh:mm:ss a"
     var variableDateFormat = "yyyy-MM-dd"
+    var variableDatetimeFormat = "yyyy-MM-dd hh:mm:ss a"
 
     var currentProfilePath: URL {
         get {
             return paths.profiles.appendingPathComponent(profile.name)
         }
     }
+
+    func update(_ settings:ApplicationSettingsDto) {
+        self.downloadPreReleaseVersions = settings.downloadPreReleaseVersions.toBool() ?? false
+        self.checkForApplicationUpdates = settings.checkForApplicationUpdates.toBool() ?? true
+        self.variableDateFormat = settings.variableDateFormat
+        self.variableTimeFormat = settings.variableTimeFormat
+        self.variableDatetimeFormat = settings.variableDatetimeFormat
+        self.profile.name = settings.defaultProfile
+    }
 }
 
 class ProfileSettings {
-    var name = "Weath"
-    var account = "outlander-bard"
+    var name = ""
+    var account = ""
     var game = ""
-    var character = "Weath"
+    var character = ""
     var logging = false
     var rawLogging = false
-    var layout = "mobile.cfg"
+    var layout = "default.cfg"
 }
 
 class ApplicationPaths {
