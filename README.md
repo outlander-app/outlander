@@ -10,6 +10,7 @@
 - [ ] #preset
 - [ ] #script
 - [ ] #send
+- [ ] #gag
 - [ ] #window (partially complete)
 - [ ] /tracker (first plugin?)
 - [x] #beep
