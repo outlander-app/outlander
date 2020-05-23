@@ -37,7 +37,11 @@ class GagLoader {
             return
         }
         
-        guard let matches = self.regex?.allMatches(&content) else {
+        add(settings, context: context, gagStr: &content)
+    }
+    
+    func add(_ settings:ApplicationSettings, context: GameContext, gagStr: inout String) {
+        guard let matches = self.regex?.allMatches(&gagStr) else {
             return
         }
         
