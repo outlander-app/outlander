@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
+		F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
 		F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
@@ -153,6 +155,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandler.swift; sourceTree = "<group>"; };
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
@@ -384,6 +387,7 @@
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
+				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -567,6 +571,7 @@
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
+				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
@@ -613,6 +618,7 @@
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F98B4902246F6AD1000E2D92 /* GagLoaderTests.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
+				F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,

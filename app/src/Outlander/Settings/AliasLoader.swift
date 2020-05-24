@@ -37,8 +37,18 @@ class AliasLoader {
         guard var content = String(data: data, encoding: .utf8) else {
             return
         }
-        
-        guard let matches = self.regex?.allMatches(&content) else {
+
+        self.addFromStr(settings, context: context, aliasStr: &content)
+    }
+    
+    
+    func add(_ settings:ApplicationSettings, context: GameContext, alias: Alias) {
+        context.aliases.append(alias)
+    }
+    
+    
+    func addFromStr(_ settings:ApplicationSettings, context: GameContext, aliasStr: inout String) {
+        guard let matches = self.regex?.allMatches(&aliasStr) else {
             return
         }
 
@@ -51,10 +61,11 @@ class AliasLoader {
                 let replace = match.valueAt(index: 2) ?? ""
                 let className = match.valueAt(index: 3)
 
-                context.aliases.append(Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
+                add(settings, context: context, alias: Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
             }
         }
     }
+    
     
     func save(_ settings: ApplicationSettings, aliases: [Alias]) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
