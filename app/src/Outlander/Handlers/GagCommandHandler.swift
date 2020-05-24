@@ -24,7 +24,7 @@ class GagCommandHandler : ICommandHandler {
             case "add":
                 if gagAddRegex?.hasMatches(commandStripped) ?? false {
                     var gagStr = "#gag " + commandStripped[4...]
-                    GagLoader(LocalFileSystem(context.applicationSettings)).add(context.applicationSettings, context: context, gagStr: &gagStr)
+                    GagLoader(LocalFileSystem(context.applicationSettings)).addFromStr(context.applicationSettings, context: context, gagStr: &gagStr)
                     context.events.echoText("Gag added")
                 }
                 else {

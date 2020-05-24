@@ -37,10 +37,10 @@ class GagLoader {
             return
         }
         
-        add(settings, context: context, gagStr: &content)
+        self.addFromStr(settings, context: context, gagStr: &content)
     }
     
-    func add(_ settings:ApplicationSettings, context: GameContext, gagStr: inout String) {
+    func addFromStr(_ settings:ApplicationSettings, context: GameContext, gagStr: inout String) {
         guard let matches = self.regex?.allMatches(&gagStr) else {
             return
         }
@@ -52,9 +52,13 @@ class GagLoader {
                 }
 
                 let className = match.valueAt(index: 2) ?? ""
-                context.gags.append(Gag(pattern: pattern, className: className.lowercased()))
+                self.add(settings, context: context, gag: Gag(pattern: pattern, className: className.lowercased()))
             }
         }
+    }
+    
+    func add(_ settings:ApplicationSettings, context: GameContext, gag: Gag) {
+        context.gags.append(gag)
     }
     
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
