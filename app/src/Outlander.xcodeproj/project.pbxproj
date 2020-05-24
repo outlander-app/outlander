@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
+		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
@@ -153,6 +155,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F62EA130247A2846004E2C1E /* GagCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandler.swift; sourceTree = "<group>"; };
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
@@ -377,6 +380,7 @@
 		F9CA20442453ACDC00A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
 				F9CA205724662B5500A92736 /* BeepCommandHandler.swift */,
@@ -540,6 +544,7 @@
 				F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F98B49262470F685000E2D92 /* Events.swift in Sources */,
+				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
@@ -648,6 +653,7 @@
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
+				F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,9 +8,13 @@
 
 import Foundation
 
-struct Gag {
+struct Gag: CustomStringConvertible {
     var pattern: String
     var className: String
+    
+    var description: String {
+        return "#gag {\(self.pattern)} {\(self.className)}"
+    }
 }
 
 class GagLoader {

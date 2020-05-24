@@ -51,7 +51,7 @@ class GagCommandHandler : ICommandHandler {
                 
                 context.events.echoText("Gags:")
                 for gag in context.gags {
-                    context.events.echoText("\(gag.pattern) \(gag.className)")
+                    context.events.echoText(String(describing: gag))
                 }
                 context.events.echoText("")
                 return
