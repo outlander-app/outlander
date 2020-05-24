@@ -13,7 +13,7 @@ class GagCommandHandler : ICommandHandler {
     var command = "#gag"
     let gagAddRegex = try? Regex("add \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.caseInsensitive])
 
-    let validCommands = ["add", "load", "reload", "list", "save"]
+    let validCommands = ["add", "clear", "load", "reload", "list", "save"]
 
     func handle(_ command: String, with context: GameContext) {
         let commandStripped = command[4...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
