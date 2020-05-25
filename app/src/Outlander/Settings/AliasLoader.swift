@@ -63,14 +63,14 @@ class AliasLoader {
 
 extension GameContext {
     
-    static let regex = try? Regex("^#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    static let aliasRegex = try? Regex("^#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
     func addAlias(alias: Alias) {
         self.aliases.append(alias)
     }
     
     func addAlias(alias: inout String) {
-        guard let matches = GameContext.self.regex?.allMatches(&alias) else {
+        guard let matches = GameContext.self.aliasRegex?.allMatches(&alias) else {
             return
         }
 

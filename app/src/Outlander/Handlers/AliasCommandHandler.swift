@@ -14,7 +14,7 @@ class AliasCommandHandler : ICommandHandler {
     var command = "#alias"
     let aliasAddRegex = try? Regex("add \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.caseInsensitive])
 
-    let validCommands = ["add", "load", "reload", "list", "save", "list"]
+    let validCommands = ["add", "load", "reload", "list", "save", "clear"]
 
     func handle(_ command: String, with context: GameContext) {
         let commandStripped = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
