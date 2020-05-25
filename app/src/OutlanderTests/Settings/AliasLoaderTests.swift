@@ -50,4 +50,16 @@ class AliasLoaderTests: XCTestCase {
 
 """)
     }
+    
+    func test_add() {
+            var aliasToAdd = "#alias {corb} {charge my camb orb 90} {a class}"
+            context.addAlias(alias: &aliasToAdd)
+            loader!.save(context.applicationSettings, aliases: context.aliases)
+
+            XCTAssertEqual(self.fileSystem.savedContent ?? "",
+                           """
+#alias {corb} {charge my camb orb 90} {a class}
+
+""")
+    }
 }

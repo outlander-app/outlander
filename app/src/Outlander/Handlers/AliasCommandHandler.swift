@@ -14,7 +14,7 @@ class AliasCommandHandler : ICommandHandler {
     var command = "#alias"
     let aliasAddRegex = try? Regex("add \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.caseInsensitive])
 
-    let validCommands = ["add", "load", "reload", "list", "save"]
+    let validCommands = ["add", "load", "reload", "list", "save", "list"]
 
     func handle(_ command: String, with context: GameContext) {
         let commandStripped = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
@@ -24,8 +24,8 @@ class AliasCommandHandler : ICommandHandler {
             switch commandTokens[0].lowercased() {
             case "add":
                 if aliasAddRegex?.hasMatches(commandStripped) ?? false {
-                    var aliasStr = "\(self.command) \(commandStripped[6...])"
-                    AliasLoader(LocalFileSystem(context.applicationSettings)).addFromStr(context.applicationSettings, context: context, aliasStr: &aliasStr)
+                    var alias = "\(self.command) \(commandStripped[4...])"
+                    context.addAlias(alias: &alias)
                     context.events.echoText("Alias added")
                 }
                 else {
@@ -43,7 +43,14 @@ class AliasCommandHandler : ICommandHandler {
                 context.events.echoText("Aliases reloaded")
                 return
 
+            case "save":
+                AliasLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, aliases: context.aliases)
+                context.events.echoText("Aliases saved")
+                return
+            
             case "list":
+                fallthrough
+            default:
                 context.events.echoText("")
 
                 if context.aliases.isEmpty {
@@ -55,13 +62,6 @@ class AliasCommandHandler : ICommandHandler {
                     context.events.echoText(String(describing: alias))
                 }
                 context.events.echoText("")
-                return
-
-            case "save":
-                AliasLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, aliases: context.aliases)
-                context.events.echoText("Aliases saved")
-                return
-            default:
                 return
             }
         }

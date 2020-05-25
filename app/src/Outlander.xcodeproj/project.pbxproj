@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
 		F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
 		F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
 		F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
@@ -155,6 +156,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandler.swift; sourceTree = "<group>"; };
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -398,6 +400,7 @@
 				F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */,
 				F9CA205D24664A4500A92736 /* VarCommandHandlerTests.swift */,
 				F9CA206C2466765D00A92736 /* WindowCommandHandlerTests.swift */,
+				F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -622,6 +625,7 @@
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
+				F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,

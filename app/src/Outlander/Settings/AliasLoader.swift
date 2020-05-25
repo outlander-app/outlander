@@ -12,14 +12,16 @@ struct Alias {
     var pattern: String
     var replace: String
     var className: String?
+    
+    var description: String {
+        return "#alias {\(self.pattern)} {\(self.replace)} {\(self.className ?? "")}"
+    }
 }
 
 class AliasLoader {
     let filename = "aliases.cfg"
 
     let files: FileSystem
-
-    let regex = try? Regex("^#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
     init(_ files:FileSystem) {
         self.files = files
@@ -38,34 +40,8 @@ class AliasLoader {
             return
         }
 
-        self.addFromStr(settings, context: context, aliasStr: &content)
+        context.addAlias(alias: &content)
     }
-    
-    
-    func add(_ settings:ApplicationSettings, context: GameContext, alias: Alias) {
-        context.aliases.append(alias)
-    }
-    
-    
-    func addFromStr(_ settings:ApplicationSettings, context: GameContext, aliasStr: inout String) {
-        guard let matches = self.regex?.allMatches(&aliasStr) else {
-            return
-        }
-
-        for match in matches {
-            if match.count > 2 {
-                guard let pattern = match.valueAt(index: 1) else {
-                    continue
-                }
-                
-                let replace = match.valueAt(index: 2) ?? ""
-                let className = match.valueAt(index: 3)
-
-                add(settings, context: context, alias: Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
-            }
-        }
-    }
-    
     
     func save(_ settings: ApplicationSettings, aliases: [Alias]) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
@@ -82,5 +58,33 @@ class AliasLoader {
         }
 
         self.files.write(content, to: fileUrl)
+    }
+}
+
+extension GameContext {
+    
+    static let regex = try? Regex("^#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    
+    func addAlias(alias: Alias) {
+        self.aliases.append(alias)
+    }
+    
+    func addAlias(alias: inout String) {
+        guard let matches = GameContext.self.regex?.allMatches(&alias) else {
+            return
+        }
+
+        for match in matches {
+            if match.count > 2 {
+                guard let pattern = match.valueAt(index: 1) else {
+                    continue
+                }
+                
+                let replace = match.valueAt(index: 2) ?? ""
+                let className = match.valueAt(index: 3)
+
+                addAlias(alias: Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
+            }
+        }
     }
 }
