@@ -14,15 +14,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var windows: [NSWindow] = []
     var rootUrl: URL?
 
-    var activeController: GameViewController? {
+    var activeWindow: NSWindow? {
         get {
             var win = NSApplication.shared.keyWindow
-
+            
             if win == nil && windows.count > 0 {
                 win = windows[0]
             }
 
-            return win?.contentViewController as? GameViewController
+            return win
+        }
+    }
+
+    var activeController: GameViewController? {
+        get {
+            return self.activeWindow?.contentViewController as? GameViewController
         }
     }
 
@@ -60,11 +66,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.title = "Outlander 2"
         window.center()
         window.isMovableByWindowBackground = true
-        
+
         window.contentViewController = controller
         
         window.makeKeyAndOrderFront(nil)
-        
+
         self.windows.append(window)
     }
 
@@ -76,6 +82,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("Preferences")
     }
 
+    @IBAction func connect(_ sender: Any) {
+        self.activeController?.showLogin()
+    }
+
+    @IBAction func connectProfile(_ sender: Any) {
+        self.activeController?.showProfileSelection()
+    }
+
+    @IBAction func saveProfile(_ sender: Any) {
+        print("Save profile")
+    }
+    
     @IBAction func newGame(_ sender: Any) {
         self.makeWindow(self.rootUrl)
     }
@@ -83,30 +101,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func loadDefaultLayoutAction(_ sender: Any) {
         sendCommand("layout:LoadDefault")
     }
-    
+
     @IBAction func saveDefaultLayoutAction(_ sender: Any) {
         sendCommand("layout:SaveDefault")
     }
-    
+
     @IBAction func loadLayoutAction(_ sender: Any) {
         sendCommand("layout:Load")
     }
-    
+
     @IBAction func saveLayoutAsAction(_ sender: Any) {
         sendCommand("layout:SaveAs")
     }
-    
+
     func sendCommand(_ command: String) {
         self.activeController?.command(command)
     }
-    
+
     static var mainMenu: NSNib {
        guard let nib = NSNib(nibNamed: NSNib.Name("MainMenu"), bundle: Bundle.main) else {
           fatalError("Resource `MainMenu.xib` is not found in the bundle `\(Bundle.main.bundlePath)`")
        }
        return nib
     }
-
 }
 
 struct AppState {

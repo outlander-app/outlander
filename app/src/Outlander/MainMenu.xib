@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
@@ -66,6 +66,21 @@
                             <menuItem title="New" keyEquivalent="n" id="Was-JA-tGl">
                                 <connections>
                                     <action selector="newGame:" target="-1" id="2F5-jq-zKq"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Connect" keyEquivalent="l" id="DHy-yG-uG0">
+                                <connections>
+                                    <action selector="connect:" target="-1" id="Ehg-ab-OpS"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Connect with Profile" keyEquivalent="L" id="FNp-MH-DgT">
+                                <connections>
+                                    <action selector="connectProfile:" target="-1" id="0pm-m6-p2P"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save Profile" keyEquivalent="s" id="uwE-7y-Cl6">
+                                <connections>
+                                    <action selector="saveProfile:" target="-1" id="NXb-fr-hQZ"/>
                                 </connections>
                             </menuItem>
                         </items>

@@ -56,6 +56,14 @@
 		F98B492D2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
 		F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */; };
 		F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */; };
+		F9B25400247882620097C07F /* LoginWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253FE247882620097C07F /* LoginWindow.swift */; };
+		F9B25401247882620097C07F /* LoginWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253FE247882620097C07F /* LoginWindow.swift */; };
+		F9B25402247882620097C07F /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9B253FF247882620097C07F /* LoginWindow.xib */; };
+		F9B25403247882620097C07F /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9B253FF247882620097C07F /* LoginWindow.xib */; };
+		F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B254042478996D0097C07F /* ProfileWindow.swift */; };
+		F9B254072478996D0097C07F /* ProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B254042478996D0097C07F /* ProfileWindow.swift */; };
+		F9B254082478996D0097C07F /* ProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9B254052478996D0097C07F /* ProfileWindow.xib */; };
+		F9B254092478996D0097C07F /* ProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9B254052478996D0097C07F /* ProfileWindow.xib */; };
 		F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */; };
 		F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCF2F322E177E200C7F7F0 /* Main.storyboard */; };
@@ -183,6 +191,10 @@
 		F98B492B2471F38E000E2D92 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLoaderTests.swift; sourceTree = "<group>"; };
 		F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileConfigLoaderTests.swift; sourceTree = "<group>"; };
+		F9B253FE247882620097C07F /* LoginWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWindow.swift; sourceTree = "<group>"; };
+		F9B253FF247882620097C07F /* LoginWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginWindow.xib; sourceTree = "<group>"; };
+		F9B254042478996D0097C07F /* ProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileWindow.swift; sourceTree = "<group>"; };
+		F9B254052478996D0097C07F /* ProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileWindow.xib; sourceTree = "<group>"; };
 		F9BCF2EA22E177E100C7F7F0 /* Outlander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outlander.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -303,6 +315,10 @@
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
+				F9B253FE247882620097C07F /* LoginWindow.swift */,
+				F9B253FF247882620097C07F /* LoginWindow.xib */,
+				F9B254042478996D0097C07F /* ProfileWindow.swift */,
+				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -510,9 +526,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F969A0E8239C7F9B00408CE5 /* Window.storyboard in Resources */,
+				F9B25402247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
+				F9B254082478996D0097C07F /* ProfileWindow.xib in Resources */,
 				F969A0F723A45B0200408CE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,7 +540,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */,
+				F9B25403247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
+				F9B254092478996D0097C07F /* ProfileWindow.xib in Resources */,
 				F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -544,6 +564,7 @@
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
 				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
+				F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */,
 				F9BCF33822E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F9CA2075246776E100A92736 /* ClassLoader.swift in Sources */,
@@ -561,6 +582,7 @@
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
+				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
@@ -615,12 +637,14 @@
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
+				F9B25401247882620097C07F /* LoginWindow.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
 				F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
+				F9B254072478996D0097C07F /* ProfileWindow.swift in Sources */,
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9D36E9722EFC73B008BC6E6 /* GameStreamTests.swift in Sources */,
 				F9CA20472453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
@@ -809,11 +833,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -839,9 +864,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = mcbride.Outlander;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
