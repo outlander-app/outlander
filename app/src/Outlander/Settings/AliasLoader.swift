@@ -9,12 +9,33 @@
 import Foundation
 
 struct Alias {
+    static let aliasRegex = try? Regex("#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.caseInsensitive])
+    
     var pattern: String
     var replace: String
     var className: String?
     
     var description: String {
         return "#alias {\(self.pattern)} {\(self.replace)} {\(self.className ?? "")}"
+    }
+    
+    static func from(alias: inout String) -> Alias? {
+        guard let match = aliasRegex?.firstMatch(&alias) else {
+            return nil
+        }
+
+        if match.count > 2 {
+            guard let pattern = match.valueAt(index: 1) else {
+                return nil
+            }
+            
+            let replace = match.valueAt(index: 2) ?? ""
+            let className = match.valueAt(index: 3)
+
+            return Alias(pattern: pattern, replace: replace, className: className?.lowercased())
+        }
+        
+        return nil
     }
 }
 
@@ -36,11 +57,16 @@ class AliasLoader {
             return
         }
         
-        guard var content = String(data: data, encoding: .utf8) else {
+        guard let content = String(data: data, encoding: .utf8) else {
             return
         }
 
-        context.addAlias(alias: &content)
+        for var line in content.components(separatedBy: .newlines) {
+            if let alias = Alias.from(alias: &line) {
+                context.upsertAlias(alias: alias)
+            }
+        }
+        
     }
     
     func save(_ settings: ApplicationSettings, aliases: [Alias]) {
@@ -63,28 +89,17 @@ class AliasLoader {
 
 extension GameContext {
     
-    static let aliasRegex = try? Regex("^#alias \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
-    
     func addAlias(alias: Alias) {
-        self.aliases.append(alias)
+        return self.aliases.append(alias)
     }
     
-    func addAlias(alias: inout String) {
-        guard let matches = GameContext.self.aliasRegex?.allMatches(&alias) else {
-            return
+    @discardableResult
+    func upsertAlias(alias: Alias) -> Bool {
+        if let i = self.aliases.firstIndex(where: { $0.pattern == alias.pattern && $0.className == alias.className }) {
+            self.aliases[i] = alias;
+            return false
         }
-
-        for match in matches {
-            if match.count > 2 {
-                guard let pattern = match.valueAt(index: 1) else {
-                    continue
-                }
-                
-                let replace = match.valueAt(index: 2) ?? ""
-                let className = match.valueAt(index: 3)
-
-                addAlias(alias: Alias(pattern: pattern, replace: replace, className: className?.lowercased()))
-            }
-        }
+        self.addAlias(alias: alias)
+        return true
     }
 }

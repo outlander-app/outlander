@@ -24,9 +24,13 @@ class AliasCommandHandler : ICommandHandler {
             switch commandTokens[0].lowercased() {
             case "add":
                 if aliasAddRegex?.hasMatches(commandStripped) ?? false {
-                    var alias = "\(self.command) \(commandStripped[4...])"
-                    context.addAlias(alias: &alias)
-                    context.events.echoText("Alias added")
+                    var aliasStr = "\(self.command) \(commandStripped[4...])"
+                    guard let alias = Alias.from(alias: &aliasStr) else {
+                        return
+                    }
+                    
+                    let added = context.upsertAlias(alias: alias)
+                    context.events.echoText(added ? "Alias added" : "Alias updated")
                 }
                 else {
                     context.events.echoText("Invalid syntax. Usage: #alias add {pattern} {replace} {class}")
