@@ -62,7 +62,7 @@ class GagLoader {
 
 extension GameContext {
     
-    static let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    static let gagRegex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
     func addGag(gag: Gag) {
         self.gags.append(gag)
