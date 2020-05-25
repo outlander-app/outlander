@@ -17,6 +17,9 @@ class GameViewController : NSViewController {
     @IBOutlet weak var characterInput: NSTextField!
     @IBOutlet weak var gameWindowContainer: OView!
     @IBOutlet weak var vitalsBar: VitalsBar!
+    
+    var loginWindow: LoginWindow?
+    var profileWindow: ProfileWindow?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
@@ -25,7 +28,7 @@ class GameViewController : NSViewController {
             self.gameContext.applicationSettings = self.applicationSettings!
         }
     }
-    
+
     var gameWindows:[String:WindowViewController] = [:]
 
     var authServer: AuthenticationServer?
@@ -42,7 +45,6 @@ class GameViewController : NSViewController {
     var spelltime: SpellTimer?
 
     override func viewDidLoad() {
-
         accountInput.stringValue = ""
         characterInput.stringValue = ""
         passwordInput.stringValue = ""
@@ -186,11 +188,11 @@ class GameViewController : NSViewController {
             }
         }
 
-        self.loadSettings()
-        self.reloadWindows(self.gameContext.applicationSettings.profile.layout)
+        self.loginWindow = LoginWindow()
+        self.profileWindow = ProfileWindow()
+        self.profileWindow?.context = self.gameContext
 
-        self.accountInput.stringValue = self.gameContext.applicationSettings.profile.account
-        self.characterInput.stringValue = self.gameContext.applicationSettings.profile.character
+        self.loadSettings()
     }
 
     override func viewWillDisappear() {
@@ -198,8 +200,48 @@ class GameViewController : NSViewController {
         self.gameContext.events.unregister(self)
     }
 
+    func showLogin() {
+        self.view.window?.beginSheet(self.loginWindow!.window!, completionHandler: {result in
+            print(result)
+        })
+    }
+
+    func showProfileSelection() {
+        self.view.window?.beginSheet(self.profileWindow!.window!, completionHandler: {result in
+            guard result == .OK else {
+                return
+            }
+
+            guard let profile = self.profileWindow!.selected else {
+                return
+            }
+
+            self.gameContext.applicationSettings.profile.name = profile
+            self.loadSettings()
+        })
+    }
+
     func loadSettings() {
         ProfileLoader(self.fileSystem!).load(self.gameContext)
+        self.reloadWindows(self.gameContext.applicationSettings.profile.layout) {
+            self.reloadTheme()
+            self.printSettingsLocations()
+            self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: true, playerCommand: false)
+
+            self.accountInput.stringValue = self.gameContext.applicationSettings.profile.account
+            self.characterInput.stringValue = self.gameContext.applicationSettings.profile.character
+        }
+    }
+
+    func printSettingsLocations() {
+        self.logText("Config: \(self.gameContext.applicationSettings.paths.config.path)\n", mono: true, playerCommand: false)
+        self.logText("Profile: \(self.gameContext.applicationSettings.currentProfilePath.path)\n", mono: true, playerCommand: false)
+        self.logText("Maps: \(self.gameContext.applicationSettings.paths.maps.path)\n", mono: true, playerCommand: false)
+        self.logText("Scripts: \(self.gameContext.applicationSettings.paths.scripts.path)\n", mono: true, playerCommand: false)
+        self.logText("Logs: \(self.gameContext.applicationSettings.paths.logs.path)\n", mono: true, playerCommand: false)
+    }
+
+    func reloadTheme() {
     }
 
     public func command(_ command: String) {
@@ -207,7 +249,9 @@ class GameViewController : NSViewController {
         if command == "layout:LoadDefault" {
             self.gameContext.applicationSettings.profile.layout = "default.cfg"
             self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: "default.cfg")
-            self.reloadWindows("default.cfg")
+            self.reloadWindows("default.cfg") {
+                self.reloadTheme()
+            }
         }
 
         if command == "layout:SaveDefault" {
@@ -232,10 +276,11 @@ class GameViewController : NSViewController {
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
                 self.gameContext.applicationSettings.profile.layout = url.lastPathComponent
-                // TODO: reload theme
                 self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: url.lastPathComponent)
                 self.removeAllWindows()
-                self.reloadWindows(url.lastPathComponent)
+                self.reloadWindows(url.lastPathComponent) {
+                    self.reloadTheme()
+                }
             }
         }
 
@@ -293,7 +338,7 @@ class GameViewController : NSViewController {
         if action == "reload" {
             // TODO: reload theme
             self.removeAllWindows()
-            self.reloadWindows("default.cfg")
+            self.reloadWindows(self.gameContext.applicationSettings.profile.layout)
         }
         
         if action == "hide" {
@@ -386,7 +431,7 @@ class GameViewController : NSViewController {
         self.gameWindows.removeAll()
     }
 
-    func reloadWindows(_ file:String) {
+    func reloadWindows(_ file:String, callback: (() -> Void)? = nil) {
         if let layout = self.gameContext.layout {
             DispatchQueue.main.async {
                 if let mainView = self.view as? OView {
@@ -407,6 +452,7 @@ class GameViewController : NSViewController {
                 }
 
                 DispatchQueue.main.async {
+                    callback?()
                     self.logText("Loaded layout \(file)\n", mono: true, playerCommand: false)
                 }
             }

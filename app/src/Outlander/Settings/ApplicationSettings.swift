@@ -87,4 +87,30 @@ class ApplicationPaths {
             return rootUrl.appendingPathComponent("Sounds")
         }
     }
+
+    var scripts: URL {
+        get {
+            return rootUrl.appendingPathComponent("Scripts")
+        }
+    }
+}
+
+extension GameContext {
+    func allProfiles() -> [String] {
+        var profiles: [String] = []
+        self.applicationSettings.paths.rootUrl.access {
+            let dir = self.applicationSettings.paths.profiles
+            guard let items = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles]) else {
+                return
+            }
+
+            for item in items {
+                if item.hasDirectoryPath {
+                    profiles.append(item.lastPathComponent)
+                }
+            }
+        }
+
+        return profiles.sorted()
+    }
 }
