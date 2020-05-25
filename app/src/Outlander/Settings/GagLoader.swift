@@ -21,8 +21,6 @@ class GagLoader {
     let filename = "gags.cfg"
 
     let files: FileSystem
-
-    let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
     init(_ files:FileSystem) {
         self.files = files
@@ -41,28 +39,7 @@ class GagLoader {
             return
         }
         
-        self.addFromStr(settings, context: context, gagStr: &content)
-    }
-    
-    func addFromStr(_ settings:ApplicationSettings, context: GameContext, gagStr: inout String) {
-        guard let matches = self.regex?.allMatches(&gagStr) else {
-            return
-        }
-        
-        for match in matches {
-            if match.count == 3 {
-                guard let pattern = match.valueAt(index: 1) else {
-                    continue
-                }
-
-                let className = match.valueAt(index: 2) ?? ""
-                self.add(settings, context: context, gag: Gag(pattern: pattern, className: className.lowercased()))
-            }
-        }
-    }
-    
-    func add(_ settings:ApplicationSettings, context: GameContext, gag: Gag) {
-        context.gags.append(gag)
+        context.add(gag: &content)
     }
     
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
@@ -80,5 +57,31 @@ class GagLoader {
         }
         
         self.files.write(content, to: fileUrl)
+    }
+}
+
+extension GameContext {
+    
+    func add(gag: Gag) {
+        self.gags.append(gag)
+    }
+    
+    func add(gag: inout String) {
+        let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+        
+        guard let matches = regex?.allMatches(&gag) else {
+            return
+        }
+        
+        for match in matches {
+            if match.count == 3 {
+                guard let pattern = match.valueAt(index: 1) else {
+                    continue
+                }
+
+                let className = match.valueAt(index: 2) ?? ""
+                self.add(gag: Gag(pattern: pattern, className: className.lowercased()))
+            }
+        }
     }
 }

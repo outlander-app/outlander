@@ -23,8 +23,8 @@ class GagCommandHandler : ICommandHandler {
             switch commandTokens[0].lowercased() {
             case "add":
                 if gagAddRegex?.hasMatches(commandStripped) ?? false {
-                    var gagStr = "#gag " + commandStripped[4...]
-                    GagLoader(LocalFileSystem(context.applicationSettings)).addFromStr(context.applicationSettings, context: context, gagStr: &gagStr)
+                    var gag = "#gag " + commandStripped[4...]
+                    context.add(gag: &gag)
                     context.events.echoText("Gag added")
                 }
                 else {
@@ -42,7 +42,14 @@ class GagCommandHandler : ICommandHandler {
                 context.events.echoText("Gags reloaded")
                 return
 
+            case "save":
+                GagLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, gags: context.gags)
+                context.events.echoText("Gags saved")
+                return
+            
             case "list":
+                fallthrough
+            default:
                 context.events.echoText("")
                 
                 if context.gags.isEmpty {
@@ -54,13 +61,6 @@ class GagCommandHandler : ICommandHandler {
                     context.events.echoText(String(describing: gag))
                 }
                 context.events.echoText("")
-                return
-
-            case "save":
-                GagLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, gags: context.gags)
-                context.events.echoText("Gags saved")
-                return
-            default:
                 return
             }
         }
