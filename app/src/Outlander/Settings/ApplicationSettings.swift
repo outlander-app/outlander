@@ -18,6 +18,9 @@ class ApplicationSettings {
     var variableDateFormat = "yyyy-MM-dd"
     var variableDatetimeFormat = "yyyy-MM-dd hh:mm:ss a"
 
+    var authenticationServerAddress = "eaccess.play.net"
+    var authenticationServerPort:UInt16 = 7900
+
     var currentProfilePath: URL {
         get {
             return paths.profiles.appendingPathComponent(profile.name)
@@ -42,6 +45,12 @@ class ProfileSettings {
     var logging = false
     var rawLogging = false
     var layout = "default.cfg"
+
+    func update(with credentials: Credentials) {
+        self.account = credentials.account
+        self.game = credentials.game
+        self.character = credentials.character
+    }
 }
 
 class ApplicationPaths {

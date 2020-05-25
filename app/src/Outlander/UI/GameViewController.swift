@@ -9,12 +9,16 @@
 import Foundation
 import Cocoa
 
+struct Credentials {
+    var account: String
+    var password: String
+    var character: String
+    var game: String
+}
+
 class GameViewController : NSViewController {
 
     @IBOutlet weak var commandInput: HistoryTextField!
-    @IBOutlet weak var accountInput: NSTextField!
-    @IBOutlet weak var passwordInput: NSSecureTextField!
-    @IBOutlet weak var characterInput: NSTextField!
     @IBOutlet weak var gameWindowContainer: OView!
     @IBOutlet weak var vitalsBar: VitalsBar!
     
@@ -35,6 +39,8 @@ class GameViewController : NSViewController {
     var gameServer: GameServer?
     var gameStream: GameStream?
     var gameContext = GameContext()
+
+    var credentials: Credentials?
     
     var windowLayoutLoader: WindowLayoutLoader?
     var fileSystem: FileSystem?
@@ -45,9 +51,6 @@ class GameViewController : NSViewController {
     var spelltime: SpellTimer?
 
     override func viewDidLoad() {
-        accountInput.stringValue = ""
-        characterInput.stringValue = ""
-        passwordInput.stringValue = ""
 
         self.roundtime = RoundtimeTimer(self.gameContext, variable: "roundtime")
         self.roundtime?.interval = {[weak self]value in
@@ -202,7 +205,17 @@ class GameViewController : NSViewController {
 
     func showLogin() {
         self.view.window?.beginSheet(self.loginWindow!.window!, completionHandler: {result in
-            print(result)
+            guard result == .OK else {
+                return
+            }
+            self.credentials = Credentials(
+                account: self.loginWindow!.account,
+                password: self.loginWindow!.password,
+                character: self.loginWindow!.character,
+                game: self.loginWindow!.game)
+
+            self.gameContext.applicationSettings.profile.update(with: self.credentials!)
+            self.connect()
         })
     }
 
@@ -227,9 +240,10 @@ class GameViewController : NSViewController {
             self.reloadTheme()
             self.printSettingsLocations()
             self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: true, playerCommand: false)
-
-            self.accountInput.stringValue = self.gameContext.applicationSettings.profile.account
-            self.characterInput.stringValue = self.gameContext.applicationSettings.profile.character
+            
+            self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
+            self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
+            self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
         }
     }
 
@@ -373,26 +387,25 @@ class GameViewController : NSViewController {
     @IBAction func Send(_ sender: Any) {
         self.commandInput.commitHistory()
     }
-    
-    @IBAction func Login(_ sender: Any) {
 
-        let account = accountInput.stringValue
-        let password = passwordInput.stringValue
-        let character = characterInput.stringValue
+    func connect() {
+        guard let credentials = self.credentials else {
+            return
+        }
 
-        let authHost = "eaccess.play.net"
-        let authPort:UInt16 = 7900
+        let host = self.gameContext.applicationSettings.authenticationServerAddress
+        let port = self.gameContext.applicationSettings.authenticationServerPort
 
-        self.logText("Connecting to authentication server at \(authHost):\(authPort)\n")
+        self.logText("Connecting to authentication server at \(host):\(port)\n")
 
         self.authServer?.authenticate(
             AuthInfo(
-                host: authHost,
-                port: authPort,
-                account: account,
-                password: password,
-                game: "DR",
-                character: character),
+                host: self.gameContext.applicationSettings.authenticationServerAddress,
+                port: self.gameContext.applicationSettings.authenticationServerPort,
+                account: credentials.account,
+                password: credentials.password,
+                game: credentials.game,
+                character: credentials.character),
             callback: { [weak self] result in
 
                 switch result {

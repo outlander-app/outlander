@@ -8,6 +8,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LoginWindow" customModule="Outlander" customModuleProvider="target">
             <connections>
+                <outlet property="accountTextField" destination="Syh-Kf-AWc" id="dCJ-AI-wOk"/>
+                <outlet property="characterTextField" destination="F2a-nN-Ge7" id="pOL-x5-aKA"/>
+                <outlet property="gameComboBox" destination="RNo-pl-kar" id="O61-mm-EKN"/>
+                <outlet property="passwordTextField" destination="Vah-W1-FwT" id="3q7-eS-D0S"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -73,12 +77,10 @@ DQ
                             <font key="font" metaFont="titleBar"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            <objectValues>
-                                <string>Item</string>
-                                <string>Item</string>
-                                <string>Item</string>
-                            </objectValues>
                         </comboBoxCell>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="Z5y-GU-rh5"/>
+                        </connections>
                     </comboBox>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4vA-WO-qMX">
                         <rect key="frame" x="125" y="13" width="92" height="32"/>
