@@ -69,7 +69,7 @@ extension GameContext {
     }
     
     func addGag(gag: inout String) {
-        guard let matches = GameContext.regex?.allMatches(&gag) else {
+        guard let matches = GameContext.gagRegex?.allMatches(&gag) else {
             return
         }
         
