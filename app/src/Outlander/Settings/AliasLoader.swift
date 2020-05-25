@@ -90,7 +90,7 @@ class AliasLoader {
 extension GameContext {
     
     func addAlias(alias: Alias) {
-        return self.aliases.append(alias)
+        self.aliases.append(alias)
     }
     
     @discardableResult
