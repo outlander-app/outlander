@@ -8,17 +8,19 @@
 
 import Foundation
 
-struct Gag {
+struct Gag: CustomStringConvertible {
     var pattern: String
     var className: String
+    
+    var description: String {
+        return "#gag {\(self.pattern)} {\(self.className)}"
+    }
 }
 
 class GagLoader {
     let filename = "gags.cfg"
 
     let files: FileSystem
-
-    let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
     init(_ files:FileSystem) {
         self.files = files
@@ -37,20 +39,7 @@ class GagLoader {
             return
         }
         
-        guard let matches = self.regex?.allMatches(&content) else {
-            return
-        }
-        
-        for match in matches {
-            if match.count == 3 {
-                guard let pattern = match.valueAt(index: 1) else {
-                    continue
-                }
-
-                let className = match.valueAt(index: 2) ?? ""
-                context.gags.append(Gag(pattern: pattern, className: className.lowercased()))
-            }
-        }
+        context.addGag(gag: &content)
     }
     
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
@@ -68,5 +57,31 @@ class GagLoader {
         }
         
         self.files.write(content, to: fileUrl)
+    }
+}
+
+extension GameContext {
+    
+    static let gagRegex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    
+    func addGag(gag: Gag) {
+        self.gags.append(gag)
+    }
+    
+    func addGag(gag: inout String) {
+        guard let matches = GameContext.gagRegex?.allMatches(&gag) else {
+            return
+        }
+        
+        for match in matches {
+            if match.count == 3 {
+                guard let pattern = match.valueAt(index: 1) else {
+                    continue
+                }
+
+                let className = match.valueAt(index: 2) ?? ""
+                self.addGag(gag: Gag(pattern: pattern, className: className.lowercased()))
+            }
+        }
     }
 }

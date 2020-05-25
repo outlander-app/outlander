@@ -36,7 +36,8 @@ class CommandProcesssor {
         WindowCommandHandler(),
         FlashCommandHandler(),
         BeepCommandHandler(),
-        BugCommandHandler()
+        BugCommandHandler(),
+        GagCommandHandler()
     ]
 
     init(_ files: FileSystem) {
