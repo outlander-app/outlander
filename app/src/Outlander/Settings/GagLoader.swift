@@ -62,14 +62,14 @@ class GagLoader {
 
 extension GameContext {
     
+    static let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
+    
     func add(gag: Gag) {
         self.gags.append(gag)
     }
     
     func add(gag: inout String) {
-        let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
-        
-        guard let matches = regex?.allMatches(&gag) else {
+        guard let matches = GameContext.regex?.allMatches(&gag) else {
             return
         }
         
