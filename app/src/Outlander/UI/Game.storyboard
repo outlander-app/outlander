@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="712" height="25"/>
                             </customView>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn" customClass="HistoryTextField" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="7" y="66" width="698" height="21"/>
+                                <rect key="frame" x="7" y="33" width="698" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="command" drawsBackground="YES" id="GhR-6i-hCN">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -31,81 +31,24 @@
                                     <action selector="Send:" target="tny-JT-jcH" id="A98-hr-ILs"/>
                                 </connections>
                             </textField>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SCO-ND-oWC">
-                                <rect key="frame" x="637" y="26" width="74" height="32"/>
-                                <buttonCell key="cell" type="push" title="Login" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5rA-uJ-w2k">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Login:" target="tny-JT-jcH" id="kA7-ow-9hz"/>
-                                </connections>
-                            </button>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ls6-NJ-xcZ">
-                                <rect key="frame" x="7" y="35" width="175" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="175" id="usf-5z-yB9"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="account" drawsBackground="YES" id="V3X-S0-OSq">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kn2-GV-Dzd">
-                                <rect key="frame" x="190" y="35" width="175" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="175" id="rlu-ha-VEF"/>
-                                </constraints>
-                                <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="password" drawsBackground="YES" usesSingleLineMode="YES" id="Zec-dO-Ga2">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <allowedInputSourceLocales>
-                                        <string>NSAllRomanInputSourcesLocaleIdentifier</string>
-                                    </allowedInputSourceLocales>
-                                </secureTextFieldCell>
-                            </secureTextField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="foG-9o-Xs2">
-                                <rect key="frame" x="373" y="35" width="265" height="21"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="character" drawsBackground="YES" id="NvG-UQ-MNR">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="2cr-cT-1h1"/>
-                            <constraint firstItem="Ls6-NJ-xcZ" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="7ry-sv-YIq"/>
-                            <constraint firstItem="SCO-ND-oWC" firstAttribute="leading" secondItem="foG-9o-Xs2" secondAttribute="trailing" constant="5" id="DyV-pv-62P"/>
-                            <constraint firstItem="SCO-ND-oWC" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="12" id="K9H-nY-BBO"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="4qx-nL-8EO"/>
                             <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" id="MaX-uX-scV"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="RNk-ab-d5B"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="StY-8g-K1L"/>
-                            <constraint firstItem="SCO-ND-oWC" firstAttribute="leading" secondItem="foG-9o-Xs2" secondAttribute="trailing" constant="5" id="TOC-Tk-iGw"/>
-                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="SCO-ND-oWC" secondAttribute="bottom" constant="8" id="XeU-26-56J"/>
-                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="Ls6-NJ-xcZ" secondAttribute="bottom" constant="10" id="atF-n8-LGA"/>
-                            <constraint firstAttribute="trailing" secondItem="9lN-eF-asn" secondAttribute="trailing" constant="7" id="cQs-Ux-LjR"/>
-                            <constraint firstItem="foG-9o-Xs2" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="10" id="dhh-cg-rgy"/>
                             <constraint firstAttribute="bottom" secondItem="I6A-aq-awz" secondAttribute="bottom" id="dmn-AY-d8r"/>
-                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="Kn2-GV-Dzd" secondAttribute="bottom" constant="10" id="eM4-mZ-NYq"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="15" id="g4S-j1-Uwj"/>
+                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="8" symbolic="YES" id="hGK-27-s3p"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="centerX" secondItem="I6A-aq-awz" secondAttribute="centerX" id="hI7-rr-hMg"/>
                             <constraint firstAttribute="trailing" secondItem="I6A-aq-awz" secondAttribute="trailing" id="onT-wP-xdb"/>
-                            <constraint firstItem="Kn2-GV-Dzd" firstAttribute="leading" secondItem="Ls6-NJ-xcZ" secondAttribute="trailing" constant="8" id="pIX-r5-K4u"/>
-                            <constraint firstItem="Kn2-GV-Dzd" firstAttribute="baseline" secondItem="foG-9o-Xs2" secondAttribute="baseline" id="rV9-iY-kZm"/>
                             <constraint firstItem="fNy-Zq-dAH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="sSA-DG-QUL"/>
                             <constraint firstAttribute="bottom" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="102" id="sp9-4f-fCn"/>
-                            <constraint firstItem="foG-9o-Xs2" firstAttribute="leading" secondItem="Kn2-GV-Dzd" secondAttribute="trailing" constant="8" id="ssu-Xh-xJw"/>
-                            <constraint firstAttribute="trailing" secondItem="SCO-ND-oWC" secondAttribute="trailing" constant="7" id="vwm-0G-Vah"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="48" id="zhq-28-Cpa"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="accountInput" destination="Ls6-NJ-xcZ" id="PSS-gc-eBa"/>
-                        <outlet property="characterInput" destination="foG-9o-Xs2" id="DnX-DX-Rqj"/>
                         <outlet property="commandInput" destination="9lN-eF-asn" id="Rba-0x-y94"/>
                         <outlet property="gameWindowContainer" destination="fNy-Zq-dAH" id="6uE-dP-w64"/>
-                        <outlet property="passwordInput" destination="Kn2-GV-Dzd" id="oGp-n8-acr"/>
                         <outlet property="vitalsBar" destination="I6A-aq-awz" id="FFw-Lm-OLD"/>
                     </connections>
                 </viewController>

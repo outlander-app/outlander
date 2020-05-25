@@ -24,7 +24,6 @@ class RegexTester: XCTestCase {
 
         XCTAssertEqual(result, "flickering mana (8/21) to the west\n")
     }
-    
 
     func test_replace2() {
         let text = "flickering mana to the west\n"
@@ -33,12 +32,4 @@ class RegexTester: XCTestCase {
 
         XCTAssertEqual(result, "flickering mana (8/21) to the west\n")
     }
-
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measure {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
-
 }
