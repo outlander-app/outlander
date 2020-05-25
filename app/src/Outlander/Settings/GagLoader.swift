@@ -39,7 +39,7 @@ class GagLoader {
             return
         }
         
-        context.add(gag: &content)
+        context.addGag(gag: &content)
     }
     
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
@@ -64,11 +64,11 @@ extension GameContext {
     
     static let regex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
     
-    func add(gag: Gag) {
+    func addGag(gag: Gag) {
         self.gags.append(gag)
     }
     
-    func add(gag: inout String) {
+    func addGag(gag: inout String) {
         guard let matches = GameContext.regex?.allMatches(&gag) else {
             return
         }
@@ -80,7 +80,7 @@ extension GameContext {
                 }
 
                 let className = match.valueAt(index: 2) ?? ""
-                self.add(gag: Gag(pattern: pattern, className: className.lowercased()))
+                self.addGag(gag: Gag(pattern: pattern, className: className.lowercased()))
             }
         }
     }

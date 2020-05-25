@@ -24,7 +24,7 @@ class GagCommandHandler : ICommandHandler {
             case "add":
                 if gagAddRegex?.hasMatches(commandStripped) ?? false {
                     var gag = "#gag " + commandStripped[4...]
-                    context.add(gag: &gag)
+                    context.addGag(gag: &gag)
                     context.events.echoText("Gag added")
                 }
                 else {
