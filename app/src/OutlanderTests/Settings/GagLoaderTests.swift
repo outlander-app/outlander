@@ -42,7 +42,7 @@ class GagLoaderTests: XCTestCase {
     
     func test_add() {
         var gagToAdd = "#gag {Guard Report} {a class}"
-        context.add(gag: &gagToAdd)
+        context.addGag(gag: &gagToAdd)
         loader!.save(context.applicationSettings, gags: context.gags)
         
         XCTAssertEqual(self.fileSystem.savedContent ?? "",
