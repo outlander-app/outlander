@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
+		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
+		F62EA141247BE6EB004E2C1E /* GagCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */; };
+		F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
+		F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
 		F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
@@ -164,6 +168,9 @@
 
 /* Begin PBXFileReference section */
 		F62EA130247A2846004E2C1E /* GagCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandler.swift; sourceTree = "<group>"; };
+		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
+		F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandlerTests.swift; sourceTree = "<group>"; };
+		F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandler.swift; sourceTree = "<group>"; };
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
@@ -404,6 +411,7 @@
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
+				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -411,9 +419,11 @@
 		F9CA20512466057000A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */,
 				F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */,
 				F9CA205D24664A4500A92736 /* VarCommandHandlerTests.swift */,
 				F9CA206C2466765D00A92736 /* WindowCommandHandlerTests.swift */,
+				F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -594,6 +604,7 @@
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
+				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
@@ -640,10 +651,12 @@
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F98B4902246F6AD1000E2D92 /* GagLoaderTests.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
+				F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F9B25401247882620097C07F /* LoginWindow.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
+				F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
@@ -679,6 +692,7 @@
 				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
+				F62EA141247BE6EB004E2C1E /* GagCommandHandlerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
