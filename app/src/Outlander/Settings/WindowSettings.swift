@@ -42,7 +42,7 @@ struct WindowLayout: Codable {
 
     func encode(to _: Encoder) throws {}
 
-    static var main: WindowLayout {
+    static var defaults: WindowLayout {
         let primary = createWindow("primary")
         let windows = [createWindow("main")]
         return WindowLayout(primary: primary, windows: windows)
@@ -71,12 +71,12 @@ class WindowLayoutLoader {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
         guard let data = files.load(fileUrl) else {
-            return WindowLayout.main
+            return WindowLayout.defaults
         }
 
         let decoder = JSONDecoder()
         guard var jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
-            return WindowLayout.main
+            return WindowLayout.defaults
         }
 
         jsonData.windows = jsonData.windows.sorted(by: { (a, b) -> Bool in
