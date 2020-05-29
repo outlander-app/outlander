@@ -16,4 +16,4 @@ jobs:
     - name: Force Xcode 11
       run: sudo xcode-select -switch /Applications/Xcode_11.3.1.app
     - name: Run tests
-      run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGNING_ALLOWED=NO
+      run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO

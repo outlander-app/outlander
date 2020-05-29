@@ -9,11 +9,16 @@
 import XCTest
 
 class WindowCommandHandlerTests: XCTestCase {
-    let handler = WindowCommandHandler()
-    let context = GameContext()
-    let events = InMemoryEvents()
+    var files = InMemoryFileSystem()
+    var handler = WindowCommandHandler(InMemoryFileSystem())
+    var events = InMemoryEvents()
+    var context = GameContext()
 
     override func setUp() {
+        files = InMemoryFileSystem()
+        handler = WindowCommandHandler(files)
+        context = GameContext()
+        events = InMemoryEvents()
         context.events = events
         context.applicationSettings.paths.rootUrl = URL(fileURLWithPath: "/Users/jomc/Documents/Outlander/", isDirectory: true)
     }
@@ -40,6 +45,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
 
     func test_handles_reload_command() {
+        files.contentToLoad = ""
         handler.handle("#window reload", with: context)
 
         if let data = events.lastData as? [String: String] {

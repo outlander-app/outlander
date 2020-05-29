@@ -41,6 +41,23 @@ struct WindowLayout: Codable {
     }
 
     func encode(to _: Encoder) throws {}
+
+    static var main: WindowLayout {
+        let primary = createWindow("primary")
+        let windows = [createWindow("main")]
+        return WindowLayout(primary: primary, windows: windows)
+    }
+
+    static func createWindow(_ name: String) -> WindowData {
+        let win = WindowData()
+        win.name = name
+        win.visible = 1
+        win.x = 0
+        win.y = 0
+        win.height = 200
+        win.width = 200
+        return win
+    }
 }
 
 class WindowLayoutLoader {
@@ -54,12 +71,12 @@ class WindowLayoutLoader {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
         guard let data = files.load(fileUrl) else {
-            return nil
+            return WindowLayout.main
         }
 
         let decoder = JSONDecoder()
         guard var jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
-            return nil
+            return WindowLayout.main
         }
 
         jsonData.windows = jsonData.windows.sorted(by: { (a, b) -> Bool in

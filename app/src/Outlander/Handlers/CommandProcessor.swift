@@ -32,7 +32,6 @@ class CommandProcesssor {
         EchoCommandHandler(),
         VarCommandHandler(),
         ClassCommandHandler(),
-        WindowCommandHandler(),
         FlashCommandHandler(),
         BeepCommandHandler(),
         BugCommandHandler(),
@@ -40,6 +39,7 @@ class CommandProcesssor {
     ]
 
     init(_ files: FileSystem) {
+        handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
     }
 
