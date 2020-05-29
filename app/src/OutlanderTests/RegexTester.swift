@@ -9,12 +9,9 @@
 import XCTest
 
 class RegexTester: XCTestCase {
+    override func setUp() {}
 
-    override func setUp() {
-    }
-
-    override func tearDown() {
-    }
+    override func tearDown() {}
 
     func test_replace() {
         let text = "flickering mana to the west\n"
@@ -27,7 +24,7 @@ class RegexTester: XCTestCase {
 
     func test_replace2() {
         let text = "flickering mana to the west\n"
-        
+
         let result = text.replacingOccurrences(of: "flickering mana to the", with: "flickering mana (8/21) to the")
 
         XCTAssertEqual(result, "flickering mana (8/21) to the west\n")

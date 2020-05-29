@@ -9,22 +9,21 @@
 import XCTest
 
 class TriggerLoaderTests: XCTestCase {
-
     let fileSystem = InMemoryFileSystem()
     var loader: TriggerLoader?
     let context = GameContext()
 
     override func setUp() {
-        self.loader = TriggerLoader(fileSystem)
+        loader = TriggerLoader(fileSystem)
     }
 
     func test_load() {
-        self.fileSystem.contentToLoad =
-"""
-#trigger {^You feel like now might be a good time to change the bandages on your (\\w.+).$} {#echo >log Change your $1 bandages.}
-#trigger {An iron portcullis is raised, heralding the} {#send watch} {combat}
+        fileSystem.contentToLoad =
+            """
+            #trigger {^You feel like now might be a good time to change the bandages on your (\\w.+).$} {#echo >log Change your $1 bandages.}
+            #trigger {An iron portcullis is raised, heralding the} {#send watch} {combat}
 
-"""
+            """
 
         loader!.load(context.applicationSettings, context: context)
 
@@ -42,16 +41,16 @@ class TriggerLoaderTests: XCTestCase {
     }
 
     func test_save() {
-        self.fileSystem.contentToLoad =
-"""
-#trigger {^You feel like now might be a good time to change the bandages on your (\\w.+).$} {#echo >log Change your $1 bandages.}
-#trigger {An iron portcullis is raised, heralding the} {#send watch} {combat}
+        fileSystem.contentToLoad =
+            """
+            #trigger {^You feel like now might be a good time to change the bandages on your (\\w.+).$} {#echo >log Change your $1 bandages.}
+            #trigger {An iron portcullis is raised, heralding the} {#send watch} {combat}
 
-"""
+            """
 
         loader!.load(context.applicationSettings, context: context)
         loader!.save(context.applicationSettings, triggers: context.triggers)
 
-        XCTAssertEqual(self.fileSystem.savedContent ?? "", self.fileSystem.contentToLoad!)
+        XCTAssertEqual(fileSystem.savedContent ?? "", fileSystem.contentToLoad!)
     }
 }

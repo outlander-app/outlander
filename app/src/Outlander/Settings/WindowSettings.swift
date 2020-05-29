@@ -8,12 +8,12 @@
 
 import Foundation
 
-class WindowData : Decodable {
+class WindowData: Decodable {
     public var name: String = ""
-    public var x:Double = 0
-    public var y:Double = 0
-    public var height:Double = 200
-    public var width:Double = 200
+    public var x: Double = 0
+    public var y: Double = 0
+    public var height: Double = 200
+    public var width: Double = 200
     public var title: String?
     public var closedTarget: String?
     public var visible: Int = 1
@@ -31,7 +31,7 @@ class WindowData : Decodable {
     public var order: Int = 0
 }
 
-struct WindowLayout : Codable {
+struct WindowLayout: Codable {
     var primary: WindowData
     var windows: [WindowData]
 
@@ -39,24 +39,21 @@ struct WindowLayout : Codable {
         self.primary = primary
         self.windows = windows
     }
-    
-    func encode(to encoder: Encoder) throws {
-    }
+
+    func encode(to _: Encoder) throws {}
 }
 
 class WindowLayoutLoader {
-    
     let files: FileSystem
 
     init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, file:String) -> WindowLayout? {
-
+    func load(_ settings: ApplicationSettings, file: String) -> WindowLayout? {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return nil
         }
 
@@ -66,16 +63,16 @@ class WindowLayoutLoader {
         }
 
         jsonData.windows = jsonData.windows.sorted(by: { (a, b) -> Bool in
-            return a.order < b.order
+            a.order < b.order
         })
 
         return jsonData
     }
 
-    func save(_ settings:ApplicationSettings, file:String, windows:WindowLayout) {
+    func save(_ settings: ApplicationSettings, file: String, windows: WindowLayout) {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
-        self.files.access {
+        files.access {
             if let encodedData = try? JSONEncoder().encode(windows) {
                 try? encodedData.write(to: fileUrl, options: .atomicWrite)
             }

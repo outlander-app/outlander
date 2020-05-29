@@ -6,15 +6,15 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import CocoaAsyncSocket
+import Foundation
 
-enum AuthSocketState : Int {
-    case password       = 0
-    case authenticate   = 1
-    case game           = 2
-    case characterlist  = 3
-    case character      = 4
+enum AuthSocketState: Int {
+    case password = 0
+    case authenticate = 1
+    case game = 2
+    case characterlist = 3
+    case character = 4
 }
 
 enum AuthenticationState {
@@ -42,15 +42,13 @@ struct GameConnectionInfo {
 }
 
 class AuthenticationServer {
-
     var _socket: Socket?
     var _authInfo: AuthInfo?
     var _callback: ((AuthenticationState) -> Void)?
 
     var log = LogManager.getLog(String(describing: AuthenticationServer.self))
 
-    init() {
-    }
+    init() {}
 
     public func authenticate(_ authInfo: AuthInfo, callback: @escaping ((AuthenticationState) -> Void)) {
         _authInfo = authInfo
@@ -62,29 +60,29 @@ class AuthenticationServer {
                 self?._callback?(.connected)
                 self?._socket?.writeAndRead("K\r\n", tag: AuthSocketState.password.rawValue)
 
-            case .data(let data, let str, let tag):
+            case let .data(data, str, tag):
                 self?.handleData(data: data, str: str, state: AuthSocketState(rawValue: tag)!)
 
-            case .closed(let error):
+            case let .closed(error):
                 if let error = error {
                     self?._callback?(.error(error.localizedDescription))
-                }
-                else { self?._callback?(.closed) }
+                } else { self?._callback?(.closed) }
 
             default:
                 self?.log.info("Auth Server socket state change \(state)")
             }
-        })
+        }, queue: DispatchQueue.main)
+
         _socket?.connect(host: authInfo.host, port: authInfo.port)
     }
 
     func handleData(data: Data, str: String?, state: AuthSocketState) {
-        self.log.info("state: \(state)")
+        log.info("state: \(state)")
         switch state {
         case .password:
             var request = "A\t\(_authInfo!.account)\t".data(using: .ascii, allowLossyConversion: true)!
             let hash = String(data: data, encoding: .ascii)!
-            let passwordHash = self.encrypt(password: _authInfo!.password, with: hash)
+            let passwordHash = encrypt(password: _authInfo!.password, with: hash)
             request.append(passwordHash!)
             let ending = "\r\n".data(using: .ascii, allowLossyConversion: true)!
             request.append(ending)
@@ -92,47 +90,47 @@ class AuthenticationServer {
 
         case .authenticate:
             guard let str = str else {
-                self.disconnectWithError("unknown error")
+                disconnectWithError("unknown error")
                 return
             }
 
             guard str.contains("KEY") else {
                 var error = "did not recieve authorization key"
-                
+
                 if str.contains("PASSWORD") {
                     error = "invalid password"
                 }
                 if str.contains("NORECORD") {
                     error = "invalid account"
                 }
-                
-                self.disconnectWithError(error)
+
+                disconnectWithError(error)
                 return
             }
 
             _socket?.writeAndRead("G\t\(_authInfo!.game)\r\n", tag: AuthSocketState.game.rawValue)
-            
+
         case .game:
             _socket?.writeAndRead("C\r\n", tag: AuthSocketState.characterlist.rawValue)
-            
+
         case .characterlist:
-            
-            self.log.info("socket data: \(str ?? "")")
-            
+
+            log.info("socket data: \(str ?? "")")
+
             guard let str = str else {
-                self.disconnectWithError("unable to get character list")
+                disconnectWithError("unable to get character list")
                 return
             }
 
             let regex = try? Regex("(\\S_\\S[\\S0-9]+)\t\(_authInfo!.character)", options: [.caseInsensitive])
 
             guard let result = regex?.matches(str) else {
-                self.disconnectWithError("unable to find character \(self._authInfo!.character)")
+                disconnectWithError("unable to find character \(_authInfo!.character)")
                 return
             }
 
             guard result.count > 1 else {
-                self.disconnectWithError("unable to find character \(self._authInfo!.character)")
+                disconnectWithError("unable to find character \(_authInfo!.character)")
                 return
             }
 
@@ -140,10 +138,10 @@ class AuthenticationServer {
             _socket?.writeAndRead("L\t\(characterId)\tPLAY\r\n", tag: AuthSocketState.character.rawValue)
 
         case .character:
-            self.log.info("socket data: \(str ?? "")")
+            log.info("socket data: \(str ?? "")")
 
             guard let str = str else {
-                self.disconnectWithError("unable to get login key")
+                disconnectWithError("unable to get login key")
                 return
             }
 
@@ -159,12 +157,11 @@ class AuthenticationServer {
     }
 
     func encrypt(password: String, with hash: String) -> Data? {
-
         var arr: [NSNumber] = []
 
         let max = min(hash.count, password.count)
 
-        for i in 0..<max {
+        for i in 0 ..< max {
             let h = hash[i].asciiValue!
             let p = password[i].asciiValue!
 
@@ -187,7 +184,7 @@ class AuthenticationServer {
         let key = getData(input, pattern: "KEY=(\\w+)")
         let host = getData(input, pattern: "GAMEHOST=(\\S+)")
         let port = getData(input, pattern: "GAMEPORT=(\\d+)")
-        let portNumber:UInt16 = UInt16(port)!
+        let portNumber: UInt16 = UInt16(port)!
         return GameConnectionInfo(game: game, key: key, host: host, port: portNumber)
     }
 

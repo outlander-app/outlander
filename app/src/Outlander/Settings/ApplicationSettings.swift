@@ -9,7 +9,7 @@
 import Foundation
 
 class ApplicationSettings {
-    var paths:ApplicationPaths = ApplicationPaths()
+    var paths: ApplicationPaths = ApplicationPaths()
     var profile = ProfileSettings()
 
     var downloadPreReleaseVersions = false
@@ -19,21 +19,19 @@ class ApplicationSettings {
     var variableDatetimeFormat = "yyyy-MM-dd hh:mm:ss a"
 
     var authenticationServerAddress = "eaccess.play.net"
-    var authenticationServerPort:UInt16 = 7900
+    var authenticationServerPort: UInt16 = 7900
 
     var currentProfilePath: URL {
-        get {
-            return paths.profiles.appendingPathComponent(profile.name)
-        }
+        return paths.profiles.appendingPathComponent(profile.name)
     }
 
-    func update(_ settings:ApplicationSettingsDto) {
-        self.downloadPreReleaseVersions = settings.downloadPreReleaseVersions.toBool() ?? false
-        self.checkForApplicationUpdates = settings.checkForApplicationUpdates.toBool() ?? true
-        self.variableDateFormat = settings.variableDateFormat
-        self.variableTimeFormat = settings.variableTimeFormat
-        self.variableDatetimeFormat = settings.variableDatetimeFormat
-        self.profile.name = settings.defaultProfile
+    func update(_ settings: ApplicationSettingsDto) {
+        downloadPreReleaseVersions = settings.downloadPreReleaseVersions.toBool() ?? false
+        checkForApplicationUpdates = settings.checkForApplicationUpdates.toBool() ?? true
+        variableDateFormat = settings.variableDateFormat
+        variableTimeFormat = settings.variableTimeFormat
+        variableDatetimeFormat = settings.variableDatetimeFormat
+        profile.name = settings.defaultProfile
     }
 }
 
@@ -47,67 +45,52 @@ class ProfileSettings {
     var layout = "default.cfg"
 
     func update(with credentials: Credentials) {
-        self.account = credentials.account
-        self.game = credentials.game
-        self.character = credentials.character
+        account = credentials.account
+        game = credentials.game
+        character = credentials.character
     }
 }
 
 class ApplicationPaths {
-
     init() {
         rootUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     }
 
     var rootUrl: URL
-    
+
     var config: URL {
-        get {
-            return rootUrl.appendingPathComponent("Config")
-        }
+        return rootUrl.appendingPathComponent("Config")
     }
-    
+
     var profiles: URL {
-        get {
-            return config.appendingPathComponent("Profiles")
-        }
+        return config.appendingPathComponent("Profiles")
     }
-    
+
     var layout: URL {
-        get {
-            return config.appendingPathComponent("Layout")
-        }
+        return config.appendingPathComponent("Layout")
     }
-    
+
     var maps: URL {
-        get {
-            return rootUrl.appendingPathComponent("Maps")
-        }
+        return rootUrl.appendingPathComponent("Maps")
     }
-    
+
     var logs: URL {
-        get {
-            return rootUrl.appendingPathComponent("Logs")
-        }
+        return rootUrl.appendingPathComponent("Logs")
     }
 
     var sounds: URL {
-        get {
-            return rootUrl.appendingPathComponent("Sounds")
-        }
+        return rootUrl.appendingPathComponent("Sounds")
     }
 
     var scripts: URL {
-        get {
-            return rootUrl.appendingPathComponent("Scripts")
-        }
+        return rootUrl.appendingPathComponent("Scripts")
     }
 }
 
 extension GameContext {
     func allProfiles() -> [String] {
         var profiles: [String] = []
-        self.applicationSettings.paths.rootUrl.access {
+        applicationSettings.paths.rootUrl.access {
             let dir = self.applicationSettings.paths.profiles
             guard let items = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles]) else {
                 return

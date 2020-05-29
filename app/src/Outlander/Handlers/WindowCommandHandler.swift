@@ -8,8 +8,7 @@
 
 import Foundation
 
-class WindowCommandHandler : ICommandHandler {
-
+class WindowCommandHandler: ICommandHandler {
     let command = "#window"
 
     let validCommands = ["add", "clear", "hide", "list", "reload", "load", "show"]
@@ -23,20 +22,20 @@ class WindowCommandHandler : ICommandHandler {
             let loader = WindowLayoutLoader(LocalFileSystem(context.applicationSettings))
             if let layout = loader.load(context.applicationSettings, file: context.applicationSettings.profile.layout) {
                 context.layout = layout
-                context.events.post("ol:window", data: ["action":"reload", "window":""])
+                context.events.post("ol:window", data: ["action": "reload", "window": ""])
             }
             return
         }
 
-        guard let matches = self.regex?.firstMatch(&commands) else {
+        guard let matches = regex?.firstMatch(&commands) else {
             return
         }
 
         let action = matches.valueAt(index: 1) ?? ""
         let window = matches.valueAt(index: 3) ?? ""
-        
+
         if validCommands.contains(action) {
-            context.events.post("ol:window", data: ["action":action, "window":window])
+            context.events.post("ol:window", data: ["action": action, "window": window])
         }
     }
 }

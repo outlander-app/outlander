@@ -6,18 +6,17 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
-public class HistoryTextField : NSTextField {
-
+public class HistoryTextField: NSTextField {
     var currentHistoryIndex = -1
 
-    public var history:[String] = []
+    public var history: [String] = []
     public var maxHistory = 30
     public var minCharacterLength = 3
 
-    public var executeCommand: (String) -> () = {cmd in}
+    public var executeCommand: (String) -> Void = { _ in }
 
     @IBInspectable
     public var progress: Float = 0.0 {
@@ -29,35 +28,35 @@ public class HistoryTextField : NSTextField {
     @IBInspectable
     public var progressColor: NSColor = NSColor(hex: "#003366")! {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
-    override public func draw(_ dirtyRect: NSRect) {
-        var progressRect = self.bounds
-        progressRect.size.width *= CGFloat(self.progress)
 
-        self.progressColor.setFill()
+    override public func draw(_ dirtyRect: NSRect) {
+        var progressRect = bounds
+        progressRect.size.width *= CGFloat(progress)
+
+        progressColor.setFill()
         progressRect.fill(using: .sourceOver)
 
         super.draw(dirtyRect)
     }
 
     override public func performKeyEquivalent(with event: NSEvent) -> Bool {
-        let s   =   event.charactersIgnoringModifiers!
-        let s1  =   s.unicodeScalars
-        let s2  =   s1[s1.startIndex].value
-        let s3  =   Int(s2)
+        let s = event.charactersIgnoringModifiers!
+        let s1 = s.unicodeScalars
+        let s2 = s1[s1.startIndex].value
+        let s3 = Int(s2)
 
         switch s3 {
         case NSUpArrowFunctionKey:
-            self.previous()
+            previous()
         case NSDownArrowFunctionKey:
-            self.next()
+            next()
         default:
             break
         }
@@ -66,17 +65,17 @@ public class HistoryTextField : NSTextField {
     }
 
     func commitHistory() {
-        self.currentHistoryIndex = -1
+        currentHistoryIndex = -1
 
-        var value = self.stringValue
-        self.stringValue = ""
+        var value = stringValue
+        stringValue = ""
 
         if value.count == 0 {
             value = history.first ?? ""
         }
 
         if value.count > 0 {
-            self.executeCommand(value)
+            executeCommand(value)
         }
 
         if value.count < minCharacterLength || value == history.first { return }
@@ -87,10 +86,10 @@ public class HistoryTextField : NSTextField {
             history.removeLast()
         }
     }
-    
+
     func previous() {
         var value = ""
-        
+
         currentHistoryIndex += 1
 
         if currentHistoryIndex > -1 {
@@ -100,14 +99,14 @@ public class HistoryTextField : NSTextField {
                 value = history[currentHistoryIndex]
             }
         }
-        
-        self.stringValue = value
+
+        stringValue = value
 
         DispatchQueue.main.async {
             self.currentEditor()!.moveToEndOfDocument(nil)
         }
     }
-    
+
     func next() {
         var value = ""
         let lastIndex = currentHistoryIndex
@@ -115,7 +114,7 @@ public class HistoryTextField : NSTextField {
         if lastIndex == -1 {
             currentHistoryIndex = history.count
         }
-        
+
         currentHistoryIndex -= 1
 
         if currentHistoryIndex > -1 {
@@ -126,7 +125,7 @@ public class HistoryTextField : NSTextField {
             }
         }
 
-        self.stringValue = value
+        stringValue = value
 
         DispatchQueue.main.async {
             self.currentEditor()!.moveToEndOfDocument(nil)

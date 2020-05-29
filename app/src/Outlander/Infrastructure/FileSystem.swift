@@ -9,62 +9,58 @@
 import Foundation
 
 protocol FileSystem {
-    func fileExists(_ file:URL) -> Bool
-    func load(_ file:URL) -> Data?
-    func write(_ content:String, to fileUrl:URL)
-    func access(_ handler: @escaping ()->Void)
+    func fileExists(_ file: URL) -> Bool
+    func load(_ file: URL) -> Data?
+    func write(_ content: String, to fileUrl: URL)
+    func access(_ handler: @escaping () -> Void)
 }
 
 class LocalFileSystem: FileSystem {
-
     let settings: ApplicationSettings
 
     init(_ settings: ApplicationSettings) {
         self.settings = settings
     }
 
-    func fileExists(_ file:URL) -> Bool {
+    func fileExists(_ file: URL) -> Bool {
         return file.checkFileExist()
     }
 
     func load(_ file: URL) -> Data? {
-        var data:Data? = nil
+        var data: Data?
 
-        self.access {
-           data = try? Data(contentsOf: file)
+        access {
+            data = try? Data(contentsOf: file)
         }
 
         return data
     }
 
-    func write(_ content:String, to fileUrl:URL) {
-        self.access {
+    func write(_ content: String, to fileUrl: URL) {
+        access {
             do {
                 try content.write(to: fileUrl, atomically: true, encoding: .utf8)
-            } catch {
-            }
+            } catch {}
         }
     }
 
-    func access(_ handler: @escaping ()->Void) {
-        self.settings.paths.rootUrl.access(handler)
+    func access(_ handler: @escaping () -> Void) {
+        settings.paths.rootUrl.access(handler)
     }
 }
 
 extension URL {
-
-    func access(_ handler: @escaping ()->Void) {
-
-        if !self.startAccessingSecurityScopedResource() {
+    func access(_ handler: @escaping () -> Void) {
+        if !startAccessingSecurityScopedResource() {
             print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
         }
 
         handler()
 
-        self.stopAccessingSecurityScopedResource()
+        stopAccessingSecurityScopedResource()
     }
 
     func checkFileExist() -> Bool {
-        return FileManager.default.fileExists(atPath: self.path)
+        return FileManager.default.fileExists(atPath: path)
     }
 }

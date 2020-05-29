@@ -9,10 +9,7 @@
 import XCTest
 
 class WindowLayoutLoaderTests: XCTestCase {
+    override func setUp() {}
 
-    override func setUp() {
-    }
-
-    override func tearDown() {
-    }
+    override func tearDown() {}
 }

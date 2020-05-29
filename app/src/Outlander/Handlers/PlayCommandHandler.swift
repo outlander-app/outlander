@@ -6,15 +6,15 @@
 //  Copyright © 2020 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import AppKit
+import Foundation
 
-class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
+class PlayCommandHandler: NSObject, ICommandHandler, NSSoundDelegate {
     var command = "#play"
 
     let validCommands = ["clear", "stop"]
 
-    var sounds:[NSSound] = []
+    var sounds: [NSSound] = []
     let files: FileSystem
 
     init(_ files: FileSystem) {
@@ -28,12 +28,11 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
             removeStoppedSounds()
             return
         }
-        
-        if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
+
+        if commands.count == 1, validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "clear", "stop":
-                self.stop()
-                break
+                stop()
             default:
                 break
             }
@@ -44,14 +43,13 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
                 removeStoppedSounds()
                 return
             }
-            self.play(joined, context: context)
+            play(joined, context: context)
         }
 
         removeStoppedSounds()
     }
 
     func play(_ soundFile: String, context: GameContext) {
-
         var file = URL(fileURLWithPath: soundFile)
 
         if !file.checkFileExist() {
@@ -65,7 +63,7 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
             file = outlanderFile
         }
 
-        self.files.access {
+        files.access {
             if let sound = NSSound(contentsOf: file, byReference: true) {
                 sound.setName(file.lastPathComponent)
                 sound.delegate = self
@@ -78,7 +76,7 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
     }
 
     func stop() {
-        for index in stride(from: self.sounds.count, through: 1, by: -1) {
+        for index in stride(from: sounds.count, through: 1, by: -1) {
             let sound = sounds[index - 1]
             if sound.isPlaying {
                 sound.stop()
@@ -87,7 +85,7 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
     }
 
     func removeStoppedSounds() {
-        for index in stride(from: self.sounds.count, through: 1, by: -1) {
+        for index in stride(from: sounds.count, through: 1, by: -1) {
             let sound = sounds[index - 1]
             if !sound.isPlaying {
                 sounds.remove(at: index - 1)
@@ -95,7 +93,7 @@ class PlayCommandHandler : NSObject, ICommandHandler, NSSoundDelegate {
         }
     }
 
-    func sound(_ sound: NSSound, didFinishPlaying flag: Bool) {
+    func sound(_ sound: NSSound, didFinishPlaying _: Bool) {
         if let idx = sounds.firstIndex(of: sound) {
             sound.delegate = nil
             sounds.remove(at: idx)

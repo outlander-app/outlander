@@ -12,13 +12,13 @@ class ProfileConfigLoaderTests: XCTestCase {
     let fileSystem = InMemoryFileSystem()
     var loader: ProfileConfigLoader?
     let context = GameContext()
-    
+
     override func setUp() {
-        self.loader = ProfileConfigLoader(fileSystem)
+        loader = ProfileConfigLoader(fileSystem)
     }
-    
+
     func test_load() {
-        self.fileSystem.contentToLoad = """
+        fileSystem.contentToLoad = """
         Account: AnAccount
         Game: DR
         Character: MyCharacter

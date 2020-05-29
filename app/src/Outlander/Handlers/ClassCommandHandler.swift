@@ -8,8 +8,7 @@
 
 import Foundation
 
-class ClassCommandHandler : ICommandHandler {
-
+class ClassCommandHandler: ICommandHandler {
     var command = "#class"
 
     let validCommands = ["clear", "load", "reload", "list", "save"]
@@ -17,7 +16,7 @@ class ClassCommandHandler : ICommandHandler {
     func handle(_ command: String, with context: GameContext) {
         let commands = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
-        if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
+        if commands.count == 1, validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "clear":
                 context.classes.clear()

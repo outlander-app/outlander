@@ -6,8 +6,8 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 typealias Constraint = (_ child: NSView, _ parent: NSView) -> NSLayoutConstraint
 
@@ -21,23 +21,23 @@ indirect enum View<Message> {
 
     func map<B>(_ transform: @escaping (Message) -> B) -> View<B> {
         switch self {
-        case ._button(let b):
+        case let ._button(b):
             return ._button(b.map(transform))
 
-        case ._textField(let t):
+        case let ._textField(t):
             return ._textField(t.map(transform))
 
-        case ._textView(let t):
+        case let ._textView(t):
             return ._textView(t.map(transform))
 
         case let ._stackView(s):
             return ._stackView(s.map(transform))
 
-        case ._vitalBarItem(let v):
+        case let ._vitalBarItem(v):
             return ._vitalBarItem(v)
 
-        case ._customLayout(let views):
-            return ._customLayout(views.map { (v,c) in
+        case let ._customLayout(views):
+            return ._customLayout(views.map { v, c in
                 (v.map(transform), c)
             })
         }
@@ -76,7 +76,7 @@ extension View {
 struct Button<Message> {
     let text: String
     let onClick: Message?
-    
+
     init(text: String, onClick: Message? = nil) {
         self.text = text
         self.onClick = onClick
@@ -91,14 +91,13 @@ struct TextField<Message> {
     let text: String
     let onChange: ((String) -> Message)?
     let onEnd: ((String) -> Message)?
-    
-    
+
     init(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) {
         self.text = text
         self.onChange = onChange
         self.onEnd = onEnd
     }
-    
+
     func map<B>(_ transform: @escaping (Message) -> B) -> TextField<B> {
         return TextField<B>(text: text, onChange: onChange.map { x in { transform(x($0)) } }, onEnd: onEnd.map { x in { transform(x($0)) } })
     }
@@ -154,7 +153,7 @@ struct TextView<Message> {
     let text: String
 //    let append: (String) -> ()
 
-    func map<B>(_ transform: @escaping (Message) -> B) -> TextView<B> {
+    func map<B>(_: @escaping (Message) -> B) -> TextView<B> {
         return TextView<B>(text: text)
     }
 }

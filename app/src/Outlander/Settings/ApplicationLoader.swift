@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct ApplicationSettingsDto : Decodable {
+struct ApplicationSettingsDto: Decodable {
     var defaultProfile = "Default"
-    var downloadPreReleaseVersions:String = "no"
+    var downloadPreReleaseVersions: String = "no"
     var checkForApplicationUpdates: String = "no"
     var variableTimeFormat = "hh:mm:ss a"
     var variableDateFormat = "yyyy-MM-dd"
@@ -19,15 +19,15 @@ struct ApplicationSettingsDto : Decodable {
 
 class ApplicationLoader {
     let files: FileSystem
-    
+
     init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ paths:ApplicationPaths, context: GameContext) {
+    func load(_ paths: ApplicationPaths, context: GameContext) {
         let fileUrl = paths.config.appendingPathComponent("app.cfg")
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
 
@@ -41,7 +41,7 @@ class ApplicationLoader {
 
 class ProfileConfigLoader {
     let files: FileSystem
-    
+
     init(_ files: FileSystem) {
         self.files = files
     }
@@ -49,14 +49,14 @@ class ProfileConfigLoader {
     func load(_ context: GameContext) {
         let fileUrl = context.applicationSettings.currentProfilePath.appendingPathComponent("config.cfg")
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
-        
+
         guard var content = String(data: data, encoding: .utf8) else {
             return
         }
-        
+
         let profile = context.applicationSettings.profile
 
         let account = RegexFactory.get("Account: (.+)")?.firstMatch(&content)
@@ -67,7 +67,7 @@ class ProfileConfigLoader {
 
         let character = RegexFactory.get("Character: (.+)")?.firstMatch(&content)
         profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
-        
+
         let logging = RegexFactory.get("Logging: (.+)")?.firstMatch(&content)
         profile.logging = logging?.valueAt(index: 1)?.toBool() ?? false
 
@@ -87,24 +87,23 @@ class ProfileLoader {
     }
 
     func load(_ context: GameContext) {
+        ProfileConfigLoader(files).load(context)
 
-        ProfileConfigLoader(self.files).load(context)
-
-        let layout = WindowLayoutLoader(self.files)
+        let layout = WindowLayoutLoader(files)
             .load(context.applicationSettings, file: context.applicationSettings.profile.layout)
         context.layout = layout
 
-        AliasLoader(self.files).load(context.applicationSettings, context: context)
-        ClassLoader(self.files).load(context.applicationSettings, context: context)
-        GagLoader(self.files).load(context.applicationSettings, context: context)
-        HighlightLoader(self.files).load(context.applicationSettings, context: context)
-        PresetLoader(self.files).load(context.applicationSettings, context: context)
-        SubstituteLoader(self.files).load(context.applicationSettings, context: context)
-        TriggerLoader(self.files).load(context.applicationSettings, context: context)
-        VariablesLoader(self.files).load(context.applicationSettings, context: context)
+        AliasLoader(files).load(context.applicationSettings, context: context)
+        ClassLoader(files).load(context.applicationSettings, context: context)
+        GagLoader(files).load(context.applicationSettings, context: context)
+        HighlightLoader(files).load(context.applicationSettings, context: context)
+        PresetLoader(files).load(context.applicationSettings, context: context)
+        SubstituteLoader(files).load(context.applicationSettings, context: context)
+        TriggerLoader(files).load(context.applicationSettings, context: context)
+        VariablesLoader(files).load(context.applicationSettings, context: context)
     }
 
     func save(_ context: GameContext) {
-        AliasLoader(self.files).save(context.applicationSettings, aliases: context.aliases)
+        AliasLoader(files).save(context.applicationSettings, aliases: context.aliases)
     }
 }

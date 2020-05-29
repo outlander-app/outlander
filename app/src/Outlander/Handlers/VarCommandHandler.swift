@@ -8,8 +8,7 @@
 
 import Foundation
 
-class VarCommandHandler : ICommandHandler {
-
+class VarCommandHandler: ICommandHandler {
     var command = "#var"
 
     let validCommands = ["save", "load", "reload"]
@@ -17,7 +16,7 @@ class VarCommandHandler : ICommandHandler {
     func handle(_ command: String, with context: GameContext) {
         var commands = command[4...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
-        if commands.count == 1 && validCommands.contains(commands[0].lowercased()) {
+        if commands.count == 1, validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {
             case "save":
                 VariablesLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, variables: context.globalVars)
@@ -36,7 +35,7 @@ class VarCommandHandler : ICommandHandler {
             let key = commands[0]
             commands.remove(at: 0)
             let value = commands.joined(separator: " ")
-            
+
             context.globalVars[key] = value
         }
     }

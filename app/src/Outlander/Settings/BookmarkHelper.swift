@@ -6,8 +6,8 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 class Preferences {
     static var workingDirectoryBookmark: Data? {
@@ -22,9 +22,7 @@ class Preferences {
 
 // https://benscheirman.com/2019/10/troubleshooting-appkit-file-permissions/
 class BookmarkHelper {
-
     func promptOrRestore() -> URL? {
-
         guard let bookmark = Preferences.workingDirectoryBookmark else {
             if let url = promptForWorkingDirectoryPermission() {
                 saveBookmarkData(for: url)
@@ -57,7 +55,7 @@ class BookmarkHelper {
     private func saveBookmarkData(for workDir: URL) {
         do {
             let bookmarkData = try workDir.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-            
+
             // save in UserDefaults
             Preferences.workingDirectoryBookmark = bookmarkData
         } catch {

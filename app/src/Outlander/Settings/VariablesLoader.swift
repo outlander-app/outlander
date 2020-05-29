@@ -12,17 +12,17 @@ class VariablesLoader {
     let filename = "variables.cfg"
 
     let files: FileSystem
-    
+
     let regex = try? Regex("^#var \\{(.*)\\} \\{(.*)\\}$", options: [.anchorsMatchLines, .caseInsensitive])
 
-    init(_ files:FileSystem) {
+    init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, context: GameContext) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    func load(_ settings: ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
 
@@ -30,12 +30,12 @@ class VariablesLoader {
             return
         }
 
-        guard let matches = self.regex?.allMatches(&content) else {
+        guard let matches = regex?.allMatches(&content) else {
             return
         }
-        
+
         context.globalVars.removeAll()
-        self.setDefaults(context)
+        setDefaults(context)
 
         for match in matches {
             if match.count > 1 {
@@ -51,18 +51,18 @@ class VariablesLoader {
         context.globalVars["roundtime"] = "0"
     }
 
-    func save(_ settings:ApplicationSettings, variables:[String:String]) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    func save(_ settings: ApplicationSettings, variables: [String: String]) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
         for (key, value) in variables.sorted(by: { $0.key < $1.key }) {
             content += "#var {\(key)} {\(value)}\n"
         }
 
-        self.files.write(content, to: fileUrl)
+        files.write(content, to: fileUrl)
     }
 
-    func setDefaults(_ context:GameContext) {
+    func setDefaults(_ context: GameContext) {
         context.globalVars["prompt"] = ">"
         context.globalVars["lefthand"] = "Empty"
         context.globalVars["righthand"] = "Empty"

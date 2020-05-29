@@ -9,51 +9,51 @@
 import Foundation
 
 struct ColorPreset {
-    var name:String
-    var color:String
-    var backgroundColor:String?
-    var presetClass:String?
+    var name: String
+    var color: String
+    var backgroundColor: String?
+    var presetClass: String?
 }
 
 extension GameContext {
-   public func presetFor(_ setting: String) -> ColorPreset? {
+    public func presetFor(_ setting: String) -> ColorPreset? {
         let settingToCheck = setting.lowercased()
 
         if settingToCheck.count == 0 {
             return nil
         }
 
-        if let preset = self.presets[settingToCheck] {
+        if let preset = presets[settingToCheck] {
             return preset
         }
 
         return nil
     }
 
-    public func addPreset(_ name:String, color: String, backgroundColor: String? = nil) {
+    public func addPreset(_ name: String, color: String, backgroundColor: String? = nil) {
         let preset = ColorPreset(name: name, color: color, backgroundColor: backgroundColor)
-        self.presets[name] = preset
+        presets[name] = preset
     }
 }
 
 class PresetLoader {
     let filename = "presets.cfg"
-    
+
     let files: FileSystem
-    
+
     let regex = try? Regex("^#preset \\{(.*?)\\} \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
-    
-    init(_ files:FileSystem) {
+
+    init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, context: GameContext) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    func load(_ settings: ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         context.presets.removeAll()
-        self.setupDefaults(context)
+        setupDefaults(context)
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
 
@@ -61,14 +61,14 @@ class PresetLoader {
             return
         }
 
-        guard let matches = self.regex?.allMatches(&content) else {
+        guard let matches = regex?.allMatches(&content) else {
             return
         }
 
         for match in matches {
             if match.count == 4 {
                 let name = match.valueAt(index: 1) ?? ""
-                
+
                 guard name.count > 0 else {
                     continue
                 }
@@ -94,15 +94,15 @@ class PresetLoader {
         }
     }
 
-    func save(_ settings:ApplicationSettings, presets:[String:ColorPreset]) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    func save(_ settings: ApplicationSettings, presets: [String: ColorPreset]) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
-        for (_, preset) in presets.sorted(by: {$0.key < $1.key}) {
+        for (_, preset) in presets.sorted(by: { $0.key < $1.key }) {
             var color = preset.color
             let backgroundColor = preset.backgroundColor ?? ""
             let className = preset.presetClass ?? ""
-            
+
             if backgroundColor.count > 0 {
                 color = "\(color),\(backgroundColor)"
             }
@@ -112,11 +112,11 @@ class PresetLoader {
             if className.count > 0 {
                 content += " {\(className)}"
             }
-            
+
             content += "\n"
         }
 
-        self.files.write(content, to: fileUrl)
+        files.write(content, to: fileUrl)
     }
 
     func setupDefaults(_ context: GameContext) {

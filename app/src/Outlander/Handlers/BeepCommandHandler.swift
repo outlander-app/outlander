@@ -6,32 +6,29 @@
 //  Copyright © 2020 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import AppKit
+import Foundation
 
-class BeepCommandHandler : ICommandHandler {
-
+class BeepCommandHandler: ICommandHandler {
     var command = "#beep"
 
-    func handle(_ command: String, with: GameContext) {
+    func handle(_: String, with _: GameContext) {
         NSSound.beep()
     }
 }
 
-class FlashCommandHandler : ICommandHandler {
-
+class FlashCommandHandler: ICommandHandler {
     var command = "#flash"
 
-    func handle(_ command: String, with: GameContext) {
+    func handle(_: String, with _: GameContext) {
         NSApplication.shared.requestUserAttention(.criticalRequest)
     }
 }
 
-class BugCommandHandler : ICommandHandler {
-
+class BugCommandHandler: ICommandHandler {
     var command = "#bug"
 
-    func handle(_ command: String, with: GameContext) {
+    func handle(_: String, with _: GameContext) {
         NSWorkspace.shared.open(URL(string: "https://github.com/joemcbride/outlander-osx/issues/new")!)
     }
 }

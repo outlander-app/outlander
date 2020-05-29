@@ -13,9 +13,9 @@ struct Gag: CustomStringConvertible {
     
     var pattern: String
     var className: String
-    
+
     var description: String {
-        return "#gag {\(self.pattern)} {\(self.className)}"
+        return "#gag {\(pattern)} {\(className)}"
     }
     
     static func from(gag: inout String) -> Gag? {
@@ -40,19 +40,13 @@ class GagLoader {
     let filename = "gags.cfg"
 
     let files: FileSystem
-    
-    init(_ files:FileSystem) {
+
+    init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, context: GameContext) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
-
-        context.gags.removeAll()
-
-        guard let data = self.files.load(fileUrl) else {
-            return
-        }
+    func load(_ settings: ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
         
         guard let content = String(data: data, encoding: .utf8) else {
             return
@@ -64,9 +58,9 @@ class GagLoader {
             }
         }
     }
-    
+
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
         for gag in gags {
@@ -78,24 +72,23 @@ class GagLoader {
 
             content += "\n"
         }
-        
-        self.files.write(content, to: fileUrl)
+
+        files.write(content, to: fileUrl)
     }
 }
 
 extension GameContext {
-    
     func addGag(gag: Gag) {
-        self.gags.append(gag)
+        gags.append(gag)
     }
     
     @discardableResult
     func upsertGag(gag: Gag) -> Bool {
         // Nothing to update
-        if (self.gags.firstIndex(where: { $0.pattern == gag.pattern && $0.className == gag.className }) != nil) {
+        if (gags.firstIndex(where: { $0.pattern == gag.pattern && $0.className == gag.className }) != nil) {
             return false
         }
-        self.addGag(gag: gag)
+        addGag(gag: gag)
         return true
     }
 }

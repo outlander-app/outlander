@@ -14,8 +14,7 @@ struct ClassSetting {
 }
 
 class ClassSettings {
-
-    private var _values:[String:Bool] = [:]
+    private var _values: [String: Bool] = [:]
 
     func clear() {
         _values.removeAll()
@@ -38,32 +37,29 @@ class ClassSettings {
     }
 
     func parse(_ values: String) {
-
         if values.hasPrefix("+") || values.hasPrefix("-") {
             let components = values.components(separatedBy: " ")
 
             for comp in components {
                 let s = parseSetting(comp)
-                self.set(s.key, value: s.value)
+                set(s.key, value: s.value)
             }
 
             return
         }
 
         if let s = parseToggleSetting(values) {
-
             if s.key == "all" {
-
                 s.value ? allOn() : allOff()
-                
+
             } else {
-                self.set(s.key, value: s.value)
+                set(s.key, value: s.value)
             }
         }
     }
 
     func all() -> [ClassSetting] {
-        var items:[ClassSetting] = []
+        var items: [ClassSetting] = []
 
         for (key, value) in _values {
             items.append(ClassSetting(key: key, value: value))
@@ -75,7 +71,7 @@ class ClassSettings {
     }
 
     func disabled() -> [String] {
-        var items:[String] = []
+        var items: [String] = []
 
         for (key, value) in _values {
             if !value {
@@ -115,32 +111,31 @@ class ClassLoader {
 
     let regex = try? Regex("^#class \\{(.*?)\\} \\{(.*?)\\}$", options: [.anchorsMatchLines, .caseInsensitive])
 
-    init(_ files:FileSystem) {
+    init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, context: GameContext) {
-        
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
-        
+    func load(_ settings: ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
+
         context.classes.clear()
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
-        
+
         guard var content = String(data: data, encoding: .utf8) else {
             return
         }
 
-        guard let matches = self.regex?.allMatches(&content) else {
+        guard let matches = regex?.allMatches(&content) else {
             return
         }
 
         for match in matches {
             if match.count == 3 {
                 guard let key = match.valueAt(index: 1) else {
-                   continue
+                    continue
                 }
 
                 let val = (match.valueAt(index: 2) ?? "").toBool()
@@ -150,15 +145,15 @@ class ClassLoader {
         }
     }
 
-    func save(_ settings:ApplicationSettings, classes: ClassSettings) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+    func save(_ settings: ApplicationSettings, classes: ClassSettings) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
-        for c in classes.all().sorted(by: {$0.key < $1.key}) {
+        for c in classes.all().sorted(by: { $0.key < $1.key }) {
             let val = c.value ? "on" : "off"
             content += "#class {\(c.key)} {\(val)}\n"
         }
 
-        self.files.write(content, to: fileUrl)
+        files.write(content, to: fileUrl)
     }
 }

@@ -9,13 +9,11 @@
 import XCTest
 
 class StreamTokenTests: XCTestCase {
-    var reader:GameStreamTokenizer = GameStreamTokenizer()
+    var reader: GameStreamTokenizer = GameStreamTokenizer()
 
-    override func setUp() {
-    }
+    override func setUp() {}
 
-    override func tearDown() {
-    }
+    override func tearDown() {}
 
     func test_monsters() {
         let line = "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n"
@@ -23,7 +21,7 @@ class StreamTokenTests: XCTestCase {
         let token = reader.read(line).first!
 
         let monsters = token.monsters()
-        
+
         XCTAssertEqual(monsters.count, 3)
     }
 }

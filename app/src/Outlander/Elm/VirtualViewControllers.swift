@@ -16,7 +16,7 @@ indirect enum ViewController<Message> {
         case let ._viewController(vc, useLayoutGuide): return ._viewController(vc.map(transform), useLayoutGuide: useLayoutGuide)
         }
     }
-    
+
     static func viewController(_ view: View<Message>, useLayoutGuide: Bool = true) -> ViewController {
         return ._viewController(view, useLayoutGuide: useLayoutGuide)
     }

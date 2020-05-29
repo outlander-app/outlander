@@ -6,8 +6,8 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 struct Credentials {
     var account: String
@@ -16,24 +16,23 @@ struct Credentials {
     var game: String
 }
 
-class GameViewController : NSViewController {
+class GameViewController: NSViewController {
+    @IBOutlet var commandInput: HistoryTextField!
+    @IBOutlet var gameWindowContainer: OView!
+    @IBOutlet var vitalsBar: VitalsBar!
 
-    @IBOutlet weak var commandInput: HistoryTextField!
-    @IBOutlet weak var gameWindowContainer: OView!
-    @IBOutlet weak var vitalsBar: VitalsBar!
-    
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
-    var applicationSettings:ApplicationSettings? {
+    var applicationSettings: ApplicationSettings? {
         didSet {
-            self.gameContext.applicationSettings = self.applicationSettings!
+            gameContext.applicationSettings = applicationSettings!
         }
     }
 
-    var gameWindows:[String:WindowViewController] = [:]
+    var gameWindows: [String: WindowViewController] = [:]
 
     var authServer: AuthenticationServer?
     var gameServer: GameServer?
@@ -41,41 +40,40 @@ class GameViewController : NSViewController {
     var gameContext = GameContext()
 
     var credentials: Credentials?
-    
+
     var windowLayoutLoader: WindowLayoutLoader?
     var fileSystem: FileSystem?
-    
-    var commandProcessor:CommandProcesssor?
+
+    var commandProcessor: CommandProcesssor?
 
     var roundtime: RoundtimeTimer?
     var spelltime: SpellTimer?
 
     override func viewDidLoad() {
-
-        self.roundtime = RoundtimeTimer(self.gameContext, variable: "roundtime")
-        self.roundtime?.interval = {[weak self]value in
+        roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
+        roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("RT: \(value.value) / \(value.percent)")
                 self?.commandInput.progress = value.percent
             }
         }
 
-        self.spelltime = SpellTimer(self.gameContext, variable: "spelltime")
-        self.spelltime?.interval = {[weak self]value in
+        spelltime = SpellTimer(gameContext, variable: "spelltime")
+        spelltime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("Spell RT: \(value.value) / \(value.percent)")
             }
         }
 
-        self.fileSystem = LocalFileSystem(self.gameContext.applicationSettings)
-        self.windowLayoutLoader = WindowLayoutLoader(self.fileSystem!)
-        self.commandProcessor = CommandProcesssor(self.fileSystem!)
+        fileSystem = LocalFileSystem(gameContext.applicationSettings)
+        windowLayoutLoader = WindowLayoutLoader(fileSystem!)
+        commandProcessor = CommandProcesssor(fileSystem!)
 
         authServer = AuthenticationServer()
 
-        gameServer = GameServer({ [weak self] state in
+        gameServer = GameServer { [weak self] state in
             switch state {
-            case .data(_, let str):
+            case let .data(_, str):
                 self?.log.rawStream(str)
                 self?.gameStream?.stream(str)
             case .closed:
@@ -84,19 +82,19 @@ class GameViewController : NSViewController {
             default:
                 self?.log.info("\(state)")
             }
-        })
+        }
 
-        gameStream = GameStream(context: self.gameContext, streamCommands: {[weak self] command in
+        gameStream = GameStream(context: gameContext, streamCommands: { [weak self] command in
             switch command {
-            case .text(let tags):
+            case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
                 }
 
-            case .vitals(let name, let value):
+            case let .vitals(name, value):
                 self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
 
-            case .roundtime(let date):
+            case let .roundtime(date):
                 let time = self?.gameContext.globalVars["gametime"] ?? ""
                 let updated = self?.gameContext.globalVars["gametimeupdate"] ?? ""
 
@@ -110,22 +108,22 @@ class GameViewController : NSViewController {
                     self?.roundtime?.set(Int(rounded))
                 }
 
-            case .clearStream(let name):
+            case let .clearStream(name):
                 self?.clearWindow(name)
 
-            case .createWindow(let name, _, _):
+            case let .createWindow(name, _, _):
                 self?.maybeCreateWindow(name)
 
             case .room:
                 self?.updateRoom()
 
-            case .character(let game, let character):
+            case let .character(game, character):
                 DispatchQueue.main.async {
                     if let win = self?.view.window {
                         win.title = "\(game): \(character) - Outlander 2"
                     }
                 }
-            case .spell(let spell):
+            case let .spell(spell):
                 DispatchQueue.main.async {
                     self?.spelltime?.set(spell)
                 }
@@ -135,11 +133,11 @@ class GameViewController : NSViewController {
             }
         })
 
-        self.commandInput.executeCommand = {command in
+        commandInput.executeCommand = { command in
             self.commandProcessor!.process(command, with: self.gameContext)
         }
 
-        self.commandInput.becomeFirstResponder()
+        commandInput.becomeFirstResponder()
 
 //        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
 //        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
@@ -148,7 +146,7 @@ class GameViewController : NSViewController {
 //        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
 //        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
 
-        self.gameContext.events.handle(self, channel: "ol:gamecommand") { result in
+        gameContext.events.handle(self, channel: "ol:gamecommand") { result in
             guard let command = result as? Command2 else {
                 return
             }
@@ -156,55 +154,55 @@ class GameViewController : NSViewController {
             self.logText("\(command.command)\n", playerCommand: !command.isSystemCommand)
             self.gameServer?.sendCommand(command.command)
         }
-        
-        self.gameContext.events.handle(self, channel: "ol:command") { result in
+
+        gameContext.events.handle(self, channel: "ol:command") { result in
             guard let command = result as? Command2 else {
                 return
             }
-            
+
             self.commandProcessor?.process(command, with: self.gameContext)
         }
 
-        self.gameContext.events.handle(self, channel: "ol:echo") { result in
+        gameContext.events.handle(self, channel: "ol:echo") { result in
             if let tag = result as? TextTag {
                 self.logTag(tag)
             }
         }
 
-        self.gameContext.events.handle(self, channel: "ol:window") { result in
-            if let dict = result as? [String:String] {
+        gameContext.events.handle(self, channel: "ol:window") { result in
+            if let dict = result as? [String: String] {
                 let action = dict["action"] ?? ""
                 let window = dict["window"] ?? ""
                 self.processWindowCommand(action, window: window)
             }
         }
 
-        self.gameContext.events.handle(self, channel: "ol:text") { result in
+        gameContext.events.handle(self, channel: "ol:text") { result in
             if let text = result as? String {
                 self.logText(text)
             }
         }
 
-        self.gameContext.events.handle(self, channel: "ol:error") { result in
+        gameContext.events.handle(self, channel: "ol:error") { result in
             if let text = result as? String {
                 self.logError(text)
             }
         }
 
-        self.loginWindow = LoginWindow()
-        self.profileWindow = ProfileWindow()
-        self.profileWindow?.context = self.gameContext
+        loginWindow = LoginWindow()
+        profileWindow = ProfileWindow()
+        profileWindow?.context = gameContext
 
-        self.loadSettings()
+        loadSettings()
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
-        self.gameContext.events.unregister(self)
+        gameContext.events.unregister(self)
     }
 
     func showLogin() {
-        self.view.window?.beginSheet(self.loginWindow!.window!, completionHandler: {result in
+        view.window?.beginSheet(loginWindow!.window!, completionHandler: { result in
             guard result == .OK else {
                 return
             }
@@ -212,7 +210,8 @@ class GameViewController : NSViewController {
                 account: self.loginWindow!.account,
                 password: self.loginWindow!.password,
                 character: self.loginWindow!.character,
-                game: self.loginWindow!.game)
+                game: self.loginWindow!.game
+            )
 
             self.gameContext.applicationSettings.profile.update(with: self.credentials!)
             self.connect()
@@ -220,7 +219,7 @@ class GameViewController : NSViewController {
     }
 
     func showProfileSelection() {
-        self.view.window?.beginSheet(self.profileWindow!.window!, completionHandler: {result in
+        view.window?.beginSheet(profileWindow!.window!, completionHandler: { result in
             guard result == .OK else {
                 return
             }
@@ -235,12 +234,12 @@ class GameViewController : NSViewController {
     }
 
     func loadSettings() {
-        ProfileLoader(self.fileSystem!).load(self.gameContext)
-        self.reloadWindows(self.gameContext.applicationSettings.profile.layout) {
+        ProfileLoader(fileSystem!).load(gameContext)
+        reloadWindows(gameContext.applicationSettings.profile.layout) {
             self.reloadTheme()
             self.printSettingsLocations()
             self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: true, playerCommand: false)
-            
+
             self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
@@ -248,36 +247,34 @@ class GameViewController : NSViewController {
     }
 
     func printSettingsLocations() {
-        self.logText("Config: \(self.gameContext.applicationSettings.paths.config.path)\n", mono: true, playerCommand: false)
-        self.logText("Profile: \(self.gameContext.applicationSettings.currentProfilePath.path)\n", mono: true, playerCommand: false)
-        self.logText("Maps: \(self.gameContext.applicationSettings.paths.maps.path)\n", mono: true, playerCommand: false)
-        self.logText("Scripts: \(self.gameContext.applicationSettings.paths.scripts.path)\n", mono: true, playerCommand: false)
-        self.logText("Logs: \(self.gameContext.applicationSettings.paths.logs.path)\n", mono: true, playerCommand: false)
+        logText("Config: \(gameContext.applicationSettings.paths.config.path)\n", mono: true, playerCommand: false)
+        logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: true, playerCommand: false)
+        logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: true, playerCommand: false)
+        logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: true, playerCommand: false)
+        logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: true, playerCommand: false)
     }
 
-    func reloadTheme() {
-    }
+    func reloadTheme() {}
 
     public func command(_ command: String) {
-
         if command == "layout:LoadDefault" {
-            self.gameContext.applicationSettings.profile.layout = "default.cfg"
-            self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: "default.cfg")
-            self.reloadWindows("default.cfg") {
+            gameContext.applicationSettings.profile.layout = "default.cfg"
+            gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: "default.cfg")
+            reloadWindows("default.cfg") {
                 self.reloadTheme()
             }
         }
 
         if command == "layout:SaveDefault" {
-            self.gameContext.applicationSettings.profile.layout = "default.cfg"
+            gameContext.applicationSettings.profile.layout = "default.cfg"
             let layout = buildWindowsLayout()
-            self.windowLayoutLoader?.save(
-                self.applicationSettings!,
+            windowLayoutLoader?.save(
+                applicationSettings!,
                 file: "default.cfg",
                 windows: layout
             )
         }
-        
+
         if command == "layout:Load" {
             let openPanel = NSOpenPanel()
             openPanel.message = "Choose your Outlander layout file"
@@ -289,10 +286,10 @@ class GameViewController : NSViewController {
             openPanel.canChooseDirectories = false
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
-                self.gameContext.applicationSettings.profile.layout = url.lastPathComponent
-                self.gameContext.layout = self.windowLayoutLoader?.load(self.gameContext.applicationSettings, file: url.lastPathComponent)
-                self.removeAllWindows()
-                self.reloadWindows(url.lastPathComponent) {
+                gameContext.applicationSettings.profile.layout = url.lastPathComponent
+                gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: url.lastPathComponent)
+                removeAllWindows()
+                reloadWindows(url.lastPathComponent) {
                     self.reloadTheme()
                 }
             }
@@ -309,11 +306,11 @@ class GameViewController : NSViewController {
             openPanel.canChooseDirectories = false
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
-                self.gameContext.applicationSettings.profile.layout = url.lastPathComponent
+                gameContext.applicationSettings.profile.layout = url.lastPathComponent
 
                 let layout = buildWindowsLayout()
-                self.windowLayoutLoader?.save(
-                    self.applicationSettings!,
+                windowLayoutLoader?.save(
+                    applicationSettings!,
                     file: url.lastPathComponent,
                     windows: layout
                 )
@@ -322,70 +319,67 @@ class GameViewController : NSViewController {
     }
 
     func buildWindowsLayout() -> WindowLayout {
-        
-        let mainWindow = self.view.window!
+        let mainWindow = view.window!
 
         let primary = WindowData()
         primary.x = Double(mainWindow.frame.maxX)
         primary.y = Double(mainWindow.frame.maxY)
         primary.height = Double(mainWindow.frame.height)
         primary.width = Double(mainWindow.frame.width)
-        
+
         let windows = [WindowData()]
 
         return WindowLayout(primary: primary, windows: windows)
     }
 
     public func processWindowCommand(_ action: String, window: String) {
-        
         if action == "clear" {
             guard !window.isEmpty else {
                 return
             }
-            
-            self.clearWindow(window)
+
+            clearWindow(window)
         }
-        
-        if action == "add" {
-        }
+
+        if action == "add" {}
 
         if action == "reload" {
             // TODO: reload theme
-            self.removeAllWindows()
-            self.reloadWindows(self.gameContext.applicationSettings.profile.layout)
+            removeAllWindows()
+            reloadWindows(gameContext.applicationSettings.profile.layout)
         }
-        
+
         if action == "hide" {
             guard !window.isEmpty else {
                 return
             }
-            self.hideWindow(window)
+            hideWindow(window)
         }
-        
+
         if action == "show" {
             guard !window.isEmpty else {
                 return
             }
-            self.showWindow(window)
+            showWindow(window)
         }
 
         if action == "list" {
-            self.logText("\nWindows:\n", mono: true, playerCommand: false)
-            let sortedWindows = self.gameWindows.sorted { ($0.1.visible && !$1.1.visible) }
+            logText("\nWindows:\n", mono: true, playerCommand: false)
+            let sortedWindows = gameWindows.sorted { ($0.1.visible && !$1.1.visible) }
             for win in sortedWindows {
                 let frame = win.value.view.frame
                 let hidden = win.value.visible ? "" : "(hidden) "
                 let closedTarget = win.value.closedTarget ?? ""
                 let closedDisplay = closedTarget.count > 0 ? "->\(closedTarget)" : ""
-                self.logText("    \(hidden)\(win.key)\(closedDisplay): (x:\(frame.maxX), y:\(frame.maxY)), (h:\(frame.height), w:\(frame.width))\n", mono: true, playerCommand: false)
+                logText("    \(hidden)\(win.key)\(closedDisplay): (x:\(frame.maxX), y:\(frame.maxY)), (h:\(frame.height), w:\(frame.width))\n", mono: true, playerCommand: false)
             }
-            
-            self.logText("\n", playerCommand: false)
+
+            logText("\n", playerCommand: false)
         }
     }
 
-    @IBAction func Send(_ sender: Any) {
-        self.commandInput.commitHistory()
+    @IBAction func Send(_: Any) {
+        commandInput.commitHistory()
     }
 
     func connect() {
@@ -393,33 +387,34 @@ class GameViewController : NSViewController {
             return
         }
 
-        let host = self.gameContext.applicationSettings.authenticationServerAddress
-        let port = self.gameContext.applicationSettings.authenticationServerPort
+        let host = gameContext.applicationSettings.authenticationServerAddress
+        let port = gameContext.applicationSettings.authenticationServerPort
 
-        self.logText("Connecting to authentication server at \(host):\(port)\n")
+        logText("Connecting to authentication server at \(host):\(port)\n")
 
-        self.authServer?.authenticate(
+        authServer?.authenticate(
             AuthInfo(
-                host: self.gameContext.applicationSettings.authenticationServerAddress,
-                port: self.gameContext.applicationSettings.authenticationServerPort,
+                host: gameContext.applicationSettings.authenticationServerAddress,
+                port: gameContext.applicationSettings.authenticationServerPort,
                 account: credentials.account,
                 password: credentials.password,
                 game: credentials.game,
-                character: credentials.character),
+                character: credentials.character
+            ),
             callback: { [weak self] result in
 
                 switch result {
 //                case .connected:
 //                    self?.logText("Connected to authentication server\n")
 
-                case .success(let connection):
+                case let .success(connection):
                     self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n")
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                 case .closed:
                     self?.logText("Disconnected from authentication server\n")
 
-                case .error(let error):
+                case let .error(error):
                     self?.logError("\(error)\n")
 
                 default:
@@ -430,22 +425,22 @@ class GameViewController : NSViewController {
     }
 
     func updateRoom() {
-        if let window = self.gameWindows["room"] {
-            let tags = self.gameContext.buildRoomTags()
+        if let window = gameWindows["room"] {
+            let tags = gameContext.buildRoomTags()
             window.clearAndAppend(tags, highlightMonsters: true)
         }
     }
-    
+
     func removeAllWindows() {
-        for (_, win) in self.gameWindows {
-            self.hideWindow(win.name, withNotification: true)
+        for (_, win) in gameWindows {
+            hideWindow(win.name, withNotification: true)
         }
-        
-        self.gameWindows.removeAll()
+
+        gameWindows.removeAll()
     }
 
-    func reloadWindows(_ file:String, callback: (() -> Void)? = nil) {
-        if let layout = self.gameContext.layout {
+    func reloadWindows(_ file: String, callback: (() -> Void)? = nil) {
+        if let layout = gameContext.layout {
             DispatchQueue.main.async {
                 if let mainView = self.view as? OView {
                     mainView.backgroundColor = NSColor(hex: layout.primary.backgroundColor)
@@ -456,8 +451,9 @@ class GameViewController : NSViewController {
                         x: layout.primary.x,
                         y: layout.primary.y,
                         width: layout.primary.width,
-                        height: layout.primary.height),
-                                 display: true)
+                        height: layout.primary.height
+                    ),
+                                        display: true)
                 }
 
                 for win in layout.windows {
@@ -473,24 +469,24 @@ class GameViewController : NSViewController {
     }
 
     func windowFor(name: String) -> String? {
-        if let window = self.gameWindows[name] {
+        if let window = gameWindows[name] {
             if window.visible { return name }
-            
+
             if let closedTarget = window.closedTarget, closedTarget.count > 0 {
                 return windowFor(name: closedTarget)
             }
 
             return nil
         }
-        
+
         return "main"
     }
 
     func maybeCreateWindow(_ name: String) {
-        guard self.gameWindows[name] == nil else {
+        guard gameWindows[name] == nil else {
             return
         }
-        
+
         let settings = WindowData()
         settings.name = name
         settings.visible = 0
@@ -498,12 +494,12 @@ class GameViewController : NSViewController {
         settings.y = 0
         settings.height = 200
         settings.width = 200
-        
-        self.addWindow(settings)
+
+        addWindow(settings)
     }
 
     func clearWindow(_ name: String) {
-        if let window = self.gameWindows[name] {
+        if let window = gameWindows[name] {
             window.clear()
         }
     }
@@ -522,8 +518,8 @@ class GameViewController : NSViewController {
     func createWindow(_ settings: WindowData) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
         let controller = storyboard.instantiateInitialController() as? WindowViewController
-        
-        controller?.gameContext = self.gameContext
+
+        controller?.gameContext = gameContext
 
         controller?.name = settings.name
         controller?.visible = settings.visible == 1
@@ -541,25 +537,24 @@ class GameViewController : NSViewController {
     func showWindow(_ name: String) {
         DispatchQueue.main.async {
             if let window = self.gameWindows[name] {
-
                 if !window.view.isDescendant(of: self.gameWindowContainer) {
                     self.gameWindowContainer.addSubview(window.view)
                 }
-    
+
                 window.visible = true
                 // TODO: bring window to front
             }
         }
     }
-    
-    func hideWindow(_ name: String, withNotification:Bool = true) {
-        if let win = self.gameWindows[name] {
+
+    func hideWindow(_ name: String, withNotification: Bool = true) {
+        if let win = gameWindows[name] {
             win.view.removeFromSuperview()
             win.visible = false
         }
-    
+
         if withNotification {
-            self.logText("\(name) window closed\n")
+            logText("\(name) window closed\n")
         }
     }
 
@@ -572,7 +567,7 @@ class GameViewController : NSViewController {
     }
 
     func logTag(_ tag: TextTag) {
-        if let windowName = windowFor(name: tag.window), let window = self.gameWindows[windowName] {
+        if let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] {
             window.append(tag)
         }
     }

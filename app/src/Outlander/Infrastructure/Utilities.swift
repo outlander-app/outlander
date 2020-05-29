@@ -6,9 +6,8 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-public class Stack<T>
-{
-    private var stack:[T] = []
+public class Stack<T> {
+    private var stack: [T] = []
 
     public func push(_ item: T) {
         stack.append(item)
@@ -25,7 +24,7 @@ public class Stack<T>
     public func hasItems() -> Bool {
         return stack.count > 0
     }
-    
+
     public func count() -> Int {
         return stack.count
     }
@@ -36,11 +35,11 @@ public class Stack<T>
 }
 
 class RegexFactory {
-    static let get: (String) -> (Regex?) = memoize { (pattern:String) in try? Regex(pattern, options: [.caseInsensitive])}
+    static let get: (String) -> (Regex?) = memoize { (pattern: String) in try? Regex(pattern, options: [.caseInsensitive]) }
 }
 
-func memoize<T: Hashable, U>(work: @escaping (T)->U) -> (T)->U {
-    var memo = Dictionary<T, U>()
+func memoize<T: Hashable, U>(work: @escaping (T) -> U) -> (T) -> U {
+    var memo = [T: U]()
 
     return { x in
         if let q = memo[x] {
