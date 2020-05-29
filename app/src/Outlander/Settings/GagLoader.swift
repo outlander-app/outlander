@@ -48,6 +48,12 @@ class GagLoader {
     func load(_ settings: ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
         
+        context.gags.removeAll()
+        
+        guard let data = files.load(fileUrl) else {
+            return
+        }
+        
         guard let content = String(data: data, encoding: .utf8) else {
             return
         }
