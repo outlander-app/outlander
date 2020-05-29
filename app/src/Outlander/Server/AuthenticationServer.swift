@@ -71,7 +71,8 @@ class AuthenticationServer {
             default:
                 self?.log.info("Auth Server socket state change \(state)")
             }
-        })
+        }, queue: DispatchQueue.main)
+
         _socket?.connect(host: authInfo.host, port: authInfo.port)
     }
 

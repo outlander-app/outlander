@@ -28,7 +28,7 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
     private var _socket: GCDAsyncSocket?
     private var _callback: (SocketState) -> Void
 
-    init(_ callback: @escaping (SocketState) -> (), queue: DispatchQueue = DispatchQueue.main) {
+    init(_ callback: @escaping (SocketState) -> Void, queue: DispatchQueue) {
         _callback = callback
         super.init()
 
