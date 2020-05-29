@@ -6,13 +6,13 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 struct Context<Message> {
     let viewController: NSViewController
-    let send: (Message) -> ()
-    
+    let send: (Message) -> Void
+
     func map<B>(_ transform: @escaping (B) -> Message) -> Context<B> {
         return Context<B>(viewController: viewController, send: {
             self.send(transform($0))
@@ -21,8 +21,8 @@ struct Context<Message> {
 }
 
 struct Command<Message> {
-    let run: (Context<Message>) -> ()
-    
+    let run: (Context<Message>) -> Void
+
     func map<B>(_ transform: @escaping (Message) -> B) -> Command<B> {
         return Command<B> { context in
             self.run(context.map(transform))
@@ -35,12 +35,12 @@ enum Subscription<Action> {
 }
 
 final class NotificationSubscription<Action> {
-    let name: (Notification.Name)
+    let name: Notification.Name
     var action: (Notification) -> Action
-    let send: (Action) -> ()
-    init(_ name: Notification.Name, handle: @escaping (Notification) -> Action, send: @escaping (Action) -> ()) {
+    let send: (Action) -> Void
+    init(_ name: Notification.Name, handle: @escaping (Notification) -> Action, send: @escaping (Action) -> Void) {
         self.name = name
-        self.action = handle
+        action = handle
         self.send = send
         NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [unowned self] note in
             self.send(self.action(note))

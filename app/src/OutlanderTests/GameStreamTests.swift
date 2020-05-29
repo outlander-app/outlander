@@ -6,13 +6,12 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import XCTest
 @testable import Outlander
+import XCTest
 
-class GameStreamTests : XCTestCase {
-    
-    func streamCommands(_ lines: [String], context: GameContext = GameContext(), monsterIgnoreList:String = "") -> [StreamCommand] {
-        var commands:[StreamCommand] = []
+class GameStreamTests: XCTestCase {
+    func streamCommands(_ lines: [String], context: GameContext = GameContext(), monsterIgnoreList: String = "") -> [StreamCommand] {
+        var commands: [StreamCommand] = []
         let context = context
 
         let stream = GameStream(context: context) { cmd in
@@ -21,42 +20,42 @@ class GameStreamTests : XCTestCase {
         stream.monsterCountIgnoreList = monsterIgnoreList
 
         stream.resetSetup(true)
-        
+
         for line in lines {
             stream.stream(line)
         }
-        
+
         return commands
     }
 
     func testBasics() {
         let context = GameContext()
-        let stream = GameStream(context: context) { cmd in }
+        let stream = GameStream(context: context) { _ in }
         stream.stream("Please wait for connection to game server.\r\n")
     }
 
     func testCombinedTags() {
         let commands = streamCommands([
             "Please wait for connection to game server.\r\n",
-            "<prompt time=\"1576081991\">&gt;</prompt>\r\n"
+            "<prompt time=\"1576081991\">&gt;</prompt>\r\n",
         ])
 
         XCTAssertEqual(commands.count, 1)
-        
+
         switch commands[0] {
-        case .text(let tags):
+        case let .text(tags):
             XCTAssertEqual(tags.count, 2)
         default:
             XCTFail()
         }
     }
-    
+
     func testStreamRoomObjTags() {
         let context = GameContext()
         let commands = streamCommands([
-            "<component id='room objs'>You also see a stick.</component>\r\n"
+            "<component id='room objs'>You also see a stick.</component>\r\n",
         ], context: context)
-        
+
         XCTAssertEqual(commands.count, 1)
 
         switch commands[0] {
@@ -70,7 +69,7 @@ class GameStreamTests : XCTestCase {
     func testStreamRoomExitsTags() {
         let context = GameContext()
         let commands = streamCommands([
-            "<component id='room exits'>Obvious paths: <d>north</d>, <d>south</d>.<compass></compass></component>\r\n"
+            "<component id='room exits'>Obvious paths: <d>north</d>, <d>south</d>.<compass></compass></component>\r\n",
         ], context: context)
 
         XCTAssertEqual(commands.count, 1)
@@ -82,11 +81,11 @@ class GameStreamTests : XCTestCase {
             XCTFail()
         }
     }
-    
+
     func testStreamRoomDescTags() {
         let context = GameContext()
         let commands = streamCommands([
-            "<component id='room desc'>The stone road, once the pinnacle of craftsmanship, is cracked and worn.</component>\r\n"
+            "<component id='room desc'>The stone road, once the pinnacle of craftsmanship, is cracked and worn.</component>\r\n",
         ], context: context)
 
         XCTAssertEqual(commands.count, 1)
@@ -102,7 +101,7 @@ class GameStreamTests : XCTestCase {
     func testStreamCompass() {
         let context = GameContext()
         let commands = streamCommands([
-            "<compass><dir value=\"sw\"/><dir value=\"nw\"/></compass>"
+            "<compass><dir value=\"sw\"/><dir value=\"nw\"/></compass>",
         ], context: context)
 
         XCTAssertEqual(commands.count, 1)
@@ -127,11 +126,11 @@ class GameStreamTests : XCTestCase {
     func test_stream_room_objs_with_monsters() {
         let context = GameContext()
         let commands = streamCommands([
-            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n"
+            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n",
         ], context: context)
 
         XCTAssertEqual(commands.count, 1)
-        
+
         switch commands[0] {
         case .room:
             XCTAssertEqual(context.globalVars["roomobjs"], "You also see a juvenile wyvern, a juvenile wyvern, a rocky path, a juvenile wyvern and some junk.")
@@ -146,7 +145,7 @@ class GameStreamTests : XCTestCase {
     func test_stream_room_objs_with_monsters_with_ignore_list() {
         let context = GameContext()
         let commands = streamCommands([
-            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and <pushBold/>a great horned owl<popBold/>.</component>\n"
+            "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and <pushBold/>a great horned owl<popBold/>.</component>\n",
         ], context: context, monsterIgnoreList: "great horned owl")
 
         XCTAssertEqual(commands.count, 1)
@@ -163,22 +162,19 @@ class GameStreamTests : XCTestCase {
     }
 }
 
-class GameStreamTokenizerTests : XCTestCase {
-    
-    var reader:GameStreamTokenizer = GameStreamTokenizer()
+class GameStreamTokenizerTests: XCTestCase {
+    var reader: GameStreamTokenizer = GameStreamTokenizer()
 
-    override func setUp() {
-    }
+    override func setUp() {}
 
-    override func tearDown() {
-    }
-    
+    override func tearDown() {}
+
     func testHandlesText() {
         let tokens = reader.read("Copyright 2019 Simutronics Corp.\n")
         XCTAssertEqual(tokens.count, 1)
         let token = tokens[0]
         XCTAssertEqual(token.name(), "text")
-        
+
         let tokens2 = reader.read("Copyright 2019 Simutronics Corp.\n")
         XCTAssertEqual(tokens2[0].name(), "text")
     }
@@ -237,33 +233,33 @@ class GameStreamTokenizerTests : XCTestCase {
         XCTAssertEqual(tokens.count, 2)
         let token = tokens[0]
         XCTAssertEqual(token.name(), "app")
-        
+
         XCTAssertTrue(token.hasAttr("char"))
         XCTAssertEqual(token.attr("char"), "Arneson")
-        
+
         XCTAssertTrue(token.hasAttr("game"))
         XCTAssertEqual(token.attr("game"), "DR")
-        
+
         XCTAssertTrue(token.hasAttr("title"))
         XCTAssertEqual(token.attr("title"), "[DR: Arneson] StormFront")
     }
-    
+
     func testReadsTagTicQuotes() {
         let tokens = reader.read("<roundTime value='1563329043'/>\n")
         XCTAssertEqual(tokens.count, 2)
         let token = tokens[0]
         XCTAssertEqual(token.name(), "roundtime")
-        
+
         XCTAssertTrue(token.hasAttr("value"))
         XCTAssertEqual(token.attr("value"), "1563329043")
     }
-    
+
     func testReadsTagTicQuotesWithQuote() {
         let tokens = reader.read("<test value='some \"message\"'/>\n")
         XCTAssertEqual(tokens.count, 2)
         let token = tokens[0]
         XCTAssertEqual(token.name(), "test")
-        
+
         XCTAssertTrue(token.hasAttr("value"))
         XCTAssertEqual(token.attr("value"), "some \"message\"")
     }
@@ -320,14 +316,14 @@ class GameStreamTokenizerTests : XCTestCase {
         XCTAssertTrue(token.hasAttr("subtitle"))
         XCTAssertEqual(token.attr("subtitle"), " - [\"Kertigen's Honor\"]")
     }
-    
+
     func testParsesRoomExits() {
         let tokens = reader.read(
             "<component id='room exits'>Obvious paths: <d>northeast</d>, <d>south</d>, <d>northwest</d>.<compass></compass></component>\n"
         )
-        
+
         XCTAssertEqual(tokens.count, 2)
-        
+
         let token = tokens[0]
         XCTAssertEqual(token.name(), "component")
         XCTAssertEqual(token.children().count, 8)
@@ -339,7 +335,7 @@ class GameStreamTokenizerTests : XCTestCase {
         )
 
         XCTAssertEqual(tokens.count, 2)
-        
+
         let token = tokens[0]
         XCTAssertEqual(token.name(), "component")
         XCTAssertEqual(token.children().count, 13)

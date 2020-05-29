@@ -8,39 +8,38 @@
 
 import Foundation
 
-extension Regex : Hashable {
+extension Regex: Hashable {
     static func == (lhs: Regex, rhs: Regex) -> Bool {
         return lhs.pattern == rhs.pattern
     }
-    
+
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self.pattern)
+        hasher.combine(pattern)
     }
 }
 
 class Regex {
-
     var pattern: String
     var expression: NSRegularExpression
 
     init(_ pattern: String, options: NSRegularExpression.Options = []) throws {
         self.pattern = pattern
-        self.expression = try NSRegularExpression(pattern: pattern, options: options)
+        expression = try NSRegularExpression(pattern: pattern, options: options)
     }
-    
+
     public func replace(_ input: String, with template: String) -> String {
         let range = NSRange(input.startIndex..., in: input)
-        return self.expression.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: template)
+        return expression.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: template)
     }
 
     public func matches(_ input: String) -> [Range<String.Index>] {
-        guard let result = self.expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
+        guard let result = expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
             return []
         }
 
         var ranges: [Range<String.Index>] = []
-        
-        for i in 0..<result.numberOfRanges {
+
+        for i in 0 ..< result.numberOfRanges {
             let range = result.range(at: i)
             if let rng = Range(range, in: input) {
                 ranges.append(rng)
@@ -52,11 +51,11 @@ class Regex {
 
     public func hasMatches(_ input: String) -> Bool {
         var input2 = input
-        return self.firstMatch(&input2) != nil
+        return firstMatch(&input2) != nil
     }
 
     public func firstMatch(_ input: inout String) -> MatchResult? {
-        guard let result = self.expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
+        guard let result = expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
             return nil
         }
 
@@ -64,9 +63,9 @@ class Regex {
     }
 
     public func allMatches(_ input: inout String) -> [MatchResult] {
-        let results = self.expression.matches(in: input, range: NSRange(location: 0, length: input.utf8.count))
+        let results = expression.matches(in: input, range: NSRange(location: 0, length: input.utf8.count))
         return results.map { res in
-            return MatchResult(&input, result: res)
+            MatchResult(&input, result: res)
         }
     }
 }
@@ -79,31 +78,29 @@ class MatchResult {
         self.input = input
         self.result = result
     }
-    
+
     var count: Int {
-        get {
-            return self.result.numberOfRanges
-        }
+        return result.numberOfRanges
     }
 
     func rangeOf(index: Int) -> NSRange? {
-        guard index < self.result.numberOfRanges else {
+        guard index < result.numberOfRanges else {
             return nil
         }
 
-        return self.result.range(at: index)
+        return result.range(at: index)
     }
 
     func valueAt(index: Int) -> String? {
-        guard index < self.result.numberOfRanges else {
+        guard index < result.numberOfRanges else {
             return nil
         }
-        
-        let rangeIndex = self.result.range(at: index)
-        if let range = Range(rangeIndex, in: self.input) {
-            return String(self.input[range])
+
+        let rangeIndex = result.range(at: index)
+        if let range = Range(rangeIndex, in: input) {
+            return String(input[range])
         }
-        
+
         return nil
     }
 }

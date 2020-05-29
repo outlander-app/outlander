@@ -12,7 +12,6 @@ import Foundation
 
 // source: https://github.com/cesarferreira/SwiftEventBus/blob/master/SwiftEventBus/SwiftEventBus.swift
 open class SwiftEventBus {
-
     struct Static {
         static let instance = SwiftEventBus()
         static let queue = DispatchQueue(label: "com.outlander.SwiftEventBus", attributes: [])
@@ -23,8 +22,7 @@ open class SwiftEventBus {
         let name: String
     }
 
-    var cache = [UInt:[NamedObserver]]()
-
+    var cache = [UInt: [NamedObserver]]()
 
     ////////////////////////////////////
     /// Publish
@@ -59,8 +57,6 @@ open class SwiftEventBus {
             NotificationCenter.default.post(name: Notification.Name(rawValue: name), object: sender, userInfo: userInfo)
         }
     }
-
-
 
     ////////////////////////////////////
     /// Subscribe
@@ -114,16 +110,15 @@ open class SwiftEventBus {
 
         Static.queue.sync {
             if let namedObservers = Static.instance.cache[id] {
-                Static.instance.cache[id] = namedObservers.filter({ (namedObserver: NamedObserver) -> Bool in
+                Static.instance.cache[id] = namedObservers.filter { (namedObserver: NamedObserver) -> Bool in
                     if namedObserver.name == name {
                         center.removeObserver(namedObserver.observer)
                         return false
                     } else {
                         return true
                     }
-                })
+                }
             }
         }
     }
-
 }

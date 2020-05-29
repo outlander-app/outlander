@@ -9,10 +9,10 @@
 import Cocoa
 
 class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
-    @IBOutlet weak var accountTextField: NSTextField?
-    @IBOutlet weak var passwordTextField: NSSecureTextField?
-    @IBOutlet weak var characterTextField: NSTextField?
-    @IBOutlet weak var gameComboBox: NSComboBox?
+    @IBOutlet var accountTextField: NSTextField?
+    @IBOutlet var passwordTextField: NSSecureTextField?
+    @IBOutlet var characterTextField: NSTextField?
+    @IBOutlet var gameComboBox: NSComboBox?
 
     override var windowNibName: String! {
         return "LoginWindow"
@@ -26,35 +26,35 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     override func windowDidLoad() {
         super.windowDidLoad()
 
-        self.gameComboBox?.removeAllItems()
-        self.gameComboBox?.addItems(withObjectValues: ["DR", "DRX", "DRF", "DRT"])
-       
-        self.accountTextField?.stringValue = self.account
-        self.passwordTextField?.stringValue = self.password
-        self.gameComboBox?.stringValue = self.game
-        self.characterTextField?.stringValue = self.character
+        gameComboBox?.removeAllItems()
+        gameComboBox?.addItems(withObjectValues: ["DR", "DRX", "DRF", "DRT"])
+
+        accountTextField?.stringValue = account
+        passwordTextField?.stringValue = password
+        gameComboBox?.stringValue = game
+        characterTextField?.stringValue = character
     }
 
-    @IBAction func connect(_ sender: Any) {
-        self.setValues()
-        self.window!.sheetParent!.endSheet(self.window!, returnCode: .OK)
+    @IBAction func connect(_: Any) {
+        setValues()
+        window!.sheetParent!.endSheet(window!, returnCode: .OK)
     }
 
-    @IBAction func cancel(_ sender: Any) {
-        self.setValues()
-        self.window!.sheetParent!.endSheet(self.window!, returnCode: .cancel)
+    @IBAction func cancel(_: Any) {
+        setValues()
+        window!.sheetParent!.endSheet(window!, returnCode: .cancel)
     }
 
-    func controlTextDidEndEditing(_ obj: Notification) {
-        self.game = self.gameComboBox?.stringValue ?? "DR"
+    func controlTextDidEndEditing(_: Notification) {
+        game = gameComboBox?.stringValue ?? "DR"
     }
 
     private func setValues() {
-        self.account = self.accountTextField?.stringValue ?? ""
-        self.password = self.passwordTextField?.stringValue ?? ""
-        self.game = self.gameComboBox?.stringValue ?? ""
-        self.character = self.characterTextField?.stringValue ?? ""
-        
-        self.passwordTextField?.stringValue = ""
+        account = accountTextField?.stringValue ?? ""
+        password = passwordTextField?.stringValue ?? ""
+        game = gameComboBox?.stringValue ?? ""
+        character = characterTextField?.stringValue ?? ""
+
+        passwordTextField?.stringValue = ""
     }
 }

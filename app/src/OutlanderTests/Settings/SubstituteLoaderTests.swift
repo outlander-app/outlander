@@ -9,22 +9,21 @@
 import XCTest
 
 class SubstituteLoaderTests: XCTestCase {
-
     let fileSystem = InMemoryFileSystem()
     var loader: SubstituteLoader?
     let context = GameContext()
 
     override func setUp() {
-        self.loader = SubstituteLoader(fileSystem)
+        loader = SubstituteLoader(fileSystem)
     }
 
     func test_load() {
-        self.fileSystem.contentToLoad =
-"""
-#subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
-#subs {blinding mana to the} {blinding mana (21/21) to the}
+        fileSystem.contentToLoad =
+            """
+            #subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
+            #subs {blinding mana to the} {blinding mana (21/21) to the}
 
-"""
+            """
 
         loader!.load(context.applicationSettings, context: context)
 
@@ -42,22 +41,21 @@ class SubstituteLoaderTests: XCTestCase {
     }
 
     func test_save() {
-        self.fileSystem.contentToLoad =
-"""
-#subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
-#subs {blinding mana to the} {blinding mana (21/21) to the}
+        fileSystem.contentToLoad =
+            """
+            #subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
+            #subs {blinding mana to the} {blinding mana (21/21) to the}
 
-"""
+            """
 
         loader!.load(context.applicationSettings, context: context)
         loader!.save(context.applicationSettings, subsitutes: context.substitutes)
 
-        XCTAssertEqual(self.fileSystem.savedContent ?? "",
-"""
-#subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
-#subs {blinding mana to the} {blinding mana (21/21) to the}
+        XCTAssertEqual(fileSystem.savedContent ?? "",
+                       """
+                       #subs {^(From the progress so far, it looks like .* (?:is|are)(?: of | )practically worthless.)} {$1(1/13)} {analyze}
+                       #subs {blinding mana to the} {blinding mana (21/21) to the}
 
-""")
-        
+                       """)
     }
 }

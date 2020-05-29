@@ -10,41 +10,40 @@ import Foundation
 
 protocol Events {
     func post(_ channel: String, data: Any?)
-    func handle(_ target: AnyObject, channel:String, handler: @escaping (Any?)-> Void)
+    func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void)
     func unregister(_ target: AnyObject)
 }
 
 extension Events {
     func echoText(_ text: String) {
-        self.post("ol:text", data: "\(text)\n")
+        post("ol:text", data: "\(text)\n")
     }
-    
+
     func echoError(_ text: String) {
-        self.post("ol:error", data: "\(text)\n")
+        post("ol:error", data: "\(text)\n")
     }
 
     func sendCommand(_ command: Command2) {
-        self.post("ol:command", data: command)
+        post("ol:command", data: command)
     }
 }
 
-class SwiftEventBusEvents : Events {
-
+class SwiftEventBusEvents: Events {
     public static var instance: Int = 0
 
     let id: Int
 
     init() {
         SwiftEventBusEvents.instance += 1
-        self.id = SwiftEventBusEvents.instance
+        id = SwiftEventBusEvents.instance
     }
 
     func post(_ channel: String, data: Any?) {
-        SwiftEventBus.post("\(self.id)_\(channel)", sender: data)
+        SwiftEventBus.post("\(id)_\(channel)", sender: data)
     }
 
-    func handle(_ target: AnyObject, channel:String, handler: @escaping (Any?)-> Void) {
-        SwiftEventBus.onMainThread(target, name: "\(self.id)_\(channel)") { notification in
+    func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void) {
+        SwiftEventBus.onMainThread(target, name: "\(id)_\(channel)") { notification in
             handler(notification?.object)
         }
     }

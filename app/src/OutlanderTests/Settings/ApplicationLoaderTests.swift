@@ -9,17 +9,16 @@
 import XCTest
 
 class ApplicationLoaderTests: XCTestCase {
-
     let fileSystem = InMemoryFileSystem()
     var loader: ApplicationLoader?
     let context = GameContext()
-    
+
     override func setUp() {
-        self.loader = ApplicationLoader(fileSystem)
+        loader = ApplicationLoader(fileSystem)
     }
 
     func test_load() {
-        self.fileSystem.contentToLoad = """
+        fileSystem.contentToLoad = """
         {
           "variableTimeFormat" : "hh:mm:ss",
           "defaultProfile" : "Testing",

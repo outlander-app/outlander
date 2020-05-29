@@ -8,8 +8,7 @@
 
 import Foundation
 
-class EchoCommandHandler : ICommandHandler {
-
+class EchoCommandHandler: ICommandHandler {
     var command = "#echo"
 
     let regex = try? Regex("^(>(\\w+)\\s)?((#[a-fA-F0-9]+)(,(#[a-fA-F0-9]+))?\\s)?(.*)")
@@ -17,7 +16,7 @@ class EchoCommandHandler : ICommandHandler {
     func handle(_ command: String, with: GameContext) {
         var commands = command[5...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
 
-        guard let groups = self.regex?.firstMatch(&commands) else {
+        guard let groups = regex?.firstMatch(&commands) else {
             return
         }
 

@@ -20,8 +20,8 @@ public class BaseIntervalTimer<T> {
     var timer: Timer?
     var value: T?
 
-    var interval: (IntervalValue<T>) -> () = {val in}
-    
+    var interval: (IntervalValue<T>) -> Void = { _ in }
+
     init(_ context: GameContext, variable: String) {
         self.context = context
         self.variable = variable
@@ -30,70 +30,68 @@ public class BaseIntervalTimer<T> {
     func set(_ value: T) {
         self.value = value
 
-        self.run()
-        
-        let val = IntervalValue(name: self.variable, value: value, percent: 1.0)
-        self.send(val)
+        run()
+
+        let val = IntervalValue(name: variable, value: value, percent: 1.0)
+        send(val)
     }
 
     func send(_ value: IntervalValue<T>) {
-        self.context.globalVars[self.variable] = "\(value.value)"
-        self.interval(value)
+        context.globalVars[variable] = "\(value.value)"
+        interval(value)
     }
-    
+
     private func run() {
         guard timer == nil else {
             return
         }
-        
-        self.timer = Timer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
-        self.timer?.tolerance = 0.2
 
-        RunLoop.current.add(self.timer!, forMode: .common)
+        timer = Timer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
+        timer?.tolerance = 0.2
+
+        RunLoop.current.add(timer!, forMode: .common)
     }
 
     func stop() {
-        self.timer?.invalidate()
-        self.timer = nil
+        timer?.invalidate()
+        timer = nil
     }
 
-    @objc func fire(timer: Timer) {
-        self.onTick()
+    @objc func fire(timer _: Timer) {
+        onTick()
     }
 
-    open func onTick() {
-    }
+    open func onTick() {}
 }
 
-public class RoundtimeTimer : BaseIntervalTimer<Int> {
+public class RoundtimeTimer: BaseIntervalTimer<Int> {
     private var current = 0
     private var max = 0
 
     override func set(_ value: Int) {
-        self.current = value
-        self.max = value
+        current = value
+        max = value
 
         super.set(value)
     }
 
     override public func onTick() {
-        self.current -= 1
+        current -= 1
 
-        var percent:Float = 0.0
+        var percent: Float = 0.0
 
-        if self.current <= 0 {
-            self.current = 0
-            self.stop()
+        if current <= 0 {
+            current = 0
+            stop()
         } else {
-
-            percent = Float(self.current) / Float(self.max)
+            percent = Float(current) / Float(max)
         }
 
-        self.send(IntervalValue<Int>(name: self.variable, value: self.current, percent: percent))
+        send(IntervalValue<Int>(name: variable, value: current, percent: percent))
     }
 }
 
-public class SpellTimer : BaseIntervalTimer<String> {
+public class SpellTimer: BaseIntervalTimer<String> {
     var count = 0
 
     override func set(_ value: String) {
@@ -102,25 +100,25 @@ public class SpellTimer : BaseIntervalTimer<String> {
         }
 
         if value.count == 0 || value == "None" {
-            self.count = 0
+            count = 0
         }
 
         super.set(value)
     }
 
     override func send(_ value: IntervalValue<String>) {
-        self.context.globalVars[self.variable] = "\(Int(value.percent))"
-        self.interval(value)
+        context.globalVars[variable] = "\(Int(value.percent))"
+        interval(value)
     }
 
     override public func onTick() {
-        self.count += 1
+        count += 1
 
-        if self.value == nil || (self.value ?? "").count == 0 || self.value == "None" {
-            self.count = 0
-            self.stop()
+        if value == nil || (value ?? "").count == 0 || value == "None" {
+            count = 0
+            stop()
         }
 
-        self.send(IntervalValue<String>(name: self.variable, value: self.value ?? "None", percent: Float(self.count)))
+        send(IntervalValue<String>(name: variable, value: value ?? "None", percent: Float(count)))
     }
 }

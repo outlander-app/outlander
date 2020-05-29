@@ -22,41 +22,34 @@ protocol ILogger {
 class LogManager {
     private static let nullLogInstance = NullLog()
 
-    static var getLog: (String) -> ILogger = {name in LogManager.nullLogInstance }
+    static var getLog: (String) -> ILogger = { _ in LogManager.nullLogInstance }
 }
 
-class NullLog : ILogger {
-    func info(_ message: String) {
-    }
-    
-    func warn(_ message: String) {
-    }
-    
-    func error(_ message: String) {
-    }
-    
-    func stream(_ data: String) {
-    }
-    
-    func rawStream(_ data: String) {
-    }
-    
-    func scriptLog(_ data: String, to: String) {
-    }
+class NullLog: ILogger {
+    func info(_: String) {}
+
+    func warn(_: String) {}
+
+    func error(_: String) {}
+
+    func stream(_: String) {}
+
+    func rawStream(_: String) {}
+
+    func scriptLog(_: String, to _: String) {}
 }
 
-class PrintLogger : ILogger {
-    
+class PrintLogger: ILogger {
     let name: String
 
-    init(_ name:String) {
+    init(_ name: String) {
         self.name = name
     }
-    
+
     func info(_ message: String) {
         log(message, level: "INFO")
     }
-    
+
     func warn(_ message: String) {
         log(message, level: "WARN")
     }

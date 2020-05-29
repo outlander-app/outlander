@@ -11,9 +11,9 @@ import Foundation
 struct Gag: CustomStringConvertible {
     var pattern: String
     var className: String
-    
+
     var description: String {
-        return "#gag {\(self.pattern)} {\(self.className)}"
+        return "#gag {\(pattern)} {\(className)}"
     }
 }
 
@@ -21,29 +21,29 @@ class GagLoader {
     let filename = "gags.cfg"
 
     let files: FileSystem
-    
-    init(_ files:FileSystem) {
+
+    init(_ files: FileSystem) {
         self.files = files
     }
 
-    func load(_ settings:ApplicationSettings, context: GameContext) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
-        
+    func load(_ settings: ApplicationSettings, context: GameContext) {
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
+
         context.gags.removeAll()
 
-        guard let data = self.files.load(fileUrl) else {
+        guard let data = files.load(fileUrl) else {
             return
         }
-        
+
         guard var content = String(data: data, encoding: .utf8) else {
             return
         }
-        
+
         context.addGag(gag: &content)
     }
-    
+
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
-        let fileUrl = settings.currentProfilePath.appendingPathComponent(self.filename)
+        let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
         for gag in gags {
@@ -55,24 +55,23 @@ class GagLoader {
 
             content += "\n"
         }
-        
-        self.files.write(content, to: fileUrl)
+
+        files.write(content, to: fileUrl)
     }
 }
 
 extension GameContext {
-    
     static let gagRegex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
-    
+
     func addGag(gag: Gag) {
-        self.gags.append(gag)
+        gags.append(gag)
     }
-    
+
     func addGag(gag: inout String) {
         guard let matches = GameContext.gagRegex?.allMatches(&gag) else {
             return
         }
-        
+
         for match in matches {
             if match.count == 3 {
                 guard let pattern = match.valueAt(index: 1) else {
@@ -80,7 +79,7 @@ extension GameContext {
                 }
 
                 let className = match.valueAt(index: 2) ?? ""
-                self.addGag(gag: Gag(pattern: pattern, className: className.lowercased()))
+                addGag(gag: Gag(pattern: pattern, className: className.lowercased()))
             }
         }
     }

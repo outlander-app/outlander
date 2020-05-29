@@ -9,17 +9,16 @@
 import Cocoa
 
 class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSource {
-
     var profiles: [String] = []
     var context: GameContext?
     var selected: String? {
         didSet {
-            print("selected profile", self.selected ?? "")
+            print("selected profile", selected ?? "")
         }
     }
 
-    @IBOutlet weak var tableView: NSTableView!
-    
+    @IBOutlet var tableView: NSTableView!
+
     override var windowNibName: String! {
         return "ProfileWindow"
     }
@@ -27,37 +26,36 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
     override func windowDidLoad() {
         super.windowDidLoad()
 
-        self.profiles = self.context?.allProfiles() ?? []
+        profiles = context?.allProfiles() ?? []
     }
 
-    @IBAction func ok(_ sender: Any) {
-        self.window!.sheetParent!.endSheet(self.window!, returnCode: .OK)
+    @IBAction func ok(_: Any) {
+        window!.sheetParent!.endSheet(window!, returnCode: .OK)
     }
 
-    @IBAction func cancel(_ sender: Any) {
-        self.window!.sheetParent!.endSheet(self.window!, returnCode: .cancel)
+    @IBAction func cancel(_: Any) {
+        window!.sheetParent!.endSheet(window!, returnCode: .cancel)
     }
 
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        return self.profiles.count
+    func numberOfRows(in _: NSTableView) -> Int {
+        return profiles.count
     }
-    
-    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        guard row < self.profiles.count else {
+
+    func tableView(_: NSTableView, objectValueFor _: NSTableColumn?, row: Int) -> Any? {
+        guard row < profiles.count else {
             return nil
         }
 
-        return self.profiles[row]
+        return profiles[row]
     }
 
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        let selectedRow = self.tableView.selectedRow
+    func tableViewSelectionDidChange(_: Notification) {
+        let selectedRow = tableView.selectedRow
 
-        if(selectedRow > -1 && selectedRow < self.profiles.count) {
-            self.selected = self.profiles[selectedRow]
-        }
-        else {
-            self.selected = nil;
+        if selectedRow > -1, selectedRow < profiles.count {
+            selected = profiles[selectedRow]
+        } else {
+            selected = nil
         }
     }
 }

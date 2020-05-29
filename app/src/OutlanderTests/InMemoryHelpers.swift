@@ -8,37 +8,35 @@
 
 import Foundation
 
-class InMemoryFileSystem : FileSystem {
-    var contentToLoad:String?
-    var savedContent:String?
+class InMemoryFileSystem: FileSystem {
+    var contentToLoad: String?
+    var savedContent: String?
 
-    func fileExists(_ file: URL) -> Bool {
+    func fileExists(_: URL) -> Bool {
         fatalError()
     }
 
-    func load(_ file: URL) -> Data? {
+    func load(_: URL) -> Data? {
         return contentToLoad?.data(using: .utf8)
     }
 
-    func write(_ content: String, to fileUrl: URL) {
-        self.savedContent = content
+    func write(_ content: String, to _: URL) {
+        savedContent = content
     }
 
-    func access(_ handler: @escaping ()->Void) {
+    func access(_ handler: @escaping () -> Void) {
         handler()
     }
 }
 
-class InMemoryEvents : Events {
+class InMemoryEvents: Events {
     public var lastData: Any?
 
-    func post(_ channel: String, data: Any?) {
-        self.lastData = data
+    func post(_: String, data: Any?) {
+        lastData = data
     }
 
-    func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void) {
-    }
+    func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
 
-    func unregister(_ target: AnyObject) {
-    }
+    func unregister(_: AnyObject) {}
 }

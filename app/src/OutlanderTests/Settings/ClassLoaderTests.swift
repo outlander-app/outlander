@@ -9,17 +9,16 @@
 import XCTest
 
 class ClassLoaderTests: XCTestCase {
-
     let fileSystem = InMemoryFileSystem()
     var loader: ClassLoader?
     let context = GameContext()
 
     override func setUp() {
-        self.loader = ClassLoader(fileSystem)
+        loader = ClassLoader(fileSystem)
     }
 
     func test_load() {
-        self.fileSystem.contentToLoad = "#class {app} {off}\n#class {combat} {on}"
+        fileSystem.contentToLoad = "#class {app} {off}\n#class {combat} {on}"
 
         loader!.load(context.applicationSettings, context: context)
 
@@ -28,23 +27,23 @@ class ClassLoaderTests: XCTestCase {
         let app = context.classes.all()[0]
         XCTAssertEqual(app.key, "app")
         XCTAssertFalse(app.value)
-        
+
         let combat = context.classes.all()[1]
         XCTAssertEqual(combat.key, "combat")
         XCTAssertTrue(combat.value)
     }
 
     func test_save() {
-        self.fileSystem.contentToLoad = "#class {app} {off}\n#class {combat} {on}"
-        
+        fileSystem.contentToLoad = "#class {app} {off}\n#class {combat} {on}"
+
         loader!.load(context.applicationSettings, context: context)
         loader!.save(context.applicationSettings, classes: context.classes)
-        
-        XCTAssertEqual(self.fileSystem.savedContent ?? "",
-                       """
-#class {app} {off}
-#class {combat} {on}
 
-""")
+        XCTAssertEqual(fileSystem.savedContent ?? "",
+                       """
+                       #class {app} {off}
+                       #class {combat} {on}
+
+                       """)
     }
 }

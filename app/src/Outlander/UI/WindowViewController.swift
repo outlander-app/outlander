@@ -9,51 +9,48 @@
 import Cocoa
 import Foundation
 
-class OLScrollView : NSScrollView {
+class OLScrollView: NSScrollView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
-        self.verticalScroller?.scrollerStyle = .overlay
-        self.horizontalScroller?.scrollerStyle = .overlay
+
+        verticalScroller?.scrollerStyle = .overlay
+        horizontalScroller?.scrollerStyle = .overlay
     }
 
     override open var scrollerStyle: NSScroller.Style {
         get { return .overlay }
-        set
-        {
+        set {
             self.verticalScroller?.scrollerStyle = .overlay
             self.horizontalScroller?.scrollerStyle = .overlay
         }
     }
 
-    override var isFlipped: Bool {
-        get { return true }
-    }
+    override var isFlipped: Bool { return true }
 }
 
-class WindowViewController : NSViewController {
+class WindowViewController: NSViewController {
     @IBOutlet var mainView: OView!
     @IBOutlet var textView: NSTextView!
 
     public var gameContext: GameContext?
-    public var name:String = ""
-    public var visible:Bool = true
-    public var closedTarget:String?
-    
+    public var name: String = ""
+    public var visible: Bool = true
+    public var closedTarget: String?
+
     private var foregroundNSColor: NSColor = WindowViewController.defaultFontColor
 
-    public var borderColor: String =  "#cccccc" {
+    public var borderColor: String = "#cccccc" {
         didSet {
             self.mainView?.borderColor = NSColor(hex: self.borderColor) ?? WindowViewController.defaultFontColor
         }
     }
 
-    public var borderWidth: CGFloat =  1 {
+    public var borderWidth: CGFloat = 1 {
         didSet {
             self.mainView?.borderWidth = self.borderWidth
         }
     }
-    
+
     public var foregroundColor: String = "#cccccc" {
         didSet {
             self.foregroundNSColor = NSColor(hex: self.foregroundColor) ?? WindowViewController.defaultFontColor
@@ -72,25 +69,25 @@ class WindowViewController : NSViewController {
     static var defaultCreatureColor = NSColor(hex: "#ffff00")!
     static var defaultBorderColor = NSColor(hex: "#1e1e1e")!
 
-    var lastTag:TextTag?
+    var lastTag: TextTag?
     var queue: DispatchQueue?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.updateTheme()
+        updateTheme()
 
-        self.textView.linkTextAttributes = [
+        textView.linkTextAttributes = [
             NSAttributedString.Key.foregroundColor: WindowViewController.defaultFontColor,
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
-            NSAttributedString.Key.cursor: NSCursor.pointingHand
+            NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
 
-        self.queue = DispatchQueue(label: "ol:\(self.name):window", qos: .userInteractive)
+        queue = DispatchQueue(label: "ol:\(name):window", qos: .userInteractive)
     }
-    
+
     func updateTheme() {
-        self.mainView?.backgroundColor = NSColor(hex: self.borderColor) ?? WindowViewController.defaultFontColor
-        self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? WindowViewController.defaultBorderColor
+        mainView?.backgroundColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
+        textView?.backgroundColor = NSColor(hex: backgroundColor) ?? WindowViewController.defaultBorderColor
     }
 
     func clear() {
@@ -99,8 +96,8 @@ class WindowViewController : NSViewController {
         }
     }
 
-    func clearAndAppend(_ tags: [TextTag], highlightMonsters:Bool = false) {
-        self.queue?.async {
+    func clearAndAppend(_ tags: [TextTag], highlightMonsters: Bool = false) {
+        queue?.async {
             let target = NSMutableAttributedString()
 
             for tag in tags {
@@ -116,14 +113,13 @@ class WindowViewController : NSViewController {
     }
 
     func stringFromTag(_ tag: TextTag, text: String) -> NSMutableAttributedString? {
-        
-        guard let context = self.gameContext else {
+        guard let context = gameContext else {
             return nil
         }
-        
-        var foregroundColorToUse = self.foregroundNSColor
+
+        var foregroundColorToUse = foregroundNSColor
         var backgroundHex = tag.backgroundColor
-        
+
         if tag.bold {
             if let value = context.presetFor("creatures") {
                 foregroundColorToUse = NSColor(hex: value.color) ?? WindowViewController.defaultCreatureColor
@@ -132,7 +128,7 @@ class WindowViewController : NSViewController {
 
         if let preset = tag.preset {
             if let value = context.presetFor(preset) {
-                foregroundColorToUse = NSColor(hex: value.color) ?? self.foregroundNSColor
+                foregroundColorToUse = NSColor(hex: value.color) ?? foregroundNSColor
                 backgroundHex = value.backgroundColor
             }
         }
@@ -142,9 +138,9 @@ class WindowViewController : NSViewController {
             font = WindowViewController.defaultMonoFont
         }
 
-        var attributes:[NSAttributedString.Key:Any] = [
+        var attributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.foregroundColor: foregroundColorToUse,
-            NSAttributedString.Key.font: font
+            NSAttributedString.Key.font: font,
         ]
 
         if let bgColor = backgroundHex {
@@ -162,8 +158,8 @@ class WindowViewController : NSViewController {
         return NSMutableAttributedString(string: text, attributes: attributes)
     }
 
-    func processHighlights(_ text: NSMutableAttributedString, highlightMonsters:Bool = false) {
-        guard let context = self.gameContext else {
+    func processHighlights(_ text: NSMutableAttributedString, highlightMonsters: Bool = false) {
+        guard let context = gameContext else {
             return
         }
         var highlights = context.activeHighlights()
@@ -180,7 +176,6 @@ class WindowViewController : NSViewController {
         }
 
         for h in highlights {
-
             guard let regex = RegexFactory.get(h.pattern) else {
                 continue
             }
@@ -194,7 +189,8 @@ class WindowViewController : NSViewController {
                 text.addAttribute(
                     NSAttributedString.Key.foregroundColor,
                     value: NSColor(hex: h.foreColor) ?? WindowViewController.defaultFontColor,
-                    range: range)
+                    range: range
+                )
 
                 if h.backgroundColor.count > 0 {
                     guard let bgColor = NSColor(hex: h.backgroundColor) else {
@@ -204,7 +200,8 @@ class WindowViewController : NSViewController {
                     text.addAttribute(
                         NSAttributedString.Key.backgroundColor,
                         value: bgColor,
-                        range: range)
+                        range: range
+                    )
                 }
 
                 if h.soundFile.count > 0 {
@@ -215,7 +212,7 @@ class WindowViewController : NSViewController {
     }
 
     func processSubs(_ text: String) -> String {
-        guard let context = self.gameContext else {
+        guard let context = gameContext else {
             return text
         }
 
@@ -233,10 +230,10 @@ class WindowViewController : NSViewController {
     }
 
     func append(_ tag: TextTag) {
-        self.queue?.async {
-            if self.lastTag?.isPrompt == true && !tag.playerCommand {
+        queue?.async {
+            if self.lastTag?.isPrompt == true, !tag.playerCommand {
                 // skip multiple prompts of the same type
-                if tag.isPrompt && self.lastTag?.text == tag.text {
+                if tag.isPrompt, self.lastTag?.text == tag.text {
                     return
                 }
 
@@ -256,15 +253,15 @@ class WindowViewController : NSViewController {
     func appendWithoutProcessing(_ text: NSAttributedString) {
         // DO NOT add highlights, etc.
 //        self.queue?.sync(flags: .barrier) {
-            DispatchQueue.main.async {
-                let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
+        DispatchQueue.main.async {
+            let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
 
-                self.textView.textStorage?.append(text)
-    
-                if smartScroll {
-                    self.textView.scrollToEndOfDocument(self)
-                }
+            self.textView.textStorage?.append(text)
+
+            if smartScroll {
+                self.textView.scrollToEndOfDocument(self)
             }
+        }
 //        }
     }
 
@@ -274,7 +271,7 @@ class WindowViewController : NSViewController {
             let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
 
             self.textView.textStorage?.setAttributedString(text)
-            
+
             if smartScroll {
                 self.textView.scrollToEndOfDocument(self)
             }

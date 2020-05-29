@@ -28,7 +28,6 @@ struct ScriptContext {
 }
 
 class CommandProcesssor {
-
     var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
@@ -37,7 +36,7 @@ class CommandProcesssor {
         FlashCommandHandler(),
         BeepCommandHandler(),
         BugCommandHandler(),
-        GagCommandHandler()
+        GagCommandHandler(),
     ]
 
     init(_ files: FileSystem) {
@@ -48,18 +47,17 @@ class CommandProcesssor {
         handlers.insert(handler, at: 0)
     }
 
-    func process(_ command:String, with context: GameContext) {
+    func process(_ command: String, with context: GameContext) {
         let cmd = Command2(command: command)
         process(cmd, with: context)
     }
 
     func process(_ command: Command2, with context: GameContext) {
-
         if !command.isSystemCommand {
             context.globalVars["lastcommand"] = command.command
         }
 
-        for handler in self.handlers {
+        for handler in handlers {
             if handler.canHandle(command.command) {
                 handler.handle(command.command, with: context)
                 return

@@ -9,28 +9,25 @@
 import XCTest
 
 class VarCommandHandlerTests: XCTestCase {
-    
     var handler = VarCommandHandler()
     var context = GameContext()
 
-    override func setUp() {
-    }
+    override func setUp() {}
 
-    override func tearDown() {
-    }
+    override func tearDown() {}
 
     func test_basic() {
-        handler.handle("#var one two", with: self.context)
-        XCTAssertEqual(self.context.globalVars["one"], "two")
+        handler.handle("#var one two", with: context)
+        XCTAssertEqual(context.globalVars["one"], "two")
     }
 
     func test_multi_value() {
-        handler.handle("#var one two three", with: self.context)
-        XCTAssertEqual(self.context.globalVars["one"], "two three")
+        handler.handle("#var one two three", with: context)
+        XCTAssertEqual(context.globalVars["one"], "two three")
     }
 
     func test_identifier_value() {
-        handler.handle("#var one.two three four", with: self.context)
-        XCTAssertEqual(self.context.globalVars["one.two"], "three four")
+        handler.handle("#var one.two three four", with: context)
+        XCTAssertEqual(context.globalVars["one.two"], "three four")
     }
 }

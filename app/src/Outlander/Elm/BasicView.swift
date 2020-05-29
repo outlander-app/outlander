@@ -8,16 +8,16 @@
 
 import Cocoa
 
-class OView : NSView {
+class OView: NSView {
     @IBInspectable var backgroundColor: NSColor? {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
     @IBInspectable var borderColor: NSColor? = NSColor(hex: "#cccccc") {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
@@ -27,7 +27,7 @@ class OView : NSView {
             self.needsDisplay = true
         }
     }
-    
+
     @IBInspectable dynamic var cornerRadius: CGFloat = 0 {
         didSet {
             self.needsDisplay = true
@@ -44,7 +44,7 @@ class OView : NSView {
 
     init(color: NSColor, frame: NSRect) {
         super.init(frame: frame)
-        self.backgroundColor = color
+        backgroundColor = color
     }
 
     required init?(coder decoder: NSCoder) {
@@ -54,7 +54,7 @@ class OView : NSView {
     override var isFlipped: Bool {
         return true
     }
-    
+
     override func animation(forKey key: NSAnimatablePropertyKey) -> Any? {
         switch key {
         case "borderWidth":
@@ -66,7 +66,7 @@ class OView : NSView {
 
     override func updateLayer() {
         guard let layer = layer else { return }
-        
+
         layer.backgroundColor = backgroundColor?.cgColor
         layer.borderColor = borderColor?.cgColor
         layer.cornerRadius = cornerRadius
@@ -75,13 +75,11 @@ class OView : NSView {
 }
 
 extension NSView {
-
     public func removeAllConstraints() {
-        var _superview = self.superview
+        var _superview = superview
 
         while let superview = _superview {
             for constraint in superview.constraints {
-
                 if let first = constraint.firstItem as? NSView, first == self {
                     superview.removeConstraint(constraint)
                 }
@@ -94,7 +92,7 @@ extension NSView {
             _superview = superview.superview
         }
 
-        self.removeConstraints(self.constraints)
+        removeConstraints(constraints)
 //        self.translatesAutoresizingMaskIntoConstraints = true
     }
 }
@@ -104,38 +102,36 @@ enum MyStackViewOrientation {
     case vertical
 }
 
-class MyStackView : OView {
-    
+class MyStackView: OView {
     public var offset: CGFloat = 0
 
     public var stretchItems = false {
         didSet {
-            self.needsLayout = true
+            needsLayout = true
         }
     }
 
     public var orientation: MyStackViewOrientation = .vertical {
         didSet {
-            self.needsLayout = true
+            needsLayout = true
         }
     }
 
     public func append(_ view: NSView) {
-        self.addSubview(view)
+        addSubview(view)
     }
-    
+
     override func layout() {
         super.layout()
 
 //        var offset: CGFloat = 0
-        
-        self.offset = 0
 
-        for (_, view) in self.subviews.enumerated() {
+        offset = 0
 
+        for (_, view) in subviews.enumerated() {
             if let stacker = view as? MyStackView, stacker.needsLayout {
                 stacker.layout()
-                self.offset += stacker.offset
+                offset += stacker.offset
             }
 
             var frame = view.frame
@@ -173,7 +169,7 @@ class MyStackView : OView {
             }
         }
 
-        var selfFrame = self.frame
+        var selfFrame = frame
 
         switch orientation {
         case .horizontal:
@@ -185,44 +181,43 @@ class MyStackView : OView {
         selfFrame.size.height = offset
         selfFrame.size.width = offset
 
-        self.frame = selfFrame
+        frame = selfFrame
     }
 }
 
-class VitalBarItemView : OView {
-
+class VitalBarItemView: OView {
     public var text: String? {
+        didSet {
+            needsDisplay = true
+        }
+    }
+
+    public var value: Double? {
+        didSet {
+            needsDisplay = true
+        }
+    }
+
+    public var foregroundColor: NSColor = NSColor.white {
         didSet {
             self.needsDisplay = true
         }
     }
 
-    public var value: Double? {
-       didSet {
-           self.needsDisplay = true
-       }
-   }
-
-    public var foregroundColor: NSColor = NSColor.white {
-       didSet {
-           self.needsDisplay = true
-       }
-   }
-
     override func draw(_ dirtyRect: NSRect) {
-
         super.draw(dirtyRect)
 
         if let text = self.text, let txt = NSString(utf8String: text) {
-            let attributeDict: [NSAttributedString.Key : Any] = [
-                .font: NSFont.init(name: "Menlo Bold", size: 11)!,
-                .foregroundColor: self.foregroundColor,
+            let attributeDict: [NSAttributedString.Key: Any] = [
+                .font: NSFont(name: "Menlo Bold", size: 11)!,
+                .foregroundColor: foregroundColor,
             ]
 
             let size = txt.size(withAttributes: attributeDict)
             let point = NSPoint(
-                x: (self.frame.size.width / 2) - (size.width / 2),
-                y: (self.frame.size.height / 2) - (size.height / 2))
+                x: (frame.size.width / 2) - (size.width / 2),
+                y: (frame.size.height / 2) - (size.height / 2)
+            )
             txt.draw(at: point, withAttributes: attributeDict)
         }
     }
@@ -234,7 +229,6 @@ class ScrollableTextView: NSView {
     var textStorage: NSTextStorage
 
     override init(frame frameRect: NSRect) {
-        
 //        let height = 500
         let height = CGFloat.greatestFiniteMagnitude
 
@@ -244,7 +238,7 @@ class ScrollableTextView: NSView {
         )
 
         let layoutManager = NSLayoutManager()
-        
+
         textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
 
@@ -283,7 +277,7 @@ class ScrollableTextView: NSView {
         textView.autoresizingMask = [.width]
     }
 
-    required init?(coder decoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError()
     }
 }

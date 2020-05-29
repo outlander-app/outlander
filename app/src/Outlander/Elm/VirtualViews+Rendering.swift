@@ -6,40 +6,39 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 struct StrongReferences {
     private var handlers: [Any] = []
-    
+
     init() {}
-    
+
     mutating func append(_ obj: Any) {
         handlers.append(obj)
     }
-    
+
     mutating func append(contentsOf other: [Any]) {
         handlers.append(contentsOf: other)
     }
 }
 
-class TargetAction: NSObject { // todo: removeTarget?
-    var handle: () -> ()
+class TargetAction: NSObject { // TODO: removeTarget?
+    var handle: () -> Void
 
-    init(_ handle: @escaping () -> ()) {
+    init(_ handle: @escaping () -> Void) {
         self.handle = handle
     }
 
-    @objc func performAction(sender: NSButton) {
+    @objc func performAction(sender _: NSButton) {
         handle()
     }
 }
 
-class TextFieldDelegate : NSObject, NSTextFieldDelegate {
-    
-    var handle: (String) -> ()
-    
-    init(_ handle: @escaping (String) -> ()) {
+class TextFieldDelegate: NSObject, NSTextFieldDelegate {
+    var handle: (String) -> Void
+
+    init(_ handle: @escaping (String) -> Void) {
         self.handle = handle
     }
 
@@ -48,14 +47,14 @@ class TextFieldDelegate : NSObject, NSTextFieldDelegate {
             return
         }
 
-        self.handle(textField.stringValue)
+        handle(textField.stringValue)
     }
 }
 
 extension NSButton {
-    func onClick(_ onClick: @escaping () -> ()) -> TargetAction {
+    func onClick(_ onClick: @escaping () -> Void) -> TargetAction {
         let ta = TargetAction(onClick)
-        self.addTarget(ta, action: #selector(TargetAction.performAction(sender:)))
+        addTarget(ta, action: #selector(TargetAction.performAction(sender:)))
         return ta
     }
 
@@ -71,31 +70,31 @@ extension NSButton {
 }
 
 extension NSTextField {
-    func onTextChanged(_ onTextChanged: @escaping (String) -> ()) -> TextFieldDelegate {
+    func onTextChanged(_ onTextChanged: @escaping (String) -> Void) -> TextFieldDelegate {
         let target = TextFieldDelegate(onTextChanged)
-        self.delegate = target
+        delegate = target
         return target
     }
 
     func removeDelegate() {
-        self.delegate = nil
+        delegate = nil
     }
 }
 
 struct Renderer<Message> {
     var strongReferences = StrongReferences()
 
-    private let callback: (Message) -> ()
+    private let callback: (Message) -> Void
     private let container: NSViewController
 
     var addedChildViewControllers: [NSViewController] = []
     var removedChildViewControllers: [NSViewController] = []
 
-    init(callback: @escaping (Message) -> (), container: NSViewController) {
+    init(callback: @escaping (Message) -> Void, container: NSViewController) {
         self.callback = callback
         self.container = container
     }
-    
+
     mutating func render(view: View<Message>) -> NSView {
         switch view {
         case let ._button(button):
@@ -130,10 +129,10 @@ struct Renderer<Message> {
 
             return result
 
-        case ._customLayout(let views):
+        case let ._customLayout(views):
             let container = OView()
             container.translatesAutoresizingMaskIntoConstraints = false
-            for (v,c) in views {
+            for (v, c) in views {
                 let sub = render(view: v)
                 container.addSubview(sub)
                 sub.translatesAutoresizingMaskIntoConstraints = false
@@ -142,12 +141,12 @@ struct Renderer<Message> {
             return container
         }
     }
-    
+
     private mutating func render(_ button: Button<Message>, into b: NSButton) {
         b.removeTarget(nil, action: nil)
 
         if let action = button.onClick {
-            let cb = self.callback
+            let cb = callback
             let target = TargetAction { cb(action) }
             strongReferences.append(target)
             b.addTarget(target, action: #selector(TargetAction.performAction(sender:)))
@@ -164,7 +163,7 @@ struct Renderer<Message> {
         f.stringValue = textField.text
 
         if let action = textField.onChange {
-            let cb = self.callback
+            let cb = callback
             let target = f.onTextChanged { value in
                 cb(action(value))
             }
@@ -174,7 +173,7 @@ struct Renderer<Message> {
 
     private mutating func render(_ textView: TextView<Message>, into f: ScrollableTextView) {
         let attributes = [
-            NSAttributedString.Key.foregroundColor : NSColor.white
+            NSAttributedString.Key.foregroundColor: NSColor.white,
         ]
         let str = NSAttributedString(string: textView.text, attributes: attributes)
         f.textView.textStorage?.append(str)
@@ -196,10 +195,10 @@ struct Renderer<Message> {
             : NSUserInterfaceLayoutOrientation.horizontal
         result.spacing = CGFloat(stackView.spacing)
     }
-    
+
     mutating func removeChildViewController(for view: NSView) {
         guard let i = container.children.firstIndex(where: { $0.view == view }) else { return }
-        
+
         let child = container.children[i]
         removedChildViewControllers.append(child)
     }
@@ -213,7 +212,7 @@ struct Renderer<Message> {
             }
             render(button, into: b)
             return b
-        
+
         case let ._textField(textField):
             guard let result = existing as? NSTextField else {
                 removeChildViewController(for: existing)
@@ -245,7 +244,6 @@ struct Renderer<Message> {
             }
 
             for (index, existingSubview) in result.subviews.enumerated() {
-
                 guard index < stackView.views.count else {
                     result.removeArrangedSubview(existingSubview)
                     existingSubview.removeFromSuperview()
@@ -262,55 +260,54 @@ struct Renderer<Message> {
 
                 new.translatesAutoresizingMaskIntoConstraints = false
             }
-            
+
             render(stackView, into: result)
             return result
 
-        case ._customLayout(_):
+        case ._customLayout:
             fatalError()
         }
     }
 }
 
 extension ViewController {
-    func render(callback: @escaping (Message) -> (), change: inout NSViewController) -> StrongReferences {
+    func render(callback: @escaping (Message) -> Void, change: inout NSViewController) -> StrongReferences {
         switch self {
-            case let ._viewController(view, useLayoutGuide):
-                if type(of: change) != NSViewController.self {
-                    change = NSViewController()
+        case let ._viewController(view, useLayoutGuide):
+            if type(of: change) != NSViewController.self {
+                change = NSViewController()
+            }
+
+            var r = Renderer(callback: callback, container: change)
+            let newView = r.update(view: view, into: change.view.subviews.first ?? OView())
+
+            if change.view.subviews.count == 0 || newView !== change.view.subviews[0] {
+                if change.view.subviews.count != 0 {
+                    change.view.subviews[0].removeFromSuperview()
                 }
+                change.view.addSubview(newView)
+                newView.translatesAutoresizingMaskIntoConstraints = false
 
-                var r = Renderer(callback: callback, container: change)
-                let newView = r.update(view: view, into: change.view.subviews.first ?? OView())
-
-                if change.view.subviews.count == 0 || newView !== change.view.subviews[0] {
-                    if change.view.subviews.count != 0 {
-                        change.view.subviews[0].removeFromSuperview()
-                    }
-                    change.view.addSubview(newView)
-                    newView.translatesAutoresizingMaskIntoConstraints = false
-
-                    if (useLayoutGuide) {
-                    }
+                if useLayoutGuide {}
 
 //                    change.view.anchor.apply(to: [newView])
 
-                    change.view.addConstraints([
-                        newView.topAnchor.constraint(equalTo: change.view.topAnchor),
-                        newView.bottomAnchor.constraint(equalTo: change.view.bottomAnchor),
-                        newView.leadingAnchor.constraint(equalTo: change.view.leadingAnchor),
-                        newView.trailingAnchor.constraint(equalTo: change.view.trailingAnchor)
-                    ])
-                }
+                change.view.addConstraints([
+                    newView.topAnchor.constraint(equalTo: change.view.topAnchor),
+                    newView.bottomAnchor.constraint(equalTo: change.view.bottomAnchor),
+                    newView.leadingAnchor.constraint(equalTo: change.view.leadingAnchor),
+                    newView.trailingAnchor.constraint(equalTo: change.view.trailingAnchor),
+                ])
+            }
 
-                for removed in r.removedChildViewControllers {
-                    removed.removeFromParent()
-                }
-                for added in r.addedChildViewControllers {
-                    change.addChild(added)
-                }
-                
-                return r.strongReferences
+            for removed in r.removedChildViewControllers {
+                removed.removeFromParent()
+            }
+            for added in r.addedChildViewControllers {
+                change.addChild(added)
+            }
+
+            return r.strongReferences
         }
     }
 }

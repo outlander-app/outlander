@@ -16,20 +16,20 @@ enum GameServerState {
 
 class GameServer {
     var socket: Socket?
-    var callback: ((GameServerState)-> Void)?
+    var callback: ((GameServerState) -> Void)?
     var connection: String = ""
     var matchedToken = false
 
     var log = LogManager.getLog(String(describing: GameServer.self))
 
-    init(_ callback: @escaping (GameServerState)->Void) {
+    init(_ callback: @escaping (GameServerState) -> Void) {
         self.callback = callback
     }
 
     func connect(host: String, port: UInt16, key: String) {
-        self.connection = "\(key)\r\n/FE:STORMFRONT /VERSION:1.0.26 /P:OSX /XML\r\n"
+        connection = "\(key)\r\n/FE:STORMFRONT /VERSION:1.0.26 /P:OSX /XML\r\n"
 
-        self.socket = Socket({[weak self] state in
+        socket = Socket({ [weak self] state in
             switch state {
             case .connected:
                 self?.callback?(.connected)
@@ -37,8 +37,8 @@ class GameServer {
                     self?.socket?.writeAndReadToNewline(connection)
                 }
 
-            case .data(let data, let str, _):
-                if self?.matchedToken == false && str?.contains("GSw") == true {
+            case let .data(data, str, _):
+                if self?.matchedToken == false, str?.contains("GSw") == true {
                     self?.matchedToken = true
 
                     if let index = str!.index(of: "GSw") {
@@ -54,7 +54,7 @@ class GameServer {
                 self?.callback?(.data(data, str ?? ""))
                 self?.socket?.readToNewline()
 
-            case .closed(let error):
+            case let .closed(error):
                 self?.callback?(.closed(error))
                 self?.matchedToken = false
 
@@ -63,19 +63,19 @@ class GameServer {
             }
         }, queue: DispatchQueue(label: "GameServer"))
 
-        self.socket?.connect(host: host, port: port)
+        socket?.connect(host: host, port: port)
     }
 
     func disconnect() {
-        self.socket?.disconnect()
-        self.matchedToken = false
+        socket?.disconnect()
+        matchedToken = false
     }
 
     func sendCommand(_ command: String) {
-        guard self.socket?.isConnected == true else {
+        guard socket?.isConnected == true else {
             return
         }
 
-        self.socket?.write("\(command)\r\n")
+        socket?.write("\(command)\r\n")
     }
 }
