@@ -2,4 +2,5 @@
 
 xcodebuild -workspace app/src/Outlander.xcworkspace \
        -scheme Outlander \
-       clean test
+       clean test \
+       CODE_SIGNING_ALLOWED=NO
