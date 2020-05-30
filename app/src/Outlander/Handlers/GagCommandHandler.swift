@@ -22,10 +22,14 @@ class GagCommandHandler: ICommandHandler {
             switch commandTokens[0].lowercased() {
             case "add":
                 if gagAddRegex?.hasMatches(commandStripped) ?? false {
-                    var gag = "#gag " + commandStripped[4...]
-                    context.addGag(gag: &gag)
-                    context.events.echoText("Gag added")
-                } else {
+                    var gagStr = "#gag \(commandStripped[4...])"
+                    guard let gag = Gag.from(gag: &gagStr) else {
+                        return
+                    }
+                    let added = context.upsertGag(gag: gag)
+                    context.events.echoText(added ? "Gag added" : "Gag already exists")
+                }
+                else {
                     context.events.echoText("Invalid syntax. Usage: #gag add {gag} {class}")
                 }
                 return

@@ -9,11 +9,30 @@
 import Foundation
 
 struct Gag: CustomStringConvertible {
+    static let gagRegex = try? Regex("#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.anchorsMatchLines, .caseInsensitive])
+    
     var pattern: String
     var className: String
 
     var description: String {
         return "#gag {\(pattern)} {\(className)}"
+    }
+    
+    static func from(gag: inout String) -> Gag? {
+        guard let match = gagRegex?.firstMatch(&gag) else {
+            return nil
+        }
+        
+        if match.count == 3 {
+            guard let pattern = match.valueAt(index: 1) else {
+                return nil
+            }
+
+            let className = match.valueAt(index: 2) ?? ""
+            return Gag(pattern: pattern, className: className.lowercased())
+        }
+        
+        return nil
     }
 }
 
@@ -28,18 +47,22 @@ class GagLoader {
 
     func load(_ settings: ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
-
+        
         context.gags.removeAll()
-
+        
         guard let data = files.load(fileUrl) else {
             return
         }
-
-        guard var content = String(data: data, encoding: .utf8) else {
+        
+        guard let content = String(data: data, encoding: .utf8) else {
             return
         }
 
-        context.addGag(gag: &content)
+        for var line in content.components(separatedBy: .newlines) {
+            if let gag = Gag.from(gag: &line) {
+                context.upsertGag(gag: gag)
+            }
+        }
     }
 
     func save(_ settings: ApplicationSettings, gags: [Gag]) {
@@ -61,26 +84,17 @@ class GagLoader {
 }
 
 extension GameContext {
-    static let gagRegex = try? Regex("^#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?$", options: [.anchorsMatchLines, .caseInsensitive])
-
     func addGag(gag: Gag) {
         gags.append(gag)
     }
-
-    func addGag(gag: inout String) {
-        guard let matches = GameContext.gagRegex?.allMatches(&gag) else {
-            return
+    
+    @discardableResult
+    func upsertGag(gag: Gag) -> Bool {
+        // Nothing to update
+        if (gags.firstIndex(where: { $0.pattern == gag.pattern && $0.className == gag.className }) != nil) {
+            return false
         }
-
-        for match in matches {
-            if match.count == 3 {
-                guard let pattern = match.valueAt(index: 1) else {
-                    continue
-                }
-
-                let className = match.valueAt(index: 2) ?? ""
-                addGag(gag: Gag(pattern: pattern, className: className.lowercased()))
-            }
-        }
+        addGag(gag: gag)
+        return true
     }
 }
