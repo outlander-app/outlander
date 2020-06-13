@@ -9,6 +9,15 @@
           "revision": "0e00c967a010fc43ce528bd633d032f17158d393",
           "version": "7.6.4"
         }
+      },
+      {
+        "package": "SWXMLHash",
+        "repositoryURL": "https://github.com/drmohundro/SWXMLHash",
+        "state": {
+          "branch": "master",
+          "revision": "6190db253036e21c21962f764ad0c68401952bb5",
+          "version": null
+        }
       }
     ]
   },

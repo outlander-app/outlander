@@ -60,6 +60,9 @@
 		F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
 		F98B492C2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
 		F98B492D2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
+		F995752224944D6B00A980FC /* SWXMLHash in Frameworks */ = {isa = PBXBuildFile; productRef = F995752124944D6B00A980FC /* SWXMLHash */; };
+		F995752524944DBB00A980FC /* MapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F995752424944DBB00A980FC /* MapNode.swift */; };
+		F995752624944DBB00A980FC /* MapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F995752424944DBB00A980FC /* MapNode.swift */; };
 		F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */; };
 		F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */; };
 		F9B25400247882620097C07F /* LoginWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253FE247882620097C07F /* LoginWindow.swift */; };
@@ -183,6 +186,7 @@
 		F98B49252470F685000E2D92 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		F98B49282471CC76000E2D92 /* IntervalTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimer.swift; sourceTree = "<group>"; };
 		F98B492B2471F38E000E2D92 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		F995752424944DBB00A980FC /* MapNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNode.swift; sourceTree = "<group>"; };
 		F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLoaderTests.swift; sourceTree = "<group>"; };
 		F9B253F9247874BE0097C07F /* ProfileConfigLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileConfigLoaderTests.swift; sourceTree = "<group>"; };
 		F9B253FE247882620097C07F /* LoginWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWindow.swift; sourceTree = "<group>"; };
@@ -240,6 +244,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F995752224944D6B00A980FC /* SWXMLHash in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +320,14 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		F995752324944D9E00A980FC /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				F995752424944DBB00A980FC /* MapNode.swift */,
+			);
+			path = Maps;
+			sourceTree = "<group>";
+		};
 		F9BCF2E122E177E100C7F7F0 = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +353,7 @@
 				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
 				F9CA20442453ACDC00A92736 /* Handlers */,
 				F98B49222470F502000E2D92 /* Infrastructure */,
+				F995752324944D9E00A980FC /* Maps */,
 				F969A0F923A4B7A000408CE5 /* Settings */,
 				F9D36E9122EF76D8008BC6E6 /* Server */,
 				F98B49232470F57C000E2D92 /* UI */,
@@ -456,6 +470,7 @@
 			name = Outlander;
 			packageProductDependencies = (
 				F9B2540B2481B5950097C07F /* CocoaAsyncSocket */,
+				F995752124944D6B00A980FC /* SWXMLHash */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -509,6 +524,7 @@
 			mainGroup = F9BCF2E122E177E100C7F7F0;
 			packageReferences = (
 				F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
+				F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -588,6 +604,7 @@
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
+				F995752524944DBB00A980FC /* MapNode.swift in Sources */,
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
@@ -644,6 +661,7 @@
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
 				F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */,
 				F969A0FF23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
+				F995752624944DBB00A980FC /* MapNode.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
@@ -754,6 +772,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -809,6 +828,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -824,17 +844,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/Frameworks/Static",
 				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Outlander/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -857,16 +878,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/Frameworks/Static",
 				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Outlander/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -887,10 +909,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TZ225FMST;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
@@ -915,10 +937,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TZ225FMST;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
@@ -971,6 +993,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/drmohundro/SWXMLHash";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/robbiehanson/CocoaAsyncSocket";
@@ -982,6 +1012,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F995752124944D6B00A980FC /* SWXMLHash */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */;
+			productName = SWXMLHash;
+		};
 		F9B2540B2481B5950097C07F /* CocoaAsyncSocket */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */;
