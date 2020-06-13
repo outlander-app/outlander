@@ -14,7 +14,7 @@ struct Context<Message> {
     let send: (Message) -> Void
 
     func map<B>(_ transform: @escaping (B) -> Message) -> Context<B> {
-        return Context<B>(viewController: viewController, send: {
+        Context<B>(viewController: viewController, send: {
             self.send(transform($0))
         })
     }
@@ -24,7 +24,7 @@ struct Command<Message> {
     let run: (Context<Message>) -> Void
 
     func map<B>(_ transform: @escaping (Message) -> B) -> Command<B> {
-        return Command<B> { context in
+        Command<B> { context in
             self.run(context.map(transform))
         }
     }

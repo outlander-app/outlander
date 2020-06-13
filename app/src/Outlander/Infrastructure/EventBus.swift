@@ -80,12 +80,12 @@ open class SwiftEventBus {
 
     @discardableResult
     open class func onMainThread(_ target: AnyObject, name: String, sender: Any? = nil, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
-        return SwiftEventBus.on(target, name: name, sender: sender, queue: OperationQueue.main, handler: handler)
+        SwiftEventBus.on(target, name: name, sender: sender, queue: OperationQueue.main, handler: handler)
     }
 
     @discardableResult
     open class func onBackgroundThread(_ target: AnyObject, name: String, sender: Any? = nil, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
-        return SwiftEventBus.on(target, name: name, sender: sender, queue: OperationQueue(), handler: handler)
+        SwiftEventBus.on(target, name: name, sender: sender, queue: OperationQueue(), handler: handler)
     }
 
     ////////////////////////////////////

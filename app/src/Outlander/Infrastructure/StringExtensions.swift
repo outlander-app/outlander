@@ -9,7 +9,7 @@ import Foundation
 
 extension String {
     subscript(i: Int) -> Character {
-        return self[index(startIndex, offsetBy: i)]
+        self[index(startIndex, offsetBy: i)]
     }
 
     subscript(_ range: CountableRange<Int>) -> String {

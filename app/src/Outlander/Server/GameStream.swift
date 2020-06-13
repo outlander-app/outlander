@@ -28,7 +28,7 @@ extension StreamToken {
     }
 
     func hasAttr(_ key: String) -> Bool {
-        return attr(key) != nil
+        attr(key) != nil
     }
 
     func attr(_ key: String) -> String? {
@@ -96,7 +96,7 @@ extension StreamToken {
     }
 }
 
-protocol IReaderMode: class {
+protocol IReaderMode: AnyObject {
     func read(_ context: StreamContext) -> IReaderMode?
 }
 
@@ -110,7 +110,7 @@ class ReaderBase<T> {
 
     public var target: T
 
-    var current: IReaderMode? { return modes.peek() }
+    var current: IReaderMode? { modes.peek() }
 
     public func push(_ mode: IReaderMode) {
         modes.push(mode)
@@ -274,7 +274,7 @@ protocol StringView: Collection {
 
 extension Substring: StringView {
     static func string(_ elements: [Character]) -> String {
-        return String(elements)
+        String(elements)
     }
 
     static let newline: Character = "\n"
@@ -421,7 +421,7 @@ struct TextTag {
     }
 
     static func tagFor(_ text: String, window: String = "", mono: Bool = false, preset: String? = nil) -> TextTag {
-        return TextTag(text: text, window: window, mono: mono, preset: preset)
+        TextTag(text: text, window: window, mono: mono, preset: preset)
     }
 
     static func combine(tags: [TextTag]) -> [TextTag] {

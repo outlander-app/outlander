@@ -28,8 +28,7 @@ class GagCommandHandler: ICommandHandler {
                     }
                     let added = context.upsertGag(gag: gag)
                     context.events.echoText(added ? "Gag added" : "Gag already exists")
-                }
-                else {
+                } else {
                     context.events.echoText("Invalid syntax. Usage: #gag add {gag} {class}")
                 }
                 return

@@ -18,15 +18,15 @@ public class Stack<T> {
     }
 
     public func peek() -> T? {
-        return stack.last
+        stack.last
     }
 
     public func hasItems() -> Bool {
-        return stack.count > 0
+        stack.count > 0
     }
 
     public func count() -> Int {
-        return stack.count
+        stack.count
     }
 
     public func clear() {

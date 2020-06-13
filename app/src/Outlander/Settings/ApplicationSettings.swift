@@ -22,7 +22,7 @@ class ApplicationSettings {
     var authenticationServerPort: UInt16 = 7900
 
     var currentProfilePath: URL {
-        return paths.profiles.appendingPathComponent(profile.name)
+        paths.profiles.appendingPathComponent(profile.name)
     }
 
     func update(_ settings: ApplicationSettingsDto) {
@@ -59,31 +59,31 @@ class ApplicationPaths {
     var rootUrl: URL
 
     var config: URL {
-        return rootUrl.appendingPathComponent("Config")
+        rootUrl.appendingPathComponent("Config")
     }
 
     var profiles: URL {
-        return config.appendingPathComponent("Profiles")
+        config.appendingPathComponent("Profiles")
     }
 
     var layout: URL {
-        return config.appendingPathComponent("Layout")
+        config.appendingPathComponent("Layout")
     }
 
     var maps: URL {
-        return rootUrl.appendingPathComponent("Maps")
+        rootUrl.appendingPathComponent("Maps")
     }
 
     var logs: URL {
-        return rootUrl.appendingPathComponent("Logs")
+        rootUrl.appendingPathComponent("Logs")
     }
 
     var sounds: URL {
-        return rootUrl.appendingPathComponent("Sounds")
+        rootUrl.appendingPathComponent("Sounds")
     }
 
     var scripts: URL {
-        return rootUrl.appendingPathComponent("Scripts")
+        rootUrl.appendingPathComponent("Scripts")
     }
 }
 

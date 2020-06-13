@@ -35,7 +35,7 @@ class OView: NSView {
     }
 
     override var wantsUpdateLayer: Bool {
-        return true
+        true
     }
 
     init() {
@@ -52,7 +52,7 @@ class OView: NSView {
     }
 
     override var isFlipped: Bool {
-        return true
+        true
     }
 
     override func animation(forKey key: NSAnimatablePropertyKey) -> Any? {

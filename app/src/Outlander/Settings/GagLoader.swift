@@ -10,19 +10,19 @@ import Foundation
 
 struct Gag: CustomStringConvertible {
     static let gagRegex = try? Regex("#gag \\{(.*?)\\}(?:\\s\\{(.*?)\\})?", options: [.anchorsMatchLines, .caseInsensitive])
-    
+
     var pattern: String
     var className: String
 
     var description: String {
-        return "#gag {\(pattern)} {\(className)}"
+        "#gag {\(pattern)} {\(className)}"
     }
-    
+
     static func from(gag: inout String) -> Gag? {
         guard let match = gagRegex?.firstMatch(&gag) else {
             return nil
         }
-        
+
         if match.count == 3 {
             guard let pattern = match.valueAt(index: 1) else {
                 return nil
@@ -31,7 +31,7 @@ struct Gag: CustomStringConvertible {
             let className = match.valueAt(index: 2) ?? ""
             return Gag(pattern: pattern, className: className.lowercased())
         }
-        
+
         return nil
     }
 }
@@ -47,13 +47,13 @@ class GagLoader {
 
     func load(_ settings: ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
-        
+
         context.gags.removeAll()
-        
+
         guard let data = files.load(fileUrl) else {
             return
         }
-        
+
         guard let content = String(data: data, encoding: .utf8) else {
             return
         }
@@ -87,11 +87,11 @@ extension GameContext {
     func addGag(gag: Gag) {
         gags.append(gag)
     }
-    
+
     @discardableResult
     func upsertGag(gag: Gag) -> Bool {
         // Nothing to update
-        if (gags.firstIndex(where: { $0.pattern == gag.pattern && $0.className == gag.className }) != nil) {
+        if gags.firstIndex(where: { $0.pattern == gag.pattern && $0.className == gag.className }) != nil {
             return false
         }
         addGag(gag: gag)

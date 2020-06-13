@@ -21,7 +21,7 @@ class VitalsBar: NSView {
         NotificationCenter.default.addObserver(self, selector: #selector(onFrameChanged(_:)), name: NSView.frameDidChangeNotification, object: nil)
     }
 
-    override var isFlipped: Bool { return true }
+    override var isFlipped: Bool { true }
 
     override func awakeFromNib() {
         let height = frame.size.height
@@ -109,7 +109,7 @@ class ProgressBar: NSView {
         }
     }
 
-    override var isFlipped: Bool { return true }
+    override var isFlipped: Bool { true }
 
     override func draw(_ dirtyRect: NSRect) {
         let height = frame.size.height

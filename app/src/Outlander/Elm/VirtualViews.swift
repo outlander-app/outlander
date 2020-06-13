@@ -46,15 +46,15 @@ indirect enum View<Message> {
 
 extension View {
     static func button(text: String, onClick: Message? = nil) -> View {
-        return ._button(Button(text: text, onClick: onClick))
+        ._button(Button(text: text, onClick: onClick))
     }
 
     static func textField(text: String, onChange: ((String) -> Message)? = nil, onEnd: ((String) -> Message)? = nil) -> View {
-        return ._textField(TextField(text: text, onChange: onChange, onEnd: onEnd))
+        ._textField(TextField(text: text, onChange: onChange, onEnd: onEnd))
     }
 
     static func textView(text: String) -> View {
-        return ._textView(TextView(text: text))
+        ._textView(TextView(text: text))
     }
 
     static func stackView(
@@ -65,11 +65,11 @@ extension View {
         alignment: NSLayoutConstraint.Attribute = .top,
         spacing: Double = 5
     ) -> View {
-        return ._stackView(StackView(views: views, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing))
+        ._stackView(StackView(views: views, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing))
     }
 
     static func vitalBarItem(_ text: String, value: Double, foreColor: NSColor = .white, backgroundColor: NSColor? = .red) -> View {
-        return ._vitalBarItem(VitalBarItem(text: text, value: value, foreColor: foreColor, backgroundColor: backgroundColor))
+        ._vitalBarItem(VitalBarItem(text: text, value: value, foreColor: foreColor, backgroundColor: backgroundColor))
     }
 }
 
@@ -83,7 +83,7 @@ struct Button<Message> {
     }
 
     func map<B>(_ transform: (Message) -> B) -> Button<B> {
-        return Button<B>(text: text, onClick: onClick.map(transform))
+        Button<B>(text: text, onClick: onClick.map(transform))
     }
 }
 
@@ -99,7 +99,7 @@ struct TextField<Message> {
     }
 
     func map<B>(_ transform: @escaping (Message) -> B) -> TextField<B> {
-        return TextField<B>(text: text, onChange: onChange.map { x in { transform(x($0)) } }, onEnd: onEnd.map { x in { transform(x($0)) } })
+        TextField<B>(text: text, onChange: onChange.map { x in { transform(x($0)) } }, onEnd: onEnd.map { x in { transform(x($0)) } })
     }
 }
 
@@ -145,7 +145,7 @@ struct StackView<Message> {
     }
 
     func map<B>(_ transform: @escaping (Message) -> B) -> StackView<B> {
-        return StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing)
+        StackView<B>(views: views.map { view in view.map(transform) }, axis: axis, backgroundColor: backgroundColor, distribution: distribution, alignment: alignment, spacing: spacing)
     }
 }
 
@@ -154,6 +154,6 @@ struct TextView<Message> {
 //    let append: (String) -> ()
 
     func map<B>(_: @escaping (Message) -> B) -> TextView<B> {
-        return TextView<B>(text: text)
+        TextView<B>(text: text)
     }
 }

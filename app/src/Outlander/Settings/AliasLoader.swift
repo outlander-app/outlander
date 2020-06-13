@@ -16,7 +16,7 @@ struct Alias {
     var className: String?
 
     var description: String {
-        return "#alias {\(pattern)} {\(replace)} {\(className ?? "")}"
+        "#alias {\(pattern)} {\(replace)} {\(className ?? "")}"
     }
 
     static func from(alias: inout String) -> Alias? {

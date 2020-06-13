@@ -9,16 +9,16 @@
 import Foundation
 
 struct MapArc {
-    var exit:String
-    var move:String
-    var destination:String
-    var hidden:Bool
+    var exit: String
+    var move: String
+    var destination: String
+    var hidden: Bool
 }
 
 struct MapPosition {
-    var x:Int
-    var y:Int
-    var z:Int
+    var x: Int
+    var y: Int
+    var z: Int
 }
 
 final class MapNode {
@@ -41,10 +41,10 @@ final class MapNode {
         "southwest",
         "out",
         "up",
-        "down"
+        "down",
     ]
 
-    init(id:String, name: String, descriptions: [String], notes: String?, color: String?, position: MapPosition, arcs: [MapArc]) {
+    init(id: String, name: String, descriptions: [String], notes: String?, color: String?, position: MapPosition, arcs: [MapArc]) {
         self.id = id
         self.name = name
         self.descriptions = descriptions
@@ -55,53 +55,50 @@ final class MapNode {
     }
 
     var transferMap: String? {
-        get {
-            if self.isTransfer() {
-    //            let groups = self.notes?["(.+\\.xml)"].groups()
-    //            if groups?.count > 1 {
-    //                return groups?[1]
-    //            }
-            }
-
-            return nil
+        if isTransfer() {
+            //            let groups = self.notes?["(.+\\.xml)"].groups()
+            //            if groups?.count > 1 {
+            //                return groups?[1]
+            //            }
         }
+
+        return nil
     }
 
     func isTransfer() -> Bool {
-        self.notes?.contains(".xml") == true
+        notes?.contains(".xml") == true
     }
 
     func arcWith(id: String) -> MapArc? {
-        return arcs.filter { $0.destination == id }.first
+        arcs.filter { $0.destination == id }.first
     }
 
     func nonCardinalExists() -> [MapArc] {
-        return arcs.filter { !self.cardinalDirs.contains($0.exit) }
+        arcs.filter { !self.cardinalDirs.contains($0.exit) }
     }
 
     func cardinalExits() -> [String] {
-        return arcs.filter { self.cardinalDirs.contains($0.exit) }.map { $0.exit }.sorted()
+        arcs.filter { self.cardinalDirs.contains($0.exit) }.map { $0.exit }.sorted()
     }
 
     func matchesExits(_ exits: [String]) -> Bool {
-        return self.cardinalExits().elementsEqual(exits, by: {
+        cardinalExits().elementsEqual(exits, by: {
             $0 == $1
         })
     }
 
     func matches(name: String, description: String, exits: [String], ignoreTransfers: Bool) -> Bool {
-
-        if (ignoreTransfers && self.isTransfer()) {
+        if ignoreTransfers, isTransfer() {
             return false
         }
 
         if exits.count > 0 {
-            return self.matchesExits(exits)
+            return matchesExits(exits)
                 && self.name == name
-                && self.hasMatchingDescription(description)
+                && hasMatchingDescription(description)
         }
 
-        return self.name == name && self.hasMatchingDescription(description)
+        return self.name == name && hasMatchingDescription(description)
     }
 
     func hasMatchingDescription(_ description: String) -> Bool {

@@ -17,7 +17,7 @@ class InMemoryFileSystem: FileSystem {
     }
 
     func load(_: URL) -> Data? {
-        return contentToLoad?.data(using: .utf8)
+        contentToLoad?.data(using: .utf8)
     }
 
     func write(_ content: String, to _: URL) {

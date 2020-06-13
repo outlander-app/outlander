@@ -36,7 +36,7 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
         _callback(.initialized)
     }
 
-    public var isConnected: Bool { return _socket?.isConnected ?? false }
+    public var isConnected: Bool { _socket?.isConnected ?? false }
 
     public func connect(host: String, port: UInt16) {
         _callback(.connecting(host, port))

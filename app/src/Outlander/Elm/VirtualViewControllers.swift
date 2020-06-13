@@ -18,6 +18,6 @@ indirect enum ViewController<Message> {
     }
 
     static func viewController(_ view: View<Message>, useLayoutGuide: Bool = true) -> ViewController {
-        return ._viewController(view, useLayoutGuide: useLayoutGuide)
+        ._viewController(view, useLayoutGuide: useLayoutGuide)
     }
 }

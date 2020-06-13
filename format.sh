@@ -1,0 +1,1 @@
+swiftformat --swiftversion 5.1 ./app/src

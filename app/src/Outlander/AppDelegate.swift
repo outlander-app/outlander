@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     var activeController: GameViewController? {
-        return activeWindow?.contentViewController as? GameViewController
+        activeWindow?.contentViewController as? GameViewController
     }
 
     func applicationDidFinishLaunching(_: Notification) {

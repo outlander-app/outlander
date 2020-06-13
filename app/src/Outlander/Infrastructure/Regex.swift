@@ -10,7 +10,7 @@ import Foundation
 
 extension Regex: Hashable {
     static func == (lhs: Regex, rhs: Regex) -> Bool {
-        return lhs.pattern == rhs.pattern
+        lhs.pattern == rhs.pattern
     }
 
     func hash(into hasher: inout Hasher) {
@@ -80,7 +80,7 @@ class MatchResult {
     }
 
     var count: Int {
-        return result.numberOfRanges
+        result.numberOfRanges
     }
 
     func rangeOf(index: Int) -> NSRange? {

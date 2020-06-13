@@ -15,7 +15,7 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     @IBOutlet var gameComboBox: NSComboBox?
 
     override var windowNibName: String! {
-        return "LoginWindow"
+        "LoginWindow"
     }
 
     var account: String = ""

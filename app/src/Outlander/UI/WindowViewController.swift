@@ -18,14 +18,14 @@ class OLScrollView: NSScrollView {
     }
 
     override open var scrollerStyle: NSScroller.Style {
-        get { return .overlay }
+        get { .overlay }
         set {
             self.verticalScroller?.scrollerStyle = .overlay
             self.horizontalScroller?.scrollerStyle = .overlay
         }
     }
 
-    override var isFlipped: Bool { return true }
+    override var isFlipped: Bool { true }
 }
 
 class WindowViewController: NSViewController {

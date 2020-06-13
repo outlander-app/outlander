@@ -23,7 +23,7 @@ class LocalFileSystem: FileSystem {
     }
 
     func fileExists(_ file: URL) -> Bool {
-        return file.checkFileExist()
+        file.checkFileExist()
     }
 
     func load(_ file: URL) -> Data? {
@@ -61,6 +61,6 @@ extension URL {
     }
 
     func checkFileExist() -> Bool {
-        return FileManager.default.fileExists(atPath: path)
+        FileManager.default.fileExists(atPath: path)
     }
 }

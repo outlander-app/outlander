@@ -20,7 +20,7 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
     @IBOutlet var tableView: NSTableView!
 
     override var windowNibName: String! {
-        return "ProfileWindow"
+        "ProfileWindow"
     }
 
     override func windowDidLoad() {
@@ -38,7 +38,7 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
     }
 
     func numberOfRows(in _: NSTableView) -> Int {
-        return profiles.count
+        profiles.count
     }
 
     func tableView(_: NSTableView, objectValueFor _: NSTableColumn?, row: Int) -> Any? {
