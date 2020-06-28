@@ -228,6 +228,24 @@ class WindowViewController: NSViewController {
 
         return result
     }
+    
+    func processGags(_ text: String) -> Bool {
+        guard let context = gameContext else {
+            return false
+        }
+        
+        for gag in context.gags {
+            guard let regex = RegexFactory.get(gag.pattern) else {
+                continue
+            }
+            
+            if (regex.hasMatches(text)) {
+                return true
+            }
+        }
+        
+        return false
+    }
 
     func append(_ tag: TextTag) {
         queue?.async {
@@ -242,6 +260,11 @@ class WindowViewController: NSViewController {
 
             self.lastTag = tag
 
+            // Check if the text should be gagged or not
+            if self.processGags(tag.text) {
+                return
+            }
+            
             let text = self.processSubs(tag.text)
             guard let str = self.stringFromTag(tag, text: text) else { return }
             self.processHighlights(str)
