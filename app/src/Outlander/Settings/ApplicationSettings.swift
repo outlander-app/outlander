@@ -20,7 +20,7 @@ class ApplicationSettings {
 
     var authenticationServerAddress = "eaccess.play.net"
     var authenticationServerPort: UInt16 = 7900
-
+    
     var currentProfilePath: URL {
         paths.profiles.appendingPathComponent(profile.name)
     }

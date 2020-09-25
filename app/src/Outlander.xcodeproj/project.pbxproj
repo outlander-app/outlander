@@ -13,6 +13,8 @@
 		F62EA141247BE6EB004E2C1E /* GagCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */; };
 		F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
 		F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */; };
+		F945414424C2709200F1FC72 /* ScriptParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F945414324C2709200F1FC72 /* ScriptParser.swift */; };
+		F945414524C2709200F1FC72 /* ScriptParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F945414324C2709200F1FC72 /* ScriptParser.swift */; };
 		F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F969A0E1239B21FF00408CE5 /* Game.storyboard */; };
 		F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F969A0E4239B2A5E00408CE5 /* GameViewController.swift */; };
@@ -158,6 +160,7 @@
 		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandler.swift; sourceTree = "<group>"; };
+		F945414324C2709200F1FC72 /* ScriptParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptParser.swift; sourceTree = "<group>"; };
 		F969A0E1239B21FF00408CE5 /* Game.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Game.storyboard; sourceTree = "<group>"; };
 		F969A0E4239B2A5E00408CE5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		F969A0E7239C7F9B00408CE5 /* Window.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Window.storyboard; sourceTree = "<group>"; };
@@ -266,6 +269,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F945414224C2704A00F1FC72 /* Scripting */ = {
+			isa = PBXGroup;
+			children = (
+				F945414324C2709200F1FC72 /* ScriptParser.swift */,
+			);
+			path = Scripting;
+			sourceTree = "<group>";
+		};
 		F969A0F923A4B7A000408CE5 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -354,6 +365,7 @@
 				F9CA20442453ACDC00A92736 /* Handlers */,
 				F98B49222470F502000E2D92 /* Infrastructure */,
 				F995752324944D9E00A980FC /* Maps */,
+				F945414224C2704A00F1FC72 /* Scripting */,
 				F969A0F923A4B7A000408CE5 /* Settings */,
 				F9D36E9122EF76D8008BC6E6 /* Server */,
 				F98B49232470F57C000E2D92 /* UI */,
@@ -602,6 +614,7 @@
 				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
+				F945414424C2709200F1FC72 /* ScriptParser.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F995752524944DBB00A980FC /* MapNode.swift in Sources */,
@@ -644,6 +657,7 @@
 				F9CA20562466066400A92736 /* EchoCommandHandlerTests.swift in Sources */,
 				F98B490A246F9668000E2D92 /* HighlightLoader.swift in Sources */,
 				F9CA2073246776B800A92736 /* ClassLoaderTests.swift in Sources */,
+				F945414524C2709200F1FC72 /* ScriptParser.swift in Sources */,
 				F98B4907246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F98B4911246FA149000E2D92 /* SubstituteLoaderTests.swift in Sources */,
 				F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */,
@@ -997,8 +1011,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/drmohundro/SWXMLHash";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = 4.9.0;
 			};
 		};
 		F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {

@@ -594,6 +594,7 @@ class GameStream {
         case "left":
             context.globalVars["lefthand"] = token.value() ?? "Empty"
             context.globalVars["lefthandnoun"] = token.attr("noun") ?? ""
+            context.globalVars["lefthandid"] = token.attr("exist") ?? ""
 
             streamCommands(.hands(
                 context.globalVars["lefthand"] ?? "Empty",
@@ -603,6 +604,7 @@ class GameStream {
         case "right":
             context.globalVars["righthand"] = token.value() ?? "Empty"
             context.globalVars["righthandnoun"] = token.attr("noun") ?? ""
+            context.globalVars["righthandid"] = token.attr("exist") ?? ""
 
             streamCommands(.hands(
                 context.globalVars["lefthand"] ?? "Empty",
