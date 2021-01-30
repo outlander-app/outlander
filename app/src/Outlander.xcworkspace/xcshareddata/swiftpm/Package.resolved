@@ -14,9 +14,9 @@
         "package": "SWXMLHash",
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash",
         "state": {
-          "branch": "master",
-          "revision": "6190db253036e21c21962f764ad0c68401952bb5",
-          "version": null
+          "branch": null,
+          "revision": "f43166a8e18fdd0857f29e303b1bb79a5428bca0",
+          "version": "4.9.0"
         }
       }
     ]
