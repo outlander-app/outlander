@@ -9,6 +9,7 @@
 import Foundation
 
 protocol FileSystem {
+    func contentsOf(_ directory: URL) -> [URL]
     func fileExists(_ file: URL) -> Bool
     func load(_ file: URL) -> Data?
     func write(_ content: String, to fileUrl: URL)
@@ -20,6 +21,20 @@ class LocalFileSystem: FileSystem {
 
     init(_ settings: ApplicationSettings) {
         self.settings = settings
+    }
+
+    func contentsOf(_ directory: URL) -> [URL] {
+        var result:[URL] = []
+
+        access {
+            do {
+                result = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            } catch {
+                print(error)
+            }
+        }
+
+        return result
     }
 
     func fileExists(_ file: URL) -> Bool {

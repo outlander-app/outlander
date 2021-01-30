@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
+		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
+		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
+		7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2B25C5016400AF0444 /* MapZone.swift */; };
+		7BCE4A2D25C5016400AF0444 /* MapZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2B25C5016400AF0444 /* MapZone.swift */; };
+		7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
+		7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
 		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
@@ -156,6 +163,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
+		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
+		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
 		F62EA130247A2846004E2C1E /* GagCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandler.swift; sourceTree = "<group>"; };
 		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandlerTests.swift; sourceTree = "<group>"; };
@@ -247,6 +257,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				F995752224944D6B00A980FC /* SWXMLHash in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
@@ -335,6 +346,8 @@
 			isa = PBXGroup;
 			children = (
 				F995752424944DBB00A980FC /* MapNode.swift */,
+				7BCE4A2625C5011B00AF0444 /* MapLoader.swift */,
+				7BCE4A2B25C5016400AF0444 /* MapZone.swift */,
 			);
 			path = Maps;
 			sourceTree = "<group>";
@@ -410,15 +423,16 @@
 		F9CA20442453ACDC00A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
-				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
+				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
 				F9CA205724662B5500A92736 /* BeepCommandHandler.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
+				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
+				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
-				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -483,6 +497,7 @@
 			packageProductDependencies = (
 				F9B2540B2481B5950097C07F /* CocoaAsyncSocket */,
 				F995752124944D6B00A980FC /* SWXMLHash */,
+				7BCE4A2225C5007A00AF0444 /* Fuzi */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -537,6 +552,7 @@
 			packageReferences = (
 				F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
 				F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */,
+				7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -611,6 +627,7 @@
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
+				7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
@@ -629,9 +646,11 @@
 				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
+				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
+				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -643,10 +662,12 @@
 				F98B48FD246F61D1000E2D92 /* WindowLayoutLoaderTests.swift in Sources */,
 				F98B4919246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F9CA205C2466322B00A92736 /* VarCommandHandler.swift in Sources */,
+				7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F98B490C246F967B000E2D92 /* HighlightLoaderTests.swift in Sources */,
+				7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F9D36E9A22EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
@@ -670,6 +691,7 @@
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				7BCE4A2D25C5016400AF0444 /* MapZone.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F9B25401247882620097C07F /* LoginWindow.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
@@ -1008,6 +1030,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cezheng/Fuzi";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
 		F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/drmohundro/SWXMLHash";
@@ -1027,6 +1057,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7BCE4A2225C5007A00AF0444 /* Fuzi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */;
+			productName = Fuzi;
+		};
 		F995752124944D6B00A980FC /* SWXMLHash */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */;

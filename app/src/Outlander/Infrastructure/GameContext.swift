@@ -21,6 +21,7 @@ class GameContext {
     var highlights: [Highlight] = []
     var substitutes: [Substitute] = []
     var triggers: [Trigger] = []
+    var maps: [String:MapZone] = [:]
 }
 
 extension GameContext {
