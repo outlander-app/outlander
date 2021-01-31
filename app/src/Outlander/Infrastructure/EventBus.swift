@@ -12,7 +12,7 @@ import Foundation
 
 // source: https://github.com/cesarferreira/SwiftEventBus/blob/master/SwiftEventBus/SwiftEventBus.swift
 open class SwiftEventBus {
-    struct Static {
+    enum Static {
         static let instance = SwiftEventBus()
         static let queue = DispatchQueue(label: "com.outlander.SwiftEventBus", attributes: [])
     }

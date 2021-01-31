@@ -8,45 +8,9 @@
 
 import Foundation
 
-extension TimeInterval {
-    private var milliseconds: Int {
-        return Int((truncatingRemainder(dividingBy: 1)) * 1000)
-    }
-
-    private var seconds: Int {
-        return Int(self) % 60
-    }
-
-    private var minutes: Int {
-        return (Int(self) / 60 ) % 60
-    }
-
-    private var hours: Int {
-        return Int(self) / 3600
-    }
-
-    var stringTime: String {
-        if hours != 0 {
-            return "\(hours)h \(minutes)m \(seconds)s"
-        } else if minutes != 0 {
-            return "\(minutes)m \(seconds)s"
-        } else if milliseconds != 0 {
-            return "\(seconds)s \(milliseconds)ms"
-        } else {
-            return "\(seconds)s"
-        }
-    }
-}
-
-extension Date {
-    static func - (lhs: Date, rhs: Date) -> TimeInterval {
-        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
-    }
-}
-
 class MapperComandHandler: ICommandHandler {
     var command = "#mapper"
-    
+
     let files: FileSystem
 
     init(_ files: FileSystem) {
@@ -57,12 +21,12 @@ class MapperComandHandler: ICommandHandler {
         let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
         print("mapper commands \(commands)")
-        
+
 //        guard commands.count > 0 else {
 //            return
 //        }
 
-        context.events.echoText("[Automapper]: loading all maps...")
+        context.events.echoText("[Automapper]: loading all maps...", preset: "automapper")
 
         DispatchQueue.global(qos: .utility).async {
             let startTime = Date()
@@ -71,31 +35,27 @@ class MapperComandHandler: ICommandHandler {
             let meta = loader.loadMapMeta(atPath: context.applicationSettings.paths.maps)
             let maps = meta.compactMap { (m) -> MapInfo? in
                 switch m {
-                case .Error(let e):
-                    print(e)
-                    context.events.echoText("Some map error")
+                case let .Error(e):
+                    context.events.echoText("An error occured loading metadata:\n    \(e.description)", preset: "scripterror", mono: true)
                     return nil
-                case .Success(let map):
+                case let .Success(map):
                     return map
                 }
             }
 
             maps.forEach {
-                let start = Date()
                 let result = loader.load(fileUrl: $0.file)
-                switch(result) {
-                case .Error(let e):
-                    print(e)
-                case .Success(let zone):
+                switch result {
+                case let .Error(e):
+                    context.events.echoText("An error occured loading map \($0.file.absoluteString):\n    \(e.description)", preset: "scripterror", mono: true)
+                case let .Success(zone):
                     $0.zone = zone
-                    print(zone.name)
                     context.maps[zone.id] = zone
-//                    context.events.echoText("\(zone.name) (\((Date() - start).stringTime))")
                 }
             }
 
             let timeElapsed = Date() - startTime
-            context.events.echoText("[Automapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)")
+            context.events.echoText("[Automapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)", preset: "automapper")
         }
     }
 }

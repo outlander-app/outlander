@@ -36,8 +36,9 @@ extension String {
         var indices: [Index] = []
         var startIndex = self.startIndex
         while startIndex < endIndex,
-            let range = self[startIndex...]
-            .range(of: string, options: options) {
+              let range = self[startIndex...]
+              .range(of: string, options: options)
+        {
             indices.append(range.lowerBound)
             startIndex = range.lowerBound < range.upperBound ? range.upperBound :
                 index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
@@ -49,8 +50,9 @@ extension String {
         var result: [Range<Index>] = []
         var startIndex = self.startIndex
         while startIndex < endIndex,
-            let range = self[startIndex...]
-            .range(of: string, options: options) {
+              let range = self[startIndex...]
+              .range(of: string, options: options)
+        {
             result.append(range)
             startIndex = range.lowerBound < range.upperBound ? range.upperBound :
                 index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex

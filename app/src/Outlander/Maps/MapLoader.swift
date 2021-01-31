@@ -13,6 +13,17 @@ enum MapError: Error {
     case fileDoesNotExist(URL)
     case error(Error)
     case xmlError(String)
+
+    var description: String {
+        switch self {
+        case let .fileDoesNotExist(url):
+            return url.absoluteString
+        case let .error(e):
+            return "\(e)"
+        case let .xmlError(e):
+            return e
+        }
+    }
 }
 
 enum MapLoadResult {
@@ -26,11 +37,11 @@ enum MapMetaResult {
 }
 
 final class MapInfo {
-    var id:String
-    var name:String
-    var file:URL
-    var zone:MapZone?
-    
+    var id: String
+    var name: String
+    var file: URL
+    var zone: MapZone?
+
     init(_ id: String, name: String, file: URL) {
         self.id = id
         self.name = name
@@ -39,8 +50,8 @@ final class MapInfo {
 }
 
 final class MapLoader {
-    var files:FileSystem
-    
+    var files: FileSystem
+
     init(_ files: FileSystem) {
         self.files = files
     }
@@ -78,9 +89,9 @@ final class MapLoader {
 
         do {
             let doc = try XMLDocument(data: data)
-            
+
             guard let root = doc.root else {
-                return MapLoadResult.Error(MapError.xmlError("\(fileUrl.absoluteString) has no root!?"))
+                return MapLoadResult.Error(MapError.xmlError("Invalid format. Missing root element."))
             }
 
             let id = root.attr("id")!
@@ -89,9 +100,9 @@ final class MapLoader {
             let mapZone = MapZone(id, name)
 
             for node in doc.xpath("/zone/node") {
-                let desc:[String] = self.descriptions(node)
-                let position:MapPosition = self.position(node)
-                let arcs:[MapArc] = self.arcs(node)
+                let desc: [String] = descriptions(node)
+                let position: MapPosition = self.position(node)
+                let arcs: [MapArc] = self.arcs(node)
                 let room = MapNode(
                     id: node["id"]!,
                     name: node["name"]!,
@@ -106,37 +117,37 @@ final class MapLoader {
 
             mapZone.labels = doc.xpath("/zone/label").map {
                 let text = $0["text"] ?? ""
-                let position:MapPosition = self.position($0)
+                let position: MapPosition = self.position($0)
                 return MapLabel(text: text, position: position)
             }
 
             return MapLoadResult.Success(mapZone)
-        }
-        catch {
+        } catch {
             return MapLoadResult.Error(MapError.error(error))
         }
     }
 
-    func descriptions(_ node:Fuzi.XMLElement) -> [String] {
-        return node.xpath("description").map {
-            return $0.stringValue.replacingOccurrences(of: "\"", with: "").replacingOccurrences(of: ";", with: "")
+    func descriptions(_ node: Fuzi.XMLElement) -> [String] {
+        node.xpath("description").map {
+            $0.stringValue.replacingOccurrences(of: "\"", with: "").replacingOccurrences(of: ";", with: "")
         }
     }
 
-    func position(_ node:Fuzi.XMLElement) -> MapPosition {
+    func position(_ node: Fuzi.XMLElement) -> MapPosition {
         if let element = node.firstChild(tag: "position") {
             return MapPosition(x: Int(element["x"]!)!, y: Int(element["y"]!)!, z: Int(element["z"]!)!)
         }
         return MapPosition(x: 0, y: 0, z: 0)
     }
-    
-    func arcs(_ node:Fuzi.XMLElement) -> [MapArc] {
-        return node.xpath("arc").map {
-            return MapArc(
+
+    func arcs(_ node: Fuzi.XMLElement) -> [MapArc] {
+        node.xpath("arc").map {
+            MapArc(
                 exit: $0["exit"] ?? "",
                 move: $0["move"] ?? "",
                 destination: $0["destination"] ?? "",
-                hidden: $0["hidden"] == "True")
+                hidden: $0["hidden"] == "True"
+            )
         }
     }
 }

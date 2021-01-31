@@ -12,6 +12,10 @@ class InMemoryFileSystem: FileSystem {
     var contentToLoad: String?
     var savedContent: String?
 
+    func contentsOf(_: URL) -> [URL] {
+        fatalError()
+    }
+
     func fileExists(_: URL) -> Bool {
         fatalError()
     }

@@ -244,8 +244,9 @@ class TagMode: IReaderMode {
 
     func isClosingTagNext(_ context: StreamContext) -> Bool {
         if let first = context.text.first,
-            let second = context.text.second,
-            first == "<", second == "/" {
+           let second = context.text.second,
+           first == "<", second == "/"
+        {
             return true
         }
         return false
@@ -420,8 +421,8 @@ struct TextTag {
         )]
     }
 
-    static func tagFor(_ text: String, window: String = "", mono: Bool = false, preset: String? = nil) -> TextTag {
-        TextTag(text: text, window: window, mono: mono, preset: preset)
+    static func tagFor(_ text: String, window: String = "", mono: Bool = false, color: String? = nil, preset: String? = nil, playerCommand: Bool = false) -> TextTag {
+        TextTag(text: text, window: window, color: color, mono: mono, preset: preset, playerCommand: playerCommand)
     }
 
     static func combine(tags: [TextTag]) -> [TextTag] {
@@ -533,7 +534,7 @@ class GameStream {
 
     var monsterCountIgnoreList: String = "" {
         didSet {
-            self.monsterCountIgnoreRegex = try? Regex(self.monsterCountIgnoreList)
+            monsterCountIgnoreRegex = try? Regex(monsterCountIgnoreList)
         }
     }
 
@@ -841,7 +842,7 @@ class GameStream {
         text = text.replacingOccurrences(of: "&lt;", with: "<")
         text = text.replacingOccurrences(of: "&amp;", with: "&")
 
-        var tag: TextTag = TextTag.tagFor(text)
+        var tag = TextTag.tagFor(text)
 
         tag.bold = bold
         tag.mono = mono

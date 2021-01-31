@@ -178,8 +178,8 @@ class GameViewController: NSViewController {
         }
 
         gameContext.events.handle(self, channel: "ol:text") { result in
-            if let text = result as? String {
-                self.logText(text)
+            if let data = result as? TextData {
+                self.logText(data.text, preset: data.preset, color: data.color, mono: data.mono)
             }
         }
 
@@ -453,7 +453,7 @@ class GameViewController: NSViewController {
                         width: layout.primary.width,
                         height: layout.primary.height
                     ),
-                                        display: true)
+                    display: true)
                 }
 
                 for win in layout.windows {
@@ -558,8 +558,8 @@ class GameViewController: NSViewController {
         }
     }
 
-    func logText(_ text: String, mono: Bool = false, playerCommand: Bool = false) {
-        logTag(TextTag(text: text, window: "main", mono: mono, playerCommand: playerCommand))
+    func logText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false, playerCommand: Bool = false) {
+        logTag(TextTag.tagFor(text, window: "main", mono: mono, color: color, preset: preset, playerCommand: playerCommand))
     }
 
     func logError(_ text: String) {

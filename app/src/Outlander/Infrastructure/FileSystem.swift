@@ -24,7 +24,7 @@ class LocalFileSystem: FileSystem {
     }
 
     func contentsOf(_ directory: URL) -> [URL] {
-        var result:[URL] = []
+        var result: [URL] = []
 
         access {
             do {

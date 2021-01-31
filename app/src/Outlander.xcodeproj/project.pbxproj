@@ -14,6 +14,8 @@
 		7BCE4A2D25C5016400AF0444 /* MapZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2B25C5016400AF0444 /* MapZone.swift */; };
 		7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
 		7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
+		7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */; };
+		7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */; };
 		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
@@ -166,6 +168,7 @@
 		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
 		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
 		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
+		7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeExtensions.swift; sourceTree = "<group>"; };
 		F62EA130247A2846004E2C1E /* GagCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandler.swift; sourceTree = "<group>"; };
 		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandlerTests.swift; sourceTree = "<group>"; };
@@ -311,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
+				7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */,
 				F98B49252470F685000E2D92 /* Events.swift */,
 				F9CA204B245CAA9700A92736 /* EventBus.swift */,
 				F9CA2062246669D800A92736 /* FileSystem.swift */,
@@ -614,6 +618,7 @@
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F9CA2075246776E100A92736 /* ClassLoader.swift in Sources */,
 				F9CA205824662B5500A92736 /* BeepCommandHandler.swift in Sources */,
+				7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9CA2049245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */,
@@ -725,6 +730,7 @@
 				F9CA20672466719600A92736 /* ApplicationSettings.swift in Sources */,
 				F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */,
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
+				7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,

@@ -16,7 +16,7 @@ struct ColorPreset {
 }
 
 extension GameContext {
-    public func presetFor(_ setting: String) -> ColorPreset? {
+    func presetFor(_ setting: String) -> ColorPreset? {
         let settingToCheck = setting.lowercased()
 
         if settingToCheck.count == 0 {
@@ -30,7 +30,7 @@ extension GameContext {
         return nil
     }
 
-    public func addPreset(_ name: String, color: String, backgroundColor: String? = nil) {
+    func addPreset(_ name: String, color: String, backgroundColor: String? = nil) {
         let preset = ColorPreset(name: name, color: color, backgroundColor: backgroundColor)
         presets[name] = preset
     }

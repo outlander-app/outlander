@@ -11,15 +11,16 @@ import Foundation
 
 final class Driver<Model, Message> {
     private var model: Model
-    private var strongReferences: StrongReferences = StrongReferences()
-    private(set) var viewController: NSViewController = NSViewController()
+    private var strongReferences = StrongReferences()
+    private(set) var viewController = NSViewController()
 
     private let updateState: (inout Model, Message) -> [Command<Message>]
     private let computeView: (Model) -> ViewController<Message>
 
     init(_ initial: Model,
          update: @escaping (inout Model, Message) -> [Command<Message>],
-         view: @escaping (Model) -> ViewController<Message>) {
+         view: @escaping (Model) -> ViewController<Message>)
+    {
         model = initial
         updateState = update
         computeView = view

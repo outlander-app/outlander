@@ -11,17 +11,17 @@ import Foundation
 class GameContext {
     var events: Events = SwiftEventBusEvents()
 
-    var applicationSettings: ApplicationSettings = ApplicationSettings()
+    var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
     var globalVars: [String: String] = [:]
     var presets: [String: ColorPreset] = [:]
-    var classes: ClassSettings = ClassSettings()
+    var classes = ClassSettings()
     var gags: [Gag] = []
     var aliases: [Alias] = []
     var highlights: [Highlight] = []
     var substitutes: [Substitute] = []
     var triggers: [Trigger] = []
-    var maps: [String:MapZone] = [:]
+    var maps: [String: MapZone] = [:]
 }
 
 extension GameContext {

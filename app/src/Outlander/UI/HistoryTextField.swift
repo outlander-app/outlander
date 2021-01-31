@@ -21,12 +21,12 @@ public class HistoryTextField: NSTextField {
     @IBInspectable
     public var progress: Float = 0.0 {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
     @IBInspectable
-    public var progressColor: NSColor = NSColor(hex: "#003366")! {
+    public var progressColor = NSColor(hex: "#003366")! {
         didSet {
             needsDisplay = true
         }

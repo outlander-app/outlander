@@ -9,19 +9,19 @@
 import Foundation
 
 struct MapLabel {
-    var text:String
-    var position:MapPosition
+    var text: String
+    var position: MapPosition
 }
 
 final class MapZone {
-    var id:String
-    var name:String
-    var file:String
-    var rooms:[MapNode]
-    var labels:[MapLabel]
-    var roomIdLookup:[String:MapNode]
-    
-    init(_ id:String, _ name:String) {
+    var id: String
+    var name: String
+    var file: String
+    var rooms: [MapNode]
+    var labels: [MapLabel]
+    var roomIdLookup: [String: MapNode]
+
+    init(_ id: String, _ name: String) {
         self.id = id
         self.name = name
         file = ""
@@ -29,20 +29,19 @@ final class MapZone {
         labels = []
         roomIdLookup = [:]
     }
-    
+
     func addRoom(_ room: MapNode) {
         rooms.append(room)
         roomIdLookup[room.id] = room
     }
 
-    func mapSize(z: Int, padding: Double) -> NSRect {
-        var maxX:Double = 0
-        var minX:Double = 0
-        var maxY:Double = 0
-        var minY:Double = 0
+    func mapSize(z _: Int, padding: Double) -> NSRect {
+        var maxX: Double = 0
+        var minX: Double = 0
+        var maxY: Double = 0
+        var minY: Double = 0
 
         for room in rooms {
-
             if Double(room.position.x) > maxX {
                 maxX = Double(room.position.x)
             }
@@ -60,27 +59,25 @@ final class MapZone {
             }
         }
 
-        let width:Double = abs(maxX) + abs(minX) + padding
-        let height:Double = abs(maxY) + abs(minY) + padding
+        let width: Double = abs(maxX) + abs(minX) + padding
+        let height: Double = abs(maxY) + abs(minY) + padding
 
 //        print("maxX: \(maxX) minX: \(minX) maxY: \(maxY) minY: \(minY) || (\(width),\(height))")
         // set origin x,y to the point on screen where were the most points can fit on screen
         // between maxX and maxY
-        return NSRect(x: width - maxX - (padding / 2.0), y: height - maxY - (padding / 2.0), width: width*1.0, height: height*1.0)
+        return NSRect(x: width - maxX - (padding / 2.0), y: height - maxY - (padding / 2.0), width: width * 1.0, height: height * 1.0)
     }
 
-    func roomWithId(id:String) -> MapNode? {
-
+    func roomWithId(id: String) -> MapNode? {
         if id.count == 0 {
             return nil
         }
 
         return roomIdLookup[id]
     }
-    
-    func roomsWithNote(note:String) -> [MapNode] {
-        return self.rooms.filter {
 
+    func roomsWithNote(note: String) -> [MapNode] {
+        rooms.filter {
             if let notes = $0.notes {
                 let split = notes.lowercased().components(separatedBy: "|")
                 let filter = split

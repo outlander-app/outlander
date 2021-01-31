@@ -19,7 +19,7 @@ protocol ILogger {
     func scriptLog(_ data: String, to: String)
 }
 
-class LogManager {
+enum LogManager {
     private static let nullLogInstance = NullLog()
 
     static var getLog: (String) -> ILogger = { _ in LogManager.nullLogInstance }

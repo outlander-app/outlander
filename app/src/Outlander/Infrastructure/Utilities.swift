@@ -34,7 +34,7 @@ public class Stack<T> {
     }
 }
 
-class RegexFactory {
+enum RegexFactory {
     static let get: (String) -> (Regex?) = memoize { (pattern: String) in try? Regex(pattern, options: [.caseInsensitive]) }
 }
 

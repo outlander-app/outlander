@@ -24,7 +24,7 @@ class OView: NSView {
     // dynamic allows for animation
     @IBInspectable dynamic var borderWidth: CGFloat = 0 {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
@@ -74,8 +74,8 @@ class OView: NSView {
     }
 }
 
-extension NSView {
-    public func removeAllConstraints() {
+public extension NSView {
+    func removeAllConstraints() {
         var _superview = superview
 
         while let superview = _superview {
@@ -198,7 +198,7 @@ class VitalBarItemView: OView {
         }
     }
 
-    public var foregroundColor: NSColor = NSColor.white {
+    public var foregroundColor = NSColor.white {
         didSet {
             self.needsDisplay = true
         }
@@ -277,6 +277,7 @@ class ScrollableTextView: NSView {
         textView.autoresizingMask = [.width]
     }
 
+    @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
     }

@@ -9,7 +9,7 @@
 import Foundation
 
 class ApplicationSettings {
-    var paths: ApplicationPaths = ApplicationPaths()
+    var paths = ApplicationPaths()
     var profile = ProfileSettings()
 
     var downloadPreReleaseVersions = false
@@ -20,7 +20,7 @@ class ApplicationSettings {
 
     var authenticationServerAddress = "eaccess.play.net"
     var authenticationServerPort: UInt16 = 7900
-    
+
     var currentProfilePath: URL {
         paths.profiles.appendingPathComponent(profile.name)
     }

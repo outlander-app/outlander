@@ -15,8 +15,9 @@ protocol Events {
 }
 
 extension Events {
-    func echoText(_ text: String) {
-        post("ol:text", data: "\(text)\n")
+    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono _: Bool = false) {
+        let data = TextData(text: "\(text)\n", preset: preset, color: color)
+        post("ol:text", data: data)
     }
 
     func echoError(_ text: String) {
@@ -26,6 +27,13 @@ extension Events {
     func sendCommand(_ command: Command2) {
         post("ol:command", data: command)
     }
+}
+
+struct TextData {
+    var text: String
+    var preset: String?
+    var color: String?
+    var mono: Bool = false
 }
 
 class SwiftEventBusEvents: Events {

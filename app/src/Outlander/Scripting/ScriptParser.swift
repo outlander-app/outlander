@@ -15,6 +15,7 @@ public struct ScriptParseError: Error, Hashable {
         case expectedIdentifier
         case unexpectedRemainder
     }
+
     public var reason: Reason
     public var offset: String.Index
 }
@@ -28,7 +29,7 @@ public indirect enum Expression<R>: Hashable where R: Hashable {
 extension Expression {
     func map<B>(_ transform: (R) -> B) -> Expression<B> {
         switch self {
-        case .variable(name: let name): return .variable(name: name)
+        case let .variable(name: name): return .variable(name: name)
         case let .if(condition, body):
             return .if(condition: transform(condition), body: body.map(transform))
         case let .member(lhs: lhs, rhs: rhs):
@@ -42,8 +43,8 @@ public struct AnnotatedExpression: Hashable {
     public var range: Range<String.Index>
 }
 
-extension AnnotatedExpression {
-    public var simple: SimpleExpression {
+public extension AnnotatedExpression {
+    var simple: SimpleExpression {
         SimpleExpression(expression: expression.map { $0.simple })
     }
 }
@@ -54,14 +55,14 @@ public struct SimpleExpression: Hashable, CustomStringConvertible {
     }
 
     public var expression: Expression<SimpleExpression>
-    
+
     public var description: String {
         "\(expression)"
     }
 }
 
-extension String {
-    public func parseScript() throws -> AnnotatedExpression {
+public extension String {
+    func parseScript() throws -> AnnotatedExpression {
         var remainder = self[...]
         let result = try remainder.parseScript()
         guard remainder.isEmpty else {
@@ -85,13 +86,12 @@ extension Substring {
     }
 
     func err(_ reason: ScriptParseError.Reason) -> ScriptParseError {
-        return ScriptParseError(reason: reason, offset: startIndex)
+        ScriptParseError(reason: reason, offset: startIndex)
     }
 
     mutating func parseScript() throws -> AnnotatedExpression {
         let expressionStart = startIndex
-        if remove(prefix: "{") {
-        }
+        if remove(prefix: "{") {}
 
         throw err(.unexpectedRemainder)
     }
