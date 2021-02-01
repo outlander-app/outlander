@@ -98,6 +98,7 @@ final class MapLoader {
             let name = root.attr("name")!
 
             let mapZone = MapZone(id, name)
+            mapZone.file = fileUrl.lastPathComponent
 
             for node in doc.xpath("/zone/node") {
                 let desc: [String] = descriptions(node)

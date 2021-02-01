@@ -9,16 +9,18 @@
 import Cocoa
 
 class MapWindow: NSWindowController {
-    @IBOutlet var mapView: MapView!
-    @IBOutlet var scrollView: NSScrollView!
-    @IBOutlet var roomLabel: NSTextField!
-    @IBOutlet var zoneLabel: NSTextField!
+    @IBOutlet weak var mapView: MapView!
+    @IBOutlet weak var scrollView: NSScrollView!
+    @IBOutlet weak var roomLabel: NSTextField!
+    @IBOutlet weak var zoneLabel: NSTextField!
+    @IBOutlet weak var mapLevelSegment: NSSegmentedControl!
 
     var context: GameContext?
 
     var mapLevel: Int = 0 {
         didSet {
             mapView.mapLevel = mapLevel
+            self.mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
         }
     }
 
@@ -48,6 +50,17 @@ class MapWindow: NSWindowController {
         mapView.nodeClicked = { node in
             if node.isTransfer() {
                 self.context?.events.echoText("switch map \(node.id) (\(node.name))", preset: "scriptinput")
+//                self.context?.globalVars["roomid"] = node.id
+
+                guard let transferMap = node.transferMap else {
+                    return
+                }
+                guard let newMap = self.context?.mapForFile(file: transferMap) else {
+                    return
+                }
+
+                self.context?.mapZone = newMap
+                self.renderMap(newMap)
             }
         }
 

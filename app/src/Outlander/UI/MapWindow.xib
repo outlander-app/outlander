@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MapWindow" customModule="Outlander" customModuleProvider="target">
             <connections>
+                <outlet property="mapLevelSegment" destination="ZfO-Ag-jbc" id="Mur-WM-07n"/>
                 <outlet property="mapView" destination="ED8-n4-Ak2" id="1Vj-Iv-sIY"/>
                 <outlet property="roomLabel" destination="oWP-KH-2r6" id="yn7-hs-OV8"/>
                 <outlet property="scrollView" destination="S5h-GQ-ava" id="bin-EL-fVL"/>

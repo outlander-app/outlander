@@ -9,6 +9,10 @@
 import Foundation
 
 extension GameContext {
+    func mapForFile(file: String) -> MapZone? {
+        return self.maps.filter {_, value in value.file == file }.first?.value
+    }
+
     func findCurrentRoom(_ zone: MapZone) -> MapNode? {
         let roomId = self.globalVars["roomid"] ?? ""
         return zone.room(id: roomId)

@@ -49,13 +49,24 @@ struct MapTheme {
     var roomBorder: String
     var path: String
     var zoneExit: String
+    var zoneExitBorder: String
 
     static var dark: MapTheme {
-        MapTheme(text: "#d9d9d9", currentRoom: "#990099", room: "#d9d9d9", roomBorder: "#000000", path: "#d9d9d9", zoneExit: "#4eb0cc")
+        // purple alt
+        // #382b4e
+        // #5e4983
+       
+        // blue
+        // zoneExit: "#111e2f", zoneExitBorder: "#224a82")
+
+        // purple
+        // zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
+        
+        MapTheme(text: "#d9d9d9", currentRoom: "#990099", room: "#d9d9d9", roomBorder: "#000000", path: "#d9d9d9", zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
     }
 
     static var light: MapTheme {
-        MapTheme(text: "#000000", currentRoom: "#990099", room: "#ffffff", roomBorder: "#000000", path: "#000000", zoneExit: "#4eb0cc")
+        MapTheme(text: "#000000", currentRoom: "#990099", room: "#ffffff", roomBorder: "#000000", path: "#000000", zoneExit: "#ffffff", zoneExitBorder: "#272ad8")
     }
 }
 
@@ -78,17 +89,6 @@ extension MapPosition {
 }
 
 class MapView: NSView {
-//    var currentRoomColor = NSColor(hex: "#990099")!
-
-//    var defaultRoomColor = NSColor(hex: "#ffffff")!
-//    var defaultRoomColor = NSColor(hex: "#d9d9d9")!
-//    var defaultPathColor = NSColor(hex: "#000000")!
-//    var defaultPathColor = NSColor(hex: "#d9d9d9")!
-
-//    var zoneExitPathColor = NSColor(hex: "#4eb0cc")! // KnownColors.find("Amber")!
-//    var zoneExitPathColor = NSColor(hex: "#0000ff")!
-//    var roomBorderPathColor = NSColor(hex: "#000000")!
-
     var rect: NSRect?
     var roomSize: CGFloat = 7.0
     var nodeLookup: [NSValue: String] = [:]
@@ -143,6 +143,13 @@ class MapView: NSView {
         DispatchQueue.main.async {
             let room = self.lookupRoomFromPoint(self.lastMousePosition)
             self.nodeHover?(room)
+
+            if let room = room, room.isTransfer() {
+                NSCursor.pointingHand.set()
+            }
+            else {
+                NSCursor.arrow.set()
+            }
         }
     }
 
@@ -250,7 +257,7 @@ class MapView: NSView {
 
         let theme = MapTheme.dark
 
-        var strokeWidth: CGFloat = 0.3
+        var strokeWidth: CGFloat = 0.5
         NSBezierPath.defaultLineCapStyle = .round
         NSBezierPath.defaultLineWidth = strokeWidth
 
@@ -274,9 +281,11 @@ class MapView: NSView {
 
         // draw room boxes
         for room in rooms {
+            theme.room.asColor()?.setFill()
+            
             if room.isTransfer() {
-                strokeWidth = 1.5
-                theme.zoneExit.asColor()?.setStroke()
+                strokeWidth = 1.0
+                theme.zoneExitBorder.asColor()?.setStroke()
                 theme.zoneExit.asColor()?.setFill()
             } else {
                 strokeWidth = 0.5
@@ -303,9 +312,6 @@ class MapView: NSView {
 
             } else if let color = KnownColors.find(room.color) {
                 color.setFill()
-
-            } else if !room.isTransfer() {
-                theme.room.asColor()?.setFill()
             }
 
             NSMakeRect(
