@@ -90,9 +90,9 @@ extension Substring {
     }
 
     mutating func parseScript() throws -> AnnotatedExpression {
-        let expressionStart = startIndex
-        if remove(prefix: "{") {}
-
+//        let expressionStart = startIndex
+//        if remove(prefix: "{") {}
+//
         throw err(.unexpectedRemainder)
     }
 }

@@ -8,6 +8,13 @@
 
 import Foundation
 
+extension GameContext {
+    func findCurrentRoom(_ zone: MapZone) -> MapNode? {
+        let roomId = self.globalVars["roomid"] ?? ""
+        return zone.room(id: roomId)
+    }
+}
+
 struct MapLabel {
     var text: String
     var position: MapPosition
@@ -35,7 +42,7 @@ final class MapZone {
         roomIdLookup[room.id] = room
     }
 
-    func mapSize(z _: Int, padding: Double) -> NSRect {
+    func mapSize(_: Int, padding: Double) -> NSRect {
         var maxX: Double = 0
         var minX: Double = 0
         var maxY: Double = 0
@@ -68,7 +75,7 @@ final class MapZone {
         return NSRect(x: width - maxX - (padding / 2.0), y: height - maxY - (padding / 2.0), width: width * 1.0, height: height * 1.0)
     }
 
-    func roomWithId(id: String) -> MapNode? {
+    func room(id: String) -> MapNode? {
         if id.count == 0 {
             return nil
         }
@@ -76,7 +83,7 @@ final class MapZone {
         return roomIdLookup[id]
     }
 
-    func roomsWithNote(note: String) -> [MapNode] {
+    func rooms(note: String) -> [MapNode] {
         rooms.filter {
             if let notes = $0.notes {
                 let split = notes.lowercased().components(separatedBy: "|")

@@ -28,9 +28,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_: Notification) {
+        NSApp.appearance = NSAppearance(named: .darkAqua)
+        LogManager.getLog = { name in PrintLogger(name) }
+
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 
-        Preferences.workingDirectoryBookmark = nil
+//        Preferences.workingDirectoryBookmark = nil
 
         if let rootUrl = BookmarkHelper().promptOrRestore() {
             self.rootUrl = rootUrl
@@ -54,7 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let window = NSWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
-            styleMask: [.titled, .resizable, .closable, .miniaturizable],
+            styleMask: [.titled, .resizable, .closable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -62,6 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.title = "Outlander 2"
         window.center()
         window.isMovableByWindowBackground = true
+        window.titlebarAppearsTransparent = true
 
         window.contentViewController = controller
 
@@ -92,6 +96,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func newGame(_: Any) {
         makeWindow(rootUrl)
+    }
+
+    @IBAction func showMapWindow(_: Any) {
+        sendCommand("show:mapwindow")
     }
 
     @IBAction func loadDefaultLayoutAction(_: Any) {

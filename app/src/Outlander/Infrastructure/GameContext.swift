@@ -22,6 +22,7 @@ class GameContext {
     var substitutes: [Substitute] = []
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
+    var mapZone: MapZone?
 }
 
 extension GameContext {

@@ -12,6 +12,7 @@ class MapperComandHandler: ICommandHandler {
     var command = "#mapper"
 
     let files: FileSystem
+    let log = LogManager.getLog(String(describing: MapperComandHandler.self))
 
     init(_ files: FileSystem) {
         self.files = files
@@ -20,13 +21,13 @@ class MapperComandHandler: ICommandHandler {
     func handle(_ command: String, with context: GameContext) {
         let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
-        print("mapper commands \(commands)")
+        log.info("mapper commands \(commands)")
 
 //        guard commands.count > 0 else {
 //            return
 //        }
 
-        context.events.echoText("[Automapper]: loading all maps...", preset: "automapper")
+        context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper")
 
         DispatchQueue.global(qos: .utility).async {
             let startTime = Date()
@@ -36,7 +37,7 @@ class MapperComandHandler: ICommandHandler {
             let maps = meta.compactMap { (m) -> MapInfo? in
                 switch m {
                 case let .Error(e):
-                    context.events.echoText("An error occured loading metadata:\n    \(e.description)", preset: "scripterror", mono: true)
+                    context.events.echoText("[AutoMapper]: An error occured loading metadata:\n    \(e.description)", preset: "scripterror", mono: true)
                     return nil
                 case let .Success(map):
                     return map
@@ -44,10 +45,11 @@ class MapperComandHandler: ICommandHandler {
             }
 
             maps.forEach {
+                // a note
                 let result = loader.load(fileUrl: $0.file)
                 switch result {
                 case let .Error(e):
-                    context.events.echoText("An error occured loading map \($0.file.absoluteString):\n    \(e.description)", preset: "scripterror", mono: true)
+                    context.events.echoText("[AutoMapper]: An error occured loading map \($0.file.absoluteString):\n    \(e.description)", preset: "scripterror", mono: true)
                 case let .Success(zone):
                     $0.zone = zone
                     context.maps[zone.id] = zone
@@ -55,7 +57,7 @@ class MapperComandHandler: ICommandHandler {
             }
 
             let timeElapsed = Date() - startTime
-            context.events.echoText("[Automapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)", preset: "automapper")
+            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)", preset: "automapper")
         }
     }
 }
