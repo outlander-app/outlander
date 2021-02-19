@@ -8,9 +8,18 @@
 
 public class Stack<T> {
     private var stack: [T] = []
+    private var maxCapacity = 0
+
+    init(_ maxCapacity: Int = 0) {
+        self.maxCapacity = maxCapacity
+    }
 
     public func push(_ item: T) {
         stack.append(item)
+
+        if maxCapacity > 0, stack.count > maxCapacity {
+            stack.removeFirst()
+        }
     }
 
     public func pop() -> T {
@@ -25,8 +34,20 @@ public class Stack<T> {
         stack.count > 0
     }
 
-    public func count() -> Int {
+    public var count: Int {
         stack.count
+    }
+
+    var last: T? {
+        stack.last
+    }
+
+    var last2: T? {
+        if stack.count < 2 {
+            return nil
+        }
+
+        return stack[stack.count - 2]
     }
 
     public func clear() {

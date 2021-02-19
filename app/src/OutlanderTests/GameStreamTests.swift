@@ -197,7 +197,7 @@ class GameStreamTokenizerTests: XCTestCase {
         let token = tokens[0]
         XCTAssertEqual(token.name(), "popstream")
     }
-    
+
     func testReadsSelfClosingTagWithAttribute() {
         let tokens = reader.read("<popStream id=\"combat\"/>\n")
         XCTAssertEqual(tokens.count, 2)
@@ -212,12 +212,12 @@ class GameStreamTokenizerTests: XCTestCase {
         var token = tokens[0]
         XCTAssertEqual(token.name(), "popstream")
         XCTAssertEqual(token.attr("id"), "combat")
-        
+
         token = tokens[1]
         XCTAssertEqual(token.name(), "prompt")
         XCTAssertEqual(token.attr("time"), "1563328849")
     }
-    
+
     func testReadsCombatPopStreamTagWithAttribute() {
         let tokens = reader.read("<popStream id=\"combat\">\n")
         XCTAssertEqual(tokens.count, 2)
@@ -232,7 +232,7 @@ class GameStreamTokenizerTests: XCTestCase {
         var token = tokens[0]
         XCTAssertEqual(token.name(), "popstream")
         XCTAssertEqual(token.attr("id"), "combat")
-        
+
         token = tokens[1]
         XCTAssertEqual(token.name(), "prompt")
         XCTAssertEqual(token.attr("time"), "1563328849")

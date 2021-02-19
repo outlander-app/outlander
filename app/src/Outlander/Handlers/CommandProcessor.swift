@@ -17,14 +17,7 @@ protocol ICommandHandler {
 
 struct Command2 {
     var command: String
-    var script: ScriptContext?
     var isSystemCommand: Bool = false
-}
-
-struct ScriptContext {
-    var name: String
-    var line: Int?
-    var column: Int?
 }
 
 class CommandProcesssor {
