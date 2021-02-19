@@ -209,6 +209,13 @@ class TagMode: IReaderMode {
 
         case ">":
             context.text.consume(expecting: ">")
+
+            // never treat tags after popStream as children
+            if tagName == "popstream" {
+                appendTag(context)
+                return nil
+            }
+
             children = readChildren(context)
             appendTag(context)
             return nil
@@ -223,11 +230,15 @@ class TagMode: IReaderMode {
     func readChildren(_ context: StreamContext) -> [StreamToken] {
         let childContext = StreamContext([], text: context.text)
 
-        _ = TextMode().read(childContext)
+        guard TextMode().read(childContext) != nil else {
+            return childContext.target
+        }
 
         while !isClosingTagNext(childContext) {
             _ = TagMode().read(childContext)
-            _ = TextMode().read(childContext)
+            guard TextMode().read(childContext) != nil else {
+                break
+            }
         }
 
         context.text = childContext.text
@@ -249,6 +260,8 @@ class TagMode: IReaderMode {
         {
             return true
         }
+        
+
         return false
     }
 
