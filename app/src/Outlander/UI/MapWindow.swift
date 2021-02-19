@@ -9,18 +9,18 @@
 import Cocoa
 
 class MapWindow: NSWindowController {
-    @IBOutlet weak var mapView: MapView!
-    @IBOutlet weak var scrollView: NSScrollView!
-    @IBOutlet weak var roomLabel: NSTextField!
-    @IBOutlet weak var zoneLabel: NSTextField!
-    @IBOutlet weak var mapLevelSegment: NSSegmentedControl!
+    @IBOutlet var mapView: MapView!
+    @IBOutlet var scrollView: NSScrollView!
+    @IBOutlet var roomLabel: NSTextField!
+    @IBOutlet var zoneLabel: NSTextField!
+    @IBOutlet var mapLevelSegment: NSSegmentedControl!
 
     var context: GameContext?
 
     var mapLevel: Int = 0 {
         didSet {
             mapView.mapLevel = mapLevel
-            self.mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
+            mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
         }
     }
 
@@ -110,12 +110,12 @@ class MapWindow: NSWindowController {
 
         clipView.setBoundsSize(clipViewBounds.size)
     }
-    
+
     func setSelectedZone() {
         guard let context = self.context else { return }
         guard let zone = context.mapZone else { return }
 
-        self.renderMap(zone)
+        renderMap(zone)
     }
 
     func renderMap(_ zone: MapZone) {
@@ -123,7 +123,7 @@ class MapWindow: NSWindowController {
 
         if let context = self.context {
             let room = context.findCurrentRoom(zone)
-            self.mapLevel = room?.position.z ?? 0
+            mapLevel = room?.position.z ?? 0
             mapView.currentRoomId = room?.id ?? ""
         }
 

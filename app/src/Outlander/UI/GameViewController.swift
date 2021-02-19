@@ -237,7 +237,7 @@ class GameViewController: NSViewController {
     }
 
     func showMapWindow() {
-        self.gameContext.mapZone = self.gameContext.maps["2a"]
+        gameContext.mapZone = gameContext.maps["2a"]
         mapWindow?.showWindow(self)
         mapWindow?.setSelectedZone()
     }
@@ -252,7 +252,7 @@ class GameViewController: NSViewController {
             self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
-    
+
 //            self.gameContext.globalVars["roomid"] = "585"
 
             self.gameContext.events.sendCommand(Command2(command: "#mapper reload"))

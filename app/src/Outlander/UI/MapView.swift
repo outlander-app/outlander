@@ -55,13 +55,13 @@ struct MapTheme {
         // purple alt
         // #382b4e
         // #5e4983
-       
+
         // blue
         // zoneExit: "#111e2f", zoneExitBorder: "#224a82")
 
         // purple
         // zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
-        
+
         MapTheme(text: "#d9d9d9", currentRoom: "#990099", room: "#d9d9d9", roomBorder: "#000000", path: "#d9d9d9", zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
     }
 
@@ -112,9 +112,9 @@ class MapView: NSView {
 
     var currentRoomId: String? = "" {
         didSet {
-            if oldValue != self.currentRoomId {
-                self.redrawRoom(oldValue)
-                self.redrawRoom(self.currentRoomId)
+            if oldValue != currentRoomId {
+                redrawRoom(oldValue)
+                redrawRoom(currentRoomId)
             }
         }
     }
@@ -146,8 +146,7 @@ class MapView: NSView {
 
             if let room = room, room.isTransfer() {
                 NSCursor.pointingHand.set()
-            }
-            else {
+            } else {
                 NSCursor.arrow.set()
             }
         }
@@ -282,7 +281,7 @@ class MapView: NSView {
         // draw room boxes
         for room in rooms {
             theme.room.asColor()?.setFill()
-            
+
             if room.isTransfer() {
                 strokeWidth = 1.0
                 theme.zoneExitBorder.asColor()?.setStroke()
