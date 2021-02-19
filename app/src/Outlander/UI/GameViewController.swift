@@ -23,6 +23,7 @@ class GameViewController: NSViewController {
 
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
+    var mapWindow: MapWindow?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
@@ -178,8 +179,8 @@ class GameViewController: NSViewController {
         }
 
         gameContext.events.handle(self, channel: "ol:text") { result in
-            if let text = result as? String {
-                self.logText(text)
+            if let data = result as? TextData {
+                self.logText(data.text, preset: data.preset, color: data.color, mono: data.mono)
             }
         }
 
@@ -192,6 +193,8 @@ class GameViewController: NSViewController {
         loginWindow = LoginWindow()
         profileWindow = ProfileWindow()
         profileWindow?.context = gameContext
+        mapWindow = MapWindow()
+        mapWindow?.context = gameContext
 
         loadSettings()
     }
@@ -233,6 +236,12 @@ class GameViewController: NSViewController {
         })
     }
 
+    func showMapWindow() {
+        gameContext.mapZone = gameContext.maps["2a"]
+        mapWindow?.showWindow(self)
+        mapWindow?.setSelectedZone()
+    }
+
     func loadSettings() {
         ProfileLoader(fileSystem!).load(gameContext)
         reloadWindows(gameContext.applicationSettings.profile.layout) {
@@ -243,6 +252,10 @@ class GameViewController: NSViewController {
             self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
+
+//            self.gameContext.globalVars["roomid"] = "585"
+
+            self.gameContext.events.sendCommand(Command2(command: "#mapper reload"))
         }
     }
 
@@ -315,6 +328,10 @@ class GameViewController: NSViewController {
                     windows: layout
                 )
             }
+        }
+
+        if command == "show:mapwindow" {
+            showMapWindow()
         }
     }
 
@@ -453,7 +470,7 @@ class GameViewController: NSViewController {
                         width: layout.primary.width,
                         height: layout.primary.height
                     ),
-                                        display: true)
+                    display: true)
                 }
 
                 for win in layout.windows {
@@ -461,8 +478,8 @@ class GameViewController: NSViewController {
                 }
 
                 DispatchQueue.main.async {
-                    callback?()
                     self.logText("Loaded layout \(file)\n", mono: true, playerCommand: false)
+                    callback?()
                 }
             }
         }
@@ -558,8 +575,8 @@ class GameViewController: NSViewController {
         }
     }
 
-    func logText(_ text: String, mono: Bool = false, playerCommand: Bool = false) {
-        logTag(TextTag(text: text, window: "main", mono: mono, playerCommand: playerCommand))
+    func logText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false, playerCommand: Bool = false) {
+        logTag(TextTag.tagFor(text, window: "main", mono: mono, color: color, preset: preset, playerCommand: playerCommand))
     }
 
     func logError(_ text: String) {

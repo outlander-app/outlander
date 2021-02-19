@@ -160,13 +160,13 @@ class GameStreamTests: XCTestCase {
         XCTAssertEqual(context.globalVars["monstercount"], "3")
         XCTAssertEqual(context.globalVars["monsterlist"], "a juvenile wyvern|a juvenile wyvern|a juvenile wyvern")
     }
-    
+
     func test_stream_hand_ids() {
         let context = GameContext()
         let commands = streamCommands([
-            "<left exist=\"21668354\" noun=\"scissors\">serrated scissors</left><right exist=\"22336507\" noun=\"belt\">survival belt</right>"
+            "<left exist=\"21668354\" noun=\"scissors\">serrated scissors</left><right exist=\"22336507\" noun=\"belt\">survival belt</right>",
         ], context: context)
-        
+
         XCTAssertEqual(commands.count, 2)
 
         XCTAssertEqual(context.globalVars["lefthandid"], "21668354")
@@ -175,7 +175,7 @@ class GameStreamTests: XCTestCase {
 }
 
 class GameStreamTokenizerTests: XCTestCase {
-    var reader: GameStreamTokenizer = GameStreamTokenizer()
+    var reader = GameStreamTokenizer()
 
     override func setUp() {}
 

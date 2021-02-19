@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="fNy-Zq-dAH" customClass="OView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="102" width="712" height="568"/>
+                                <rect key="frame" x="0.0" y="102" width="712" height="546"/>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="I6A-aq-awz" customClass="VitalsBar" customModule="Outlander" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="712" height="25"/>
@@ -35,7 +35,7 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="2cr-cT-1h1"/>
                             <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="4qx-nL-8EO"/>
-                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" id="MaX-uX-scV"/>
+                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" constant="22" id="MaX-uX-scV"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="StY-8g-K1L"/>
                             <constraint firstAttribute="bottom" secondItem="I6A-aq-awz" secondAttribute="bottom" id="dmn-AY-d8r"/>
                             <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="8" symbolic="YES" id="hGK-27-s3p"/>

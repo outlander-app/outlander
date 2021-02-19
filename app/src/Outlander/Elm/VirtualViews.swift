@@ -135,7 +135,8 @@ struct StackView<Message> {
          backgroundColor: NSColor?,
          distribution: NSStackView.Distribution,
          alignment: NSLayoutConstraint.Attribute,
-         spacing: Double) {
+         spacing: Double)
+    {
         self.views = views
         self.axis = axis
         self.backgroundColor = backgroundColor

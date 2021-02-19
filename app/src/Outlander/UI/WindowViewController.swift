@@ -41,25 +41,25 @@ class WindowViewController: NSViewController {
 
     public var borderColor: String = "#cccccc" {
         didSet {
-            self.mainView?.borderColor = NSColor(hex: self.borderColor) ?? WindowViewController.defaultFontColor
+            mainView?.borderColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
         }
     }
 
     public var borderWidth: CGFloat = 1 {
         didSet {
-            self.mainView?.borderWidth = self.borderWidth
+            mainView?.borderWidth = borderWidth
         }
     }
 
     public var foregroundColor: String = "#cccccc" {
         didSet {
-            self.foregroundNSColor = NSColor(hex: self.foregroundColor) ?? WindowViewController.defaultFontColor
+            foregroundNSColor = NSColor(hex: foregroundColor) ?? WindowViewController.defaultFontColor
         }
     }
 
     public var backgroundColor: String = "#1e1e1e" {
         didSet {
-            self.textView?.backgroundColor = NSColor(hex: self.backgroundColor) ?? WindowViewController.defaultBorderColor
+            textView?.backgroundColor = NSColor(hex: backgroundColor) ?? WindowViewController.defaultBorderColor
         }
     }
 

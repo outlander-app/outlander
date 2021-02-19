@@ -41,6 +41,7 @@ class CommandProcesssor {
     init(_ files: FileSystem) {
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
+        handlers.append(MapperComandHandler(files))
     }
 
     func insertHandler(_ handler: ICommandHandler) {

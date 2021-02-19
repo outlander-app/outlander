@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
+		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
+		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
+		7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2B25C5016400AF0444 /* MapZone.swift */; };
+		7BCE4A2D25C5016400AF0444 /* MapZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2B25C5016400AF0444 /* MapZone.swift */; };
+		7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
+		7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */; };
+		7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */; };
+		7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */; };
+		7BD0FD4525C7559900ED030E /* MapWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4325C7559900ED030E /* MapWindow.swift */; };
+		7BD0FD4625C7559900ED030E /* MapWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4325C7559900ED030E /* MapWindow.swift */; };
+		7BD0FD4725C7559900ED030E /* MapWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4425C7559900ED030E /* MapWindow.xib */; };
+		7BD0FD4825C7559900ED030E /* MapWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4425C7559900ED030E /* MapWindow.xib */; };
+		7BD0FD4E25C75AD400ED030E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4D25C75AD400ED030E /* MapView.swift */; };
+		7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD0FD4D25C75AD400ED030E /* MapView.swift */; };
 		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
@@ -62,7 +77,6 @@
 		F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B49282471CC76000E2D92 /* IntervalTimer.swift */; };
 		F98B492C2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
 		F98B492D2471F38E000E2D92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98B492B2471F38E000E2D92 /* Logger.swift */; };
-		F995752224944D6B00A980FC /* SWXMLHash in Frameworks */ = {isa = PBXBuildFile; productRef = F995752124944D6B00A980FC /* SWXMLHash */; };
 		F995752524944DBB00A980FC /* MapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F995752424944DBB00A980FC /* MapNode.swift */; };
 		F995752624944DBB00A980FC /* MapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F995752424944DBB00A980FC /* MapNode.swift */; };
 		F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B253F7247870F20097C07F /* ApplicationLoaderTests.swift */; };
@@ -156,6 +170,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
+		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
+		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
+		7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeExtensions.swift; sourceTree = "<group>"; };
+		7BD0FD4325C7559900ED030E /* MapWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapWindow.swift; sourceTree = "<group>"; };
+		7BD0FD4425C7559900ED030E /* MapWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MapWindow.xib; sourceTree = "<group>"; };
+		7BD0FD4D25C75AD400ED030E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		F62EA130247A2846004E2C1E /* GagCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandler.swift; sourceTree = "<group>"; };
 		F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliasCommandHandlerTests.swift; sourceTree = "<group>"; };
 		F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagCommandHandlerTests.swift; sourceTree = "<group>"; };
@@ -247,7 +268,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F995752224944D6B00A980FC /* SWXMLHash in Frameworks */,
+				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,6 +321,7 @@
 			isa = PBXGroup;
 			children = (
 				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
+				7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */,
 				F98B49252470F685000E2D92 /* Events.swift */,
 				F9CA204B245CAA9700A92736 /* EventBus.swift */,
 				F9CA2062246669D800A92736 /* FileSystem.swift */,
@@ -320,13 +342,16 @@
 				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
 				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
 				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
+				F9B253FE247882620097C07F /* LoginWindow.swift */,
+				F9B253FF247882620097C07F /* LoginWindow.xib */,
+				7BD0FD4D25C75AD400ED030E /* MapView.swift */,
+				7BD0FD4325C7559900ED030E /* MapWindow.swift */,
+				7BD0FD4425C7559900ED030E /* MapWindow.xib */,
+				F9B254042478996D0097C07F /* ProfileWindow.swift */,
+				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
-				F9B253FE247882620097C07F /* LoginWindow.swift */,
-				F9B253FF247882620097C07F /* LoginWindow.xib */,
-				F9B254042478996D0097C07F /* ProfileWindow.swift */,
-				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -335,6 +360,8 @@
 			isa = PBXGroup;
 			children = (
 				F995752424944DBB00A980FC /* MapNode.swift */,
+				7BCE4A2625C5011B00AF0444 /* MapLoader.swift */,
+				7BCE4A2B25C5016400AF0444 /* MapZone.swift */,
 			);
 			path = Maps;
 			sourceTree = "<group>";
@@ -410,15 +437,16 @@
 		F9CA20442453ACDC00A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
-				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
+				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
 				F9CA205724662B5500A92736 /* BeepCommandHandler.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
+				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
+				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
-				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -482,7 +510,7 @@
 			name = Outlander;
 			packageProductDependencies = (
 				F9B2540B2481B5950097C07F /* CocoaAsyncSocket */,
-				F995752124944D6B00A980FC /* SWXMLHash */,
+				7BCE4A2225C5007A00AF0444 /* Fuzi */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -536,7 +564,7 @@
 			mainGroup = F9BCF2E122E177E100C7F7F0;
 			packageReferences = (
 				F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
-				F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */,
+				7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -557,6 +585,7 @@
 				F9B25402247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
+				7BD0FD4725C7559900ED030E /* MapWindow.xib in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
 				F9B254082478996D0097C07F /* ProfileWindow.xib in Resources */,
 				F969A0F723A45B0200408CE5 /* MainMenu.xib in Resources */,
@@ -571,6 +600,7 @@
 				F9B25403247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9B254092478996D0097C07F /* ProfileWindow.xib in Resources */,
+				7BD0FD4825C7559900ED030E /* MapWindow.xib in Resources */,
 				F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -582,6 +612,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BD0FD4525C7559900ED030E /* MapWindow.swift in Sources */,
 				F98B49292471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0F123A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
@@ -598,6 +629,7 @@
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F9CA2075246776E100A92736 /* ClassLoader.swift in Sources */,
 				F9CA205824662B5500A92736 /* BeepCommandHandler.swift in Sources */,
+				7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9CA2049245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */,
@@ -611,8 +643,10 @@
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
+				7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
+				7BD0FD4E25C75AD400ED030E /* MapView.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F945414424C2709200F1FC72 /* ScriptParser.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
@@ -629,9 +663,11 @@
 				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
+				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
+				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -643,14 +679,18 @@
 				F98B48FD246F61D1000E2D92 /* WindowLayoutLoaderTests.swift in Sources */,
 				F98B4919246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F9CA205C2466322B00A92736 /* VarCommandHandler.swift in Sources */,
+				7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				F98B490C246F967B000E2D92 /* HighlightLoaderTests.swift in Sources */,
+				7BD0FD4625C7559900ED030E /* MapWindow.swift in Sources */,
+				7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F9D36E9A22EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
+				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
 				F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F9CA2050245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
@@ -670,6 +710,7 @@
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F6A34F1B247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF31122E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
+				7BCE4A2D25C5016400AF0444 /* MapZone.swift in Sources */,
 				F98B49272471B950000E2D92 /* Events.swift in Sources */,
 				F9B25401247882620097C07F /* LoginWindow.swift in Sources */,
 				F9B253F8247870F20097C07F /* ApplicationLoaderTests.swift in Sources */,
@@ -703,6 +744,7 @@
 				F9CA20672466719600A92736 /* ApplicationSettings.swift in Sources */,
 				F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */,
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
+				7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
@@ -1008,12 +1050,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */ = {
+		7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/drmohundro/SWXMLHash";
+			repositoryURL = "https://github.com/cezheng/Fuzi";
 			requirement = {
-				kind = exactVersion;
-				version = 4.9.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
 			};
 		};
 		F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {
@@ -1027,10 +1069,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F995752124944D6B00A980FC /* SWXMLHash */ = {
+		7BCE4A2225C5007A00AF0444 /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F995752024944D6B00A980FC /* XCRemoteSwiftPackageReference "SWXMLHash" */;
-			productName = SWXMLHash;
+			package = 7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */;
+			productName = Fuzi;
 		};
 		F9B2540B2481B5950097C07F /* CocoaAsyncSocket */ = {
 			isa = XCSwiftPackageProductDependency;

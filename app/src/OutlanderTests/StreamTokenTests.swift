@@ -9,7 +9,7 @@
 import XCTest
 
 class StreamTokenTests: XCTestCase {
-    var reader: GameStreamTokenizer = GameStreamTokenizer()
+    var reader = GameStreamTokenizer()
 
     override func setUp() {}
 

@@ -63,7 +63,7 @@ class VitalsBar: NSView {
 
     @objc func onFrameChanged(_: Notification) {
         var viewX: Float = 0.0
-        let width: Float = Float(frame.size.width) / Float(subviews.count)
+        let width = Float(frame.size.width) / Float(subviews.count)
 
         for view in subviews {
             view.setFrameSize(NSSize(width: CGFloat(width), height: view.frame.height))
@@ -77,33 +77,33 @@ class ProgressBar: NSView {
     @IBInspectable
     public var text: String = "Something 100%" {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
     @IBInspectable
     public var value: Float = 100.0 {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
         }
     }
 
     @IBInspectable
-    public var backgroundColor: NSColor = NSColor.blue {
+    public var backgroundColor = NSColor.blue {
         didSet {
             needsDisplay = true
         }
     }
 
     @IBInspectable
-    public var foregroundColor: NSColor = NSColor.white {
+    public var foregroundColor = NSColor.white {
         didSet {
             needsDisplay = true
         }
     }
 
     @IBInspectable
-    public var font: NSFont = NSFont(name: "Menlo Bold", size: 11)! {
+    public var font = NSFont(name: "Menlo Bold", size: 11)! {
         didSet {
             self.needsDisplay = true
         }

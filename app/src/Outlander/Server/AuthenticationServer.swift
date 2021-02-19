@@ -184,7 +184,7 @@ class AuthenticationServer {
         let key = getData(input, pattern: "KEY=(\\w+)")
         let host = getData(input, pattern: "GAMEHOST=(\\S+)")
         let port = getData(input, pattern: "GAMEPORT=(\\d+)")
-        let portNumber: UInt16 = UInt16(port)!
+        let portNumber = UInt16(port)!
         return GameConnectionInfo(game: game, key: key, host: host, port: portNumber)
     }
 
