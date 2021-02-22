@@ -18,7 +18,30 @@ enum ScriptTokenValue: Hashable {
     case comment(String)
     case echo(String)
     case exit
+    case goto(String)
     case label(String)
+    case put(String)
+}
+
+extension ScriptTokenValue: CustomStringConvertible {
+    var description: String {
+        get {
+            switch self {
+            case .comment:
+                return "comment"
+            case .echo:
+                return "echo"
+            case .exit:
+                return "exit"
+            case .goto:
+                return "goto"
+            case .label:
+                return "label"
+            case .put:
+                return "put"
+            }
+        }
+    }
 }
 
 protocol IScriptReaderMode: AnyObject {
@@ -51,8 +74,8 @@ class ScriptReaderBase<T> {
         modes.push(mode)
     }
 
-    public func read(_ text: String) -> [ScriptTokenValue] {
-        guard modes.hasItems() else { return [] }
+    public func read(_ text: String) -> ScriptTokenValue? {
+        guard modes.hasItems() else { return nil }
 
         let context = ScriptTokenizerContext([], text: text[...])
 
@@ -60,7 +83,7 @@ class ScriptReaderBase<T> {
 
 //        push(TextMode())
 
-        return context.target
+        return context.target.first
     }
 
     func startNewMode(_ context: ScriptTokenizerContext) {
@@ -89,7 +112,12 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
 }
 
 class CommandMode: IScriptReaderMode {
-    var knownCommands = ["echo"]
+    var knownCommands: [String:IScriptReaderMode?] = [
+        "echo": EchoMode(),
+        "exit": ExitMode(),
+        "goto": GotoMode(),
+        "put": PutMode()
+    ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         if context.text.first == "#" {
@@ -103,13 +131,14 @@ class CommandMode: IScriptReaderMode {
             print(result)
             if result.last == ":" {
                 context.target.append(ScriptTokenValue.label(String(result.dropLast())))
+                return nil
             }
 
             let command = String(result).lowercased()
-            if knownCommands.contains(command) {
-                context.text.consumeSpaces()
-                let rest = String(context.text.parseToEnd())
-                context.target.append(ScriptTokenValue.echo(rest))
+            if let mode = knownCommands[command] {
+                return mode
+            } else {
+                // TODO: notify of unknown command
             }
         }
 
@@ -117,6 +146,40 @@ class CommandMode: IScriptReaderMode {
             return nil
         }
 
+        return nil
+    }
+}
+
+class EchoMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.echo(rest))
+        return nil
+    }
+}
+
+class ExitMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.target.append(ScriptTokenValue.exit)
+        return nil
+    }
+}
+
+class GotoMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseWord())
+        context.target.append(ScriptTokenValue.goto(rest))
+        return nil
+    }
+}
+
+class PutMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.put(rest))
         return nil
     }
 }

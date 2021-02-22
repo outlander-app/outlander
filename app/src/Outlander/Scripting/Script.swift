@@ -8,6 +8,15 @@
 
 import Foundation
 
+public enum ScriptLogLevel : Int {
+    case none = 0
+    case gosubs = 1
+    case wait = 2
+    case `if` = 3
+    case vars = 4
+    case actions = 5
+}
+
 struct Label {
     var name: String
     var line: Int
@@ -73,8 +82,26 @@ class InMemoryScriptLoader: IScriptLoader {
 }
 
 class ScriptLoader: IScriptLoader {
-    func load(_: String) -> [String] {
-        []
+    private var files: FileSystem
+    private var settings: ApplicationSettings
+
+    init(_ files: FileSystem, settings: ApplicationSettings) {
+        self.files = files
+        self.settings = settings
+    }
+
+    func load(_ file: String) -> [String] {
+        let fileUrl = settings.paths.scripts.appendingPathComponent("\(file).cmd")
+        
+        guard let data = files.load(fileUrl) else {
+            return []
+        }
+
+        guard let fileString = String(data: data, encoding: .utf8) else {
+            return []
+        }
+
+        return fileString.components(separatedBy: .newlines)
     }
 }
 
@@ -89,9 +116,10 @@ enum ScriptExecuteResult {
 class Script {
     var started: Date?
     var fileName: String = ""
+    var debugLevel:ScriptLogLevel = ScriptLogLevel.actions
 
     private var stackTrace: Stack<ScriptLine>
-    private var tokenHandlers: [ScriptTokenValue: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
+    private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
 
     var stopped = false
     var paused = false
@@ -100,15 +128,17 @@ class Script {
     var tokenizer: ScriptTokenizer
     var loader: IScriptLoader
     var context: ScriptContext
+    var gameContext: GameContext
 
     var includeRegex: Regex
     var labelRegex: Regex
 
     static var dateFormatter = DateFormatter()
 
-    init(_ fileName: String, loader: IScriptLoader) throws {
+    init(_ fileName: String, loader: IScriptLoader, gameContext: GameContext) throws {
         self.fileName = fileName
         self.loader = loader
+        self.gameContext = gameContext
 
         tokenizer = ScriptTokenizer()
 
@@ -119,6 +149,7 @@ class Script {
 
         context = ScriptContext()
         tokenHandlers = [:]
+        tokenHandlers["echo"] = self.handleEcho
 
         Script.dateFormatter.dateFormat = "hh:mm a"
     }
@@ -128,7 +159,7 @@ class Script {
 
         let formattedDate = Script.dateFormatter.string(from: started!)
 
-        sendText("[Starting '\(fileName)' at \(formattedDate)]\n")
+        sendText("[Starting '\(fileName)' at \(formattedDate)]")
 
         initialize(fileName)
 
@@ -151,7 +182,7 @@ class Script {
         }
 
         if line.token == nil {
-//            line.token = tokenizer.read(line.originalText)
+            line.token = tokenizer.read(line.originalText)
         }
 
         stackTrace.push(line)
@@ -160,7 +191,9 @@ class Script {
 
         switch result {
         case .next: next()
-        case .wait: return
+        case .wait:
+            print("waiting")
+            return
         case .exit: cancel()
         case .advanceToNextBlock: cancel()
         case .advanceToEndOfBlock: cancel()
@@ -169,7 +202,7 @@ class Script {
 
     func pause() {
         paused = true
-        sendText("[Pausing '\(fileName)']\n")
+        sendText("[Pausing '\(fileName)']")
     }
 
     func resume() {
@@ -177,7 +210,7 @@ class Script {
             return
         }
 
-        sendText("[Resuming '\(fileName)']\n")
+        sendText("[Resuming '\(fileName)']")
 
         paused = false
 
@@ -197,19 +230,35 @@ class Script {
         stopped = true
         context.currentLineNumber = -1
         let diff = Date().timeIntervalSince(started!)
-        sendText("[Script '\(fileName)' completed after \(diff.stringTime)]\n")
+        sendText("[Script '\(fileName)' completed after \(diff.stringTime)]")
     }
 
     private func sendText(_ text: String, preset: String = "scriptinput", scriptLine: Int = -1, fileName: String = "") {
+        guard fileName.count > 0 else {
+            self.gameContext.events.echoText("\(text)", preset: preset, mono: true)
+            return
+        }
+
+        self.gameContext.events.echoText("[\(fileName)]: \(text)", preset: preset, mono: true)
+    }
+    
+    private func notify(_ text: String, debug: ScriptLogLevel, preset: String = "scriptinfo", scriptLine: Int = -1, fileName: String = "") {
+        guard debugLevel.rawValue > debug.rawValue else {
+            return
+        }
+
         let name = fileName == "" ? self.fileName : fileName
-        print("\(preset) [\(name) (\(scriptLine))]: \(text)")
+
+        let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
+        
+        self.gameContext.events.echoText(display, preset: preset)
     }
 
     private func initialize(_ fileName: String) {
         let lines = loader.load(fileName)
 
         if lines.count == 0 {
-            sendText("Script '\(fileName)' is empty or does not exist\n", preset: "scripterror")
+            sendText("Script '\(fileName)' is empty or does not exist", preset: "scripterror")
             return
         }
 
@@ -226,10 +275,10 @@ class Script {
                 guard let include = includeMatch.valueAt(index: 1) else { continue }
                 let includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
                 guard includeName != fileName else {
-                    sendText("script '\(fileName)' cannot include itself!\n", preset: "scripterror", scriptLine: index, fileName: fileName)
+                    sendText("script '\(fileName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: fileName)
                     continue
                 }
-//                self.notify("including '\(includeName)'\n", debug: ScriptLogLevel.gosubs, scriptLine: index)
+                notify("including '\(includeName)'", debug: ScriptLogLevel.gosubs, scriptLine: index)
                 initialize(includeName)
             } else {
                 let scriptLine = ScriptLine(
@@ -244,7 +293,7 @@ class Script {
             if let labelMatch = labelRegex.firstMatch(&line) {
                 guard let label = labelMatch.valueAt(index: 1) else { return }
                 if let existing = context.labels[label] {
-                    sendText("replacing label '\(existing.name)' from '\(existing.fileName)'\n", preset: "scripterror", scriptLine: index)
+                    sendText("replacing label '\(existing.name)' from '\(existing.fileName)'", preset: "scripterror", scriptLine: index)
                 }
                 context.labels[label.lowercased()] = Label(name: label.lowercased(), line: context.lines.count - 1, fileName: fileName)
             }
@@ -253,7 +302,7 @@ class Script {
 
     func handleLine(_ line: ScriptLine) -> ScriptExecuteResult {
         guard let token = line.token else {
-            sendText("Unknown command: '\(line.originalText)'\n", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+            sendText("Unable to tokenize script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .next
         }
 
@@ -261,11 +310,24 @@ class Script {
     }
 
     func executeToken(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        if let handler = tokenHandlers[token] {
+        if let handler = tokenHandlers[token.description] {
             return handler(line, token)
         }
 
-        sendText("No handler for script token: '\(line.originalText)'\n", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+        sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
         return .exit
+    }
+
+    func handleEcho(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .echo(text) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+
+        self.notify("echo \(text)", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
+
+        gameContext.events.echoText(text, preset: "scriptecho")
+        return .next
     }
 }

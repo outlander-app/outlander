@@ -24,6 +24,7 @@ class GameViewController: NSViewController {
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
     var mapWindow: MapWindow?
+    var scriptRunner: ScriptRunner?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
@@ -51,6 +52,7 @@ class GameViewController: NSViewController {
     var spelltime: SpellTimer?
 
     override func viewDidLoad() {
+
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
@@ -69,6 +71,7 @@ class GameViewController: NSViewController {
         fileSystem = LocalFileSystem(gameContext.applicationSettings)
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
         commandProcessor = CommandProcesssor(fileSystem!)
+        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, settings: gameContext.applicationSettings))
 
         authServer = AuthenticationServer()
 

@@ -29,6 +29,8 @@ class CommandProcesssor {
         BeepCommandHandler(),
         BugCommandHandler(),
         GagCommandHandler(),
+        ScriptCommandHandler(),
+        ScriptRunnerCommandHandler(),
     ]
 
     init(_ files: FileSystem) {

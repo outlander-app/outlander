@@ -9,13 +9,58 @@
 import XCTest
 
 class ScriptTokenizerTests: XCTestCase {
+    func testTokenizesComments() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("# a comment")
+
+        switch token {
+        case let .comment(text):
+            XCTAssertEqual(text, "# a comment")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+    
+    func testTokenizesEcho() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("echo hello world")
+
+        switch token {
+        case let .echo(text):
+            XCTAssertEqual(text, "hello world")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+    
+    func testTokenizesExit() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("exit")
+
+        switch token {
+        case .exit:
+            XCTAssertTrue(true)
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+    
+    func testTokenizesGoto() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("goto label")
+
+        switch token {
+        case let .goto(label):
+            XCTAssertEqual(label, "label")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
     func testTokenizesLabels() throws {
         let tokenizer = ScriptTokenizer()
-        let result = tokenizer.read("mylabel:")
+        let token = tokenizer.read("mylabel:")
 
-        XCTAssertEqual(result.count, 1)
-
-        let token = result.first
         switch token {
         case let .label(label):
             XCTAssertEqual(label, "mylabel")
@@ -26,11 +71,8 @@ class ScriptTokenizerTests: XCTestCase {
 
     func testIgnoresTextAfterLabel() throws {
         let tokenizer = ScriptTokenizer()
-        let result = tokenizer.read("mylabel: something something")
-
-        XCTAssertEqual(result.count, 1)
-
-        let token = result.first
+        let token = tokenizer.read("mylabel: something something")
+        
         switch token {
         case let .label(label):
             XCTAssertEqual(label, "mylabel")
@@ -39,31 +81,13 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesEcho() throws {
+    func testTokenizesPut() throws {
         let tokenizer = ScriptTokenizer()
-        let result = tokenizer.read("echo hello world")
+        let token = tokenizer.read("put hello friends")
 
-        XCTAssertEqual(result.count, 1)
-
-        let token = result.first
         switch token {
-        case let .echo(text):
-            XCTAssertEqual(text, "hello world")
-        default:
-            XCTFail("wrong token value")
-        }
-    }
-
-    func testTokenizesComments() throws {
-        let tokenizer = ScriptTokenizer()
-        let result = tokenizer.read("# a comment")
-
-        XCTAssertEqual(result.count, 1)
-
-        let token = result.first
-        switch token {
-        case let .comment(text):
-            XCTAssertEqual(text, "# a comment")
+        case let .put(put):
+            XCTAssertEqual(put, "hello friends")
         default:
             XCTFail("wrong token value")
         }

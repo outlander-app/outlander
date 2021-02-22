@@ -15,6 +15,10 @@
 		7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B4F25DF93C500A88B80 /* Combinators.swift */; };
 		7BA27B5125DF93C500A88B80 /* Combinators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B4F25DF93C500A88B80 /* Combinators.swift */; };
 		7BA27B5825DF966400A88B80 /* ScriptTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B5625DF966400A88B80 /* ScriptTokenizerTests.swift */; };
+		7BAC83FC25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */; };
+		7BAC83FD25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */; };
+		7BAC840325E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */; };
+		7BAC840425E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */; };
 		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
 		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
 		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
@@ -181,6 +185,8 @@
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
 		7BA27B4F25DF93C500A88B80 /* Combinators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combinators.swift; sourceTree = "<group>"; };
 		7BA27B5625DF966400A88B80 /* ScriptTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizerTests.swift; sourceTree = "<group>"; };
+		7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCommandHandler.swift; sourceTree = "<group>"; };
+		7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptRunner.swift; sourceTree = "<group>"; };
 		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
 		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
 		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
@@ -315,6 +321,7 @@
 				7BA27B4F25DF93C500A88B80 /* Combinators.swift */,
 				7BA27B3625DF6D9D00A88B80 /* Script.swift */,
 				7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */,
+				7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */,
 			);
 			path = Scripting;
 			sourceTree = "<group>";
@@ -467,6 +474,7 @@
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
+				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
 			);
@@ -668,6 +676,7 @@
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
+				7BAC840325E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
 				7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
@@ -681,6 +690,7 @@
 				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
+				7BAC83FC25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
 				F9CA20662466719600A92736 /* ApplicationSettings.swift in Sources */,
 				F9BCF31022E1791900C7F7F0 /* AuthenticationServer.swift in Sources */,
@@ -715,6 +725,7 @@
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
+				7BAC840425E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
 				F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F9CA2050245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
@@ -769,6 +780,7 @@
 				F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				F98B490F246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
 				F9CA20702466796100A92736 /* ApplicationLoader.swift in Sources */,
+				7BAC83FD25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */,
 				F9CA20672466719600A92736 /* ApplicationSettings.swift in Sources */,
 				F98B49202470B63D000E2D92 /* StreamTokenTests.swift in Sources */,
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
