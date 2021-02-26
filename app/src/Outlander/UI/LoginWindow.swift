@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import KeychainSwift
 
 class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     @IBOutlet var accountTextField: NSTextField?
@@ -33,6 +34,8 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
         passwordTextField?.stringValue = password
         gameComboBox?.stringValue = game
         characterTextField?.stringValue = character
+
+        loadPassword()
     }
 
     @IBAction func connect(_: Any) {
@@ -48,6 +51,16 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     func controlTextDidEndEditing(_: Notification) {
         game = gameComboBox?.stringValue ?? "DR"
     }
+    
+    func loadPassword() {
+        guard account.count > 0 else {
+            return
+        }
+
+        let keychain = KeychainSwift()
+        let pw = keychain.get("outlander_password_\(account)")
+        passwordTextField?.stringValue = pw ?? ""
+    }
 
     private func setValues() {
         account = accountTextField?.stringValue ?? ""
@@ -55,6 +68,12 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
         game = gameComboBox?.stringValue ?? ""
         character = characterTextField?.stringValue ?? ""
 
-        passwordTextField?.stringValue = ""
+        guard account.count > 0 else {
+            passwordTextField?.stringValue = ""
+            return
+        }
+
+        let keychain = KeychainSwift()
+        keychain.set(password, forKey: "outlander_password_\(account)", withAccess: .accessibleWhenUnlocked)
     }
 }

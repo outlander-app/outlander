@@ -19,6 +19,7 @@
 		7BAC83FD25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */; };
 		7BAC840325E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */; };
 		7BAC840425E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */; };
+		7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7BAC840825E9B51800A6C7D5 /* KeychainSwift */; };
 		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
 		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
 		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
@@ -284,6 +285,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */,
 				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
@@ -541,6 +543,7 @@
 			packageProductDependencies = (
 				F9B2540B2481B5950097C07F /* CocoaAsyncSocket */,
 				7BCE4A2225C5007A00AF0444 /* Fuzi */,
+				7BAC840825E9B51800A6C7D5 /* KeychainSwift */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -595,6 +598,7 @@
 			packageReferences = (
 				F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
 				7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */,
+				7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -1090,6 +1094,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 19.0.0;
+			};
+		};
 		7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/cezheng/Fuzi";
@@ -1109,6 +1121,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7BAC840825E9B51800A6C7D5 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
 		7BCE4A2225C5007A00AF0444 /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */;
