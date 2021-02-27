@@ -150,6 +150,7 @@ class Script {
         context = ScriptContext()
         tokenHandlers = [:]
         tokenHandlers["echo"] = self.handleEcho
+        tokenHandlers["put"] = self.handlePut
 
         Script.dateFormatter.dateFormat = "hh:mm a"
     }
@@ -239,7 +240,10 @@ class Script {
             return
         }
 
-        self.gameContext.events.echoText("[\(fileName)]: \(text)", preset: preset, mono: true)
+        let name = fileName == "" ? self.fileName : fileName
+        let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
+
+        self.gameContext.events.echoText(display, preset: preset, mono: true)
     }
     
     private func notify(_ text: String, debug: ScriptLogLevel, preset: String = "scriptinfo", scriptLine: Int = -1, fileName: String = "") {
@@ -302,7 +306,7 @@ class Script {
 
     func handleLine(_ line: ScriptLine) -> ScriptExecuteResult {
         guard let token = line.token else {
-            sendText("Unable to tokenize script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+            sendText("Unknown script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .next
         }
 
@@ -328,6 +332,21 @@ class Script {
         self.notify("echo \(text)", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         gameContext.events.echoText(text, preset: "scriptecho")
+        return .next
+    }
+    
+    func handlePut(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .put(text) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+
+        self.notify("put \(text)", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        
+        let command = Command2(command: text)
+        gameContext.events.sendCommand(command)
+
         return .next
     }
 }

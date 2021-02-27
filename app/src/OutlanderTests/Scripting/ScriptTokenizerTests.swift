@@ -92,4 +92,16 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
+    
+    func testTokenizesPutWithCommands() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("put #echo a message")
+
+        switch token {
+        case let .put(put):
+            XCTAssertEqual(put, "#echo a message")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
 }

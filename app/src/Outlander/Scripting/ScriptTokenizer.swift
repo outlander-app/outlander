@@ -81,9 +81,12 @@ class ScriptReaderBase<T> {
 
         startNewMode(context)
 
-//        push(TextMode())
+        afterRead()
 
         return context.target.first
+    }
+    
+    func afterRead() {
     }
 
     func startNewMode(_ context: ScriptTokenizerContext) {
@@ -109,6 +112,10 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
         super.init(target: [])
         push(CommandMode())
     }
+    
+    override func afterRead() {
+        push(CommandMode())
+    }
 }
 
 class CommandMode: IScriptReaderMode {
@@ -128,7 +135,6 @@ class CommandMode: IScriptReaderMode {
 
         let result = context.text.parseWord()
         if result.count > 0 {
-            print(result)
             if result.last == ":" {
                 context.target.append(ScriptTokenValue.label(String(result.dropLast())))
                 return nil
@@ -138,7 +144,7 @@ class CommandMode: IScriptReaderMode {
             if let mode = knownCommands[command] {
                 return mode
             } else {
-                // TODO: notify of unknown command
+                return nil
             }
         }
 
