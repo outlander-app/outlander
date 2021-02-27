@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import KeychainSwift
 
 class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     @IBOutlet var accountTextField: NSTextField?
@@ -57,9 +56,14 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
             return
         }
 
-        let keychain = KeychainSwift()
-        let pw = keychain.get("outlander_password_\(account)")
+        let keychain = Keychain()
+        let pw = keychain.get(passwordFor: account)
         passwordTextField?.stringValue = pw ?? ""
+    }
+
+    func clearPassword() {
+        password = ""
+        passwordTextField?.stringValue = ""
     }
 
     private func setValues() {
@@ -73,7 +77,7 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
             return
         }
 
-        let keychain = KeychainSwift()
-        keychain.set(password, forKey: "outlander_password_\(account)", withAccess: .accessibleWhenUnlocked)
+        let keychain = Keychain()
+        keychain.set(password: password, for: account)
     }
 }

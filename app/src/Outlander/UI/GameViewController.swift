@@ -211,6 +211,7 @@ class GameViewController: NSViewController {
         loginWindow?.loadPassword()
         view.window?.beginSheet(loginWindow!.window!, completionHandler: { result in
             guard result == .OK else {
+                self.loginWindow!.clearPassword()
                 return
             }
             self.credentials = Credentials(
@@ -220,7 +221,7 @@ class GameViewController: NSViewController {
                 game: self.loginWindow!.game
             )
 
-            self.loginWindow!.passwordTextField?.stringValue = ""
+            self.loginWindow!.clearPassword()
 
             self.gameContext.applicationSettings.profile.update(with: self.credentials!)
             self.connect()
