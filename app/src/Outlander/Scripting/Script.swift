@@ -8,14 +8,14 @@
 
 import Foundation
 
-func delay(_ delay: Double, _ closure: @escaping () -> ()) -> DispatchWorkItem {
+func delay(_ delay: Double, _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
     // TODO: swap from main queue
     DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: task)
     return task
 }
 
-public enum ScriptLogLevel : Int {
+public enum ScriptLogLevel: Int {
     case none = 0
     case gosubs = 1
     case wait = 2
@@ -99,7 +99,7 @@ class ScriptLoader: IScriptLoader {
 
     func load(_ file: String) -> [String] {
         let fileUrl = settings.paths.scripts.appendingPathComponent("\(file).cmd")
-        
+
         guard let data = files.load(fileUrl) else {
             return []
         }
@@ -123,13 +123,13 @@ enum ScriptExecuteResult {
 protocol IWantStreamInfo {
     var id: String { get }
     func stream(_ text: String, _ context: ScriptContext) -> CheckStreamResult
-    func execute(_ script:Script, _ context:ScriptContext)
+    func execute(_ script: Script, _ context: ScriptContext)
 }
 
 class Script {
     var started: Date?
     var fileName: String = ""
-    var debugLevel:ScriptLogLevel = ScriptLogLevel.none
+    var debugLevel = ScriptLogLevel.none
 
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
@@ -167,19 +167,19 @@ class Script {
 
         context = ScriptContext()
         tokenHandlers = [:]
-        tokenHandlers["comment"] = self.handleComment
-        tokenHandlers["debug"] = self.handleDebug
-        tokenHandlers["echo"] = self.handleEcho
-        tokenHandlers["exit"] = self.handleExit
-        tokenHandlers["goto"] = self.handleGoto
-        tokenHandlers["label"] = self.handleLabel
-        tokenHandlers["match"] = self.handleMatch
-        tokenHandlers["matchre"] = self.handleMatchre
-        tokenHandlers["matchwait"] = self.handleMatchwait
-        tokenHandlers["pause"] = self.handlePause
-        tokenHandlers["put"] = self.handlePut
-        tokenHandlers["waitfor"] = self.handleWaitfor
-        tokenHandlers["waitforre"] = self.handleWaitforRe
+        tokenHandlers["comment"] = handleComment
+        tokenHandlers["debug"] = handleDebug
+        tokenHandlers["echo"] = handleEcho
+        tokenHandlers["exit"] = handleExit
+        tokenHandlers["goto"] = handleGoto
+        tokenHandlers["label"] = handleLabel
+        tokenHandlers["match"] = handleMatch
+        tokenHandlers["matchre"] = handleMatchre
+        tokenHandlers["matchwait"] = handleMatchwait
+        tokenHandlers["pause"] = handlePause
+        tokenHandlers["put"] = handlePut
+        tokenHandlers["waitfor"] = handleWaitfor
+        tokenHandlers["waitforre"] = handleWaitforRe
 
         Script.dateFormatter.dateFormat = "hh:mm a"
     }
@@ -259,7 +259,7 @@ class Script {
 
     private func stop() {
         delayedTask?.cancel()
-        
+
         if stopped { return }
 
         stopped = true
@@ -268,8 +268,8 @@ class Script {
         let diff = Date().timeIntervalSince(started!)
         sendText("[Script '\(fileName)' completed after \(diff.stringTime)]")
 
-        self.gameContext.events.unregister(self)
-        self.gameContext.events.post("ol:script:complete", data: fileName)
+        gameContext.events.unregister(self)
+        gameContext.events.post("ol:script:complete", data: fileName)
     }
 
     func stream(_ text: String) {
@@ -277,10 +277,10 @@ class Script {
             return
         }
 
-        let handlers = self.reactToStream.filter { x in
+        let handlers = reactToStream.filter { x in
             let res = x.stream(text, self.context)
             switch res {
-            case .match(let txt):
+            case let .match(txt):
                 notify("matched \(txt)", debug: .wait)
                 return true
             default:
@@ -289,7 +289,7 @@ class Script {
         }
 
         handlers.forEach { handler in
-            guard let idx = reactToStream.firstIndex(where: { $0.id == handler.id  }) else {
+            guard let idx = reactToStream.firstIndex(where: { $0.id == handler.id }) else {
                 return
             }
             reactToStream.remove(at: idx)
@@ -299,14 +299,14 @@ class Script {
         checkMatches(text)
     }
 
-    private func checkMatches(_ text:String) {
-        guard let _ = self.matchwait else {
+    private func checkMatches(_ text: String) {
+        guard let _ = matchwait else {
             return
         }
 
-        var foundMatch: IMatch? = nil
+        var foundMatch: IMatch?
 
-        for match in self.matchStack {
+        for match in matchStack {
             if match.isMatch(text) {
                 foundMatch = match
                 break
@@ -317,35 +317,35 @@ class Script {
             return
         }
 
-        self.matchwait = nil
-        self.matchStack.removeAll()
+        matchwait = nil
+        matchStack.removeAll()
 
         // TODO: resolve variables
 //        let label = self.context.simplify(match.label)
         let label = match.label
 
-        self.notify("match \(label)", debug:ScriptLogLevel.wait, scriptLine: match.lineNumber)
-        let result = self.gotoLabel(label, match.groups)
+        notify("match \(label)", debug: ScriptLogLevel.wait, scriptLine: match.lineNumber)
+        let result = gotoLabel(label, match.groups)
 
         switch result {
-        case .exit: self.cancel()
-        case .next: self.next()
+        case .exit: cancel()
+        case .next: next()
         default: return
         }
     }
 
     private func sendText(_ text: String, preset: String = "scriptinput", scriptLine: Int = -1, fileName: String = "") {
         guard fileName.count > 0 else {
-            self.gameContext.events.echoText("\(text)", preset: preset, mono: true)
+            gameContext.events.echoText("\(text)", preset: preset, mono: true)
             return
         }
 
         let name = fileName == "" ? self.fileName : fileName
         let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
 
-        self.gameContext.events.echoText(display, preset: preset, mono: true)
+        gameContext.events.echoText(display, preset: preset, mono: true)
     }
-    
+
     private func notify(_ text: String, debug: ScriptLogLevel, preset: String = "scriptinfo", scriptLine: Int = -1, fileName: String = "") {
         guard debugLevel.rawValue > debug.rawValue else {
             return
@@ -354,8 +354,8 @@ class Script {
         let name = fileName == "" ? self.fileName : fileName
 
         let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
-        
-        self.gameContext.events.echoText(display, preset: preset)
+
+        gameContext.events.echoText(display, preset: preset)
     }
 
     private func initialize(_ fileName: String) {
@@ -422,36 +422,36 @@ class Script {
         return .exit
     }
 
-    func gotoLabel(_ label: String, _ params: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
+    func gotoLabel(_ label: String, _: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
         // TODO: resolve variables
         let result = label
 
-        guard let currentLine = self.context.currentLine else {
-            self.sendText("Tried to goto \(result) but had no 'currentLine'", preset:"scripterror", fileName: self.fileName)
+        guard let currentLine = context.currentLine else {
+            sendText("Tried to goto \(result) but had no 'currentLine'", preset: "scripterror", fileName: fileName)
             return .exit
         }
 
-        guard let target = self.context.labels[result.lowercased()] else {
-            self.sendText("label '\(result)' not found", preset: "scripterror", scriptLine: currentLine.lineNumber, fileName: self.fileName)
+        guard let target = context.labels[result.lowercased()] else {
+            sendText("label '\(result)' not found", preset: "scripterror", scriptLine: currentLine.lineNumber, fileName: fileName)
             return .exit
         }
 
-        self.delayedTask?.cancel()
+        delayedTask?.cancel()
 //        self.matchwait = nil
 //        self.matchStack.removeAll()
-        
+
         let command = isGosub ? "gosub" : "goto"
 
-        self.notify("\(command) '\(result)'", debug:ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
+        notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
 
 //        let currentLineNumber = self.context.currentLineNumber
-        self.context.currentLineNumber = target.line - 1
+        context.currentLineNumber = target.line - 1
 
         return .next
     }
 
-    func handleComment(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        guard case .comment(_) = token else {
+    func handleComment(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case .comment = token else {
             return .next
         }
 
@@ -463,11 +463,11 @@ class Script {
             return .next
         }
 
-        // TODO resolve variables
+        // TODO: resolve variables
 
-        self.debugLevel = ScriptLogLevel(rawValue: Int(level) ?? 0) ?? ScriptLogLevel.none
-        self.notify("debug \(self.debugLevel.rawValue) (\(self.debugLevel))", debug:ScriptLogLevel.none, scriptLine: line.lineNumber)
-        
+        debugLevel = ScriptLogLevel(rawValue: Int(level) ?? 0) ?? ScriptLogLevel.none
+        notify("debug \(debugLevel.rawValue) (\(debugLevel))", debug: ScriptLogLevel.none, scriptLine: line.lineNumber)
+
         return .next
     }
 
@@ -478,23 +478,23 @@ class Script {
 
         // TODO: resolve variables
 
-        self.notify("echo \(text)", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("echo \(text)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         gameContext.events.echoText(text, preset: "scriptecho")
         return .next
     }
-    
+
     func handleExit(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case .exit = token else {
             return .next
         }
 
-        self.notify("exit", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("exit", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .exit
     }
 
-    func handleGoto(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+    func handleGoto(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .goto(label) = token else {
             return .next
         }
@@ -507,25 +507,25 @@ class Script {
             return .next
         }
 
-        self.notify("passing label '\(label)'", debug:ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+        notify("passing label '\(label)'", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
         return .next
     }
 
-    func handleMatch(_ line:ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+    func handleMatch(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .match(label, value) = token else {
             return .next
         }
 
-        self.matchStack.append(MatchMessage(label, value, line.lineNumber))
+        matchStack.append(MatchMessage(label, value, line.lineNumber))
         return .next
     }
 
-    func handleMatchre(_ line:ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+    func handleMatchre(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .matchre(label, value) = token else {
             return .next
         }
 
-        self.matchStack.append(MatchMessage(label, value, line.lineNumber))
+        matchStack.append(MatchMessage(label, value, line.lineNumber))
         return .next
     }
 
@@ -534,16 +534,16 @@ class Script {
             return .next
         }
 
-        let timeout: Double = Double(str) ?? -1
+        let timeout = Double(str) ?? -1
 
         let time = timeout > 0 ? "\(timeout)" : ""
-        self.notify("matchwait \(time)", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
+        notify("matchwait \(time)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
         let token = Matchwait()
-        self.matchwait = token
+        matchwait = token
 
         if timeout > 0 {
-            self.delayedTask = delay(timeout) {
+            delayedTask = delay(timeout) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -555,7 +555,7 @@ class Script {
 
         return .wait
     }
-    
+
     func handlePause(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .pause(maybeNumber) = token else {
             return .next
@@ -565,9 +565,9 @@ class Script {
 
         let duration = Double(maybeNumber) ?? 1
 
-        self.notify("pausing for \(duration) seconds", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
+        notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
-        self.delayedTask = delay(duration) {
+        delayedTask = delay(duration) {
             self.next()
         }
 
@@ -581,7 +581,7 @@ class Script {
 
         // TODO: resolve variables
 
-        self.notify("put \(text)", debug:ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("put \(text)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         let command = Command2(command: text)
         gameContext.events.sendCommand(command)
@@ -596,13 +596,13 @@ class Script {
 
         // TODO: resolve variables
 
-        self.notify("waitfor \(text)", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
+        notify("waitfor \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
-        self.reactToStream.append(WaitforOp(text))
+        reactToStream.append(WaitforOp(text))
 
         return .wait
     }
-    
+
     func handleWaitforRe(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .waitforre(pattern) = token else {
             return .next
@@ -610,9 +610,9 @@ class Script {
 
         // TODO: resolve variables
 
-        self.notify("waitforre \(pattern)", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
+        notify("waitforre \(pattern)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
-        self.reactToStream.append(WaitforReOp(pattern))
+        reactToStream.append(WaitforReOp(pattern))
 
         return .wait
     }

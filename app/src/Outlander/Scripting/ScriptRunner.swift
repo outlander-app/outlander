@@ -33,7 +33,7 @@ class ScriptRunner {
 
             self.manage(commands)
         }
-        
+
         self.context.events.handle(self, channel: "ol:script:complete") { result in
             guard let scriptName = result as? String else {
                 return
@@ -41,7 +41,7 @@ class ScriptRunner {
 
             self.remove([scriptName])
         }
-        
+
         self.context.events.handle(self, channel: "ol:game:parse", handler: { result in
             guard let data = result as? String else {
                 return
@@ -59,11 +59,10 @@ class ScriptRunner {
     private func run(_ scriptName: String) {
         do {
             let script = try Script(scriptName, loader: loader, gameContext: context)
-            self.scripts.append(script)
+            scripts.append(script)
             script.run([])
-        }
-        catch {
-            self.context.events.echoError("Error occurred running script \(scriptName)")
+        } catch {
+            context.events.echoError("Error occurred running script \(scriptName)")
         }
     }
 
@@ -85,13 +84,13 @@ class ScriptRunner {
 
         switch command {
         case "abort":
-            self.abort(scriptName)
+            abort(scriptName)
         case "pause":
-            self.pause(scriptName)
+            pause(scriptName)
         case "resume":
-            self.resume(scriptName)
+            resume(scriptName)
         default:
-            self.context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
+            context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
         }
     }
 
@@ -105,7 +104,7 @@ class ScriptRunner {
             }
         }
 
-        self.remove(names)
+        remove(names)
     }
 
     private func pause(_ scriptName: String) {
@@ -126,11 +125,11 @@ class ScriptRunner {
 
     private func remove(_ scriptNames: [String]) {
         for name in scriptNames {
-            guard let idx = self.scripts.firstIndex(where: { $0.fileName.lowercased() == name}) else {
+            guard let idx = scripts.firstIndex(where: { $0.fileName.lowercased() == name }) else {
                 continue
             }
 
-            self.scripts.remove(at: idx)
+            scripts.remove(at: idx)
         }
     }
 }

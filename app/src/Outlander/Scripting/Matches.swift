@@ -9,23 +9,23 @@
 import Foundation
 
 protocol IMatch {
-    var value: String {get}
-    var label: String {get}
-    var lineNumber: Int {get}
-    var groups: [String] {get}
+    var value: String { get }
+    var label: String { get }
+    var lineNumber: Int { get }
+    var groups: [String] { get }
 
-    func isMatch(_ text:String) -> Bool
+    func isMatch(_ text: String) -> Bool
 }
 
 class Matchwait {
-    var id:String
+    var id: String
 
     init() {
-        self.id = UUID().uuidString
+        id = UUID().uuidString
     }
 }
 
-class MatchMessage : IMatch {
+class MatchMessage: IMatch {
     var value: String
     var label: String
     var lineNumber: Int
@@ -35,16 +35,16 @@ class MatchMessage : IMatch {
         self.label = label
         self.value = value
         self.lineNumber = lineNumber
-        self.groups = []
+        groups = []
     }
 
     func isMatch(_ text: String) -> Bool {
         // TODO: resolve variables in value
-        return text.range(of: value) != nil
+        text.range(of: value) != nil
     }
 }
 
-class MatchreMessage : IMatch {
+class MatchreMessage: IMatch {
     var value: String
     var label: String
     var lineNumber: Int
@@ -54,7 +54,7 @@ class MatchreMessage : IMatch {
         self.label = label
         self.value = value
         self.lineNumber = lineNumber
-        self.groups = []
+        groups = []
     }
 
     func isMatch(_ text: String) -> Bool {

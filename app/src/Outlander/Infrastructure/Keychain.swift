@@ -13,7 +13,7 @@ class Keychain {
     let keychain = KeychainSwift()
 
     func get(passwordFor account: String) -> String? {
-        return keychain.get(makeAccountKey(account))
+        keychain.get(makeAccountKey(account))
     }
 
     func set(password: String, for account: String) {
@@ -21,6 +21,6 @@ class Keychain {
     }
 
     private func makeAccountKey(_ account: String) -> String {
-        return "com.outlanderapp.play.account.\(account)"
+        "com.outlanderapp.play.account.\(account)"
     }
 }

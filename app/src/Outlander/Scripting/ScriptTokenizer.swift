@@ -32,35 +32,33 @@ enum ScriptTokenValue: Hashable {
 
 extension ScriptTokenValue: CustomStringConvertible {
     var description: String {
-        get {
-            switch self {
-            case .comment:
-                return "comment"
-            case .debug:
-                return "debug"
-            case .echo:
-                return "echo"
-            case .exit:
-                return "exit"
-            case .goto:
-                return "goto"
-            case .label:
-                return "label"
-            case .match:
-                return "match"
-            case .matchre:
-                return "matchre"
-            case .matchwait:
-                return "matchwait"
-            case .pause:
-                return "pause"
-            case .put:
-                return "put"
-            case .waitfor:
-                return "waitfor"
-            case .waitforre:
-                return "waitforre"
-            }
+        switch self {
+        case .comment:
+            return "comment"
+        case .debug:
+            return "debug"
+        case .echo:
+            return "echo"
+        case .exit:
+            return "exit"
+        case .goto:
+            return "goto"
+        case .label:
+            return "label"
+        case .match:
+            return "match"
+        case .matchre:
+            return "matchre"
+        case .matchwait:
+            return "matchwait"
+        case .pause:
+            return "pause"
+        case .put:
+            return "put"
+        case .waitfor:
+            return "waitfor"
+        case .waitforre:
+            return "waitforre"
         }
     }
 }
@@ -106,9 +104,8 @@ class ScriptReaderBase<T> {
 
         return context.target.first
     }
-    
-    func afterRead() {
-    }
+
+    func afterRead() {}
 
     func startNewMode(_ context: ScriptTokenizerContext) {
         guard modes.hasItems() else { return }
@@ -140,7 +137,7 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
 }
 
 class CommandMode: IScriptReaderMode {
-    var knownCommands: [String:IScriptReaderMode?] = [
+    var knownCommands: [String: IScriptReaderMode?] = [
         "debug": DebugMode(),
         "echo": EchoMode(),
         "exit": ExitMode(),
@@ -151,7 +148,7 @@ class CommandMode: IScriptReaderMode {
         "pause": PauseMode(),
         "put": PutMode(),
         "waitfor": WaitforMode(),
-        "waitforre": WaitforReMode()
+        "waitforre": WaitforReMode(),
     ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {

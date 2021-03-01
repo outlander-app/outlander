@@ -50,7 +50,7 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
     func controlTextDidEndEditing(_: Notification) {
         game = gameComboBox?.stringValue ?? "DR"
     }
-    
+
     func loadPassword() {
         guard account.count > 0 else {
             return

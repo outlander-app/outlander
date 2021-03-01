@@ -13,39 +13,39 @@ enum CheckStreamResult {
     case none
 }
 
-class WaitforOp : IWantStreamInfo {
+class WaitforOp: IWantStreamInfo {
     var id = ""
-    let target:String
+    let target: String
 
-    init(_ target:String) {
-        self.id = UUID().uuidString
+    init(_ target: String) {
+        id = UUID().uuidString
         self.target = target
     }
 
-    func stream(_ text: String, _ context: ScriptContext) -> CheckStreamResult {
+    func stream(_ text: String, _: ScriptContext) -> CheckStreamResult {
         // TODO: resolve target before comparision, it could contain a variable
-        return text.range(of: target) != nil
+        text.range(of: target) != nil
             ? CheckStreamResult.match(text)
             : CheckStreamResult.none
     }
 
-    func execute(_ script: Script, _ context: ScriptContext) {
+    func execute(_ script: Script, _: ScriptContext) {
         script.next()
     }
 }
 
-class WaitforReOp : IWantStreamInfo {
+class WaitforReOp: IWantStreamInfo {
     public var id = ""
-    var pattern:String
-    var groups:[String]
+    var pattern: String
+    var groups: [String]
 
-    init(_ pattern:String) {
-        self.id = UUID().uuidString
+    init(_ pattern: String) {
+        id = UUID().uuidString
         self.pattern = pattern
-        self.groups = []
+        groups = []
     }
 
-    func stream(_ text: String, _ context: ScriptContext) -> CheckStreamResult {
+    func stream(_ text: String, _: ScriptContext) -> CheckStreamResult {
         // TODO: resolve pattern before comparision, it could contain a variable
         var txt = text
 
@@ -57,7 +57,7 @@ class WaitforReOp : IWantStreamInfo {
         return groups.count > 0 ? CheckStreamResult.match(txt) : CheckStreamResult.none
     }
 
-    func execute(_ script: Script, _ context:ScriptContext) {
+    func execute(_ script: Script, _: ScriptContext) {
 //        context.setRegexVars(self.groups)
         script.next()
     }

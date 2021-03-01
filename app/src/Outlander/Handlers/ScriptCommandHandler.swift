@@ -12,7 +12,7 @@ class ScriptRunnerCommandHandler: ICommandHandler {
     var command = "."
 
     func canHandle(_ command: String) -> Bool {
-        return command.hasPrefix(".")
+        command.hasPrefix(".")
     }
 
     func handle(_ command: String, with context: GameContext) {
@@ -23,7 +23,7 @@ class ScriptRunnerCommandHandler: ICommandHandler {
 
 class ScriptCommandHandler: ICommandHandler {
     var command = "#script"
-    
+
     let validCommands = ["abort", "pause", "resume", "stop"]
 
     func handle(_ command: String, with context: GameContext) {

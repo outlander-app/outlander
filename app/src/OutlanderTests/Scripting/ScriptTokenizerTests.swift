@@ -20,7 +20,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func testTokenizesEcho() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("echo hello world")
@@ -32,7 +32,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func testTokenizesExit() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("exit")
@@ -44,7 +44,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func testTokenizesGoto() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("goto label")
@@ -72,7 +72,7 @@ class ScriptTokenizerTests: XCTestCase {
     func testIgnoresTextAfterLabel() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("mylabel: something something")
-        
+
         switch token {
         case let .label(label):
             XCTAssertEqual(label, "mylabel")
@@ -130,7 +130,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func testTokenizesWaitfor() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("waitfor abcd")

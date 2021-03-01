@@ -52,7 +52,6 @@ class GameViewController: NSViewController {
     var spelltime: SpellTimer?
 
     override func viewDidLoad() {
-
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
