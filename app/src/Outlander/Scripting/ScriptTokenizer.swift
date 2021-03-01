@@ -26,6 +26,7 @@ enum ScriptTokenValue: Hashable {
     case pause(String)
     case put(String)
     case waitfor(String)
+    case waitforre(String)
 }
 
 extension ScriptTokenValue: CustomStringConvertible {
@@ -54,6 +55,8 @@ extension ScriptTokenValue: CustomStringConvertible {
                 return "put"
             case .waitfor:
                 return "waitfor"
+            case .waitforre:
+                return "waitforre"
             }
         }
     }
@@ -143,7 +146,8 @@ class CommandMode: IScriptReaderMode {
         "matchwait": MatchwaitMode(),
         "pause": PauseMode(),
         "put": PutMode(),
-        "waitfor": WaitforMode()
+        "waitfor": WaitforMode(),
+        "waitforre": WaitforreMode()
     ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
@@ -255,6 +259,15 @@ class WaitforMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(ScriptTokenValue.waitfor(rest))
+        return nil
+    }
+}
+
+class WaitforreMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.waitforre(rest))
         return nil
     }
 }

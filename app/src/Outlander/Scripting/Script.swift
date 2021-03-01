@@ -176,6 +176,7 @@ class Script {
         tokenHandlers["pause"] = self.handlePause
         tokenHandlers["put"] = self.handlePut
         tokenHandlers["waitfor"] = self.handleWaitfor
+        tokenHandlers["waitforre"] = self.handleWaitforRe
 
         Script.dateFormatter.dateFormat = "hh:mm a"
     }
@@ -276,7 +277,8 @@ class Script {
         let handlers = self.reactToStream.filter { x in
             let res = x.stream(text, self.context)
             switch res {
-            case .match:
+            case .match(let txt):
+                notify("matched \(txt)", debug: .wait)
                 return true
             default:
                 return false
@@ -573,6 +575,20 @@ class Script {
         self.notify("waitfor \(text)", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
         self.reactToStream.append(WaitforOp(text))
+
+        return .wait
+    }
+    
+    func handleWaitforRe(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .waitforre(pattern) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+
+        self.notify("waitforre \(pattern)", debug:ScriptLogLevel.wait, scriptLine: line.lineNumber)
+
+        self.reactToStream.append(WaitforReOp(pattern))
 
         return .wait
     }

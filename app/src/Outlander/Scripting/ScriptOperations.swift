@@ -33,3 +33,32 @@ class WaitforOp : IWantStreamInfo {
         script.next()
     }
 }
+
+class WaitforReOp : IWantStreamInfo {
+    public var id = ""
+    var pattern:String
+    var groups:[String]
+
+    init(_ pattern:String) {
+        self.id = UUID().uuidString
+        self.pattern = pattern
+        self.groups = []
+    }
+
+    func stream(_ text: String, _ context: ScriptContext) -> CheckStreamResult {
+        // TODO: resolve pattern before comparision, it could contain a variable
+        var txt = text
+
+        let regex = RegexFactory.get(pattern)
+        guard let match = regex?.firstMatch(&txt) else {
+            return CheckStreamResult.none
+        }
+        groups = match.values()
+        return groups.count > 0 ? CheckStreamResult.match(txt) : CheckStreamResult.none
+    }
+
+    func execute(_ script: Script, _ context:ScriptContext) {
+//        context.setRegexVars(self.groups)
+        script.next()
+    }
+}
