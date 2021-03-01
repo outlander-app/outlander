@@ -19,8 +19,8 @@ class Keychain {
     func set(password: String, for account: String) {
         keychain.set(password, forKey: makeAccountKey(account), withAccess: .accessibleWhenUnlocked)
     }
-    
+
     private func makeAccountKey(_ account: String) -> String {
-        return "com.Outlander.account.\(account)"
+        return "com.outlanderapp.play.account.\(account)"
     }
 }

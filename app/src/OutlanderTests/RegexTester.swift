@@ -29,4 +29,15 @@ class RegexTester: XCTestCase {
 
         XCTAssertEqual(result, "flickering mana (8/21) to the west\n")
     }
+
+    func test_matches() {
+        let regText = "titanese cloth|imperial weave cloth|dergatine cloth|arzumodine cloth|zenganne cloth"
+        let regex = try! Regex(regText, options: .caseInsensitive)
+
+        var text = "some other text Imperial weave cloth and some more"
+        let match = regex.firstMatch(&text)!
+
+        XCTAssertEqual(match.count, 1)
+        XCTAssertEqual(match.values(), ["Imperial weave cloth"])
+    }
 }

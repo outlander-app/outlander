@@ -80,6 +80,7 @@ class GameViewController: NSViewController {
             case let .data(_, str):
                 self?.log.rawStream(str)
                 self?.gameStream?.stream(str)
+                self?.scriptRunner?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
                 self?.logText("\nDisconnected from game server\n\n")

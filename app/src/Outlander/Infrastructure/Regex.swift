@@ -103,4 +103,8 @@ class MatchResult {
 
         return nil
     }
+
+    func values() -> [String] {
+        return (0...result.numberOfRanges).compactMap({ valueAt(index: $0) })
+    }
 }

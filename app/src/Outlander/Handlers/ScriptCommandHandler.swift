@@ -17,15 +17,25 @@ class ScriptRunnerCommandHandler: ICommandHandler {
 
     func handle(_ command: String, with context: GameContext) {
         let commands = command.dropFirst().trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
-        context.events.post("ol:runscript", data: commands)
+        context.events.post("ol:script:run", data: commands)
     }
 }
 
 class ScriptCommandHandler: ICommandHandler {
     var command = "#script"
+    
+    let validCommands = ["abort", "pause", "resume", "stop"]
 
     func handle(_ command: String, with context: GameContext) {
         let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
-        context.events.post("ol:script", data: commands)
+        let commandTokens = commands.components(separatedBy: " ")
+
+        guard commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) else {
+            let joined = validCommands.joined(separator: ", ")
+            context.events.echoText("'\(commandTokens[0])' is not a valid #script command. Valid commands:\n  \(joined)", preset: "scripterror", mono: true)
+            return
+        }
+
+        context.events.post("ol:script", data: commands.lowercased())
     }
 }

@@ -18,7 +18,7 @@ class ScriptRunner {
         self.context = context
         self.loader = loader
 
-        self.context.events.handle(self, channel: "ol:runscript") { result in
+        self.context.events.handle(self, channel: "ol:script:run") { result in
             guard let scriptName = result as? String else {
                 return
             }
@@ -31,7 +31,28 @@ class ScriptRunner {
                 return
             }
 
-            context.events.echoText("script command: \(commands)")
+            self.manage(commands)
+        }
+        
+        self.context.events.handle(self, channel: "ol:script:complete") { result in
+            guard let scriptName = result as? String else {
+                return
+            }
+
+            self.remove([scriptName])
+        }
+        
+        self.context.events.handle(self, channel: "ol:game:parse", handler: { result in
+            guard let data = result as? String else {
+                return
+            }
+            self.parse(data)
+        })
+    }
+
+    func stream(_ data: String) {
+        for script in scripts {
+            script.stream(data)
         }
     }
 
@@ -43,6 +64,73 @@ class ScriptRunner {
         }
         catch {
             self.context.events.echoError("Error occurred running script \(scriptName)")
+        }
+    }
+
+    private func parse(_ data: String) {
+        stream(data)
+    }
+
+    private func manage(_ text: String) {
+        let commands = text.components(separatedBy: " ")
+
+        guard commands.count > 1 else {
+            return
+        }
+
+        let command = commands[0]
+        let scriptName = commands[1]
+//        let param1 = commands.count > 2 ? commands[2] : ""
+//        let param2 = commands.count > 3 ? commands[3] : ""
+
+        switch command {
+        case "abort":
+            self.abort(scriptName)
+        case "pause":
+            self.pause(scriptName)
+        case "resume":
+            self.resume(scriptName)
+        default:
+            self.context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
+        }
+    }
+
+    private func abort(_ scriptName: String) {
+        var names: [String] = []
+
+        for script in scripts {
+            if script.fileName.lowercased() == scriptName.lowercased() {
+                script.cancel()
+                names.append(script.fileName)
+            }
+        }
+
+        self.remove(names)
+    }
+
+    private func pause(_ scriptName: String) {
+        for script in scripts {
+            if script.fileName.lowercased() == scriptName.lowercased() {
+                script.pause()
+            }
+        }
+    }
+
+    private func resume(_ scriptName: String) {
+        for script in scripts {
+            if script.fileName.lowercased() == scriptName.lowercased() {
+                script.resume()
+            }
+        }
+    }
+
+    private func remove(_ scriptNames: [String]) {
+        for name in scriptNames {
+            guard let idx = self.scripts.firstIndex(where: { $0.fileName.lowercased() == name}) else {
+                continue
+            }
+
+            self.scripts.remove(at: idx)
         }
     }
 }

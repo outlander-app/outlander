@@ -81,6 +81,32 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
+    func testTokenizesMatch() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("match one two")
+
+        switch token {
+        case let .match(label, value):
+            XCTAssertEqual(label, "one")
+            XCTAssertEqual(value, "two")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
+    func testTokenizesMatchre() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("matchre one two")
+
+        switch token {
+        case let .matchre(label, value):
+            XCTAssertEqual(label, "one")
+            XCTAssertEqual(value, "two")
+        default:
+            XCTFail("wrong token value: \(token)")
+        }
+    }
+
     func testTokenizesPut() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("put hello friends")
@@ -92,7 +118,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func testTokenizesPutWithCommands() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("put #echo a message")
@@ -100,6 +126,18 @@ class ScriptTokenizerTests: XCTestCase {
         switch token {
         case let .put(put):
             XCTAssertEqual(put, "#echo a message")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+    
+    func testTokenizesWaitfor() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("waitfor abcd")
+
+        switch token {
+        case let .waitfor(msg):
+            XCTAssertEqual(msg, "abcd")
         default:
             XCTFail("wrong token value")
         }

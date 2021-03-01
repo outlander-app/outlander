@@ -22,6 +22,12 @@
 		7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7BAC840825E9B51800A6C7D5 /* KeychainSwift */; };
 		7BAC840D25E9CB7200A6C7D5 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840C25E9CB7200A6C7D5 /* Keychain.swift */; };
 		7BAC840E25E9CB7200A6C7D5 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC840C25E9CB7200A6C7D5 /* Keychain.swift */; };
+		7BAC841625EA064400A6C7D5 /* ScriptOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */; };
+		7BAC841725EA064400A6C7D5 /* ScriptOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */; };
+		7BAC841B25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */; };
+		7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */; };
+		7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
+		7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
 		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
 		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
 		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
@@ -191,6 +197,9 @@
 		7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCommandHandler.swift; sourceTree = "<group>"; };
 		7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptRunner.swift; sourceTree = "<group>"; };
 		7BAC840C25E9CB7200A6C7D5 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptOperations.swift; sourceTree = "<group>"; };
+		7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseCommandHandler.swift; sourceTree = "<group>"; };
+		7BAC842C25ECA23C00A6C7D5 /* Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matches.swift; sourceTree = "<group>"; };
 		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
 		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
 		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
@@ -324,9 +333,11 @@
 			isa = PBXGroup;
 			children = (
 				7BA27B4F25DF93C500A88B80 /* Combinators.swift */,
+				7BAC842C25ECA23C00A6C7D5 /* Matches.swift */,
 				7BA27B3625DF6D9D00A88B80 /* Script.swift */,
-				7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */,
+				7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */,
 				7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */,
+				7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */,
 			);
 			path = Scripting;
 			sourceTree = "<group>";
@@ -473,16 +484,17 @@
 			isa = PBXGroup;
 			children = (
 				F6A34F19247A160800E68EDD /* AliasCommandHandler.swift */,
-				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
-				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
 				F9CA205724662B5500A92736 /* BeepCommandHandler.swift */,
+				F9CA20772467849700A92736 /* ClassCommandHandler.swift */,
+				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
+				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
-				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
+				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -673,9 +685,11 @@
 				F9CA205824662B5500A92736 /* BeepCommandHandler.swift in Sources */,
 				7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9CA2049245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
+				7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				F9D78D3023A9E3A500FE2343 /* PresetLoader.swift in Sources */,
+				7BAC841625EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA206F2466796100A92736 /* ApplicationLoader.swift in Sources */,
 				F969A0FB23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
@@ -693,6 +707,7 @@
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
+				7BAC841B25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,
 				F995752524944DBB00A980FC /* MapNode.swift in Sources */,
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
@@ -765,6 +780,7 @@
 				7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */,
 				F995752624944DBB00A980FC /* MapNode.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
+				7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
 				7BA27B5125DF93C500A88B80 /* Combinators.swift in Sources */,
@@ -775,6 +791,7 @@
 				F9CA20472453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
 				F9CA206B2466761B00A92736 /* InMemoryHelpers.swift in Sources */,
 				F9CA2064246669DB00A92736 /* FileSystem.swift in Sources */,
+				7BAC841725EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */,
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */,
@@ -786,6 +803,7 @@
 				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
+				7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,
 				F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				F98B490F246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
@@ -955,6 +973,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -988,6 +1007,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
