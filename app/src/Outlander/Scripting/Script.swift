@@ -10,6 +10,7 @@ import Foundation
 
 func delay(_ delay: Double, _ closure: @escaping () -> ()) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
+    // TODO: swap from main queue
     DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: task)
     return task
 }
@@ -128,7 +129,7 @@ protocol IWantStreamInfo {
 class Script {
     var started: Date?
     var fileName: String = ""
-    var debugLevel:ScriptLogLevel = ScriptLogLevel.actions
+    var debugLevel:ScriptLogLevel = ScriptLogLevel.none
 
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
@@ -166,6 +167,8 @@ class Script {
 
         context = ScriptContext()
         tokenHandlers = [:]
+        tokenHandlers["comment"] = self.handleComment
+        tokenHandlers["debug"] = self.handleDebug
         tokenHandlers["echo"] = self.handleEcho
         tokenHandlers["exit"] = self.handleExit
         tokenHandlers["goto"] = self.handleGoto
@@ -444,6 +447,27 @@ class Script {
 //        let currentLineNumber = self.context.currentLineNumber
         self.context.currentLineNumber = target.line - 1
 
+        return .next
+    }
+
+    func handleComment(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case .comment(_) = token else {
+            return .next
+        }
+
+        return .next
+    }
+
+    func handleDebug(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .debug(level) = token else {
+            return .next
+        }
+
+        // TODO resolve variables
+
+        self.debugLevel = ScriptLogLevel(rawValue: Int(level) ?? 0) ?? ScriptLogLevel.none
+        self.notify("debug \(self.debugLevel.rawValue) (\(self.debugLevel))", debug:ScriptLogLevel.none, scriptLine: line.lineNumber)
+        
         return .next
     }
 

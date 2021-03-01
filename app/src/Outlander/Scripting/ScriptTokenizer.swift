@@ -16,6 +16,7 @@ enum Expression {
 
 enum ScriptTokenValue: Hashable {
     case comment(String)
+    case debug(String)
     case echo(String)
     case exit
     case goto(String)
@@ -35,6 +36,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             switch self {
             case .comment:
                 return "comment"
+            case .debug:
+                return "debug"
             case .echo:
                 return "echo"
             case .exit:
@@ -138,6 +141,7 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
 
 class CommandMode: IScriptReaderMode {
     var knownCommands: [String:IScriptReaderMode?] = [
+        "debug": DebugMode(),
         "echo": EchoMode(),
         "exit": ExitMode(),
         "goto": GotoMode(),
@@ -147,7 +151,7 @@ class CommandMode: IScriptReaderMode {
         "pause": PauseMode(),
         "put": PutMode(),
         "waitfor": WaitforMode(),
-        "waitforre": WaitforreMode()
+        "waitforre": WaitforReMode()
     ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
@@ -176,6 +180,15 @@ class CommandMode: IScriptReaderMode {
             return nil
         }
 
+        return nil
+    }
+}
+
+class DebugMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.debug(rest))
         return nil
     }
 }
@@ -263,7 +276,7 @@ class WaitforMode: IScriptReaderMode {
     }
 }
 
-class WaitforreMode: IScriptReaderMode {
+class WaitforReMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
