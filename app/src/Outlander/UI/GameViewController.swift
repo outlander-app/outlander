@@ -79,7 +79,6 @@ class GameViewController: NSViewController {
             case let .data(_, str):
                 self?.log.rawStream(str)
                 self?.gameStream?.stream(str)
-                self?.scriptRunner?.stream(str)
             case .closed:
                 self?.gameStream?.resetSetup()
                 self?.logText("\nDisconnected from game server\n\n")
@@ -90,9 +89,17 @@ class GameViewController: NSViewController {
 
         gameStream = GameStream(context: gameContext, streamCommands: { [weak self] command in
             switch command {
+            case .text:
+                break
+            default:
+                self?.scriptRunner?.stream("", [command])
+            }
+
+            switch command {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
+                    self?.scriptRunner?.stream(tag.text, [])
                 }
 
             case let .vitals(name, value):

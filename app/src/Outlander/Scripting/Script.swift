@@ -33,6 +33,7 @@ struct Label {
 class ScriptContext {
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
+    var variables: [String:String] = [:]
 
     var currentLineNumber: Int = -1
 
@@ -122,7 +123,7 @@ enum ScriptExecuteResult {
 
 protocol IWantStreamInfo {
     var id: String { get }
-    func stream(_ text: String, _ context: ScriptContext) -> CheckStreamResult
+    func stream(_ text: String, _ tokens: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult
     func execute(_ script: Script, _ context: ScriptContext)
 }
 
@@ -178,6 +179,10 @@ class Script {
         tokenHandlers["matchwait"] = handleMatchwait
         tokenHandlers["pause"] = handlePause
         tokenHandlers["put"] = handlePut
+        tokenHandlers["random"] = handleRandom
+        tokenHandlers["save"] = handleSave
+        tokenHandlers["send"] = handleSend
+        tokenHandlers["variable"] = handleVariable
         tokenHandlers["waitfor"] = handleWaitfor
         tokenHandlers["waitforre"] = handleWaitforRe
 
@@ -272,13 +277,13 @@ class Script {
         gameContext.events.post("ol:script:complete", data: fileName)
     }
 
-    func stream(_ text: String) {
-        guard text.count > 0, !paused, !stopped else {
+    func stream(_ text: String, _ tokens: [StreamCommand]) {
+        guard text.count > 0 || tokens.count > 0, !paused, !stopped else {
             return
         }
 
         let handlers = reactToStream.filter { x in
-            let res = x.stream(text, self.context)
+            let res = x.stream(text, tokens, self.context)
             switch res {
             case let .match(txt):
                 notify("matched \(txt)", debug: .wait)
@@ -585,6 +590,70 @@ class Script {
 
         let command = Command2(command: text)
         gameContext.events.sendCommand(command)
+
+        return .next
+    }
+    
+    func handleRandom(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .random(min, max) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+        
+        guard let minN = Int(min), let maxN = Int(max) else {
+            return .next
+        }
+
+        let diceRoll = Int.random(in: minN...maxN)
+
+        self.context.variables["r"] = "\(diceRoll)"
+
+        notify("random \(minN), \(maxN) = \(diceRoll)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+
+        return .next
+    }
+    
+    
+    func handleSave(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .save(value) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+        
+        self.context.variables["s"] = value
+
+        notify("save \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+
+        return .next
+    }
+    
+    func handleSend(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .send(text) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+
+        notify("#send \(text)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+
+        let command = Command2(command: "#send \(text)")
+        gameContext.events.sendCommand(command)
+
+        return .next
+    }
+    
+    func handleVariable(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .variable(variable, value) = token else {
+            return .next
+        }
+
+        // TODO: resolve variables
+        
+        self.context.variables[variable] = value
+
+        notify("var \(variable) \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .next
     }

@@ -26,6 +26,10 @@ enum ScriptTokenValue: Hashable {
     case matchwait(String)
     case pause(String)
     case put(String)
+    case random(String, String)
+    case save(String)
+    case send(String)
+    case variable(String, String)
     case waitfor(String)
     case waitforre(String)
 }
@@ -55,6 +59,14 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "pause"
         case .put:
             return "put"
+        case .random:
+            return "random"
+        case .save:
+            return "save"
+        case .send:
+            return "send"
+        case .variable:
+            return "variable"
         case .waitfor:
             return "waitfor"
         case .waitforre:
@@ -147,12 +159,22 @@ class CommandMode: IScriptReaderMode {
         "matchwait": MatchwaitMode(),
         "pause": PauseMode(),
         "put": PutMode(),
+        "random": RandomMode(),
+        "save": SaveMode(),
+        "send": SendMode(),
+        "setvariable": VariableMode(),
+        "var": VariableMode(),
         "waitfor": WaitforMode(),
         "waitforre": WaitforReMode(),
     ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
-        if context.text.first == "#" {
+        let first = context.text.first
+        guard first != nil else {
+            return nil
+        }
+
+        if first == "#" {
             let text = context.text.parseToEnd()
             context.target.append(ScriptTokenValue.comment(String(text)))
             return nil
@@ -260,6 +282,46 @@ class PutMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(ScriptTokenValue.put(rest))
+        return nil
+    }
+}
+
+class RandomMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let min = String(context.text.parseWord())
+        context.text.consumeSpaces()
+        let max = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.random(min, max))
+        return nil
+    }
+}
+
+class SaveMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.save(rest))
+        return nil
+    }
+}
+
+class SendMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.send(rest))
+        return nil
+    }
+}
+
+class VariableMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let variable = String(context.text.parseWord())
+        context.text.consumeSpaces()
+        let value = String(context.text.parseToEnd())
+        context.target.append(ScriptTokenValue.variable(variable, value))
         return nil
     }
 }

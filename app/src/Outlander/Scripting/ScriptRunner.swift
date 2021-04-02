@@ -50,14 +50,18 @@ class ScriptRunner {
         })
     }
 
-    func stream(_ data: String) {
+    func stream(_ data: String, _ tokens: [StreamCommand]) {
         for script in scripts {
-            script.stream(data)
+            script.stream(data, tokens)
         }
     }
 
     private func run(_ scriptName: String) {
         do {
+            if let previous = self.scripts.first(where: { $0.fileName == scriptName }) {
+                previous.cancel()
+            }
+            
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
             script.run([])
@@ -67,7 +71,7 @@ class ScriptRunner {
     }
 
     private func parse(_ data: String) {
-        stream(data)
+        stream(data, [])
     }
 
     private func manage(_ text: String) {
