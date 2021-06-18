@@ -51,11 +51,11 @@ class VariablesLoader {
         context.globalVars["roundtime"] = "0"
     }
 
-    func save(_ settings: ApplicationSettings, variables: [String: String]) {
+    func save(_ settings: ApplicationSettings, variables: Variables) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
-        for (key, value) in variables.sorted(by: { $0.key < $1.key }) {
+        for (key, value) in variables.sorted() {
             content += "#var {\(key)} {\(value)}\n"
         }
 

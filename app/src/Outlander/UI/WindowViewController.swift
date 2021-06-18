@@ -97,6 +97,9 @@ class WindowViewController: NSViewController {
     }
 
     func clearAndAppend(_ tags: [TextTag], highlightMonsters: Bool = false) {
+        guard let context = self.gameContext else {
+            return
+        }
         queue?.async {
             let target = NSMutableAttributedString()
 
@@ -107,7 +110,7 @@ class WindowViewController: NSViewController {
                 }
             }
 
-            self.processHighlights(target, highlightMonsters: highlightMonsters)
+            self.processHighlights(target, context: context, highlightMonsters: highlightMonsters)
             self.setWithoutProcessing(target)
         }
     }
@@ -158,10 +161,7 @@ class WindowViewController: NSViewController {
         return NSMutableAttributedString(string: text, attributes: attributes)
     }
 
-    func processHighlights(_ text: NSMutableAttributedString, highlightMonsters: Bool = false) {
-        guard let context = gameContext else {
-            return
-        }
+    func processHighlights(_ text: NSMutableAttributedString, context: GameContext, highlightMonsters: Bool = false) {
         var highlights = context.activeHighlights()
 
         var str = text.string
@@ -248,6 +248,9 @@ class WindowViewController: NSViewController {
     }
 
     func append(_ tag: TextTag) {
+        guard let context = self.gameContext else {
+            return
+        }
         queue?.async {
             if self.lastTag?.isPrompt == true, !tag.playerCommand {
                 // skip multiple prompts of the same type
@@ -267,7 +270,7 @@ class WindowViewController: NSViewController {
 
             let text = self.processSubs(tag.text)
             guard let str = self.stringFromTag(tag, text: text) else { return }
-            self.processHighlights(str)
+            self.processHighlights(str, context: context)
 
             self.appendWithoutProcessing(str)
         }

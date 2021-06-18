@@ -13,7 +13,7 @@ class GameContext {
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
-    var globalVars: [String: String] = [:]
+    var globalVars: Variables = Variables()
     var presets: [String: ColorPreset] = [:]
     var classes = ClassSettings()
     var gags: [Gag] = []
@@ -23,6 +23,44 @@ class GameContext {
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
     var mapZone: MapZone?
+}
+
+class Variables {
+    private let lockQueue = DispatchQueue.global() //DispatchQueue(label: "variables.lock.queue", attributes: .concurrent)
+    private var vars: [String: String] = [:]
+
+    subscript(key: String) -> String? {
+        get {
+            return lockQueue.sync {
+                vars[key]
+            }
+        }
+        set(newValue) {
+            lockQueue.sync(flags: .barrier) {
+                vars[key] = newValue
+            }
+        }
+    }
+
+    var count: Int {
+        get {
+            return lockQueue.sync {
+                vars.count
+            }
+        }
+    }
+
+    func removeAll() {
+        lockQueue.sync(flags: .barrier) {
+            vars.removeAll()
+        }
+    }
+
+    func sorted() -> [(String, String)] {
+        lockQueue.sync(flags: .barrier) {
+            return vars.sorted(by: { $0.key < $1.key })
+        }
+    }
 }
 
 extension GameContext {
