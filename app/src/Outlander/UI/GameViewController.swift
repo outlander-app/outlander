@@ -449,7 +449,7 @@ class GameViewController: NSViewController {
                     self?.logError("\(error)\n")
 
                 default:
-                    self?.log.info("auth result: \(result)")
+                    self?.log.info("default auth result: \(result)")
                 }
             }
         )

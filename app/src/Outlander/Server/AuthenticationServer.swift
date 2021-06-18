@@ -58,7 +58,7 @@ class AuthenticationServer {
             switch state {
             case .connected:
                 self?._callback?(.connected)
-                self?._socket?.writeAndRead("K\r\n", tag: AuthSocketState.password.rawValue)
+                self?._socket?.writeAndRead("K", tag: AuthSocketState.password.rawValue)
 
             case let .data(data, str, tag):
                 self?.handleData(data: data, str: str, state: AuthSocketState(rawValue: tag)!)
@@ -72,20 +72,22 @@ class AuthenticationServer {
                 self?.log.info("Auth Server socket state change \(state)")
             }
         }, queue: DispatchQueue.main)
+        _socket?.useTLS = true
 
         _socket?.connect(host: authInfo.host, port: authInfo.port)
     }
 
     func handleData(data: Data, str: String?, state: AuthSocketState) {
         log.info("state: \(state)")
+//        log.info(str ?? "")
         switch state {
         case .password:
             var request = "A\t\(_authInfo!.account)\t".data(using: .ascii, allowLossyConversion: true)!
             let hash = String(data: data, encoding: .ascii)!
             let passwordHash = encrypt(password: _authInfo!.password, with: hash)
             request.append(passwordHash!)
-            let ending = "\r\n".data(using: .ascii, allowLossyConversion: true)!
-            request.append(ending)
+//            let ending = "\r\n".data(using: .ascii, allowLossyConversion: true)!
+//            request.append(ending)
             _socket?.writeAndRead(request, tag: AuthSocketState.authenticate.rawValue)
 
         case .authenticate:
@@ -108,10 +110,10 @@ class AuthenticationServer {
                 return
             }
 
-            _socket?.writeAndRead("G\t\(_authInfo!.game)\r\n", tag: AuthSocketState.game.rawValue)
+            _socket?.writeAndRead("G\t\(_authInfo!.game)", tag: AuthSocketState.game.rawValue)
 
         case .game:
-            _socket?.writeAndRead("C\r\n", tag: AuthSocketState.characterlist.rawValue)
+            _socket?.writeAndRead("C", tag: AuthSocketState.characterlist.rawValue)
 
         case .characterlist:
 
@@ -135,7 +137,7 @@ class AuthenticationServer {
             }
 
             let characterId = str[result[1]]
-            _socket?.writeAndRead("L\t\(characterId)\tPLAY\r\n", tag: AuthSocketState.character.rawValue)
+            _socket?.writeAndRead("L\t\(characterId)\tPLAY", tag: AuthSocketState.character.rawValue)
 
         case .character:
             log.info("socket data: \(str ?? "")")
