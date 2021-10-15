@@ -34,7 +34,7 @@ class MapperComandHandler: ICommandHandler {
 
             let loader = MapLoader(self.files)
             let meta = loader.loadMapMeta(atPath: context.applicationSettings.paths.maps)
-            let maps = meta.compactMap { (m) -> MapInfo? in
+            let maps = meta.compactMap { m -> MapInfo? in
                 switch m {
                 case let .Error(e):
                     context.events.echoText("[AutoMapper]: An error occured loading metadata:\n    \(e.description)", preset: "scripterror", mono: true)

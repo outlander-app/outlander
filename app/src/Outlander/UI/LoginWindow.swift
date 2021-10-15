@@ -33,6 +33,8 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
         passwordTextField?.stringValue = password
         gameComboBox?.stringValue = game
         characterTextField?.stringValue = character
+
+        loadPassword()
     }
 
     @IBAction func connect(_: Any) {
@@ -49,12 +51,33 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
         game = gameComboBox?.stringValue ?? "DR"
     }
 
+    func loadPassword() {
+        guard account.count > 0 else {
+            return
+        }
+
+        let keychain = Keychain()
+        let pw = keychain.get(passwordFor: account)
+        passwordTextField?.stringValue = pw ?? ""
+    }
+
+    func clearPassword() {
+        password = ""
+        passwordTextField?.stringValue = ""
+    }
+
     private func setValues() {
         account = accountTextField?.stringValue ?? ""
         password = passwordTextField?.stringValue ?? ""
         game = gameComboBox?.stringValue ?? ""
         character = characterTextField?.stringValue ?? ""
 
-        passwordTextField?.stringValue = ""
+        guard account.count > 0 else {
+            passwordTextField?.stringValue = ""
+            return
+        }
+
+        let keychain = Keychain()
+        keychain.set(password: password, for: account)
     }
 }

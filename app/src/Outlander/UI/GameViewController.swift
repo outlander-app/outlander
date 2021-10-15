@@ -24,6 +24,7 @@ class GameViewController: NSViewController {
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
     var mapWindow: MapWindow?
+    var scriptRunner: ScriptRunner?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
@@ -69,6 +70,7 @@ class GameViewController: NSViewController {
         fileSystem = LocalFileSystem(gameContext.applicationSettings)
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
         commandProcessor = CommandProcesssor(fileSystem!)
+        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, settings: gameContext.applicationSettings))
 
         authServer = AuthenticationServer()
 
@@ -87,9 +89,17 @@ class GameViewController: NSViewController {
 
         gameStream = GameStream(context: gameContext, streamCommands: { [weak self] command in
             switch command {
+            case .text:
+                break
+            default:
+                self?.scriptRunner?.stream("", [command])
+            }
+
+            switch command {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
+                    self?.scriptRunner?.stream(tag.text, [])
                 }
 
             case let .vitals(name, value):
@@ -205,8 +215,10 @@ class GameViewController: NSViewController {
     }
 
     func showLogin() {
+        loginWindow?.loadPassword()
         view.window?.beginSheet(loginWindow!.window!, completionHandler: { result in
             guard result == .OK else {
+                self.loginWindow!.clearPassword()
                 return
             }
             self.credentials = Credentials(
@@ -215,6 +227,8 @@ class GameViewController: NSViewController {
                 character: self.loginWindow!.character,
                 game: self.loginWindow!.game
             )
+
+            self.loginWindow!.clearPassword()
 
             self.gameContext.applicationSettings.profile.update(with: self.credentials!)
             self.connect()
@@ -382,7 +396,7 @@ class GameViewController: NSViewController {
 
         if action == "list" {
             logText("\nWindows:\n", mono: true, playerCommand: false)
-            let sortedWindows = gameWindows.sorted { ($0.1.visible && !$1.1.visible) }
+            let sortedWindows = gameWindows.sorted { $0.1.visible && !$1.1.visible }
             for win in sortedWindows {
                 let frame = win.value.view.frame
                 let hidden = win.value.visible ? "" : "(hidden) "
@@ -400,7 +414,7 @@ class GameViewController: NSViewController {
     }
 
     func connect() {
-        guard let credentials = self.credentials else {
+        guard let credentials = credentials else {
             return
         }
 
@@ -435,7 +449,7 @@ class GameViewController: NSViewController {
                     self?.logError("\(error)\n")
 
                 default:
-                    self?.log.info("auth result: \(result)")
+                    self?.log.info("default auth result: \(result)")
                 }
             }
         )

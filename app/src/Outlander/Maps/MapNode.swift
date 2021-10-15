@@ -56,7 +56,7 @@ final class MapNode {
 
     var transferMap: String? {
         if isTransfer() {
-            guard var notes = self.notes else {
+            guard var notes = notes else {
                 return nil
             }
             guard let result = RegexFactory.get("(.+\\.xml)")?.firstMatch(&notes) else {

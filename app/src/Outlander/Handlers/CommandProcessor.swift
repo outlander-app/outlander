@@ -17,14 +17,7 @@ protocol ICommandHandler {
 
 struct Command2 {
     var command: String
-    var script: ScriptContext?
     var isSystemCommand: Bool = false
-}
-
-struct ScriptContext {
-    var name: String
-    var line: Int?
-    var column: Int?
 }
 
 class CommandProcesssor {
@@ -36,6 +29,9 @@ class CommandProcesssor {
         BeepCommandHandler(),
         BugCommandHandler(),
         GagCommandHandler(),
+        ParseCommandHandler(),
+        ScriptCommandHandler(),
+        ScriptRunnerCommandHandler(),
     ]
 
     init(_ files: FileSystem) {

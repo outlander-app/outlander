@@ -36,10 +36,13 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
         _callback(.initialized)
     }
 
+    public var useTLS: Bool = false
+
     public var isConnected: Bool { _socket?.isConnected ?? false }
 
     public func connect(host: String, port: UInt16) {
         _callback(.connecting(host, port))
+
         try? _socket?.connect(toHost: host, onPort: port)
     }
 
@@ -57,20 +60,36 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
         _socket?.readData(withTimeout: -1, tag: tag)
     }
 
-    public func writeAndReadToNewline(_ data: String) {
-        _socket?.write(data, tag: -1)
+    public func writeAndReadToNewline(_ data: String, tag: Int = -1) {
+        _socket?.write(data, tag: tag)
         readToNewline()
     }
 
-    public func readToNewline() {
-        _socket?.readData(to: GCDAsyncSocket.crlfData(), withTimeout: -1, tag: -1)
+    public func readToNewline(tag: Int = -1) {
+        _socket?.readData(to: GCDAsyncSocket.crlfData(), withTimeout: -1, tag: tag)
     }
 
     public func write(_ data: String) {
         _socket?.write(data, tag: -1)
     }
 
+    @objc func socketDidSecure(_: GCDAsyncSocket) {
+//        print("socketDidSecure \(sock.isSecure)")
+    }
+
+    @objc func socket(_: GCDAsyncSocket, didReceive _: SecTrust, completionHandler: @escaping (Bool) -> Void) {
+//        print("socket did receive trust \(trust)")
+        completionHandler(true)
+    }
+
     @objc func socket(_: GCDAsyncSocket, didConnectToHost _: String, port _: UInt16) {
+        if useTLS {
+//            print("starting TLS")
+            var settings: [String: NSObject] = [:]
+            settings[GCDAsyncSocketManuallyEvaluateTrust as String] = Int(truncating: true) as NSNumber
+            _socket?.startTLS(settings)
+        }
+
         _callback(.connected)
     }
 

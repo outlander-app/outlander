@@ -260,7 +260,6 @@ class TagMode: IReaderMode {
         {
             return true
         }
-        
 
         return false
     }
@@ -302,6 +301,12 @@ extension Substring: StringView {
     static let rightBracket: Character = "]"
     static let greaterThan: Character = ">"
     static let lessThan: Character = "<"
+
+    static let leftParen: Character = "("
+    static let rightParen: Character = ")"
+    static let and: Character = "&"
+    static let pipe: Character = "|"
+    static let comma: Character = ","
 }
 
 extension StringView where SubSequence == Self, Element: Equatable {
@@ -319,6 +324,22 @@ extension StringView where SubSequence == Self, Element: Equatable {
         while let f = first, cond(f) {
             removeFirst()
         }
+    }
+
+    mutating func consumeWhitespace() {
+        consume(while: { $0 == Self.space || $0 == Self.newline })
+    }
+
+    mutating func consumeSpaces() {
+        consume(while: { $0 == Self.space })
+    }
+
+    mutating func parseToEnd() -> [Element] {
+        parseMany(while: { _ in true })
+    }
+
+    mutating func parseWord() -> [Element] {
+        parseMany(while: { $0 != Self.space })
     }
 
     mutating func parseMany(while cond: (Element) -> Bool) -> [Element] {

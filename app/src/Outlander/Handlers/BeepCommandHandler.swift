@@ -29,6 +29,6 @@ class BugCommandHandler: ICommandHandler {
     var command = "#bug"
 
     func handle(_: String, with _: GameContext) {
-        NSWorkspace.shared.open(URL(string: "https://github.com/joemcbride/outlander-osx/issues/new")!)
+        NSWorkspace.shared.open(URL(string: "https://github.com/outlander-app/outlander/issues/new")!)
     }
 }

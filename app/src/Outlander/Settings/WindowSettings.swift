@@ -79,7 +79,7 @@ class WindowLayoutLoader {
             return WindowLayout.defaults
         }
 
-        jsonData.windows = jsonData.windows.sorted(by: { (a, b) -> Bool in
+        jsonData.windows = jsonData.windows.sorted(by: { a, b -> Bool in
             a.order < b.order
         })
 

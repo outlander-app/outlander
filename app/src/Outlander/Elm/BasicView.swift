@@ -207,7 +207,7 @@ class VitalBarItemView: OView {
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
 
-        if let text = self.text, let txt = NSString(utf8String: text) {
+        if let text = text, let txt = NSString(utf8String: text) {
             let attributeDict: [NSAttributedString.Key: Any] = [
                 .font: NSFont(name: "Menlo Bold", size: 11)!,
                 .foregroundColor: foregroundColor,
