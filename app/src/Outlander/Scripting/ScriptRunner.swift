@@ -58,10 +58,10 @@ class ScriptRunner {
 
     private func run(_ scriptName: String) {
         do {
-            if let previous = self.scripts.first(where: { $0.fileName == scriptName }) {
+            if let previous = scripts.first(where: { $0.fileName == scriptName }) {
                 previous.cancel()
             }
-            
+
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
             script.run([])

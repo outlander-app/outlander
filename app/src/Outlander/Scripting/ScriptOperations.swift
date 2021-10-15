@@ -22,8 +22,8 @@ class MoveOp: IWantStreamInfo {
         self.target = target
     }
 
-    func stream(_ text: String, _ tokens: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
-        return .none
+    func stream(_: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+        .none
     }
 
     func execute(_ script: Script, _: ScriptContext) {
@@ -40,7 +40,7 @@ class WaitforOp: IWantStreamInfo {
         self.target = target
     }
 
-    func stream(_ text: String, _ tokens: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+    func stream(_ text: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
         // TODO: resolve target before comparision, it could contain a variable
         text.range(of: target) != nil
             ? .match(text)
@@ -63,7 +63,7 @@ class WaitforReOp: IWantStreamInfo {
         groups = []
     }
 
-    func stream(_ text: String, _ tokens: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+    func stream(_ text: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
         // TODO: resolve pattern before comparision, it could contain a variable
         var txt = text
 

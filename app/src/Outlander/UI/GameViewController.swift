@@ -396,7 +396,7 @@ class GameViewController: NSViewController {
 
         if action == "list" {
             logText("\nWindows:\n", mono: true, playerCommand: false)
-            let sortedWindows = gameWindows.sorted { ($0.1.visible && !$1.1.visible) }
+            let sortedWindows = gameWindows.sorted { $0.1.visible && !$1.1.visible }
             for win in sortedWindows {
                 let frame = win.value.view.frame
                 let hidden = win.value.visible ? "" : "(hidden) "
@@ -414,7 +414,7 @@ class GameViewController: NSViewController {
     }
 
     func connect() {
-        guard let credentials = self.credentials else {
+        guard let credentials = credentials else {
             return
         }
 

@@ -185,7 +185,7 @@ class MapView: NSView {
         guard let room = mapZone?.room(id: roomId) else {
             return nil
         }
-        guard let rect = self.rect else {
+        guard let rect = rect else {
             return nil
         }
 
@@ -250,7 +250,7 @@ class MapView: NSView {
             return
         }
 
-        guard let rect = self.rect else {
+        guard let rect = rect else {
             return
         }
 

@@ -33,7 +33,7 @@ struct Label {
 class ScriptContext {
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
-    var variables: [String:String] = [:]
+    var variables: [String: String] = [:]
 
     var currentLineNumber: Int = -1
 
@@ -593,42 +593,41 @@ class Script {
 
         return .next
     }
-    
+
     func handleRandom(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .random(min, max) = token else {
             return .next
         }
 
         // TODO: resolve variables
-        
+
         guard let minN = Int(min), let maxN = Int(max) else {
             return .next
         }
 
-        let diceRoll = Int.random(in: minN...maxN)
+        let diceRoll = Int.random(in: minN ... maxN)
 
-        self.context.variables["r"] = "\(diceRoll)"
+        context.variables["r"] = "\(diceRoll)"
 
         notify("random \(minN), \(maxN) = \(diceRoll)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .next
     }
-    
-    
+
     func handleSave(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .save(value) = token else {
             return .next
         }
 
         // TODO: resolve variables
-        
-        self.context.variables["s"] = value
+
+        context.variables["s"] = value
 
         notify("save \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .next
     }
-    
+
     func handleSend(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .send(text) = token else {
             return .next
@@ -643,15 +642,15 @@ class Script {
 
         return .next
     }
-    
+
     func handleVariable(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .variable(variable, value) = token else {
             return .next
         }
 
         // TODO: resolve variables
-        
-        self.context.variables[variable] = value
+
+        context.variables[variable] = value
 
         notify("var \(variable) \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 

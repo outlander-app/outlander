@@ -112,7 +112,7 @@ class MapWindow: NSWindowController {
     }
 
     func setSelectedZone() {
-        guard let context = self.context else { return }
+        guard let context = context else { return }
         guard let zone = context.mapZone else { return }
 
         renderMap(zone)
@@ -121,7 +121,7 @@ class MapWindow: NSWindowController {
     func renderMap(_ zone: MapZone) {
         let rect = zone.mapSize(0, padding: 100.0)
 
-        if let context = self.context {
+        if let context = context {
             let room = context.findCurrentRoom(zone)
             mapLevel = room?.position.z ?? 0
             mapView.currentRoomId = room?.id ?? ""

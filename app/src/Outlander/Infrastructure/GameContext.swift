@@ -13,7 +13,7 @@ class GameContext {
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
-    var globalVars: Variables = Variables()
+    var globalVars = Variables()
     var presets: [String: ColorPreset] = [:]
     var classes = ClassSettings()
     var gags: [Gag] = []
@@ -26,12 +26,12 @@ class GameContext {
 }
 
 class Variables {
-    private let lockQueue = DispatchQueue.global() //DispatchQueue(label: "variables.lock.queue", attributes: .concurrent)
+    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)")
     private var vars: [String: String] = [:]
 
     subscript(key: String) -> String? {
         get {
-            return lockQueue.sync {
+            lockQueue.sync {
                 vars[key]
             }
         }
@@ -43,10 +43,8 @@ class Variables {
     }
 
     var count: Int {
-        get {
-            return lockQueue.sync {
-                vars.count
-            }
+        lockQueue.sync {
+            vars.count
         }
     }
 
@@ -58,7 +56,7 @@ class Variables {
 
     func sorted() -> [(String, String)] {
         lockQueue.sync(flags: .barrier) {
-            return vars.sorted(by: { $0.key < $1.key })
+            vars.sorted(by: { $0.key < $1.key })
         }
     }
 }

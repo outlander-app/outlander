@@ -97,7 +97,7 @@ class WindowViewController: NSViewController {
     }
 
     func clearAndAppend(_ tags: [TextTag], highlightMonsters: Bool = false) {
-        guard let context = self.gameContext else {
+        guard let context = gameContext else {
             return
         }
         queue?.async {
@@ -248,7 +248,7 @@ class WindowViewController: NSViewController {
     }
 
     func append(_ tag: TextTag) {
-        guard let context = self.gameContext else {
+        guard let context = gameContext else {
             return
         }
         queue?.async {

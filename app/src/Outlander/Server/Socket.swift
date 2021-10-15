@@ -64,7 +64,7 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
         _socket?.write(data, tag: tag)
         readToNewline()
     }
-    
+
     public func readToNewline(tag: Int = -1) {
         _socket?.readData(to: GCDAsyncSocket.crlfData(), withTimeout: -1, tag: tag)
     }
@@ -73,20 +73,20 @@ class Socket: NSObject, GCDAsyncSocketDelegate {
         _socket?.write(data, tag: -1)
     }
 
-    @objc func socketDidSecure(_ sock: GCDAsyncSocket) {
+    @objc func socketDidSecure(_: GCDAsyncSocket) {
 //        print("socketDidSecure \(sock.isSecure)")
     }
 
-    @objc func socket(_ sock: GCDAsyncSocket, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
+    @objc func socket(_: GCDAsyncSocket, didReceive _: SecTrust, completionHandler: @escaping (Bool) -> Void) {
 //        print("socket did receive trust \(trust)")
         completionHandler(true)
     }
 
     @objc func socket(_: GCDAsyncSocket, didConnectToHost _: String, port _: UInt16) {
-        if self.useTLS {
+        if useTLS {
 //            print("starting TLS")
             var settings: [String: NSObject] = [:]
-            settings[(GCDAsyncSocketManuallyEvaluateTrust as String)] = Int(truncating: true) as NSNumber
+            settings[GCDAsyncSocketManuallyEvaluateTrust as String] = Int(truncating: true) as NSNumber
             _socket?.startTLS(settings)
         }
 
