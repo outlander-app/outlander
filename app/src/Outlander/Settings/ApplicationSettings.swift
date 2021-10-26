@@ -32,6 +32,21 @@ class ApplicationSettings {
         variableTimeFormat = settings.variableTimeFormat
         variableDatetimeFormat = settings.variableDatetimeFormat
         profile.name = settings.defaultProfile
+        authenticationServerAddress = settings.authenticationServerAddress
+        authenticationServerPort = UInt16(settings.authenticationServerPort)
+    }
+
+    func toDto() -> ApplicationSettingsDto {
+        let dto = ApplicationSettingsDto()
+        dto.defaultProfile = profile.name
+        dto.downloadPreReleaseVersions = downloadPreReleaseVersions.toYesNoString()
+        dto.checkForApplicationUpdates = checkForApplicationUpdates.toYesNoString()
+        dto.variableDateFormat = variableDateFormat
+        dto.variableTimeFormat = variableTimeFormat
+        dto.variableDatetimeFormat = variableDatetimeFormat
+        dto.authenticationServerAddress = authenticationServerAddress
+        dto.authenticationServerPort = Int(authenticationServerPort)
+        return dto
     }
 }
 

@@ -28,6 +28,10 @@ class InMemoryFileSystem: FileSystem {
         savedContent = content
     }
 
+    func write(_ data: Data, to _: URL) throws {
+        savedContent = String(decoding: data, as: UTF8.self)
+    }
+
     func access(_ handler: @escaping () -> Void) {
         handler()
     }

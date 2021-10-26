@@ -13,6 +13,7 @@ protocol FileSystem {
     func fileExists(_ file: URL) -> Bool
     func load(_ file: URL) -> Data?
     func write(_ content: String, to fileUrl: URL)
+    func write(_ data: Data, to fileUrl: URL) throws
     func access(_ handler: @escaping () -> Void)
 }
 
@@ -56,6 +57,12 @@ class LocalFileSystem: FileSystem {
             do {
                 try content.write(to: fileUrl, atomically: true, encoding: .utf8)
             } catch {}
+        }
+    }
+
+    func write(_ data: Data, to fileUrl: URL) throws {
+        access {
+            try? data.write(to: fileUrl)
         }
     }
 

@@ -17,6 +17,7 @@ class GameContext {
     var presets: [String: ColorPreset] = [:]
     var classes = ClassSettings()
     var gags: [Gag] = []
+    var macros: [String: Macro] = [:]
     var aliases: [Alias] = []
     var highlights: [Highlight] = []
     var substitutes: [Substitute] = []

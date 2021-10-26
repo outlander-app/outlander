@@ -27,6 +27,15 @@
           "revision": "96fb84f45a96630e7583903bd7e08cf095c7a7ef",
           "version": "19.0.0"
         }
+      },
+      {
+        "package": "MASShortcut",
+        "repositoryURL": "https://github.com/shpakovski/MASShortcut.git",
+        "state": {
+          "branch": "master",
+          "revision": "57ccb018863b328a22298a275593a1d87ab4db24",
+          "version": null
+        }
       }
     ]
   },

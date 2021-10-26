@@ -37,5 +37,33 @@ class ApplicationLoaderTests: XCTestCase {
         XCTAssertEqual(context.applicationSettings.variableDateFormat, "MM-dd-yyyy")
         XCTAssertEqual(context.applicationSettings.variableTimeFormat, "hh:mm:ss")
         XCTAssertEqual(context.applicationSettings.variableDatetimeFormat, "yyyy-MM-dd hh:mm:ss")
+        XCTAssertEqual(context.applicationSettings.authenticationServerAddress, "eaccess.play.net")
+        XCTAssertEqual(context.applicationSettings.authenticationServerPort, UInt16(7910))
+    }
+
+    func test_load_with_server_settings() {
+        fileSystem.contentToLoad = """
+        {
+          "variableTimeFormat" : "hh:mm:ss",
+          "defaultProfile" : "Testing",
+          "variableDatetimeFormat" : "yyyy-MM-dd hh:mm:ss",
+          "checkForApplicationUpdates" : "yes",
+          "downloadPreReleaseVersions" : "no",
+          "variableDateFormat" : "MM-dd-yyyy",
+          "authenticationServerAddress" : "eaccess.play.net2",
+          "authenticationServerPort" : 8190
+        }
+        """
+
+        loader!.load(context.applicationSettings.paths, context: context)
+
+        XCTAssertEqual(context.applicationSettings.profile.name, "Testing")
+        XCTAssertTrue(context.applicationSettings.checkForApplicationUpdates)
+        XCTAssertFalse(context.applicationSettings.downloadPreReleaseVersions)
+        XCTAssertEqual(context.applicationSettings.variableDateFormat, "MM-dd-yyyy")
+        XCTAssertEqual(context.applicationSettings.variableTimeFormat, "hh:mm:ss")
+        XCTAssertEqual(context.applicationSettings.variableDatetimeFormat, "yyyy-MM-dd hh:mm:ss")
+        XCTAssertEqual(context.applicationSettings.authenticationServerAddress, "eaccess.play.net2")
+        XCTAssertEqual(context.applicationSettings.authenticationServerPort, UInt16(8190))
     }
 }

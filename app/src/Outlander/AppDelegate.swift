@@ -6,6 +6,7 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
+import Carbon.HIToolbox
 import Cocoa
 
 @NSApplicationMain
@@ -45,17 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func makeWindow(_ rootUrl: URL?) {
         let bundle = Bundle(for: GameViewController.self)
         let storyboard = NSStoryboard(name: "Game", bundle: bundle)
-        let controller = storyboard.instantiateInitialController() as? GameViewController
 
-        let settings = ApplicationSettings()
-        if let root = rootUrl {
-            settings.paths.rootUrl = root
-        }
-        controller!.applicationSettings = settings
-
-        ApplicationLoader(LocalFileSystem(settings)).load(settings.paths, context: controller!.gameContext)
-
-        let window = NSWindow(
+        let window = MyWindow(
             contentRect: NSMakeRect(0, 0, NSScreen.main!.frame.midX, NSScreen.main!.frame.midY),
             styleMask: [.titled, .resizable, .closable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
@@ -67,7 +59,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.titlebarAppearsTransparent = true
 
+        let controller = storyboard.instantiateInitialController() as! GameViewController
+        window.registerKeyHandlers(controller.gameContext)
+
+        let settings = ApplicationSettings()
+        if let root = rootUrl {
+            settings.paths.rootUrl = root
+        }
+        controller.applicationSettings = settings
+
+        ApplicationLoader(LocalFileSystem(settings)).load(settings.paths, context: controller.gameContext)
+
         window.contentViewController = controller
+        window.delegate = controller
 
         window.makeKeyAndOrderFront(nil)
 
@@ -91,7 +95,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func saveProfile(_: Any) {
-        print("Save profile")
+        sendCommand("profile:save")
     }
 
     @IBAction func newGame(_: Any) {
@@ -127,6 +131,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             fatalError("Resource `MainMenu.xib` is not found in the bundle `\(Bundle.main.bundlePath)`")
         }
         return nib
+    }
+}
+
+class MyWindow: NSWindow {
+    var gameContext: GameContext?
+
+    func registerKeyHandlers(_ gameContext: GameContext) {
+        self.gameContext = gameContext
+
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
+            if self.macroKeyDown(with: $0) { return nil }
+            return $0
+        }
+    }
+
+    func macroKeyDown(with event: NSEvent) -> Bool {
+        // handle keyDown only if current window has focus, i.e. is keyWindow
+        guard NSApplication.shared.keyWindow === self else { return false }
+
+        guard let found = gameContext?.findMacro(description: event.macro) else {
+            return false
+        }
+
+        gameContext?.events.sendCommand(Command2(command: found.action))
+        return true
     }
 }
 

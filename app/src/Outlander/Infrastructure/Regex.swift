@@ -33,7 +33,8 @@ class Regex {
     }
 
     public func matches(_ input: String) -> [Range<String.Index>] {
-        guard let result = expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
+        let range = NSRange(input.startIndex..., in: input)
+        guard let result = expression.firstMatch(in: input, range: range) else {
             return []
         }
 
@@ -55,7 +56,8 @@ class Regex {
     }
 
     public func firstMatch(_ input: inout String) -> MatchResult? {
-        guard let result = expression.firstMatch(in: input, range: NSRange(location: 0, length: input.utf8.count)) else {
+        let range = NSRange(input.startIndex..., in: input)
+        guard let result = expression.firstMatch(in: input, range: range) else {
             return nil
         }
 
@@ -63,7 +65,8 @@ class Regex {
     }
 
     public func allMatches(_ input: inout String) -> [MatchResult] {
-        let results = expression.matches(in: input, range: NSRange(location: 0, length: input.utf8.count))
+        let range = NSRange(input.startIndex..., in: input)
+        let results = expression.matches(in: input, range: range)
         return results.map { res in
             MatchResult(&input, result: res)
         }

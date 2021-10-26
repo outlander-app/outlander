@@ -55,8 +55,10 @@ public class HistoryTextField: NSTextField {
         switch s3 {
         case NSUpArrowFunctionKey:
             previous()
+            return true
         case NSDownArrowFunctionKey:
             next()
+            return true
         default:
             break
         }

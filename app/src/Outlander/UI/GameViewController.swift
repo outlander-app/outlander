@@ -16,7 +16,7 @@ struct Credentials {
     var game: String
 }
 
-class GameViewController: NSViewController {
+class GameViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
     @IBOutlet var vitalsBar: VitalsBar!
@@ -148,8 +148,6 @@ class GameViewController: NSViewController {
             self.commandProcessor!.process(command, with: self.gameContext)
         }
 
-        commandInput.becomeFirstResponder()
-
 //        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
 //        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
 //        addWindow(WindowSettings(name: "logons", visible: true, closedTarget: nil, x: 800, y: 0, height: 200, width: 350))
@@ -207,11 +205,30 @@ class GameViewController: NSViewController {
         mapWindow?.context = gameContext
 
         loadSettings()
+
+        commandInput.becomeFirstResponder()
+        print("Loaded")
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
         gameContext.events.unregister(self)
+    }
+
+    func windowDidBecomeKey(_: Notification) {
+        registerMacros()
+    }
+
+    func windowDidResignKey(_: Notification) {
+        unregisterMacros()
+    }
+
+    func registerMacros() {
+        print("registering macros")
+    }
+
+    func unregisterMacros() {
+        print("un-registering macros")
     }
 
     func showLogin() {
@@ -267,8 +284,6 @@ class GameViewController: NSViewController {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-//            self.gameContext.globalVars["roomid"] = "585"
-
             self.gameContext.events.sendCommand(Command2(command: "#mapper reload"))
         }
     }
@@ -290,6 +305,8 @@ class GameViewController: NSViewController {
             reloadWindows("default.cfg") {
                 self.reloadTheme()
             }
+
+            return
         }
 
         if command == "layout:SaveDefault" {
@@ -300,6 +317,8 @@ class GameViewController: NSViewController {
                 file: "default.cfg",
                 windows: layout
             )
+
+            return
         }
 
         if command == "layout:Load" {
@@ -320,6 +339,8 @@ class GameViewController: NSViewController {
                     self.reloadTheme()
                 }
             }
+
+            return
         }
 
         if command == "layout:SaveAs" {
@@ -342,11 +363,24 @@ class GameViewController: NSViewController {
                     windows: layout
                 )
             }
+
+            return
         }
 
         if command == "show:mapwindow" {
             showMapWindow()
+
+            return
         }
+
+        if command == "profile:save" {
+            ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
+            logText("settings saved\n", mono: true, playerCommand: false)
+
+            return
+        }
+
+        log.warn("Unhandled command \(command)")
     }
 
     func buildWindowsLayout() -> WindowLayout {
