@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
+		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
+		7B228AFD2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
+		7B228B012728C1670052610B /* StatusBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B228B002728C1670052610B /* StatusBar.storyboard */; };
+		7B228B03272A0CD20052610B /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B228B02272A0CD20052610B /* Media.xcassets */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -200,6 +204,9 @@
 
 /* Begin PBXFileReference section */
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
+		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
+		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
+		7B228B02272A0CD20052610B /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -417,6 +424,8 @@
 				F9B254042478996D0097C07F /* ProfileWindow.swift */,
 				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
+				7B228B002728C1670052610B /* StatusBar.storyboard */,
+				7B228AFB2728BBB30052610B /* StatusBarViewController.swift */,
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 			);
@@ -469,6 +478,7 @@
 				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
 				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
 				F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */,
+				7B228B02272A0CD20052610B /* Media.xcassets */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -657,8 +667,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B228B03272A0CD20052610B /* Media.xcassets in Resources */,
 				F969A0E8239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F9B25402247882620097C07F /* LoginWindow.xib in Resources */,
+				7B228B012728C1670052610B /* StatusBar.storyboard in Resources */,
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
 				7BD0FD4725C7559900ED030E /* MapWindow.xib in Resources */,
@@ -702,6 +714,7 @@
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
 				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
+				7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */,
 				7BAC840D25E9CB7200A6C7D5 /* Keychain.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
@@ -848,6 +861,7 @@
 				F9BCF30122E177E200C7F7F0 /* OutlanderTests.swift in Sources */,
 				7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
+				7B228AFD2728BBB30052610B /* StatusBarViewController.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,

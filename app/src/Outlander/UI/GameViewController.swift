@@ -20,6 +20,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
     @IBOutlet var vitalsBar: VitalsBar!
+    @IBOutlet var statusBar: OView!
 
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
@@ -50,20 +51,33 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     var roundtime: RoundtimeTimer?
     var spelltime: SpellTimer?
+    var statusBarController: StatusBarViewController?
 
     override func viewDidLoad() {
+        createStatusBarView()
+
+//        gameWindowContainer.backgroundColor = NSColor.blue
+//        statusBar.backgroundColor = NSColor.red
+//        commandInput.progress = 0.5
+
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("RT: \(value.value) / \(value.percent)")
+                self?.statusBarController?.roundtime = value.value
                 self?.commandInput.progress = value.percent
             }
         }
 
-        spelltime = SpellTimer(gameContext, variable: "spelltime")
+        spelltime = SpellTimer(gameContext, variable: "spelltime", initialPercent: 0.0)
         spelltime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("Spell RT: \(value.value) / \(value.percent)")
+                var spell = "\(value.value)"
+                if value.percent > 0 {
+                    spell = "(\(Int(value.percent.rounded(.down)))) \(value.value)"
+                }
+                self?.statusBarController?.spell = spell
             }
         }
 
@@ -104,6 +118,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
             case let .vitals(name, value):
                 self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
+
+            case let .hands(left, right):
+                DispatchQueue.main.async {
+                    self?.statusBarController?.leftHand = left
+                    self?.statusBarController?.rightHand = right
+                }
 
             case let .roundtime(date):
                 let time = self?.gameContext.globalVars["gametime"] ?? ""
@@ -206,8 +226,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         loadSettings()
 
-        commandInput.becomeFirstResponder()
-        print("Loaded")
+//        commandInput.becomeFirstResponder()
     }
 
     override func viewWillDisappear() {
@@ -409,9 +428,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
         if action == "add" {}
 
         if action == "reload" {
-            // TODO: reload theme
             removeAllWindows()
-            reloadWindows(gameContext.applicationSettings.profile.layout)
+            reloadWindows(gameContext.applicationSettings.profile.layout) {
+                self.reloadTheme()
+            }
         }
 
         if action == "hide" {
@@ -494,6 +514,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
             let tags = gameContext.buildRoomTags()
             window.clearAndAppend(tags, highlightMonsters: true)
         }
+    }
+
+    func createStatusBarView() {
+        let storyboard = NSStoryboard(name: "StatusBar", bundle: Bundle.main)
+        statusBarController = storyboard.instantiateInitialController() as? StatusBarViewController
+        statusBar.subviews.append(statusBarController!.view)
     }
 
     func removeAllWindows() {

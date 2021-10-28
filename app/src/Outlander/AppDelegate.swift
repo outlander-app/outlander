@@ -6,7 +6,6 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-import Carbon.HIToolbox
 import Cocoa
 
 @NSApplicationMain

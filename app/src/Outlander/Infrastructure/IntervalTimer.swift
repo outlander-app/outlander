@@ -20,11 +20,14 @@ public class BaseIntervalTimer<T> {
     var timer: Timer?
     var value: T?
 
+    var initialPercent: Float
+
     var interval: (IntervalValue<T>) -> Void = { _ in }
 
-    init(_ context: GameContext, variable: String) {
+    init(_ context: GameContext, variable: String, initialPercent: Float = 1.0) {
         self.context = context
         self.variable = variable
+        self.initialPercent = initialPercent
     }
 
     func set(_ value: T) {
@@ -32,7 +35,7 @@ public class BaseIntervalTimer<T> {
 
         run()
 
-        let val = IntervalValue(name: variable, value: value, percent: 1.0)
+        let val = IntervalValue(name: variable, value: value, percent: initialPercent)
         send(val)
     }
 

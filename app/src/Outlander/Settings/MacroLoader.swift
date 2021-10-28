@@ -275,7 +275,7 @@ class MacroLoader {
         }
     }
 
-    func save(_ settings: ApplicationSettings, macros: [String:Macro]) {
+    func save(_ settings: ApplicationSettings, macros: [String: Macro]) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
         var content = ""
@@ -292,7 +292,7 @@ class MacroLoader {
 
 extension GameContext {
     func findMacro(description: String) -> Macro? {
-        return macros[description]
+        macros[description]
     }
 
     func isRegisteredMacro(description: String) -> Bool {
