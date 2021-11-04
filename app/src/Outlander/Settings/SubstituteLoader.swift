@@ -17,7 +17,8 @@ struct Substitute {
 extension GameContext {
     func activeSubs() -> [Substitute] {
         let disabled = classes.disabled()
-        return substitutes
+        let subs = substitutes
+        return subs
             .filter { h in (h.className == nil || h.className?.count == 0 || !disabled.contains(h.className!)) && h.pattern.count > 0 }
             .sorted { $0.pattern.count > $1.pattern.count }
     }

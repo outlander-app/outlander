@@ -11,7 +11,7 @@ import Foundation
 struct IntervalValue<T> {
     var name: String
     var value: T
-    var percent: Float
+    var percent: Double
 }
 
 public class BaseIntervalTimer<T> {
@@ -20,11 +20,14 @@ public class BaseIntervalTimer<T> {
     var timer: Timer?
     var value: T?
 
+    var initialPercent: Double
+
     var interval: (IntervalValue<T>) -> Void = { _ in }
 
-    init(_ context: GameContext, variable: String) {
+    init(_ context: GameContext, variable: String, initialPercent: Double = 1.0) {
         self.context = context
         self.variable = variable
+        self.initialPercent = initialPercent
     }
 
     func set(_ value: T) {
@@ -32,7 +35,7 @@ public class BaseIntervalTimer<T> {
 
         run()
 
-        let val = IntervalValue(name: variable, value: value, percent: 1.0)
+        let val = IntervalValue(name: variable, value: value, percent: initialPercent)
         send(val)
     }
 
@@ -78,13 +81,13 @@ public class RoundtimeTimer: BaseIntervalTimer<Int> {
     override public func onTick() {
         current -= 1
 
-        var percent: Float = 0.0
+        var percent: Double = 0.0
 
         if current <= 0 {
             current = 0
             stop()
         } else {
-            percent = Float(current) / Float(max)
+            percent = Double(current) / Double(max)
         }
 
         send(IntervalValue<Int>(name: variable, value: current, percent: percent))
@@ -119,6 +122,6 @@ public class SpellTimer: BaseIntervalTimer<String> {
             stop()
         }
 
-        send(IntervalValue<String>(name: variable, value: value ?? "None", percent: Float(count)))
+        send(IntervalValue<String>(name: variable, value: value ?? "None", percent: Double(count)))
     }
 }

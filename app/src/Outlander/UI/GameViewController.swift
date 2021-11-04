@@ -16,10 +16,11 @@ struct Credentials {
     var game: String
 }
 
-class GameViewController: NSViewController {
+class GameViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
     @IBOutlet var vitalsBar: VitalsBar!
+    @IBOutlet var statusBar: OView!
 
     var loginWindow: LoginWindow?
     var profileWindow: ProfileWindow?
@@ -50,20 +51,33 @@ class GameViewController: NSViewController {
 
     var roundtime: RoundtimeTimer?
     var spelltime: SpellTimer?
+    var statusBarController: StatusBarViewController?
 
     override func viewDidLoad() {
+        createStatusBarView()
+
+//        gameWindowContainer.backgroundColor = NSColor.blue
+//        statusBar.backgroundColor = NSColor.red
+//        commandInput.progress = 0.5
+
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("RT: \(value.value) / \(value.percent)")
+                self?.statusBarController?.roundtime = value.value
                 self?.commandInput.progress = value.percent
             }
         }
 
-        spelltime = SpellTimer(gameContext, variable: "spelltime")
+        spelltime = SpellTimer(gameContext, variable: "spelltime", initialPercent: 0.0)
         spelltime?.interval = { [weak self] value in
             DispatchQueue.main.async {
                 self?.log.info("Spell RT: \(value.value) / \(value.percent)")
+                var spell = "\(value.value)"
+                if value.percent > 0 {
+                    spell = "(\(Int(value.percent.rounded(.down)))) \(value.value)"
+                }
+                self?.statusBarController?.spell = spell
             }
         }
 
@@ -105,6 +119,15 @@ class GameViewController: NSViewController {
             case let .vitals(name, value):
                 self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
 
+            case let .indicator(name, enabled):
+                self?.statusBarController?.setIndicator(name: name, enabled: enabled)
+
+            case let .hands(left, right):
+                DispatchQueue.main.async {
+                    self?.statusBarController?.leftHand = left
+                    self?.statusBarController?.rightHand = right
+                }
+
             case let .roundtime(date):
                 let time = self?.gameContext.globalVars["gametime"] ?? ""
                 let updated = self?.gameContext.globalVars["gametimeupdate"] ?? ""
@@ -139,16 +162,19 @@ class GameViewController: NSViewController {
                     self?.spelltime?.set(spell)
                 }
 
+            case .compass:
+                DispatchQueue.main.async {
+                    self?.statusBarController?.avaialbleDirections = self?.gameContext.availableExits() ?? []
+                }
+
             default:
-                self?.log.warn("\(command)")
+                self?.log.warn("Unhandled command \(command)")
             }
         })
 
         commandInput.executeCommand = { command in
             self.commandProcessor!.process(command, with: self.gameContext)
         }
-
-        commandInput.becomeFirstResponder()
 
 //        addWindow(WindowSettings(name: "room", visible: true, closedTarget: nil, x: 0, y: 0, height: 200, width: 800))
 //        addWindow(WindowSettings(name: "main", visible: true, closedTarget: nil, x: 0, y: 200, height: 600, width: 800))
@@ -207,11 +233,29 @@ class GameViewController: NSViewController {
         mapWindow?.context = gameContext
 
         loadSettings()
+
+//        commandInput.becomeFirstResponder()
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
         gameContext.events.unregister(self)
+    }
+
+    func windowDidBecomeKey(_: Notification) {
+        registerMacros()
+    }
+
+    func windowDidResignKey(_: Notification) {
+        unregisterMacros()
+    }
+
+    func registerMacros() {
+//        print("registering macros")
+    }
+
+    func unregisterMacros() {
+//        print("un-registering macros")
     }
 
     func showLogin() {
@@ -267,9 +311,7 @@ class GameViewController: NSViewController {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-//            self.gameContext.globalVars["roomid"] = "585"
-
-            self.gameContext.events.sendCommand(Command2(command: "#mapper reload"))
+            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
         }
     }
 
@@ -290,6 +332,8 @@ class GameViewController: NSViewController {
             reloadWindows("default.cfg") {
                 self.reloadTheme()
             }
+
+            return
         }
 
         if command == "layout:SaveDefault" {
@@ -300,6 +344,8 @@ class GameViewController: NSViewController {
                 file: "default.cfg",
                 windows: layout
             )
+
+            return
         }
 
         if command == "layout:Load" {
@@ -315,11 +361,12 @@ class GameViewController: NSViewController {
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
                 gameContext.applicationSettings.profile.layout = url.lastPathComponent
                 gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: url.lastPathComponent)
-                removeAllWindows()
                 reloadWindows(url.lastPathComponent) {
                     self.reloadTheme()
                 }
             }
+
+            return
         }
 
         if command == "layout:SaveAs" {
@@ -342,11 +389,24 @@ class GameViewController: NSViewController {
                     windows: layout
                 )
             }
+
+            return
         }
 
         if command == "show:mapwindow" {
             showMapWindow()
+
+            return
         }
+
+        if command == "profile:save" {
+            ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
+            logText("settings saved\n", mono: true, playerCommand: false)
+
+            return
+        }
+
+        log.warn("Unhandled event command \(command)")
     }
 
     func buildWindowsLayout() -> WindowLayout {
@@ -375,9 +435,9 @@ class GameViewController: NSViewController {
         if action == "add" {}
 
         if action == "reload" {
-            // TODO: reload theme
-            removeAllWindows()
-            reloadWindows(gameContext.applicationSettings.profile.layout)
+            reloadWindows(gameContext.applicationSettings.profile.layout) {
+                self.reloadTheme()
+            }
         }
 
         if action == "hide" {
@@ -462,6 +522,12 @@ class GameViewController: NSViewController {
         }
     }
 
+    func createStatusBarView() {
+        let storyboard = NSStoryboard(name: "StatusBar", bundle: Bundle.main)
+        statusBarController = storyboard.instantiateInitialController() as? StatusBarViewController
+        statusBar.subviews.append(statusBarController!.view)
+    }
+
     func removeAllWindows() {
         for (_, win) in gameWindows {
             hideWindow(win.name, withNotification: true)
@@ -486,6 +552,8 @@ class GameViewController: NSViewController {
                     ),
                     display: true)
                 }
+
+                self.removeAllWindows()
 
                 for win in layout.windows {
                     self.addWindow(win)

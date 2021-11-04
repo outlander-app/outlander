@@ -30,6 +30,7 @@ class CommandProcesssor {
         BugCommandHandler(),
         GagCommandHandler(),
         ParseCommandHandler(),
+        SendCommandHandler(),
         ScriptCommandHandler(),
         ScriptRunnerCommandHandler(),
     ]

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,14 +15,20 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="fNy-Zq-dAH" customClass="OView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="102" width="712" height="546"/>
+                                <rect key="frame" x="0.0" y="100" width="712" height="548"/>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="I6A-aq-awz" customClass="VitalsBar" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="712" height="25"/>
+                                <rect key="frame" x="0.0" y="0.0" width="712" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="Fef-4U-bgj"/>
+                                </constraints>
                             </customView>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn" customClass="HistoryTextField" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="7" y="33" width="698" height="21"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="command" drawsBackground="YES" id="GhR-6i-hCN">
+                                <rect key="frame" x="3" y="25" width="706" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="bFl-Mm-yPl"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" placeholderString="command" id="GhR-6i-hCN" customClass="VerticallyAlignedTextFieldCell" customModule="Outlander" customModuleProvider="target">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -31,24 +37,33 @@
                                     <action selector="Send:" target="tny-JT-jcH" id="A98-hr-ILs"/>
                                 </connections>
                             </textField>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="sla-25-KaL" customClass="OView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="3" y="51" width="706" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="Krv-D5-KzP"/>
+                                </constraints>
+                            </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="2cr-cT-1h1"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="7" id="4qx-nL-8EO"/>
-                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" constant="22" id="MaX-uX-scV"/>
-                            <constraint firstItem="I6A-aq-awz" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="StY-8g-K1L"/>
-                            <constraint firstAttribute="bottom" secondItem="I6A-aq-awz" secondAttribute="bottom" id="dmn-AY-d8r"/>
-                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="8" symbolic="YES" id="hGK-27-s3p"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="centerX" secondItem="I6A-aq-awz" secondAttribute="centerX" id="hI7-rr-hMg"/>
-                            <constraint firstAttribute="trailing" secondItem="I6A-aq-awz" secondAttribute="trailing" id="onT-wP-xdb"/>
-                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="sSA-DG-QUL"/>
-                            <constraint firstAttribute="bottom" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="102" id="sp9-4f-fCn"/>
-                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="48" id="zhq-28-Cpa"/>
+                            <constraint firstItem="sla-25-KaL" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="3" id="0mt-sT-WYJ"/>
+                            <constraint firstAttribute="trailing" secondItem="fNy-Zq-dAH" secondAttribute="trailing" id="1Vo-U0-Nfo"/>
+                            <constraint firstAttribute="trailing" secondItem="sla-25-KaL" secondAttribute="trailing" constant="3" id="3DP-cd-Jfd"/>
+                            <constraint firstAttribute="trailing" secondItem="I6A-aq-awz" secondAttribute="trailing" id="8KP-xO-Sid"/>
+                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="O7x-5D-JXf"/>
+                            <constraint firstAttribute="bottom" secondItem="I6A-aq-awz" secondAttribute="bottom" id="OC5-7T-qQ1"/>
+                            <constraint firstAttribute="trailing" secondItem="9lN-eF-asn" secondAttribute="trailing" constant="5" id="RfI-0v-rXb"/>
+                            <constraint firstItem="sla-25-KaL" firstAttribute="top" secondItem="fNy-Zq-dAH" secondAttribute="bottom" constant="1" id="S9z-V8-g5n"/>
+                            <constraint firstItem="fNy-Zq-dAH" firstAttribute="top" secondItem="Q0T-R8-6Fc" secondAttribute="top" constant="22" id="UL0-So-qSI"/>
+                            <constraint firstItem="I6A-aq-awz" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" id="XzC-AK-4Gl"/>
+                            <constraint firstItem="I6A-aq-awz" firstAttribute="top" secondItem="9lN-eF-asn" secondAttribute="bottom" constant="1" id="bDD-Fy-a5b"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="leading" secondItem="Q0T-R8-6Fc" secondAttribute="leading" constant="5" id="qQK-j4-JNM"/>
+                            <constraint firstItem="9lN-eF-asn" firstAttribute="top" secondItem="sla-25-KaL" secondAttribute="bottom" constant="1" id="zpP-cx-l6A"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="commandInput" destination="9lN-eF-asn" id="Rba-0x-y94"/>
                         <outlet property="gameWindowContainer" destination="fNy-Zq-dAH" id="6uE-dP-w64"/>
+                        <outlet property="statusBar" destination="sla-25-KaL" id="h7V-xN-c36"/>
                         <outlet property="vitalsBar" destination="I6A-aq-awz" id="FFw-Lm-OLD"/>
                     </connections>
                 </viewController>

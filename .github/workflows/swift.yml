@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Force Xcode 12.5
-      run: sudo xcode-select -switch /Applications/Xcode_12.5.app
+    - name: Force Xcode 12.5.1
+      run: sudo xcode-select -switch /Applications/Xcode_12.5.1.app
     - name: Run tests
       run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO

@@ -103,7 +103,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTAssertEqual(label, "one")
             XCTAssertEqual(value, "two")
         default:
-            XCTFail("wrong token value: \(token)")
+            XCTFail("wrong token value: \(String(describing: token))")
         }
     }
 
