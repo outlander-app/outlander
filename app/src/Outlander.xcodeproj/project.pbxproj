@@ -12,7 +12,8 @@
 		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
 		7B228AFD2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
 		7B228B012728C1670052610B /* StatusBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B228B002728C1670052610B /* StatusBar.storyboard */; };
-		7B228B03272A0CD20052610B /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B228B02272A0CD20052610B /* Media.xcassets */; };
+		7B228B05272C6D170052610B /* DirectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B04272C6D170052610B /* DirectionsView.swift */; };
+		7B228B06273059A90052610B /* DirectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B04272C6D170052610B /* DirectionsView.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -206,7 +207,7 @@
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
 		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
-		7B228B02272A0CD20052610B /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		7B228B04272C6D170052610B /* DirectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsView.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -401,11 +402,11 @@
 				F98B49282471CC76000E2D92 /* IntervalTimer.swift */,
 				7BAC840C25E9CB7200A6C7D5 /* Keychain.swift */,
 				F98B492B2471F38E000E2D92 /* Logger.swift */,
+				7BDF5C87272736300020A3B0 /* MacroExtensions.swift */,
 				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
 				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
 				F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */,
-				7BDF5C87272736300020A3B0 /* MacroExtensions.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -413,6 +414,7 @@
 		F98B49232470F57C000E2D92 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7B228B04272C6D170052610B /* DirectionsView.swift */,
 				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
 				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
 				F969A0F023A41DD000408CE5 /* HistoryTextField.swift */,
@@ -478,7 +480,6 @@
 				F9BCF2F122E177E200C7F7F0 /* Assets.xcassets */,
 				F9BCF2F622E177E200C7F7F0 /* Info.plist */,
 				F9BCF2F722E177E200C7F7F0 /* Outlander.entitlements */,
-				7B228B02272A0CD20052610B /* Media.xcassets */,
 			);
 			path = Outlander;
 			sourceTree = "<group>";
@@ -667,7 +668,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B228B03272A0CD20052610B /* Media.xcassets in Resources */,
 				F969A0E8239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F9B25402247882620097C07F /* LoginWindow.xib in Resources */,
 				7B228B012728C1670052610B /* StatusBar.storyboard in Resources */,
@@ -720,6 +720,7 @@
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
 				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */,
+				7B228B05272C6D170052610B /* DirectionsView.swift in Sources */,
 				F9BCF33822E5811C00C7F7F0 /* Driver.swift in Sources */,
 				7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
@@ -841,6 +842,7 @@
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */,
 				F98B492D2471F38E000E2D92 /* Logger.swift in Sources */,
+				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,

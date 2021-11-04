@@ -13,6 +13,11 @@ class StatusBarViewController: NSViewController {
     @IBOutlet var leftHandLabel: NSTextField!
     @IBOutlet var rightHandLabel: NSTextField!
     @IBOutlet var spellLabel: NSTextField!
+    @IBOutlet var directionsView: DirectionsView?
+    @IBOutlet var stunnedIcon: IndicatorView!
+    @IBOutlet var bleedingIcon: IndicatorView!
+    @IBOutlet var webbedIcon: IndicatorView!
+    @IBOutlet var poisonedIcon: IndicatorView!
 
     var roundtime: Int = 0 {
         didSet {
@@ -38,10 +43,57 @@ class StatusBarViewController: NSViewController {
         }
     }
 
+    var avaialbleDirections: [String] = [] {
+        didSet {
+            setValues()
+        }
+    }
+
+    var bleeding: Bool = false {
+        didSet {
+            setValues()
+        }
+    }
+
+    var stunned: Bool = false {
+        didSet {
+            setValues()
+        }
+    }
+
+    var poisoned: Bool = false {
+        didSet {
+            setValues()
+        }
+    }
+
+    var webbed: Bool = false {
+        didSet {
+            setValues()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setValues()
+    }
+
+    func setIndicator(name: String, enabled: Bool) {
+        DispatchQueue.main.async { [self] in
+            switch name {
+            case "bleeding":
+                self.bleeding = enabled
+            case "stunned":
+                self.stunned = enabled
+            case "poisoned":
+                poisoned = enabled
+            case "webbed":
+                webbed = enabled
+            default:
+                print("** unknown indicator \(name):\(enabled) **")
+            }
+        }
     }
 
     func setValues() {
@@ -54,5 +106,12 @@ class StatusBarViewController: NSViewController {
         leftHandLabel.stringValue = "L: \(leftHand)"
         rightHandLabel.stringValue = "R: \(rightHand)"
         spellLabel.stringValue = "S: \(spell)"
+
+        directionsView?.availableDirections = avaialbleDirections
+
+        bleedingIcon?.toggle = bleeding
+        poisonedIcon?.toggle = poisoned
+        stunnedIcon?.toggle = stunned
+        webbedIcon?.toggle = stunned
     }
 }

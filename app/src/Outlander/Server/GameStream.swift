@@ -487,13 +487,14 @@ enum StreamCommand: CustomStringConvertible {
     case compass([String: String])
     case hands(String, String)
     case character(String, String)
+    case indicator(String, Bool)
 
     var description: String {
         switch self {
         case .text:
             return "text"
         default:
-            return "other"
+            return "other stream command"
         }
     }
 }
@@ -732,11 +733,12 @@ class GameStream {
 
         case "indicator":
             let id = token.attr("id")?.dropFirst(4).lowercased() ?? ""
-            let visible = token.attr("visible") == "y" ? "1" : "0"
+            let visible = token.attr("visible")?.lowercased() == "y" ? "1" : "0"
 
             guard id.count > 0 else { break }
 
             context.globalVars[id] = visible
+            streamCommands(.indicator(id, visible == "1"))
 
         case "dialogdata":
             let vitals = children.filter { $0.name() == "progressbar" && $0.hasAttr("id") }
@@ -744,6 +746,8 @@ class GameStream {
             for vital in vitals {
                 let name = vital.attr("id") ?? ""
                 let value = vital.attr("value") ?? "0"
+
+                guard name.count > 0 else { continue }
 
                 context.globalVars[name] = value
                 streamCommands(.vitals(name: name, value: Int(value)!))

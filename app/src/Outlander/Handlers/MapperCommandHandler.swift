@@ -61,3 +61,37 @@ class MapperComandHandler: ICommandHandler {
         }
     }
 }
+
+extension GameContext {
+    func trimmedRoomTitle() -> String {
+        let name = globalVars["roomtitle"] ?? ""
+        return name.trimmingCharacters(in: CharacterSet(charactersIn: "[]"))
+    }
+
+    func availableExits() -> [String] {
+        let dirs = [
+            "down",
+            "east",
+            "north",
+            "northeast",
+            "northwest",
+            "out",
+            "south",
+            "southeast",
+            "southwest",
+            "up",
+            "west",
+        ]
+
+        var avail: [String] = []
+
+        for dir in dirs {
+            let value = globalVars[dir] ?? ""
+            if value == "1" {
+                avail.append(dir)
+            }
+        }
+
+        return avail
+    }
+}

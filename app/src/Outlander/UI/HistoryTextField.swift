@@ -19,7 +19,7 @@ public class HistoryTextField: NSTextField {
     public var executeCommand: (String) -> Void = { _ in }
 
     @IBInspectable
-    public var progress: Float = 0.0 {
+    public var progress: Double = 0.0 {
         didSet {
             needsDisplay = true
         }
@@ -137,13 +137,14 @@ public class HistoryTextField: NSTextField {
 }
 
 class VerticallyAlignedTextFieldCell: NSTextFieldCell {
-    func adjustedFrame(toVerticallyCenterText rect: NSRect) -> NSRect {
+    open func adjustedFrame(toVerticallyCenterText rect: NSRect) -> NSRect {
         // super would normally draw text at the top of the cell
         var titleRect = super.titleRect(forBounds: rect)
 
-        let minimumHeight = cellSize(forBounds: rect).height
-        titleRect.origin.y += (titleRect.height - minimumHeight) / 2
-        titleRect.size.height = minimumHeight
+        let cellSize = cellSize(forBounds: rect)
+
+        titleRect.origin.y += (titleRect.height - cellSize.height) / 2
+        titleRect.size.height = cellSize.height
 
         return titleRect
     }
@@ -163,4 +164,46 @@ class VerticallyAlignedTextFieldCell: NSTextFieldCell {
     override func draw(withFrame cellFrame: NSRect, in controlView: NSView) {
         super.draw(withFrame: cellFrame, in: controlView)
     }
+}
+
+class PaddingTextFieldCell: VerticallyAlignedTextFieldCell {
+    private static let padding = CGSize(width: 15.0, height: 5.0)
+
+    override func cellSize(forBounds rect: NSRect) -> NSSize {
+        var size = super.cellSize(forBounds: rect)
+        size.height += (PaddingTextFieldCell.padding.height * 2)
+        size.width += PaddingTextFieldCell.padding.width
+        return size
+    }
+
+    override func adjustedFrame(toVerticallyCenterText rect: NSRect) -> NSRect {
+        let cellSize = cellSize(forBounds: rect)
+        var adjRect = super.adjustedFrame(toVerticallyCenterText: rect)
+        adjRect.origin.x += (adjRect.width - cellSize.width) / 2
+        return adjRect
+    }
+
+//    override func titleRect(forBounds rect: NSRect) -> NSRect {
+//        var rect = super.titleRect(forBounds: rect)
+//        return rect
+    ////        return rect.insetBy(dx: PaddingTextFieldCell.padding.width, dy: PaddingTextFieldCell.padding.height)
+//    }
+//
+//    override func edit(withFrame rect: NSRect, in controlView: NSView, editor textObj: NSText, delegate: Any?, event: NSEvent?) {
+    ////        let insetRect = rect.insetBy(dx: PaddingTextFieldCell.padding.width, dy: PaddingTextFieldCell.padding.height)
+//        var insetRect = rect
+//        super.edit(withFrame: insetRect, in: controlView, editor: textObj, delegate: delegate, event: event)
+//    }
+//
+//    override func select(withFrame rect: NSRect, in controlView: NSView, editor textObj: NSText, delegate: Any?, start selStart: Int, length selLength: Int) {
+    ////        let insetRect = rect.insetBy(dx: PaddingTextFieldCell.padding.width, dy: PaddingTextFieldCell.padding.height)
+//        var insetRect = rect
+//        super.select(withFrame: insetRect, in: controlView, editor: textObj, delegate: delegate, start: selStart, length: selLength)
+//    }
+//
+//    override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {
+    ////        let insetRect = cellFrame.insetBy(dx: PaddingTextFieldCell.padding.width, dy: PaddingTextFieldCell.padding.height)
+//        var insetRect = cellFrame
+//        super.drawInterior(withFrame: insetRect, in: controlView)
+//    }
 }

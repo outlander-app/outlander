@@ -13,7 +13,7 @@ class GameContext {
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
-    var globalVars = Variables()
+    var globalVars: Variables
     var presets: [String: ColorPreset] = [:]
     var classes = ClassSettings()
     var gags: [Gag] = []
@@ -24,11 +24,20 @@ class GameContext {
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
     var mapZone: MapZone?
+
+    init() {
+        globalVars = Variables(events: events)
+    }
 }
 
 class Variables {
     private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)")
     private var vars: [String: String] = [:]
+    private var events: Events
+
+    init(events: Events) {
+        self.events = events
+    }
 
     subscript(key: String) -> String? {
         get {
@@ -38,7 +47,9 @@ class Variables {
         }
         set(newValue) {
             lockQueue.sync(flags: .barrier) {
-                vars[key] = newValue
+                let res = newValue ?? ""
+                vars[key] = res
+                events.variableChanged(key, value: res)
             }
         }
     }
@@ -64,12 +75,11 @@ class Variables {
 
 extension GameContext {
     func buildRoomTags() -> [TextTag] {
-        let vars = globalVars
-        let name = vars["roomtitle"]
-        let desc = vars["roomdesc"]
-        let objects = vars["roomobjs"]
-        let players = vars["roomplayers"]
-        let exits = vars["roomexits"]
+        let name = globalVars["roomtitle"]
+        let desc = globalVars["roomdesc"]
+        let objects = globalVars["roomobjs"]
+        let players = globalVars["roomplayers"]
+        let exits = globalVars["roomexits"]
 
         var tags: [TextTag] = []
         var room = ""

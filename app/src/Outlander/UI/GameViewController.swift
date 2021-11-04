@@ -119,6 +119,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case let .vitals(name, value):
                 self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
 
+            case let .indicator(name, enabled):
+                self?.statusBarController?.setIndicator(name: name, enabled: enabled)
+
             case let .hands(left, right):
                 DispatchQueue.main.async {
                     self?.statusBarController?.leftHand = left
@@ -159,8 +162,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     self?.spelltime?.set(spell)
                 }
 
+            case .compass:
+                DispatchQueue.main.async {
+                    self?.statusBarController?.avaialbleDirections = self?.gameContext.availableExits() ?? []
+                }
+
             default:
-                self?.log.warn("\(command)")
+                self?.log.warn("Unhandled command \(command)")
             }
         })
 
@@ -243,11 +251,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func registerMacros() {
-        print("registering macros")
+//        print("registering macros")
     }
 
     func unregisterMacros() {
-        print("un-registering macros")
+//        print("un-registering macros")
     }
 
     func showLogin() {
@@ -303,7 +311,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-            self.gameContext.events.sendCommand(Command2(command: "#mapper reload"))
+            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
         }
     }
 
@@ -353,7 +361,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
                 gameContext.applicationSettings.profile.layout = url.lastPathComponent
                 gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: url.lastPathComponent)
-                removeAllWindows()
                 reloadWindows(url.lastPathComponent) {
                     self.reloadTheme()
                 }
@@ -399,7 +406,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             return
         }
 
-        log.warn("Unhandled command \(command)")
+        log.warn("Unhandled event command \(command)")
     }
 
     func buildWindowsLayout() -> WindowLayout {
@@ -428,7 +435,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
         if action == "add" {}
 
         if action == "reload" {
-            removeAllWindows()
             reloadWindows(gameContext.applicationSettings.profile.layout) {
                 self.reloadTheme()
             }
@@ -546,6 +552,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     ),
                     display: true)
                 }
+
+                self.removeAllWindows()
 
                 for win in layout.windows {
                     self.addWindow(win)

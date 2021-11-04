@@ -27,6 +27,11 @@ extension Events {
     func sendCommand(_ command: Command2) {
         post("ol:command", data: command)
     }
+
+    func variableChanged(_ key: String, value: String) {
+        print("var changed: \(key): \(value)")
+        post("ol:variable:changed", data: [key: value])
+    }
 }
 
 struct TextData {
