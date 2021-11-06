@@ -27,6 +27,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var mapWindow: MapWindow?
     var scriptRunner: ScriptRunner?
 
+    var pluginManager = PluginManager()
+
     var log = LogManager.getLog(String(describing: GameViewController.self))
 
     var applicationSettings: ApplicationSettings? {
@@ -55,6 +57,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     override func viewDidLoad() {
         createStatusBarView()
+        pluginManager.plugins.append(ExpPlugin())
 
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
@@ -91,8 +94,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameServer = GameServer { [weak self] state in
             switch state {
             case let .data(_, str):
-                self?.log.rawStream(str)
-                self?.gameStream?.stream(str)
+                self?.handleRawStream(data: str)
             case .closed:
                 self?.gameStream?.resetSetup()
                 self?.logText("\nDisconnected from game server\n\n")
@@ -143,16 +145,20 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 }
 
             case let .clearStream(name):
-                self?.clearWindow(name)
+                DispatchQueue.main.sync {
+                    self?.clearWindow(name)
+                }
 
             case let .createWindow(name, _, _):
-                self?.maybeCreateWindow(name)
+                DispatchQueue.main.sync {
+                    self?.maybeCreateWindow(name)
+                }
 
             case .room:
                 self?.updateRoom()
 
             case let .character(game, character):
-                DispatchQueue.main.async {
+                DispatchQueue.main.sync {
                     if let win = self?.view.window {
                         win.title = "\(game): \(character) - Outlander 2"
                     }
@@ -197,6 +203,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
+            print("processing command \(command.command)")
+
             self.commandProcessor?.process(command, with: self.gameContext)
         }
 
@@ -225,6 +233,22 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self.logError(text)
             }
         }
+
+        gameContext.events.handle(self, channel: "ol:variable:changed") { result in
+            if let dict = result as? [String: String] {
+                for (key, value) in dict {
+                    self.pluginManager.variableChanged(variable: key, value: value)
+                }
+            }
+        }
+
+        gameContext.events.handle(self, channel: "ol:game:parse", handler: { result in
+            guard let data = result as? String else {
+                return
+            }
+
+            self.handleRawStream(data: data)
+        })
 
         loginWindow = LoginWindow()
         profileWindow = ProfileWindow()
@@ -256,6 +280,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func unregisterMacros() {
 //        print("un-registering macros")
+    }
+
+    func handleRawStream(data: String) {
+        log.rawStream(data)
+
+        if data.hasPrefix("<") {
+            pluginManager.parse(xml: data)
+        } else {
+            pluginManager.parse(text: data)
+        }
+
+        gameStream?.stream(data)
     }
 
     func showLogin() {
@@ -312,6 +348,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
             self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
+            self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
         }
     }
 
@@ -604,13 +641,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func addWindow(_ settings: WindowData) {
-        DispatchQueue.main.async {
-            if let window = self.createWindow(settings) {
-                if window.visible {
-                    self.gameWindowContainer.addSubview(window.view)
-                }
-                self.gameWindows[settings.name] = window
+        if let window = createWindow(settings) {
+            if window.visible {
+                gameWindowContainer.addSubview(window.view)
             }
+            gameWindows[settings.name] = window
         }
     }
 
@@ -634,15 +669,15 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showWindow(_ name: String) {
-        DispatchQueue.main.async {
-            if let window = self.gameWindows[name] {
-                if !window.view.isDescendant(of: self.gameWindowContainer) {
-                    self.gameWindowContainer.addSubview(window.view)
-                }
-
-                window.visible = true
-                // TODO: bring window to front
+        if let window = gameWindows[name] {
+            if !window.view.isDescendant(of: gameWindowContainer) {
+                gameWindowContainer.addSubview(window.view)
             }
+
+            window.visible = true
+            // TODO: bring window to front
+
+            logText("\(name) window opened\n")
         }
     }
 

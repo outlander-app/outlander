@@ -60,6 +60,14 @@ extension StreamToken {
         }
     }
 
+    func hasChildTag(_ tagName: String) -> Bool {
+        switch self {
+        case .text: return false
+        case let .tag(_, _, children):
+            return children.first(where: { s in s.name() == tagName }) != nil
+        }
+    }
+
     func monsters(_ ignore: Regex? = nil) -> [StreamToken] {
         switch self {
         case .text: return []
@@ -499,6 +507,21 @@ enum StreamCommand: CustomStringConvertible {
     }
 }
 
+protocol IHost {
+    func send(text: String)
+    func get(variable: String) -> String
+    func set(variable: String, value: String)
+}
+
+protocol OPlugin {
+    var name: String { get }
+    func initialize(host: IHost)
+    func variableChanged(variable: String, value: String)
+    func parse(input: String) -> String
+    func parse(xml: String)
+    func parse(text: String)
+}
+
 class GameStream {
     var tokenizer: GameStreamTokenizer
     var context: GameContext
@@ -516,6 +539,8 @@ class GameStream {
     private var streamCommands: (StreamCommand) -> Void
 
     private var tags: [TextTag] = []
+
+    private var handlers: [StreamHandler] = []
 
     private let ignoredEot = [
         "app",
@@ -590,6 +615,9 @@ class GameStream {
     }
 
     public func stream(_ data: String) {
+        let rawTag = TextTag.tagFor(data, window: "raw", mono: true)
+        streamCommands(.text([rawTag]))
+
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
 
         for token in tokens {
@@ -603,8 +631,18 @@ class GameStream {
                 tags.append(tag)
 
                 if !isSetup || isPrompt {
-                    streamCommands(.text(TextTag.combine(tags: tags)))
+                    let combined = TextTag.combine(tags: tags)
+                    streamCommands(.text(combined))
                     tags.removeAll()
+
+                    var text = ""
+                    for tag in combined {
+                        text += tag.text
+                    }
+
+                    for handler in handlers {
+                        handler.stream(text, with: context)
+                    }
                 }
             }
         }

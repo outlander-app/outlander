@@ -14,6 +14,17 @@
 		7B228B012728C1670052610B /* StatusBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B228B002728C1670052610B /* StatusBar.storyboard */; };
 		7B228B05272C6D170052610B /* DirectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B04272C6D170052610B /* DirectionsView.swift */; };
 		7B228B06273059A90052610B /* DirectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B04272C6D170052610B /* DirectionsView.swift */; };
+		7B228B09273446550052610B /* LearningRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B08273446550052610B /* LearningRate.swift */; };
+		7B228B0A273446550052610B /* LearningRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B08273446550052610B /* LearningRate.swift */; };
+		7B228B0C2734F8E80052610B /* ExpTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B0B2734F8E80052610B /* ExpTracker.swift */; };
+		7B228B0D2734F8E80052610B /* ExpTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B0B2734F8E80052610B /* ExpTracker.swift */; };
+		7B228B102734FDCE0052610B /* SkillExpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B0F2734FDCE0052610B /* SkillExpTests.swift */; };
+		7B228B122735D3B20052610B /* StreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B112735D3B20052610B /* StreamHandler.swift */; };
+		7B228B132735D3B20052610B /* StreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B112735D3B20052610B /* StreamHandler.swift */; };
+		7B228B152735DF1F0052610B /* ExpPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B142735DF1F0052610B /* ExpPlugin.swift */; };
+		7B228B162735DF1F0052610B /* ExpPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B142735DF1F0052610B /* ExpPlugin.swift */; };
+		7B228B18273619010052610B /* ExpPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B17273619010052610B /* ExpPluginTests.swift */; };
+		7B228B1B273654E80052610B /* DateTimeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -208,6 +219,13 @@
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
 		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
 		7B228B04272C6D170052610B /* DirectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsView.swift; sourceTree = "<group>"; };
+		7B228B08273446550052610B /* LearningRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearningRate.swift; sourceTree = "<group>"; };
+		7B228B0B2734F8E80052610B /* ExpTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpTracker.swift; sourceTree = "<group>"; };
+		7B228B0F2734FDCE0052610B /* SkillExpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillExpTests.swift; sourceTree = "<group>"; };
+		7B228B112735D3B20052610B /* StreamHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamHandler.swift; sourceTree = "<group>"; };
+		7B228B142735DF1F0052610B /* ExpPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpPlugin.swift; sourceTree = "<group>"; };
+		7B228B17273619010052610B /* ExpPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpPluginTests.swift; sourceTree = "<group>"; };
+		7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeExtensionsTests.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -339,6 +357,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7B228B07273446270052610B /* Experience */ = {
+			isa = PBXGroup;
+			children = (
+				7B228B08273446550052610B /* LearningRate.swift */,
+				7B228B0B2734F8E80052610B /* ExpTracker.swift */,
+				7B228B142735DF1F0052610B /* ExpPlugin.swift */,
+			);
+			path = Experience;
+			sourceTree = "<group>";
+		};
+		7B228B0E2734FDB90052610B /* Experience */ = {
+			isa = PBXGroup;
+			children = (
+				7B228B0F2734FDCE0052610B /* SkillExpTests.swift */,
+				7B228B17273619010052610B /* ExpPluginTests.swift */,
+			);
+			path = Experience;
+			sourceTree = "<group>";
+		};
+		7B228B19273654C10052610B /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
 		7BA27B3B25DF705D00A88B80 /* Scripting */ = {
 			isa = PBXGroup;
 			children = (
@@ -467,6 +512,7 @@
 			isa = PBXGroup;
 			children = (
 				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
+				7B228B07273446270052610B /* Experience */,
 				F9CA20442453ACDC00A92736 /* Handlers */,
 				F98B49222470F502000E2D92 /* Infrastructure */,
 				F995752324944D9E00A980FC /* Maps */,
@@ -487,6 +533,8 @@
 		F9BCF2FF22E177E200C7F7F0 /* OutlanderTests */ = {
 			isa = PBXGroup;
 			children = (
+				7B228B0E2734FDB90052610B /* Experience */,
+				7B228B19273654C10052610B /* Infrastructure */,
 				7BA27B3B25DF705D00A88B80 /* Scripting */,
 				F9CA20712467769A00A92736 /* Settings */,
 				F9CA20512466057000A92736 /* Handlers */,
@@ -527,6 +575,7 @@
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
 				7B228AF827277BBA0052610B /* SendCommandHandler.swift */,
+				7B228B112735D3B20052610B /* StreamHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
 			);
@@ -717,6 +766,7 @@
 				7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */,
 				7BAC840D25E9CB7200A6C7D5 /* Keychain.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
+				7B228B09273446550052610B /* LearningRate.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
 				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */,
@@ -736,6 +786,7 @@
 				7BAC841625EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA206F2466796100A92736 /* ApplicationLoader.swift in Sources */,
+				7B228B0C2734F8E80052610B /* ExpTracker.swift in Sources */,
 				F969A0FB23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F98B490E246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
 				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
@@ -767,10 +818,12 @@
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
 				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
+				7B228B152735DF1F0052610B /* ExpPlugin.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
+				7B228B122735D3B20052610B /* StreamHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,6 +844,7 @@
 				7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */,
 				F9D36E9A22EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F969A0E6239B2A5E00408CE5 /* GameViewController.swift in Sources */,
+				7B228B102734FDCE0052610B /* SkillExpTests.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
@@ -809,6 +863,8 @@
 				F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
+				7B228B1B273654E80052610B /* DateTimeExtensionsTests.swift in Sources */,
+				7B228B18273619010052610B /* ExpPluginTests.swift in Sources */,
 				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F98B4902246F6AD1000E2D92 /* GagLoaderTests.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
@@ -828,6 +884,7 @@
 				7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
+				7B228B0D2734F8E80052610B /* ExpTracker.swift in Sources */,
 				7BDF5C81272723DA0020A3B0 /* MacroLoaderTests.swift in Sources */,
 				7BA27B5125DF93C500A88B80 /* Combinators.swift in Sources */,
 				F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
@@ -835,12 +892,14 @@
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9D36E9722EFC73B008BC6E6 /* GameStreamTests.swift in Sources */,
 				F9CA20472453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
+				7B228B0A273446550052610B /* LearningRate.swift in Sources */,
 				F9CA206B2466761B00A92736 /* InMemoryHelpers.swift in Sources */,
 				F9CA2064246669DB00A92736 /* FileSystem.swift in Sources */,
 				7BAC841725EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */,
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */,
+				7B228B132735D3B20052610B /* StreamHandler.swift in Sources */,
 				F98B492D2471F38E000E2D92 /* Logger.swift in Sources */,
 				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
@@ -864,6 +923,7 @@
 				7BCE4A3B25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */,
 				7B228AFD2728BBB30052610B /* StatusBarViewController.swift in Sources */,
+				7B228B162735DF1F0052610B /* ExpPlugin.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,

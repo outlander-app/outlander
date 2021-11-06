@@ -271,7 +271,7 @@ class Script {
         context.currentLineNumber = -1
 
         let diff = Date().timeIntervalSince(started!)
-        sendText("[Script '\(fileName)' completed after \(diff.stringTime)]")
+        sendText("[Script '\(fileName)' completed after \(diff.formatted)]")
 
         gameContext.events.unregister(self)
         gameContext.events.post("ol:script:complete", data: fileName)

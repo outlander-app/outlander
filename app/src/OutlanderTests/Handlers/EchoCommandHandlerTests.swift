@@ -87,4 +87,16 @@ class EchoCommandHandlerTests: XCTestCase {
             XCTFail("Did not recieve a TextTag")
         }
     }
+
+    func test_echo_exp() {
+        handler.handle("#echo >experience #cccccc        Appraisal:  243 66%  (16/34)  0.00", with: context)
+
+        if let tag = events.lastData as? TextTag {
+            XCTAssertEqual(tag.text, "       Appraisal:  243 66%  (16/34)  0.00\n")
+            XCTAssertEqual(tag.window, "experience")
+            XCTAssertEqual(tag.color, "#cccccc")
+        } else {
+            XCTFail("Did not recieve a TextTag")
+        }
+    }
 }

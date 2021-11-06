@@ -72,6 +72,9 @@ class WindowViewController: NSViewController {
     var lastTag: TextTag?
     var queue: DispatchQueue?
 
+    var suspended: Bool = false
+    var suspendedQueue: [TextTag] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         updateTheme()
@@ -91,7 +94,12 @@ class WindowViewController: NSViewController {
     }
 
     func clear() {
-        DispatchQueue.main.async {
+        guard !Thread.isMainThread else {
+            textView.string = ""
+            return
+        }
+
+        DispatchQueue.main.sync {
             self.textView.string = ""
         }
     }
@@ -129,11 +137,13 @@ class WindowViewController: NSViewController {
             }
         }
 
-        if let preset = tag.preset {
-            if let value = context.presetFor(preset) {
-                foregroundColorToUse = NSColor(hex: value.color) ?? foregroundNSColor
-                backgroundHex = value.backgroundColor
-            }
+        if let preset = tag.preset, let value = context.presetFor(preset) {
+            foregroundColorToUse = NSColor(hex: value.color) ?? foregroundNSColor
+            backgroundHex = value.backgroundColor
+        }
+
+        if let foreColorHex = tag.color, let foreColor = NSColor(hex: foreColorHex) {
+            foregroundColorToUse = foreColor
         }
 
         var font = WindowViewController.defaultFont
@@ -251,6 +261,24 @@ class WindowViewController: NSViewController {
         guard let context = gameContext else {
             return
         }
+
+        if tag.text.hasPrefix("@suspend@") {
+            suspended = true
+            return
+        }
+
+        if tag.text.hasPrefix("@resume@") {
+            suspended = false
+            clearAndAppend(suspendedQueue)
+            suspendedQueue.removeAll()
+            return
+        }
+
+        if suspended {
+            suspendedQueue.append(tag)
+            return
+        }
+
         queue?.async {
             if self.lastTag?.isPrompt == true, !tag.playerCommand {
                 // skip multiple prompts of the same type

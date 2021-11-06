@@ -57,7 +57,7 @@ class MapperComandHandler: ICommandHandler {
             }
 
             let timeElapsed = Date() - startTime
-            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)", preset: "automapper")
+            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper")
         }
     }
 }

@@ -8,6 +8,26 @@
 
 import Foundation
 
+class LocalHost: IHost {
+    var context: GameContext
+
+    init(context: GameContext) {
+        self.context = context
+    }
+
+    func send(text: String) {
+        context.events.sendCommand(Command2(command: text, isSystemCommand: true))
+    }
+
+    func get(variable: String) -> String {
+        context.globalVars[variable] ?? ""
+    }
+
+    func set(variable: String, value: String) {
+        context.globalVars[variable] = value
+    }
+}
+
 class GameContext {
     var events: Events = SwiftEventBusEvents()
 
@@ -49,7 +69,9 @@ class Variables {
             lockQueue.sync(flags: .barrier) {
                 let res = newValue ?? ""
                 vars[key] = res
-                events.variableChanged(key, value: res)
+                DispatchQueue.main.async {
+                    self.events.variableChanged(key, value: res)
+                }
             }
         }
     }
