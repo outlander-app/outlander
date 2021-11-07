@@ -59,8 +59,8 @@ class GameServer {
                 self?.socket?.readToNewline()
 
             case let .closed(error):
-                self?.callback?(.closed(error))
                 self?.matchedToken = false
+                self?.callback?(.closed(error))
 
             default:
                 self?.log.info("game sever: \(state)")

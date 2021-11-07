@@ -606,8 +606,18 @@ class GameStream {
         tokenizer = GameStreamTokenizer()
     }
 
-    public func resetSetup(_ isSetup: Bool = false) {
+    public func reset(_ isSetup: Bool = false) {
         self.isSetup = isSetup
+
+        inStream = false
+        lastStreamId = ""
+        ignoreNextEot = false
+
+        mono = false
+        bold = false
+
+        lastToken = nil
+        tags = []
     }
 
     public func stream(_ data: Data) {

@@ -97,12 +97,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameServer = GameServer { [weak self] state in
             switch state {
             case .connected:
-                self?.updateWindowTitle()
                 self?.log.info("Connected to game server")
+                self?.updateWindowTitle()
             case let .data(_, str):
                 self?.handleRawStream(data: str)
             case .closed:
-                self?.gameStream?.resetSetup()
+                self?.gameStream?.reset()
                 self?.logText("\nDisconnected from game server\n\n")
                 self?.updateWindowTitle()
             }

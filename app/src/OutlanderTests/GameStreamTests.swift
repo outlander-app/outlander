@@ -19,7 +19,7 @@ class GameStreamTests: XCTestCase {
         }
         stream.monsterCountIgnoreList = monsterIgnoreList
 
-        stream.resetSetup(true)
+        stream.reset(true)
 
         for line in lines {
             stream.stream(line)
