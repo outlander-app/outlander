@@ -20,6 +20,10 @@ class GameServer {
     var connection: String = ""
     var matchedToken = false
 
+    var isConnected: Bool {
+        socket?.isConnected ?? false
+    }
+
     var log = LogManager.getLog(String(describing: GameServer.self))
 
     init(_ callback: @escaping (GameServerState) -> Void) {
@@ -61,7 +65,7 @@ class GameServer {
             default:
                 self?.log.info("game sever: \(state)")
             }
-        }, queue: DispatchQueue(label: "GameServer"))
+        }, queue: DispatchQueue(label: "com.outlander:GameServer"))
 
         socket?.connect(host: host, port: port)
     }
@@ -72,7 +76,7 @@ class GameServer {
     }
 
     func sendCommand(_ command: String) {
-        guard socket?.isConnected == true else {
+        guard isConnected else {
             return
         }
 

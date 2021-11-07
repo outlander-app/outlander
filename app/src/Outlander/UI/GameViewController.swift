@@ -55,10 +55,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var spelltime: SpellTimer?
     var statusBarController: StatusBarViewController?
 
+    var game: String = "DR"
+    var character: String = ""
+
     override func viewDidLoad() {
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
-
+        
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
 //        commandInput.progress = 0.5
@@ -93,13 +96,15 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         gameServer = GameServer { [weak self] state in
             switch state {
+            case .connected:
+                self?.updateWindowTitle()
+                self?.log.info("Connected to game server")
             case let .data(_, str):
                 self?.handleRawStream(data: str)
             case .closed:
                 self?.gameStream?.resetSetup()
                 self?.logText("\nDisconnected from game server\n\n")
-            default:
-                self?.log.info("\(state)")
+                self?.updateWindowTitle()
             }
         }
 
@@ -158,11 +163,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.updateRoom()
 
             case let .character(game, character):
-                DispatchQueue.main.sync {
-                    if let win = self?.view.window {
-                        win.title = "\(game): \(character) - Outlander 2"
-                    }
-                }
+                self?.game = game
+                self?.character = character
+                self?.updateWindowTitle()
+
             case let .spell(spell):
                 DispatchQueue.main.async {
                     self?.spelltime?.set(spell)
@@ -282,6 +286,19 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //        print("un-registering macros")
     }
 
+    func updateWindowTitle() {
+        DispatchQueue.main.async {
+            if let win = self.view.window {
+                let version = "2"
+                let gameInfo = self.game.count > 0 ? "\(self.game)" : ""
+                let charInfo = self.character.count > 0 ? "\(self.character) - " : ""
+                let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
+
+                win.title = "\(gameInfo): \(charInfo)Outlander \(version)\(connection)"
+            }
+        }
+    }
+
     func handleRawStream(data: String) {
         log.rawStream(data)
 
@@ -349,6 +366,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
             self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
             self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
+            self.updateWindowTitle()
         }
     }
 
