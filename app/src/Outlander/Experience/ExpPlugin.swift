@@ -31,12 +31,11 @@ class PluginManager: OPlugin {
     }
 
     func parse(input: String) -> String {
-        input
-//        var result = input
-//        for plugin in plugins {
-//            result = plugin.parse(input: result)
-//        }
-//        return result
+        var result = input
+        for plugin in plugins {
+            result = plugin.parse(input: result)
+        }
+        return result
     }
 
     func parse(xml: String) {
@@ -58,11 +57,13 @@ class ExpPlugin: OPlugin {
 
     private var parsing = false
     private var updateWindow = false
+    private var displayLearnedAfterPrompt = true
 
     static let start_check = "Circle: "
     static let end_check = "EXP HELP for more information"
 
     private var textRegex: Regex
+    private var foreColor = "#cccccc"
 
     init() {
         textRegex = RegexFactory.get("(\\w.*?):\\s+(\\d+)\\s(\\d+)%\\s(\\w.*?)\\s+\\(\\d{1,}/34\\)")!
@@ -70,7 +71,7 @@ class ExpPlugin: OPlugin {
     }
 
     var name: String {
-        "Experience"
+        "Experience Tracker"
     }
 
     func initialize(host: IHost) {
@@ -80,7 +81,83 @@ class ExpPlugin: OPlugin {
     func variableChanged(variable _: String, value _: String) {}
 
     func parse(input: String) -> String {
-        input
+        guard input.lowercased().hasPrefix("/tracker") else {
+            return input
+        }
+
+        let inputCheck = input.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+
+        if inputCheck.hasPrefix("/tracker report") {
+            let trimmed = inputCheck[15...]
+            let sorting = trimmed.toOrderBy() ?? tracker.sortingBy
+
+            let report = tracker.buildReport(sorting: sorting)
+
+            for cmd in report {
+                host?.send(text: cmd)
+            }
+            return ""
+        }
+
+        switch inputCheck {
+        case "/tracker reset":
+            tracker.reset()
+            host?.send(text: "#echo \(foreColor) \n\(name) - reset\n")
+        case "/tracker update":
+            updateExpWindow()
+        case "/tracker display learned":
+            displayLearnedAfterPrompt = !displayLearnedAfterPrompt
+            let onOff = displayLearnedAfterPrompt ? "on" : "off"
+            host?.send(text: "#echo \(foreColor) \n\(name) - setting display learned to: \(onOff)\n")
+        case "/tracker orderby name":
+            tracker.sortingBy = .name
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by name\n")
+        case "/tracker orderby name desc":
+            tracker.sortingBy = .nameDesc
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by name desc\n")
+        case "/tracker orderby rank":
+            tracker.sortingBy = .rank
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by rank\n")
+        case "/tracker orderby rank desc":
+            tracker.sortingBy = .rankDesc
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by rank descending\n")
+        case "/tracker orderby skillset":
+            tracker.sortingBy = .skillSet
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by skillset\n")
+        case "/tracker ordreby gain":
+            fallthrough
+        case "/tracker orderby gains":
+            tracker.sortingBy = .gains
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by gains\n")
+        case "/tracker ordreby gain desc":
+            fallthrough
+        case "/tracker orderby gains desc":
+            tracker.sortingBy = .gainsDesc
+            updateExpWindow()
+            host?.send(text: "#echo \(foreColor) \n\(name) - ordering skills by gains desc\n")
+        case "/tracker help":
+            fallthrough
+        default:
+            let displayLearnedOnOff = displayLearnedAfterPrompt ? "on" : "off"
+            host?.send(text: "#echo \(foreColor) \n\(name)")
+            host?.send(text: "#echo \(foreColor) Available commands:")
+            host?.send(text: "#echo \(foreColor)  orderby: order skills by skillset, name, name desc, rank, rank desc, gains, gains desc. (\(tracker.sortingBy.description))")
+            host?.send(text: "#echo \(foreColor)  report [orderby]:  display a report of skills with field experience or earned ranks.")
+            host?.send(text: "#echo \(foreColor)  reset:   resets the tracking data.")
+            host?.send(text: "#echo \(foreColor)  update:  refreshes the experience window.")
+            host?.send(text: "#echo \(foreColor)  display learned: toggle display learning gains after the command prompt. (\(displayLearnedOnOff))")
+            host?.send(text: "#echo \(foreColor)  ex:")
+            host?.send(text: "#echo \(foreColor)    /tracker report rank desc")
+            host?.send(text: "#echo \(foreColor)    /tracker orderby name\n")
+        }
+
+        return ""
     }
 
     // learning
@@ -95,6 +172,7 @@ class ExpPlugin: OPlugin {
     func parse(xml: String) {
         if updateWindow, xml.contains("<prompt") {
             updateExpWindow()
+            displayLearned()
             updateWindow = false
             return
         }
@@ -171,6 +249,17 @@ class ExpPlugin: OPlugin {
         let commands = tracker.buildDisplayCommands()
         for cmd in commands {
             host?.send(text: cmd)
+        }
+    }
+
+    private func displayLearned() {
+        guard displayLearnedAfterPrompt else {
+            return
+        }
+        let report = tracker.buildLearnedReport()
+        tracker.resetLearnedQueue()
+        if report.count > 0 {
+            host?.send(text: report)
         }
     }
 }

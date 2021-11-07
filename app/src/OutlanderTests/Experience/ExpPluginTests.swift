@@ -97,4 +97,12 @@ class ExpPluginTests: XCTestCase {
 
         XCTAssertEqual(host.sendHistory[1], "#echo >experience          Sorcery:  694 85%  (34/34)  0.00")
     }
+
+    func test_to_orderby() {
+        var name: ExpTracker.OrderBy? = "name".toOrderBy()
+        XCTAssertEqual(name, .name)
+
+        name = " name ".toOrderBy()
+        XCTAssertEqual(name, .name)
+    }
 }

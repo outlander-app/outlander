@@ -35,10 +35,14 @@ class CommandProcesssor {
         ScriptRunnerCommandHandler(),
     ]
 
-    init(_ files: FileSystem) {
+    var pluginManager: OPlugin
+
+    init(_ files: FileSystem, pluginManager: OPlugin) {
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
         handlers.append(MapperComandHandler(files))
+
+        self.pluginManager = pluginManager
     }
 
     func insertHandler(_ handler: ICommandHandler) {
@@ -51,13 +55,21 @@ class CommandProcesssor {
     }
 
     func process(_ command: Command2, with context: GameContext) {
+        // TODO: replace variables
+
+        let maybeCommand = pluginManager.parse(input: command.command)
+
+        guard maybeCommand.count > 0 else {
+            return
+        }
+
         if !command.isSystemCommand {
-            context.globalVars["lastcommand"] = command.command
+            context.globalVars["lastcommand"] = maybeCommand
         }
 
         for handler in handlers {
-            if handler.canHandle(command.command) {
-                handler.handle(command.command, with: context)
+            if handler.canHandle(maybeCommand) {
+                handler.handle(maybeCommand, with: context)
                 return
             }
         }
