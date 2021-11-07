@@ -80,7 +80,7 @@ class ExpTracker {
     var skillSets: [String]
 
     static var dateFormatter = DateFormatter()
-    
+
     enum OrderBy: CustomStringConvertible {
         case name
         case nameDesc

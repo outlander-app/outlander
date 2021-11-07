@@ -13,6 +13,14 @@ struct MapArc {
     var move: String
     var destination: String
     var hidden: Bool
+
+    var destinationValue: Int {
+        Int(destination) ?? 0
+    }
+
+    var hasDestination: Bool {
+        destination.count > 0
+    }
 }
 
 struct MapPosition {
@@ -71,11 +79,17 @@ final class MapNode {
         return nil
     }
 
+    var filteredArcs: [MapArc] {
+        arcs
+            .filter { $0.hasDestination }
+            .sorted { $0.destinationValue < $1.destinationValue }
+    }
+
     func isTransfer() -> Bool {
         notes?.contains(".xml") == true
     }
 
-    func arcWith(id: String) -> MapArc? {
+    func arc(with id: String) -> MapArc? {
         arcs.filter { $0.destination == id }.first
     }
 

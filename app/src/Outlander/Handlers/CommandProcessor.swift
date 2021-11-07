@@ -29,6 +29,7 @@ class CommandProcesssor {
         BeepCommandHandler(),
         BugCommandHandler(),
         GagCommandHandler(),
+        GotoComandHandler(),
         ParseCommandHandler(),
         SendCommandHandler(),
         ScriptCommandHandler(),

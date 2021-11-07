@@ -61,7 +61,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     override func viewDidLoad() {
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
-        
+
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
 //        commandInput.progress = 0.5

@@ -25,6 +25,11 @@
 		7B228B162735DF1F0052610B /* ExpPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B142735DF1F0052610B /* ExpPlugin.swift */; };
 		7B228B18273619010052610B /* ExpPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B17273619010052610B /* ExpPluginTests.swift */; };
 		7B228B1B273654E80052610B /* DateTimeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */; };
+		7B228B1D273871720052610B /* Pathfinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B1C273871720052610B /* Pathfinder.swift */; };
+		7B228B1E273871720052610B /* Pathfinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B1C273871720052610B /* Pathfinder.swift */; };
+		7B228B2127387B360052610B /* PathfinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2027387B360052610B /* PathfinderTests.swift */; };
+		7B228B23273880320052610B /* GotoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B22273880320052610B /* GotoCommandHandler.swift */; };
+		7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B22273880320052610B /* GotoCommandHandler.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -226,6 +231,9 @@
 		7B228B142735DF1F0052610B /* ExpPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpPlugin.swift; sourceTree = "<group>"; };
 		7B228B17273619010052610B /* ExpPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpPluginTests.swift; sourceTree = "<group>"; };
 		7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeExtensionsTests.swift; sourceTree = "<group>"; };
+		7B228B1C273871720052610B /* Pathfinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pathfinder.swift; sourceTree = "<group>"; };
+		7B228B2027387B360052610B /* PathfinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathfinderTests.swift; sourceTree = "<group>"; };
+		7B228B22273880320052610B /* GotoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GotoCommandHandler.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -384,6 +392,14 @@
 			path = Infrastructure;
 			sourceTree = "<group>";
 		};
+		7B228B1F27387B200052610B /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				7B228B2027387B360052610B /* PathfinderTests.swift */,
+			);
+			path = Maps;
+			sourceTree = "<group>";
+		};
 		7BA27B3B25DF705D00A88B80 /* Scripting */ = {
 			isa = PBXGroup;
 			children = (
@@ -485,6 +501,7 @@
 				F995752424944DBB00A980FC /* MapNode.swift */,
 				7BCE4A2625C5011B00AF0444 /* MapLoader.swift */,
 				7BCE4A2B25C5016400AF0444 /* MapZone.swift */,
+				7B228B1C273871720052610B /* Pathfinder.swift */,
 			);
 			path = Maps;
 			sourceTree = "<group>";
@@ -535,6 +552,7 @@
 			children = (
 				7B228B0E2734FDB90052610B /* Experience */,
 				7B228B19273654C10052610B /* Infrastructure */,
+				7B228B1F27387B200052610B /* Maps */,
 				7BA27B3B25DF705D00A88B80 /* Scripting */,
 				F9CA20712467769A00A92736 /* Settings */,
 				F9CA20512466057000A92736 /* Handlers */,
@@ -570,6 +588,7 @@
 				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
+				7B228B22273880320052610B /* GotoCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
@@ -817,11 +836,13 @@
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
 				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
+				7B228B1D273871720052610B /* Pathfinder.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
 				7B228B152735DF1F0052610B /* ExpPlugin.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
+				7B228B23273880320052610B /* GotoCommandHandler.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
 				7B228B122735D3B20052610B /* StreamHandler.swift in Sources */,
 			);
@@ -855,11 +876,13 @@
 				F9CA20562466066400A92736 /* EchoCommandHandlerTests.swift in Sources */,
 				F98B490A246F9668000E2D92 /* HighlightLoader.swift in Sources */,
 				F9CA2073246776B800A92736 /* ClassLoaderTests.swift in Sources */,
+				7B228B1E273871720052610B /* Pathfinder.swift in Sources */,
 				F98B4907246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F98B4911246FA149000E2D92 /* SubstituteLoaderTests.swift in Sources */,
 				7BA27B5825DF966400A88B80 /* ScriptTokenizerTests.swift in Sources */,
 				F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				F9CA206D2466765D00A92736 /* WindowCommandHandlerTests.swift in Sources */,
+				7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */,
 				F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
@@ -904,6 +927,7 @@
 				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
+				7B228B2127387B360052610B /* PathfinderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,
 				F9D78D3123A9E3A500FE2343 /* PresetLoader.swift in Sources */,
 				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,
