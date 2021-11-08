@@ -28,7 +28,7 @@ class OLScrollView: NSScrollView {
     override var isFlipped: Bool { true }
 }
 
-class WindowViewController: NSViewController {
+class WindowViewController: NSViewController, NSUserInterfaceValidations, NSTextViewDelegate {
     @IBOutlet var mainView: OView!
     @IBOutlet var textView: NSTextView!
 
@@ -85,8 +85,72 @@ class WindowViewController: NSViewController {
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
 
-        queue = DispatchQueue(label: "ol:\(name):window", qos: .userInteractive)
+        queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
+
+        if textView.menu?.item(withTitle: "Clear") == nil {
+            textView.menu?.insertItem(NSMenuItem.separator(), at: 0)
+        }
+
+        addMenu(title: "Close Window", action: #selector(closeWindow(sender:)))
+        addMenu(title: "Show Border", action: #selector(toggleShowBorder(sender:)))
+        addMenu(title: "Timestamp", action: #selector(toggleTimestamp(sender:)))
+        addMenu(title: "Clear", action: #selector(clear(sender:)))
+        addMenu(tag: 42, action: #selector(menuTitle(sender:)))
     }
+
+    func addMenu(title: String, action: Selector?) {
+        if let menu = textView.menu {
+            let menuItem = menu.item(withTitle: title)
+            if menuItem == nil {
+                menu.insertItem(withTitle: title, action: action, keyEquivalent: "", at: 0)
+            }
+        }
+    }
+
+    func addMenu(tag: Int, action: Selector?) {
+        if let menu = textView.menu {
+            var menuItem = menu.item(withTag: tag)
+            if menuItem == nil {
+                menuItem = menu.insertItem(withTitle: "", action: action, keyEquivalent: "", at: 0)
+                menuItem?.tag = tag
+                menu.insertItem(NSMenuItem.separator(), at: 1)
+            }
+        }
+    }
+
+    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        if item.action == #selector(menuTitle(sender:)) {
+            let menuItem = item as! NSMenuItem
+            menuItem.title = "\"\(self.name)\""
+        }
+        if item.action == #selector(toggleTimestamp(sender:)) {
+            let menuItem = item as! NSMenuItem
+            menuItem.state = .off
+        }
+        if item.action == #selector(toggleShowBorder(sender:)) {
+            let menuItem = item as! NSMenuItem
+            menuItem.state = .on
+        }
+        return true
+    }
+
+    @objc func closeWindow(sender _: Any?) {
+        gameContext?.events.sendCommand(Command2(command: "#window hide \(name)", isSystemCommand: true))
+    }
+
+    @objc func toggleShowBorder(sender _: Any?) {
+        print("toggle show border")
+    }
+
+    @objc func toggleTimestamp(sender _: Any?) {
+        print("toggle timestamp")
+    }
+
+    @objc func clear(sender _: Any?) {
+        clear()
+    }
+
+    @objc func menuTitle(sender _: Any?) {}
 
     func updateTheme() {
         mainView?.backgroundColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
@@ -306,7 +370,6 @@ class WindowViewController: NSViewController {
 
     func appendWithoutProcessing(_ text: NSAttributedString) {
         // DO NOT add highlights, etc.
-//        self.queue?.sync(flags: .barrier) {
         DispatchQueue.main.async {
             let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
 
@@ -316,7 +379,6 @@ class WindowViewController: NSViewController {
                 self.textView.scrollToEndOfDocument(self)
             }
         }
-//        }
     }
 
     func setWithoutProcessing(_ text: NSMutableAttributedString) {
@@ -330,5 +392,28 @@ class WindowViewController: NSViewController {
                 self.textView.scrollToEndOfDocument(self)
             }
         }
+    }
+
+    func textView(_: NSTextView, clickedOnLink link: Any, at _: Int) -> Bool {
+        guard let value = link as? String else {
+            return false
+        }
+
+        if value.hasPrefix("command:") {
+            let cmd = value[8...]
+            if cmd.count > 0 {
+                gameContext?.events.sendCommand(Command2(command: cmd, isSystemCommand: true))
+            }
+        } else {
+            guard let url = URL(string: value) else {
+                return false
+            }
+
+            if url.scheme?.hasPrefix("http") == true {
+                NSWorkspace.shared.open(url)
+            }
+        }
+
+        return true
     }
 }
