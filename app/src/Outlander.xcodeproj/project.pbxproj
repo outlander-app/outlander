@@ -30,6 +30,8 @@
 		7B228B2127387B360052610B /* PathfinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2027387B360052610B /* PathfinderTests.swift */; };
 		7B228B23273880320052610B /* GotoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B22273880320052610B /* GotoCommandHandler.swift */; };
 		7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B22273880320052610B /* GotoCommandHandler.swift */; };
+		7B228B262738BA080052610B /* SwiftPriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B252738BA080052610B /* SwiftPriorityQueue.swift */; };
+		7B228B272738BA080052610B /* SwiftPriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B252738BA080052610B /* SwiftPriorityQueue.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -234,6 +236,7 @@
 		7B228B1C273871720052610B /* Pathfinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pathfinder.swift; sourceTree = "<group>"; };
 		7B228B2027387B360052610B /* PathfinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathfinderTests.swift; sourceTree = "<group>"; };
 		7B228B22273880320052610B /* GotoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GotoCommandHandler.swift; sourceTree = "<group>"; };
+		7B228B252738BA080052610B /* SwiftPriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPriorityQueue.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -502,6 +505,7 @@
 				7BCE4A2625C5011B00AF0444 /* MapLoader.swift */,
 				7BCE4A2B25C5016400AF0444 /* MapZone.swift */,
 				7B228B1C273871720052610B /* Pathfinder.swift */,
+				7B228B252738BA080052610B /* SwiftPriorityQueue.swift */,
 			);
 			path = Maps;
 			sourceTree = "<group>";
@@ -801,6 +805,7 @@
 				7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */,
+				7B228B262738BA080052610B /* SwiftPriorityQueue.swift in Sources */,
 				F9D78D3023A9E3A500FE2343 /* PresetLoader.swift in Sources */,
 				7BAC841625EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
@@ -859,6 +864,7 @@
 				F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
+				7B228B272738BA080052610B /* SwiftPriorityQueue.swift in Sources */,
 				F98B490C246F967B000E2D92 /* HighlightLoaderTests.swift in Sources */,
 				7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */,
 				7BD0FD4625C7559900ED030E /* MapWindow.swift in Sources */,

@@ -8,6 +8,20 @@
 
 import Foundation
 
+let cardinalDirs = [
+    "north",
+    "south",
+    "east",
+    "west",
+    "northeast",
+    "northwest",
+    "southeast",
+    "southwest",
+    "out",
+    "up",
+    "down",
+]
+
 struct MapArc {
     var exit: String
     var move: String
@@ -21,6 +35,10 @@ struct MapArc {
     var hasDestination: Bool {
         destination.count > 0
     }
+
+    var moveCost: Int {
+        (cardinalDirs.contains(exit) ? 0 : 1000) + (hidden ? 1000 : 0)
+    }
 }
 
 struct MapPosition {
@@ -29,7 +47,7 @@ struct MapPosition {
     var z: Int
 }
 
-final class MapNode {
+final class MapNode: CustomStringConvertible {
     var id: String
     var name: String
     var descriptions: [String]
@@ -38,19 +56,9 @@ final class MapNode {
     var arcs: [MapArc]
     var position: MapPosition
 
-    private let cardinalDirs = [
-        "north",
-        "south",
-        "east",
-        "west",
-        "northeast",
-        "northwest",
-        "southeast",
-        "southwest",
-        "out",
-        "up",
-        "down",
-    ]
+    var description: String {
+        "[\(name)] (\(id))" + (notes != nil ? " - \(notes!)" : "")
+    }
 
     init(id: String, name: String, descriptions: [String], notes: String?, color: String?, position: MapPosition, arcs: [MapArc]) {
         self.id = id
@@ -82,7 +90,7 @@ final class MapNode {
     var filteredArcs: [MapArc] {
         arcs
             .filter { $0.hasDestination }
-            .sorted { $0.destinationValue < $1.destinationValue }
+            .sorted { $0.moveCost < $1.moveCost }
     }
 
     func isTransfer() -> Bool {
@@ -94,11 +102,11 @@ final class MapNode {
     }
 
     func nonCardinalExists() -> [MapArc] {
-        arcs.filter { !self.cardinalDirs.contains($0.exit) }
+        arcs.filter { !cardinalDirs.contains($0.exit) }
     }
 
     func cardinalExits() -> [String] {
-        arcs.filter { self.cardinalDirs.contains($0.exit) }.map { $0.exit }.sorted()
+        arcs.filter { cardinalDirs.contains($0.exit) }.map { $0.exit }.sorted()
     }
 
     func matchesExits(_ exits: [String]) -> Bool {

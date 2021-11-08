@@ -118,17 +118,17 @@ final class MapZone {
         return moves
     }
 
-    func moveCostForNode(node: MapNode, toNode: MapNode) -> Int {
+    func moveCostForNode(node: MapNode, toNode: MapNode, arc: MapArc) -> Int {
         let index = node.position
         let toIndex = toNode.position
 
-        return ((abs(index.x - toIndex.x) > 0 && abs(index.y - toIndex.y) > 0) ? 10 : 14)
+        return ((abs(index.x - toIndex.x) > 0 && abs(index.y - toIndex.y) > 0) ? 10 : 14) + arc.moveCost
     }
 
-    func hValueForNode(node: MapNode, endNode: MapNode) -> Int {
+    func heuristic(node: MapNode, endNode: MapNode) -> Int {
         let coord1 = node.position
         let coord2 = endNode.position
 
-        return (abs(coord1.x - coord2.x) + abs(coord1.y - coord2.y)) * 40
+        return (abs(coord1.x - coord2.x) + abs(coord1.y - coord2.y))
     }
 }

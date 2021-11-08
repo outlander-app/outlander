@@ -246,13 +246,19 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        gameContext.events.handle(self, channel: "ol:game:parse", handler: { result in
+        gameContext.events.handle(self, channel: "ol:game:parse") { result in
             guard let data = result as? String else {
                 return
             }
 
             self.handleRawStream(data: data)
-        })
+        }
+
+        gameContext.events.handle(self, channel: "ol:mapper:setpath") { result in
+            if let path = result as? [String] {
+                self.mapWindow?.setWalkPath(path)
+            }
+        }
 
         loginWindow = LoginWindow()
         profileWindow = ProfileWindow()
@@ -348,7 +354,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showMapWindow() {
-        gameContext.mapZone = gameContext.maps["2a"]
+        let zoneId = gameContext.globalVars["zoneid"] ?? "1"
+        gameContext.mapZone = gameContext.maps[zoneId]
         mapWindow?.showWindow(self)
         mapWindow?.setSelectedZone()
     }

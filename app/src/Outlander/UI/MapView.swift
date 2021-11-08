@@ -47,6 +47,7 @@ struct MapTheme {
     var currentRoom: String
     var room: String
     var roomBorder: String
+    var walkPath: String
     var path: String
     var zoneExit: String
     var zoneExitBorder: String
@@ -62,11 +63,14 @@ struct MapTheme {
         // purple
         // zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
 
-        MapTheme(text: "#d9d9d9", currentRoom: "#990099", room: "#d9d9d9", roomBorder: "#000000", path: "#d9d9d9", zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
+        MapTheme(text: "#d9d9d9", currentRoom: "#990099", room: "#d9d9d9", roomBorder: "#000000", walkPath: "#99ffa0", path: "#d9d9d9", zoneExit: "#1f1e30", zoneExitBorder: "#9367e0")
     }
 
+    // walk path blue: #1442b5
+    // walk path orange: #fc8b28
+
     static var light: MapTheme {
-        MapTheme(text: "#000000", currentRoom: "#990099", room: "#ffffff", roomBorder: "#000000", path: "#000000", zoneExit: "#ffffff", zoneExitBorder: "#272ad8")
+        MapTheme(text: "#000000", currentRoom: "#990099", room: "#ffffff", roomBorder: "#000000", walkPath: "#fc8b28", path: "#000000", zoneExit: "#ffffff", zoneExitBorder: "#272ad8")
     }
 }
 
@@ -99,7 +103,10 @@ class MapView: NSView {
     var nodeClicked: ((MapNode) -> Void)?
     var nodeTravelTo: ((MapNode) -> Void)?
 
+    var theme: MapTheme = .dark
+
     var mapZone: MapZone?
+    var walkPath: [String] = []
 
     var mapLevel: Int = 0 {
         didSet {
@@ -125,6 +132,11 @@ class MapView: NSView {
         nodeLookup = [:]
 
         updateTrackingAreas()
+        needsDisplay = true
+    }
+
+    func setWalkPath(_ path: [String]) {
+        walkPath = path
         needsDisplay = true
     }
 
@@ -254,8 +266,6 @@ class MapView: NSView {
             return
         }
 
-        let theme = MapTheme.dark
-
         var strokeWidth: CGFloat = 0.5
         NSBezierPath.defaultLineCapStyle = .round
         NSBezierPath.defaultLineWidth = strokeWidth
@@ -267,6 +277,11 @@ class MapView: NSView {
             let point = room.position.translatePosition(rect: rect)
 
             theme.path.asColor()?.setStroke()
+
+            // TODO: set walkpath stroke only on specific arc
+//            if walkPath.contains(room.id) {
+//                theme.walkPath.asColor()?.setStroke()
+//            }
 
             let hasDest = room.arcs.filter { $0.destination.count > 0 && !$0.hidden }
 
@@ -281,14 +296,17 @@ class MapView: NSView {
         // draw room boxes
         for room in rooms {
             theme.room.asColor()?.setFill()
+            theme.roomBorder.asColor()?.setStroke()
 
-            if room.isTransfer() {
+            if walkPath.contains(room.id) {
+//                theme.walkPath.asColor()?.setStroke()
+                theme.walkPath.asColor()?.setFill()
+            } else if room.isTransfer() {
                 strokeWidth = 1.0
                 theme.zoneExitBorder.asColor()?.setStroke()
                 theme.zoneExit.asColor()?.setFill()
             } else {
                 strokeWidth = 0.5
-                theme.roomBorder.asColor()?.setStroke()
             }
 
             let point = room.position.translatePosition(rect: rect)
@@ -305,6 +323,10 @@ class MapView: NSView {
 
             if room.id == currentRoomId {
                 theme.currentRoom.asColor()?.setFill()
+
+            } else if walkPath.contains(room.id) {
+                theme.walkPath.asColor()?.setStroke()
+                theme.walkPath.asColor()?.setFill()
 
             } else if room.color != nil && room.color!.hasPrefix("#") {
                 NSColor(hex: room.color!)?.setFill()

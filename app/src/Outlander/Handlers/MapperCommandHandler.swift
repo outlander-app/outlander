@@ -19,14 +19,22 @@ class MapperComandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
+        let command = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+        guard command.count > 0 else {
+            return
+        }
 
-        log.info("mapper commands \(commands)")
+        switch command {
+        case "reload":
+            reload(with: context)
+        case "reset":
+            context.events.echoText("[AutoMapper]: reset -- TODO", preset: "automapper")
+        default:
+            context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper")
+        }
+    }
 
-//        guard commands.count > 0 else {
-//            return
-//        }
-
+    func reload(with context: GameContext) {
         context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper")
 
         DispatchQueue.global(qos: .utility).async {

@@ -14,6 +14,7 @@ class TreeNode {
 
     var h: Int = 0
     var g: Int = 0
+
     var f: Int {
         h + g
     }
@@ -24,13 +25,37 @@ class TreeNode {
     }
 }
 
-extension TreeNode: Equatable {
+extension TreeNode: Comparable, Hashable {
+    static func < (lhs: TreeNode, rhs: TreeNode) -> Bool {
+        lhs.f < rhs.f
+    }
+
+    static func > (lhs: TreeNode, rhs: TreeNode) -> Bool {
+        lhs.f > rhs.f
+    }
+
     static func == (lhs: TreeNode, rhs: TreeNode) -> Bool {
         lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(parent)
+        hasher.combine(f)
     }
 }
 
 class Pathfinder {
+//    func findPathQueue(start: String, target: String, zone: MapZone) -> [String] {
+//        guard let startNode = zone.room(id: start), let endNode = zone.room(id: target) else {
+//            return []
+//        }
+//
+//        var frontier = PriorityQueue(ascending: true, startingValues: [TreeNode(id: startNode.id)])
+//
+//        return []
+//    }
+
     func findPath(start: String, target: String, zone: MapZone) -> [String] {
         var openList: [TreeNode] = []
         var closedList: [TreeNode] = []
@@ -44,7 +69,7 @@ class Pathfinder {
         var found: TreeNode?
 
         while let current = nodeWithLowestFScore(list: openList) {
-            print("checking: \(current.id)")
+//            print("checking: \(current.id)")
 
             closedList.append(current)
             openList.remove(at: openList.firstIndex(of: current)!)
@@ -59,6 +84,7 @@ class Pathfinder {
             }
 
             for arc in currentMapNode.filteredArcs {
+//                print("checking arc \(arc.move) \(arc.destination) cost: \(arc.moveCost)")
                 guard let room = zone.room(id: arc.destination) else {
                     continue
                 }
@@ -68,7 +94,7 @@ class Pathfinder {
                 }
 
                 let treeNode = getNode(openList, mapNode: room)
-                let moveCost = zone.moveCostForNode(node: currentMapNode, toNode: endNode)
+                let moveCost = zone.moveCostForNode(node: currentMapNode, toNode: endNode, arc: arc)
 
                 if let node = treeNode {
                     node.parent = current
@@ -76,7 +102,7 @@ class Pathfinder {
                 } else {
                     let newNode = TreeNode(id: room.id, parent: current)
                     newNode.g = current.g + moveCost
-                    newNode.h = zone.hValueForNode(node: room, endNode: endNode)
+                    newNode.h = zone.heuristic(node: room, endNode: endNode)
                     openList.append(newNode)
                 }
             }
@@ -84,7 +110,7 @@ class Pathfinder {
 
         // back track from the end node
         if let node = found {
-            print("found \(node.id)")
+            print("pathfinder found \(node.id)")
             return backTrack(node)
         }
 

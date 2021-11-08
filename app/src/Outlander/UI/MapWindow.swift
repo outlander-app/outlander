@@ -9,7 +9,7 @@
 import Cocoa
 
 class MapWindow: NSWindowController {
-    @IBOutlet var mapView: MapView!
+    @IBOutlet var mapView: MapView?
     @IBOutlet var scrollView: NSScrollView!
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
@@ -19,7 +19,7 @@ class MapWindow: NSWindowController {
 
     var mapLevel: Int = 0 {
         didSet {
-            mapView.mapLevel = mapLevel
+            mapView?.mapLevel = mapLevel
             mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
         }
     }
@@ -42,12 +42,12 @@ class MapWindow: NSWindowController {
         roomLabel.stringValue = ""
         zoneLabel.stringValue = ""
 
-        mapView.nodeTravelTo = { node in
+        mapView?.nodeTravelTo = { node in
             self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "scriptinput")
             self.context?.events.sendCommand(Command2(command: "#goto \(node.id)"))
         }
 
-        mapView.nodeClicked = { node in
+        mapView?.nodeClicked = { node in
             if node.isTransfer() {
                 self.context?.events.echoText("switch map \(node.id) (\(node.name))", preset: "scriptinput")
 //                self.context?.globalVars["roomid"] = node.id
@@ -64,7 +64,7 @@ class MapWindow: NSWindowController {
             }
         }
 
-        mapView.nodeHover = { node in
+        mapView?.nodeHover = { node in
             guard let room = node else {
                 self.roomLabel.stringValue = ""
                 return
@@ -124,12 +124,16 @@ class MapWindow: NSWindowController {
         if let context = context {
             let room = context.findCurrentRoom(zone)
             mapLevel = room?.position.z ?? 0
-            mapView.currentRoomId = room?.id ?? ""
+            mapView?.currentRoomId = room?.id ?? ""
         }
 
-        mapView.setFrameSize(rect.size)
-        mapView.setZone(zone, rect: rect)
+        mapView?.setFrameSize(rect.size)
+        mapView?.setZone(zone, rect: rect)
 
         zoneLabel.stringValue = "Map \(zone.id). \(zone.name), \(zone.rooms.count) rooms"
+    }
+
+    func setWalkPath(_ path: [String]) {
+        mapView?.setWalkPath(path)
     }
 }
