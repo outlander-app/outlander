@@ -28,7 +28,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_: Notification) {
-        NSApp.appearance = NSAppearance(named: .darkAqua)
+//        NSApp.appearance = NSAppearance(named: .darkAqua)
         LogManager.getLog = { name in PrintLogger(name) }
 
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
@@ -57,6 +57,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.isMovableByWindowBackground = true
         window.titlebarAppearsTransparent = true
+
+//        window.appearance = NSAppearance(named: .darkAqua)
 
         let controller = storyboard.instantiateInitialController() as! GameViewController
         window.registerKeyHandlers(controller.gameContext)

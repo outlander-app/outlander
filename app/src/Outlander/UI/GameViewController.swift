@@ -58,9 +58,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var game: String = "DR"
     var character: String = ""
 
+    private var apperanceObserver: NSKeyValueObservation?
+
     override func viewDidLoad() {
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
+
+        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
+
+        apperanceObserver = view.observe(\.effectiveAppearance) { [weak self] _, change in
+            print("Appearance changed \(change.oldValue?.name) \(change.newValue?.name)")
+            print("Main app: \(self?.view.isDarkMode), \(self?.view.effectiveAppearance.name)")
+        }
 
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
