@@ -604,6 +604,8 @@ class GameStream {
         self.context = context
         self.streamCommands = streamCommands
         tokenizer = GameStreamTokenizer()
+
+        handlers.append(TriggerHandler())
     }
 
     public func reset(_ isSetup: Bool = false) {
@@ -650,11 +652,15 @@ class GameStream {
                         text += tag.text
                     }
 
-                    for handler in handlers {
-                        handler.stream(text, with: context)
-                    }
+                    sendToHandlers(text: text)
                 }
             }
+        }
+    }
+
+    public func sendToHandlers(text: String) {
+        for handler in handlers {
+            handler.stream(text, with: context)
         }
     }
 

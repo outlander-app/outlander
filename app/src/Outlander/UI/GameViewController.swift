@@ -64,12 +64,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
 
-        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
+//        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
 
-        apperanceObserver = view.observe(\.effectiveAppearance) { [weak self] _, change in
-            print("Appearance changed \(change.oldValue?.name) \(change.newValue?.name)")
-            print("Main app: \(self?.view.isDarkMode), \(self?.view.effectiveAppearance.name)")
-        }
+//        apperanceObserver = view.observe(\.effectiveAppearance) { [weak self] _, change in
+//            print("Appearance changed \(change.oldValue?.name) \(change.newValue?.name)")
+//            print("Main app: \(self?.view.isDarkMode), \(self?.view.effectiveAppearance.name)")
+//        }
 
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
@@ -260,7 +260,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
-            self.handleRawStream(data: data)
+            self.handleRawStream(data: data, streamData: false)
         }
 
         gameContext.events.handle(self, channel: "ol:mapper:setpath") { result in
@@ -314,7 +314,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
     }
 
-    func handleRawStream(data: String) {
+    func handleRawStream(data: String, streamData: Bool = false) {
         log.rawStream(data)
 
         if data.hasPrefix("<") {
@@ -323,7 +323,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
             pluginManager.parse(text: data)
         }
 
-        gameStream?.stream(data)
+        if streamData {
+            gameStream?.stream(data)
+        } else {
+            gameStream?.sendToHandlers(text: data)
+        }
     }
 
     func showLogin() {

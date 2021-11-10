@@ -76,4 +76,27 @@ extension String {
 
         return nil
     }
+
+    func commandsSeperated(by delimiter: String = ";") -> [String] {
+        if !contains(delimiter) {
+            return [self]
+        }
+
+        var result = [String]()
+        var current = ""
+        var previous = ""
+        for c in self {
+            if String(c) == delimiter, previous != "\\" {
+                result.append(current.replacingOccurrences(of: "\\\(delimiter)", with: delimiter))
+                current = ""
+                continue
+            }
+            current += String(c)
+            previous = String(c)
+        }
+        if current.count > 0 {
+            result.append(current.replacingOccurrences(of: "\\\(delimiter)", with: delimiter))
+        }
+        return result
+    }
 }

@@ -110,4 +110,12 @@ class MatchResult {
     func values() -> [String] {
         (0 ... result.numberOfRanges).compactMap { valueAt(index: $0) }
     }
+
+    func replace(target: String, prefix: String = "$") -> String {
+        var result = target
+        for (index, value) in values().enumerated() {
+            result = result.replacingOccurrences(of: "\(prefix)\(index)", with: value)
+        }
+        return result
+    }
 }

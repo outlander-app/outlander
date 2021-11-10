@@ -34,6 +34,9 @@
 		7B228B272738BA080052610B /* SwiftPriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B252738BA080052610B /* SwiftPriorityQueue.swift */; };
 		7B228B29273B09D70052610B /* NSViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B28273B09D70052610B /* NSViewExtensions.swift */; };
 		7B228B2A273B09D70052610B /* NSViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B28273B09D70052610B /* NSViewExtensions.swift */; };
+		7B228B2C273B76B20052610B /* TriggerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2B273B76B20052610B /* TriggerHandler.swift */; };
+		7B228B2D273B76B20052610B /* TriggerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2B273B76B20052610B /* TriggerHandler.swift */; };
+		7B228B2F273B82A80052610B /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2E273B82A80052610B /* StringExtensionTests.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -240,6 +243,8 @@
 		7B228B22273880320052610B /* GotoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GotoCommandHandler.swift; sourceTree = "<group>"; };
 		7B228B252738BA080052610B /* SwiftPriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPriorityQueue.swift; sourceTree = "<group>"; };
 		7B228B28273B09D70052610B /* NSViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSViewExtensions.swift; sourceTree = "<group>"; };
+		7B228B2B273B76B20052610B /* TriggerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerHandler.swift; sourceTree = "<group>"; };
+		7B228B2E273B82A80052610B /* StringExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionTests.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -394,6 +399,7 @@
 			isa = PBXGroup;
 			children = (
 				7B228B1A273654E80052610B /* DateTimeExtensionsTests.swift */,
+				7B228B2E273B82A80052610B /* StringExtensionTests.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -605,6 +611,7 @@
 				7B228B112735D3B20052610B /* StreamHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
+				7B228B2B273B76B20052610B /* TriggerHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -825,6 +832,7 @@
 				7BAC840325E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
 				7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				F9B25400247882620097C07F /* LoginWindow.swift in Sources */,
+				7B228B2C273B76B20052610B /* TriggerHandler.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				7BD0FD4E25C75AD400ED030E /* MapView.swift in Sources */,
 				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
@@ -935,6 +943,7 @@
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */,
 				7B228B132735D3B20052610B /* StreamHandler.swift in Sources */,
+				7B228B2F273B82A80052610B /* StringExtensionTests.swift in Sources */,
 				F98B492D2471F38E000E2D92 /* Logger.swift in Sources */,
 				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
@@ -961,6 +970,7 @@
 				7B228AFD2728BBB30052610B /* StatusBarViewController.swift in Sources */,
 				7B228B162735DF1F0052610B /* ExpPlugin.swift in Sources */,
 				F98B4900246F6570000E2D92 /* GagLoader.swift in Sources */,
+				7B228B2D273B76B20052610B /* TriggerHandler.swift in Sources */,
 				F98B492A2471CC76000E2D92 /* IntervalTimer.swift in Sources */,
 				F969A0EF23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,

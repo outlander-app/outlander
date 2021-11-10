@@ -68,14 +68,21 @@ class CommandProcesssor {
             context.globalVars["lastcommand"] = maybeCommand
         }
 
-        for handler in handlers {
-            if handler.canHandle(maybeCommand) {
-                handler.handle(maybeCommand, with: context)
-                return
+        let cmds = maybeCommand.commandsSeperated()
+
+        for cmd in cmds {
+            var handled = false
+            for handler in handlers {
+                if handler.canHandle(cmd) {
+                    handler.handle(cmd, with: context)
+                    handled = true
+                    break
+                }
+            }
+            if !handled {
+                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand))
             }
         }
-
-        context.events.post("ol:gamecommand", data: command)
     }
 }
 
