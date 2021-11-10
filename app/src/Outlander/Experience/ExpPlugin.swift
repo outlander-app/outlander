@@ -174,7 +174,7 @@ class ExpPlugin: OPlugin {
         if updateWindow, xml.contains("<prompt") {
             updateExpWindow()
             updateWindow = false
-            return "\(displayLearned())\n\(xml)"
+            return "\(displayLearned())\(xml)"
         }
 
         guard let idx = xml.index(of: "<component id='exp ") else {

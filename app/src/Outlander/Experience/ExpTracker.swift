@@ -255,7 +255,7 @@ class ExpTracker {
             return ""
         }
 
-        return "<preset id='exptracker'>Learned: \(learned)</preset>"
+        return "<pushstream id='exptracker'/><preset id='exptracker'>Learned: \(learned)\n</preset><popstream/>"
     }
 }
 
@@ -273,7 +273,6 @@ let orderByLookup: [String: ExpTracker.OrderBy] = [
 
 extension String {
     func toOrderBy() -> ExpTracker.OrderBy? {
-        let res = orderByLookup[trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()]
-        return res
+        return orderByLookup[trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()]
     }
 }

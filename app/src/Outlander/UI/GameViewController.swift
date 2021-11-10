@@ -515,7 +515,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
             clearWindow(window)
         }
 
-        if action == "add" {}
+        if action == "add" {
+            maybeCreateWindow(window)
+            showWindow(window)
+        }
 
         if action == "reload" {
             reloadWindows(gameContext.applicationSettings.profile.layout) {
@@ -675,7 +678,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         settings.x = 0
         settings.y = 0
         settings.height = 200
-        settings.width = 200
+        settings.width = 300
 
         addWindow(settings)
     }
