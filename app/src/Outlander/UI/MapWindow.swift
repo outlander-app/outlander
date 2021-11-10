@@ -36,6 +36,25 @@ class MapWindow: NSWindowController {
         "MapWindow"
     }
 
+    func initialize(context: GameContext) {
+        self.context = context
+        self.context?.events.handle(self, channel: "ol:variable:changed") { result in
+            if let dict = result as? [String: String] {
+                for (key, value) in dict {
+                    if key == "zoneid" {
+                        guard self.isWindowLoaded else { return }
+                        guard let newMap = context.mapZone else { return }
+                        self.renderMap(newMap)
+                    }
+
+                    if key == "roomid" {
+                        self.mapView?.currentRoomId = value
+                    }
+                }
+            }
+        }
+    }
+
     override func windowDidLoad() {
         super.windowDidLoad()
 
@@ -60,7 +79,6 @@ class MapWindow: NSWindowController {
                 }
 
                 self.context?.mapZone = newMap
-                self.renderMap(newMap)
             }
         }
 
@@ -112,8 +130,7 @@ class MapWindow: NSWindowController {
     }
 
     func setSelectedZone() {
-        guard let context = context else { return }
-        guard let zone = context.mapZone else { return }
+        guard let zone = context?.mapZone else { return }
 
         renderMap(zone)
     }

@@ -255,7 +255,7 @@ class ExpTracker {
             return ""
         }
 
-        return "#echo Learned: \(learned)"
+        return "<preset id='exptracker'>Learned: \(learned)</preset>"
     }
 }
 

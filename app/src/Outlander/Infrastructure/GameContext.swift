@@ -43,7 +43,11 @@ class GameContext {
     var substitutes: [Substitute] = []
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
-    var mapZone: MapZone?
+    var mapZone: MapZone? {
+        didSet {
+            globalVars["zoneid"] = mapZone?.id ?? ""
+        }
+    }
 
     init() {
         globalVars = Variables(events: events)
@@ -68,6 +72,9 @@ class Variables {
         set(newValue) {
             lockQueue.sync(flags: .barrier) {
                 let res = newValue ?? ""
+                guard vars[key] != res else {
+                    return
+                }
                 vars[key] = res
                 DispatchQueue.main.async {
                     self.events.variableChanged(key, value: res)
@@ -131,6 +138,13 @@ extension GameContext {
         }
 
         tags.append(TextTag.tagFor(room))
+
+        if let zone = mapZone, let currentRoom = findCurrentRoom(zone) {
+            let mappedExits = currentRoom.nonCardinalExists().map { $0.move }.joined(separator: ", ")
+            if mappedExits.count > 0 {
+                tags.append(TextTag.tagFor("Mapped exits: \(mappedExits)", preset: "automapper"))
+            }
+        }
 
         return tags
     }

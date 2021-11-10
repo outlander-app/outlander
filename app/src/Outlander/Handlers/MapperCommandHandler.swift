@@ -28,7 +28,7 @@ class MapperComandHandler: ICommandHandler {
         case "reload":
             reload(with: context)
         case "reset":
-            context.events.echoText("[AutoMapper]: reset -- TODO", preset: "automapper")
+            context.resetMap()
         default:
             context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper")
         }
@@ -66,6 +66,7 @@ class MapperComandHandler: ICommandHandler {
 
             let timeElapsed = Date() - startTime
             context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper")
+            context.resetMap()
         }
     }
 }

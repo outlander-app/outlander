@@ -518,7 +518,7 @@ protocol OPlugin {
     func initialize(host: IHost)
     func variableChanged(variable: String, value: String)
     func parse(input: String) -> String
-    func parse(xml: String)
+    func parse(xml: String) -> String
     func parse(text: String)
 }
 

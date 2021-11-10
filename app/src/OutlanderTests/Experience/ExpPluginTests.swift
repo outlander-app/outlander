@@ -32,7 +32,7 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<component id='exp First Aid'>       First Aid:  565 87% cogitating </component>")
+        _ = plugin.parse(xml: "<component id='exp First Aid'>       First Aid:  565 87% cogitating </component>")
 
         XCTAssertEqual(host.variables["First_Aid.Ranks"], "565.87")
         XCTAssertEqual(host.variables["First_Aid.LearningRate"], "24")
@@ -44,7 +44,7 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  694 85% mind lock     </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  694 85% mind lock     </preset></component>")
 
         XCTAssertEqual(host.variables["Sorcery.Ranks"], "694.85")
         XCTAssertEqual(host.variables["Sorcery.LearningRate"], "34")
@@ -56,7 +56,7 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<component id='exp Sorcery'></component>")
+        _ = plugin.parse(xml: "<component id='exp Sorcery'></component>")
 
         XCTAssertEqual(host.variables["Sorcery.Ranks"], "0.0")
         XCTAssertEqual(host.variables["Sorcery.LearningRate"], "0")
@@ -68,7 +68,7 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<roundTime value='1634753994'/><component id='exp Arcana'><preset id='whisper'>          Arcana:  1644 35% dabbling     </preset></component>")
+        _ = plugin.parse(xml: "<roundTime value='1634753994'/><component id='exp Arcana'><preset id='whisper'>          Arcana:  1644 35% dabbling     </preset></component>")
 
         XCTAssertEqual(host.variables["Arcana.Ranks"], "1644.35")
         XCTAssertEqual(host.variables["Arcana.LearningRate"], "1")
@@ -80,8 +80,8 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<component id='exp Sorcery'></component>")
-        plugin.parse(xml: "<prompt time=\"1634753924\">&gt;</prompt>")
+        _ = plugin.parse(xml: "<component id='exp Sorcery'></component>")
+        _ = plugin.parse(xml: "<prompt time=\"1634753924\">&gt;</prompt>")
 
         XCTAssertEqual(host.sendHistory.first, "#echo >experience @suspend@")
         XCTAssertEqual(host.sendHistory.last, "#echo >experience @resume@")
@@ -92,8 +92,8 @@ class ExpPluginTests: XCTestCase {
         let plugin = ExpPlugin()
         plugin.initialize(host: host)
 
-        plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  694 85% mind lock     </preset></component>")
-        plugin.parse(xml: "<prompt time=\"1634753924\">&gt;</prompt>")
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  694 85% mind lock     </preset></component>")
+        _ = plugin.parse(xml: "<prompt time=\"1634753924\">&gt;</prompt>")
 
         XCTAssertEqual(host.sendHistory[1], "#echo >experience          Sorcery:  694 85%  (34/34)  0.00")
     }

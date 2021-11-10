@@ -38,10 +38,12 @@ class PluginManager: OPlugin {
         return result
     }
 
-    func parse(xml: String) {
+    func parse(xml: String) -> String {
+        var result = xml
         for plugin in plugins {
-            plugin.parse(xml: xml)
+            result = plugin.parse(xml: result)
         }
+        return result
     }
 
     func parse(text: String) {
@@ -81,11 +83,10 @@ class ExpPlugin: OPlugin {
     func variableChanged(variable _: String, value _: String) {}
 
     func parse(input: String) -> String {
-        guard input.lowercased().hasPrefix("/tracker") else {
+        let inputCheck = input.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        guard inputCheck.hasPrefix("/tracker") else {
             return input
         }
-
-        let inputCheck = input.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
 
         if inputCheck.hasPrefix("/tracker report") {
             let trimmed = inputCheck[15...]
@@ -169,16 +170,15 @@ class ExpPlugin: OPlugin {
     // cleared
     // <component id='exp Sorcery'></component>
 
-    func parse(xml: String) {
+    func parse(xml: String) -> String {
         if updateWindow, xml.contains("<prompt") {
             updateExpWindow()
-            displayLearned()
             updateWindow = false
-            return
+            return "\(displayLearned())\n\(xml)"
         }
 
         guard let idx = xml.index(of: "<component id='exp ") else {
-            return
+            return xml
         }
 
         var copy = String(xml[idx...])
@@ -215,6 +215,8 @@ class ExpPlugin: OPlugin {
                 updateWindow = true
             }
         }
+
+        return xml
     }
 
     func parse(text: String) {
@@ -252,14 +254,12 @@ class ExpPlugin: OPlugin {
         }
     }
 
-    private func displayLearned() {
+    private func displayLearned() -> String {
         guard displayLearnedAfterPrompt else {
-            return
+            return ""
         }
         let report = tracker.buildLearnedReport()
         tracker.resetLearnedQueue()
-        if report.count > 0 {
-            host?.send(text: report)
-        }
+        return report
     }
 }

@@ -63,6 +63,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     override func viewDidLoad() {
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
+        pluginManager.plugins.append(AutoMapperPlugin(context: gameContext))
 
 //        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
 
@@ -109,7 +110,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.log.info("Connected to game server")
                 self?.updateWindowTitle()
             case let .data(_, str):
-                self?.handleRawStream(data: str)
+                self?.handleRawStream(data: str, streamData: true)
             case .closed:
                 self?.gameStream?.reset()
                 self?.logText("\nDisconnected from game server\n\n")
@@ -251,6 +252,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
                     self.pluginManager.variableChanged(variable: key, value: value)
+
+                    if key == "zoneid" || key == "roomid" {
+                        self.updateRoom()
+                    }
                 }
             }
         }
@@ -273,7 +278,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         profileWindow = ProfileWindow()
         profileWindow?.context = gameContext
         mapWindow = MapWindow()
-        mapWindow?.context = gameContext
+        mapWindow?.initialize(context: gameContext)
 
         loadSettings()
 
@@ -315,18 +320,19 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func handleRawStream(data: String, streamData: Bool = false) {
+        var result = data
         log.rawStream(data)
 
         if data.hasPrefix("<") {
-            pluginManager.parse(xml: data)
+            result = pluginManager.parse(xml: data)
         } else {
-            pluginManager.parse(text: data)
+            pluginManager.parse(text: result)
         }
 
         if streamData {
-            gameStream?.stream(data)
+            gameStream?.stream(result)
         } else {
-            gameStream?.sendToHandlers(text: data)
+            gameStream?.sendToHandlers(text: result)
         }
     }
 
@@ -367,10 +373,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showMapWindow() {
-        let zoneId = gameContext.globalVars["zoneid"] ?? "1"
-        gameContext.mapZone = gameContext.maps[zoneId]
-        mapWindow?.showWindow(self)
-        mapWindow?.setSelectedZone()
+        DispatchQueue.main.async {
+//            let zoneId = self.gameContext.globalVars["zoneid"] ?? "1"
+//            self.gameContext.mapZone = self.gameContext.maps[zoneId]
+            self.mapWindow?.showWindow(self)
+            self.mapWindow?.setSelectedZone()
+        }
     }
 
     func loadSettings() {
@@ -384,7 +392,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
+//            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
             self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
             self.updateWindowTitle()
         }
