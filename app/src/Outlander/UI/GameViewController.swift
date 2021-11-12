@@ -164,9 +164,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     self?.clearWindow(name)
                 }
 
-            case let .createWindow(name, _, _):
+            case let .createWindow(name, title, closedTarget):
                 DispatchQueue.main.sync {
-                    self?.maybeCreateWindow(name)
+                    self?.maybeCreateWindow(name, title: title, closedTarget: closedTarget)
                 }
 
             case .room:
@@ -321,13 +321,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func handleRawStream(data: String, streamData: Bool = false) {
         var result = data
-        log.rawStream(data)
 
         if data.hasPrefix("<") {
             result = pluginManager.parse(xml: data)
         } else {
-            pluginManager.parse(text: result)
+            result = pluginManager.parse(text: result)
         }
+
+        log.rawStream(result)
 
         if streamData {
             gameStream?.stream(result)
@@ -421,12 +422,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         if command == "layout:SaveDefault" {
             gameContext.applicationSettings.profile.layout = "default.cfg"
-            let layout = buildWindowsLayout()
-            windowLayoutLoader?.save(
-                applicationSettings!,
-                file: "default.cfg",
-                windows: layout
-            )
+//            let layout = buildWindowsLayout()
+//            windowLayoutLoader?.save(
+//                applicationSettings!,
+//                file: "default.cfg",
+//                windows: layout
+//            )
 
             return
         }
@@ -453,19 +454,21 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if command == "layout:SaveAs" {
-            let openPanel = NSOpenPanel()
-            openPanel.message = "Choose your Outlander layout file"
-            openPanel.prompt = "Choose"
-            openPanel.allowedFileTypes = ["cfg"]
-            openPanel.allowsMultipleSelection = false
-            openPanel.allowsOtherFileTypes = false
-            openPanel.canChooseFiles = true
-            openPanel.canChooseDirectories = false
+            let savePanel = NSSavePanel()
+            savePanel.message = "Choose your Outlander layout file"
+            savePanel.prompt = "Choose"
+            savePanel.allowedFileTypes = ["cfg"]
+            savePanel.allowsOtherFileTypes = false
+            savePanel.nameFieldStringValue = gameContext.applicationSettings.profile.layout
+            savePanel.directoryURL = gameContext.applicationSettings.paths.layout
 
-            if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
+            if let url = savePanel.runModal() == .OK ? savePanel.url : nil {
                 gameContext.applicationSettings.profile.layout = url.lastPathComponent
 
                 let layout = buildWindowsLayout()
+                for l in layout.windows {
+                    print("\(l.name) \(l.order)")
+                }
                 windowLayoutLoader?.save(
                     applicationSettings!,
                     file: url.lastPathComponent,
@@ -484,6 +487,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         if command == "profile:save" {
             ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
+            ProfileLoader(fileSystem!).save(gameContext)
             logText("settings saved\n", mono: true, playerCommand: false)
 
             return
@@ -496,12 +500,17 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let mainWindow = view.window!
 
         let primary = WindowData()
+        primary.name = "primary"
         primary.x = Double(mainWindow.frame.maxX)
         primary.y = Double(mainWindow.frame.maxY)
         primary.height = Double(mainWindow.frame.height)
         primary.width = Double(mainWindow.frame.width)
 
-        let windows = [WindowData()]
+        var windows = gameWindows.map {
+            $0.value.toWindowData(order: gameWindowContainer.index(of: $0.key))
+        }
+
+        windows.sort { $0.order > $1.order }
 
         return WindowLayout(primary: primary, windows: windows)
     }
@@ -516,7 +525,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if action == "add" {
-            maybeCreateWindow(window)
+            maybeCreateWindow(window, title: nil)
             showWindow(window)
         }
 
@@ -667,13 +676,16 @@ class GameViewController: NSViewController, NSWindowDelegate {
         return "main"
     }
 
-    func maybeCreateWindow(_ name: String) {
+    func maybeCreateWindow(_ name: String, title: String?, closedTarget: String? = nil) {
         guard gameWindows[name] == nil else {
+            gameWindows[name]?.windowTitle = title
             return
         }
 
         let settings = WindowData()
         settings.name = name
+        settings.title = title
+        settings.closedTarget = closedTarget
         settings.visible = 0
         settings.x = 0
         settings.y = 0
@@ -707,12 +719,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
         controller?.name = settings.name
         controller?.visible = settings.visible == 1
         controller?.closedTarget = settings.closedTarget
+        controller?.fontName = settings.fontName
+        controller?.fontSize = settings.fontSize
+        controller?.monoFontName = settings.monoFontName
+        controller?.monoFontSize = settings.monoFontSize
         controller?.foregroundColor = settings.fontColor
         controller?.backgroundColor = settings.backgroundColor
         controller?.borderColor = settings.borderColor
-
-        controller?.view.setFrameSize(NSSize(width: settings.width, height: settings.height))
-        controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))
+        controller?.displayBorder = settings.showBorder == 1
+        controller?.displayTimestamp = settings.timestamp == 1
+        controller?.bufferSize = settings.bufferSize
+        controller?.bufferClearSize = settings.bufferClearSize
+        controller?.location = NSRect(x: settings.x, y: settings.y, width: settings.width, height: settings.height)
 
         return controller
     }
@@ -732,8 +750,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func hideWindow(_ name: String, withNotification: Bool = true) {
         if let win = gameWindows[name] {
-            win.view.removeFromSuperview()
-            win.visible = false
+            win.hide()
         }
 
         if withNotification {

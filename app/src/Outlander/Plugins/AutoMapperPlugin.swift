@@ -42,10 +42,6 @@ class AutoMapperPlugin: OPlugin {
     }
 
     func parse(xml: String) -> String {
-        guard let zone = context.mapZone else {
-            return xml
-        }
-
         if xml.hasPrefix("<nav") {
             movedRooms = true
             return xml
@@ -57,6 +53,10 @@ class AutoMapperPlugin: OPlugin {
         }
 
         guard movedRooms, showAfterPrompt, xml.hasPrefix("<prompt") else {
+            return xml
+        }
+
+        guard let zone = context.mapZone else {
             return xml
         }
 
@@ -93,7 +93,9 @@ class AutoMapperPlugin: OPlugin {
         return "<preset id='automapper'>Mapped exits: \(exits)</preset>\n\(xml)"
     }
 
-    func parse(text _: String) {}
+    func parse(text: String) -> String {
+        text
+    }
 }
 
 extension MapZone {

@@ -46,10 +46,12 @@ class PluginManager: OPlugin {
         return result
     }
 
-    func parse(text: String) {
+    func parse(text: String) -> String {
+        var result = text
         for plugin in plugins {
-            plugin.parse(text: text)
+            result = plugin.parse(text: result)
         }
+        return result
     }
 }
 
@@ -219,16 +221,16 @@ class ExpPlugin: OPlugin {
         return xml
     }
 
-    func parse(text: String) {
+    func parse(text: String) -> String {
         if !parsing, text.hasPrefix(ExpPlugin.start_check) {
             parsing = true
-            return
+            return text
         }
 
         if parsing, text.hasPrefix(ExpPlugin.end_check) {
             parsing = false
             updateExpWindow()
-            return
+            return text
         }
 
         var copy = text
@@ -245,6 +247,8 @@ class ExpPlugin: OPlugin {
             host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
             host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
         }
+
+        return text
     }
 
     private func updateExpWindow() {

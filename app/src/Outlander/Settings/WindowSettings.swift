@@ -8,14 +8,14 @@
 
 import Foundation
 
-class WindowData: Decodable {
+class WindowData: Codable {
     public var name: String = ""
     public var x: Double = 0
     public var y: Double = 0
     public var height: Double = 200
     public var width: Double = 200
-    public var title: String?
-    public var closedTarget: String?
+    @NullEncodable public var title: String?
+    @NullEncodable public var closedTarget: String?
     public var visible: Int = 1
     public var timestamp: Int = 1
     public var showBorder: Int = 1
@@ -31,7 +31,12 @@ class WindowData: Decodable {
     public var order: Int = 0
 }
 
+enum WindowLayoutCodingKeys: CodingKey {
+    case version, primary, windows
+}
+
 struct WindowLayout: Codable {
+    var version: Double = 2.0
     var primary: WindowData
     var windows: [WindowData]
 
@@ -40,7 +45,19 @@ struct WindowLayout: Codable {
         self.windows = windows
     }
 
-    func encode(to _: Encoder) throws {}
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: WindowLayoutCodingKeys.self)
+        version = try container.decodeIfPresent(Double.self, forKey: .version) ?? 2.0
+        primary = try container.decodeIfPresent(WindowData.self, forKey: .primary) ?? WindowLayout.createWindow("primary")
+        windows = try container.decodeIfPresent([WindowData].self, forKey: .windows) ?? [WindowLayout.createWindow("main")]
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: WindowLayoutCodingKeys.self)
+        try container.encode(version, forKey: .version)
+        try container.encode(primary, forKey: .primary)
+        try container.encode(windows, forKey: .windows)
+    }
 
     static var defaults: WindowLayout {
         let primary = createWindow("primary")
@@ -55,7 +72,7 @@ struct WindowLayout: Codable {
         win.x = 0
         win.y = 0
         win.height = 200
-        win.width = 200
+        win.width = 300
         return win
     }
 }
@@ -90,9 +107,37 @@ class WindowLayoutLoader {
         let fileUrl = settings.paths.layout.appendingPathComponent(file)
 
         files.access {
-            if let encodedData = try? JSONEncoder().encode(windows) {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            if let encodedData = try? encoder.encode(windows) {
                 try? encodedData.write(to: fileUrl, options: .atomicWrite)
             }
+        }
+    }
+}
+
+@propertyWrapper
+struct NullEncodable<T>: Codable where T: Codable {
+    var wrappedValue: T?
+
+    init(wrappedValue: T?) {
+        self.wrappedValue = wrappedValue
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        guard !container.decodeNil() else {
+            wrappedValue = nil
+            return
+        }
+        wrappedValue = try container.decode(T?.self)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch wrappedValue {
+        case let .some(value): try container.encode(value)
+        case .none: try container.encodeNil()
         }
     }
 }

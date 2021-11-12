@@ -29,15 +29,27 @@ class OLScrollView: NSScrollView {
 }
 
 class WindowViewController: NSViewController, NSUserInterfaceValidations, NSTextViewDelegate {
+    static var dateFormatter = DateFormatter()
+
     @IBOutlet var mainView: OView!
     @IBOutlet var textView: NSTextView!
 
     public var gameContext: GameContext?
-    public var name: String = ""
+    public var name: String = "" {
+        didSet {
+            mainView?.name = name
+        }
+    }
+
+    public var windowTitle: String? = nil
     public var visible: Bool = true
     public var closedTarget: String?
+    public var bufferSize: Int = 0
+    public var bufferClearSize: Int = 0
 
     private var foregroundNSColor: NSColor = WindowViewController.defaultFontColor
+    private var fontNSFont: NSFont = WindowViewController.defaultFont
+    private var monoFontNSFont: NSFont = WindowViewController.defaultMonoFont
 
     public var borderColor: String = "#cccccc" {
         didSet {
@@ -63,6 +75,54 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
     }
 
+    public var displayBorder: Bool = false {
+        didSet {
+            mainView?.displayBorder = displayBorder
+        }
+    }
+
+    public var displayTimestamp: Bool = false
+
+    public var fontName: String = "Helvetica" {
+        didSet {
+            fontNSFont = NSFont(name: fontName, size: CGFloat(fontSize)) ?? WindowViewController.defaultFont
+        }
+    }
+
+    public var fontSize: Double = 14 {
+        didSet {
+            fontNSFont = NSFont(name: fontName, size: CGFloat(fontSize)) ?? WindowViewController.defaultFont
+        }
+    }
+
+    public var monoFontName: String = "Menlo" {
+        didSet {
+            monoFontNSFont = NSFont(name: fontName, size: CGFloat(monoFontSize)) ?? WindowViewController.defaultFont
+        }
+    }
+
+    public var monoFontSize: Double = 13 {
+        didSet {
+            monoFontNSFont = NSFont(name: monoFontName, size: CGFloat(monoFontSize)) ?? WindowViewController.defaultMonoFont
+        }
+    }
+
+    private var lastLocation = NSRect.zero
+    public var location: NSRect {
+        get {
+            if view.superview != nil {
+                return view.frame
+            }
+
+            return lastLocation
+        }
+        set {
+            lastLocation = newValue
+            view.setFrameSize(NSSize(width: newValue.width, height: newValue.height))
+            view.setFrameOrigin(NSPoint(x: newValue.origin.x, y: newValue.origin.y))
+        }
+    }
+
     static var defaultFontColor = NSColor(hex: "#cccccc")!
     static var defaultFont = NSFont(name: "Helvetica", size: 14)!
     static var defaultMonoFont = NSFont(name: "Menlo", size: 13)!
@@ -77,10 +137,13 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        WindowViewController.dateFormatter.dateFormat = "HH:mm"
+
         updateTheme()
 
         textView.linkTextAttributes = [
-            NSAttributedString.Key.foregroundColor: WindowViewController.defaultFontColor,
+            NSAttributedString.Key.foregroundColor: foregroundColor,
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
@@ -96,6 +159,42 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         addMenu(title: "Timestamp", action: #selector(toggleTimestamp(sender:)))
         addMenu(title: "Clear", action: #selector(clear(sender:)))
         addMenu(tag: 42, action: #selector(menuTitle(sender:)))
+    }
+
+    func toWindowData(order: Int = 0) -> WindowData {
+        let data = WindowData()
+        data.name = name
+        data.title = title?.count == 0 ? nil : title
+        data.visible = visible ? 1 : 0
+        data.showBorder = displayBorder ? 1 : 0
+        data.borderColor = borderColor
+        data.timestamp = displayTimestamp ? 1 : 0
+        data.closedTarget = closedTarget?.count == 0 ? nil : closedTarget
+        data.fontColor = foregroundColor
+        data.backgroundColor = backgroundColor
+        data.fontName = fontName
+        data.fontSize = fontSize
+        data.monoFontName = monoFontName
+        data.monoFontSize = monoFontSize
+
+        data.bufferSize = bufferSize
+        data.bufferClearSize = bufferClearSize
+
+        data.width = Double(mainView?.frame.width ?? 100)
+        data.height = Double(mainView?.frame.height ?? 100)
+        data.x = Double(lastLocation.origin.x)
+        data.y = Double(lastLocation.origin.y)
+        data.order = order
+
+        return data
+    }
+
+    func hide() {
+        if view.superview != nil {
+            lastLocation = view.frame
+        }
+        view.removeFromSuperview()
+        visible = false
     }
 
     func addMenu(title: String, action: Selector?) {
@@ -125,11 +224,11 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
         if item.action == #selector(toggleTimestamp(sender:)) {
             let menuItem = item as! NSMenuItem
-            menuItem.state = .off
+            menuItem.state = self.displayTimestamp ? .on : .off
         }
         if item.action == #selector(toggleShowBorder(sender:)) {
             let menuItem = item as! NSMenuItem
-            menuItem.state = .on
+            menuItem.state = self.mainView.displayBorder ? .on : .off
         }
         return true
     }
@@ -139,11 +238,12 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     @objc func toggleShowBorder(sender _: Any?) {
-        print("toggle show border")
+        mainView.displayBorder = !mainView.displayBorder
     }
 
     @objc func toggleTimestamp(sender _: Any?) {
         print("toggle timestamp")
+        displayTimestamp = !displayTimestamp
     }
 
     @objc func clear(sender _: Any?) {
@@ -153,6 +253,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     @objc func menuTitle(sender _: Any?) {}
 
     func updateTheme() {
+        mainView?.name = name
+        mainView?.displayBorder = displayBorder
+        mainView?.borderWidth = borderWidth
+        mainView?.borderColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
         mainView?.backgroundColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
         textView?.backgroundColor = NSColor(hex: backgroundColor) ?? WindowViewController.defaultBorderColor
     }
@@ -175,11 +279,17 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         queue?.async {
             let target = NSMutableAttributedString()
 
+            var first = true
+
             for tag in tags {
                 let text = self.processSubs(tag.text)
-                if let str = self.stringFromTag(tag, text: text) {
+
+                let displayTimestamp = first && self.displayTimestamp
+
+                if let str = self.stringFromTag(tag, text: text, timestamp: displayTimestamp) {
                     target.append(str)
                 }
+                first = false
             }
 
             self.processHighlights(target, context: context, highlightMonsters: highlightMonsters)
@@ -187,7 +297,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
     }
 
-    func stringFromTag(_ tag: TextTag, text: String) -> NSMutableAttributedString? {
+    func stringFromTag(_ tag: TextTag, text: String, timestamp: Bool = false) -> NSMutableAttributedString? {
         guard let context = gameContext else {
             return nil
         }
@@ -210,9 +320,9 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             foregroundColorToUse = foreColor
         }
 
-        var font = WindowViewController.defaultFont
+        var font = fontNSFont
         if tag.mono {
-            font = WindowViewController.defaultMonoFont
+            font = monoFontNSFont
         }
 
         var attributes: [NSAttributedString.Key: Any] = [
@@ -232,7 +342,13 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             attributes[NSAttributedString.Key.link] = "command:\(command)"
         }
 
-        return NSMutableAttributedString(string: text, attributes: attributes)
+        var stamped = text
+
+        if timestamp {
+            stamped = "[\(WindowViewController.dateFormatter.string(from: Date()))] \(text)"
+        }
+
+        return NSMutableAttributedString(string: stamped, attributes: attributes)
     }
 
     func processHighlights(_ text: NSMutableAttributedString, context: GameContext, highlightMonsters: Bool = false) {
@@ -360,8 +476,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 return
             }
 
+            let displayTimestamp = self.displayTimestamp && !tag.playerCommand
+
             let text = self.processSubs(tag.text)
-            guard let str = self.stringFromTag(tag, text: text) else { return }
+            guard let str = self.stringFromTag(tag, text: text, timestamp: displayTimestamp) else { return }
             self.processHighlights(str, context: context)
 
             self.appendWithoutProcessing(str)

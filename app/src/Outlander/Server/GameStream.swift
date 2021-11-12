@@ -486,7 +486,7 @@ struct TextTag {
 enum StreamCommand: CustomStringConvertible {
     case text([TextTag])
     case clearStream(String)
-    case createWindow(name: String, title: String, ifClosed: String)
+    case createWindow(name: String, title: String, closedTarget: String?)
     case vitals(name: String, value: Int)
     case launchUrl(String)
     case spell(String)
@@ -519,7 +519,7 @@ protocol OPlugin {
     func variableChanged(variable: String, value: String)
     func parse(input: String) -> String
     func parse(xml: String) -> String
-    func parse(text: String)
+    func parse(text: String) -> String
 }
 
 class GameStream {
@@ -738,7 +738,8 @@ class GameStream {
             }
 
             if !isSetup, let win = id {
-                streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", ifClosed: token.attr("ifClosed") ?? ""))
+                let closedTarget = token.attr("ifClosed")?.count == 0 ? nil : token.attr("ifClosed")
+                streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", closedTarget: closedTarget))
             }
 
         case "component":

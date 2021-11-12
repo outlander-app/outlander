@@ -273,6 +273,6 @@ let orderByLookup: [String: ExpTracker.OrderBy] = [
 
 extension String {
     func toOrderBy() -> ExpTracker.OrderBy? {
-        return orderByLookup[trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()]
+        orderByLookup[trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()]
     }
 }

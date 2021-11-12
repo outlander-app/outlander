@@ -59,7 +59,7 @@ class ApplicationLoader {
         let appSettings = context.applicationSettings.toDto()
 
         let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
         guard let data = try? encoder.encode(appSettings) else {
             return
