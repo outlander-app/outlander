@@ -14,6 +14,8 @@ class AutoMapperPlugin: OPlugin {
     private var movedRooms: Bool = false
     private var showAfterPrompt: Bool = false
 
+    private var logger = LogManager.getLog("AutoMapperPlugin")
+
     var name: String {
         "AutoMapper"
     }
@@ -52,11 +54,7 @@ class AutoMapperPlugin: OPlugin {
             return xml
         }
 
-        guard movedRooms, showAfterPrompt, xml.hasPrefix("<prompt") else {
-            return xml
-        }
-
-        guard let zone = context.mapZone else {
+        guard movedRooms, showAfterPrompt, let insertionIdx = xml.range(of: "<prompt") else {
             return xml
         }
 
@@ -68,8 +66,12 @@ class AutoMapperPlugin: OPlugin {
         let title = context.trimmedRoomTitle()
         let desc = context.globalVars["roomdesc"] ?? ""
         let roomid = context.globalVars["roomid"]
+        
+        var room: MapNode? = nil
 
-        var room = context.findRoom(zone: zone, previousRoomId: roomid, name: title, description: desc)
+        if let zoneId = context.globalVars["zoneid"], let zone = context.maps[zoneId] {
+            room = context.findRoom(zone: zone, previousRoomId: roomid, name: title, description: desc)
+        }
 
         if room == nil {
             room = context.findRoomInZones(name: title, description: desc)
@@ -90,7 +92,10 @@ class AutoMapperPlugin: OPlugin {
             return xml
         }
 
-        return "<preset id='automapper'>Mapped exits: \(exits)</preset>\n\(xml)"
+        let tag = "<preset id='automapper'>Mapped exits: \(exits)</preset>\n"
+        var result = xml
+        result.insert(contentsOf: tag, at: insertionIdx.lowerBound)
+        return result
     }
 
     func parse(text: String) -> String {

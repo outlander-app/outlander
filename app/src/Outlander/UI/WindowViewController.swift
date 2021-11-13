@@ -41,7 +41,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
     }
 
-    public var windowTitle: String? = nil
+    public var windowTitle: String?
     public var visible: Bool = true
     public var closedTarget: String?
     public var bufferSize: Int = 0
@@ -143,7 +143,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         updateTheme()
 
         textView.linkTextAttributes = [
-            NSAttributedString.Key.foregroundColor: foregroundColor,
+            NSAttributedString.Key.foregroundColor: foregroundNSColor,
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]

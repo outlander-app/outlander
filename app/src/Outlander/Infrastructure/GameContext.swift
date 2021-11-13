@@ -50,55 +50,7 @@ class GameContext {
     }
 
     init() {
-        globalVars = Variables(events: events)
-    }
-}
-
-class Variables {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)")
-    private var vars: [String: String] = [:]
-    private var events: Events
-
-    init(events: Events) {
-        self.events = events
-    }
-
-    subscript(key: String) -> String? {
-        get {
-            lockQueue.sync {
-                vars[key]
-            }
-        }
-        set(newValue) {
-            lockQueue.sync(flags: .barrier) {
-                let res = newValue ?? ""
-                guard vars[key] != res else {
-                    return
-                }
-                vars[key] = res
-                DispatchQueue.main.async {
-                    self.events.variableChanged(key, value: res)
-                }
-            }
-        }
-    }
-
-    var count: Int {
-        lockQueue.sync {
-            vars.count
-        }
-    }
-
-    func removeAll() {
-        lockQueue.sync(flags: .barrier) {
-            vars.removeAll()
-        }
-    }
-
-    func sorted() -> [(String, String)] {
-        lockQueue.sync(flags: .barrier) {
-            vars.sorted(by: { $0.key < $1.key })
-        }
+        globalVars = Variables(events: events, settings: applicationSettings)
     }
 }
 

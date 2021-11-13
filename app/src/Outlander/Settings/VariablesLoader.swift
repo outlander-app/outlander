@@ -56,7 +56,7 @@ class VariablesLoader {
 
         var content = ""
         for (key, value) in variables.sorted() {
-            content += "#var {\(key)} {\(value)}\n"
+            content += "#var {\(key)} {\(value.rawValue ?? "")}\n"
         }
 
         files.write(content, to: fileUrl)
