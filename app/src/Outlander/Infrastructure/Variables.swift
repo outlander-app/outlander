@@ -104,6 +104,12 @@ class Variables {
         }
     }
 
+    func keys() -> [String] {
+        lockQueue.sync(flags: .barrier) {
+            vars.map { $0.key }.sorted(by: { $0.count > $1.count })
+        }
+    }
+
     private func addDynamics() {
         vars["date"] = .dynamic {
             Variables.dateFormatter.dateFormat = self.settings.variableDateFormat
@@ -119,5 +125,62 @@ class Variables {
             Variables.dateFormatter.dateFormat = self.settings.variableTimeFormat
             return Variables.dateFormatter.string(from: self.clock.now)
         }
+    }
+}
+
+class VariableReplacer {
+    func replace(_ input: String, globalVars: Variables, actionVars: [String: String] = [:], scriptVars: [String: String] = [:], paramVars: [String: String] = [:]) -> String {
+        guard hasPotentialVars(input) else {
+            return input
+        }
+
+        var result = input
+
+        func doReplace() {
+            simplify(prefix: "$", target: &result, sortedKeys: actionVars.keys.sorted { $0.count > $1.count }, value: { key in actionVars[key] })
+            simplify(prefix: "%", target: &result, sortedKeys: scriptVars.keys.sorted { $0.count > $1.count }, value: { key in scriptVars[key] })
+            simplify(prefix: "%", target: &result, sortedKeys: paramVars.keys.sorted { $0.count > $1.count }, value: { key in paramVars[key] })
+            simplify(prefix: "$", target: &result, sortedKeys: globalVars.keys(), value: { key in globalVars[key] })
+        }
+
+        let max = 15
+        var count = 0
+        var last = result
+
+        repeat {
+            doReplace()
+            last = result
+            count += 1
+        } while count < max && last != result && hasPotentialVars(result)
+
+        return result
+    }
+
+    func hasPotentialVars(_ input: String) -> Bool {
+        guard input.range(of: "$") != nil || input.range(of: "%") != nil else {
+            return false
+        }
+        return true
+    }
+
+    private func simplify(prefix: String, target: inout String, sortedKeys: [String], value: (String) -> String?) {
+        guard target.contains(prefix) else {
+            return
+        }
+
+        func doReplace() {
+            for key in sortedKeys {
+                let replaceCandidate = "\(prefix)\(key)"
+                target = target.replacingOccurrences(of: replaceCandidate, with: value(key) ?? "")
+            }
+        }
+
+        let max = 15
+        var count = 0
+
+        repeat {
+            doReplace()
+            count += 1
+        } while count < max && target.contains(prefix)
     }
 }

@@ -26,14 +26,23 @@ class TriggerHandler: StreamHandler {
                 continue
             }
 
+            guard matches.count > 0 else {
+                continue
+            }
+
+            var command = trigger.action
+
             for match in matches {
                 guard match.count > 0 else {
                     continue
                 }
 
-                let command = match.replace(target: trigger.action)
-                context.events.sendCommand(Command2(command: command))
+                command = match.replace(target: command)
             }
+
+            command = VariableReplacer().replace(command, globalVars: context.globalVars)
+
+            context.events.sendCommand(Command2(command: command))
         }
     }
 }

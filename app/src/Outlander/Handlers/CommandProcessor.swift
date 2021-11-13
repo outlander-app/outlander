@@ -56,17 +56,17 @@ class CommandProcesssor {
     }
 
     func process(_ command: Command2, with context: GameContext) {
-        // TODO: replace variables
+        if !command.isSystemCommand {
+            context.globalVars["lastcommand"] = command.command
+        }
 
-        let maybeCommand = pluginManager.parse(input: command.command)
+        var maybeCommand = pluginManager.parse(input: command.command)
 
         guard maybeCommand.count > 0 else {
             return
         }
 
-        if !command.isSystemCommand {
-            context.globalVars["lastcommand"] = maybeCommand
-        }
+        maybeCommand = VariableReplacer().replace(maybeCommand, globalVars: context.globalVars)
 
         let cmds = maybeCommand.commandsSeperated()
 

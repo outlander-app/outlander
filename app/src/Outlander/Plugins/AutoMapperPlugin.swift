@@ -66,8 +66,8 @@ class AutoMapperPlugin: OPlugin {
         let title = context.trimmedRoomTitle()
         let desc = context.globalVars["roomdesc"] ?? ""
         let roomid = context.globalVars["roomid"]
-        
-        var room: MapNode? = nil
+
+        var room: MapNode?
 
         if let zoneId = context.globalVars["zoneid"], let zone = context.maps[zoneId] {
             room = context.findRoom(zone: zone, previousRoomId: roomid, name: title, description: desc)

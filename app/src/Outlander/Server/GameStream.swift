@@ -647,12 +647,10 @@ class GameStream {
                     streamCommands(.text(combined))
                     tags.removeAll()
 
-                    var text = ""
+                    // TODO: should this be combined text?
                     for tag in combined {
-                        text += tag.text
+                        sendToHandlers(text: tag.text)
                     }
-
-                    sendToHandlers(text: text)
                 }
             }
         }

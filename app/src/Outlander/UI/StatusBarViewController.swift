@@ -112,6 +112,6 @@ class StatusBarViewController: NSViewController {
         bleedingIcon?.toggle = bleeding
         poisonedIcon?.toggle = poisoned
         stunnedIcon?.toggle = stunned
-        webbedIcon?.toggle = stunned
+        webbedIcon?.toggle = webbed
     }
 }

@@ -248,6 +248,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
+        let indicators = ["bleeding", "stunned", "poisoned", "webbed"]
+
         gameContext.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
@@ -255,6 +257,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
                     if key == "zoneid" || key == "roomid" {
                         self.updateRoom()
+                    }
+
+                    if indicators.contains(key) {
+                        self.statusBarController?.setIndicator(name: key, enabled: value == "1")
                     }
                 }
             }
@@ -375,8 +381,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func showMapWindow() {
         DispatchQueue.main.async {
-//            let zoneId = self.gameContext.globalVars["zoneid"] ?? "1"
-//            self.gameContext.mapZone = self.gameContext.maps[zoneId]
             self.mapWindow?.showWindow(self)
             self.mapWindow?.setSelectedZone()
         }
