@@ -41,6 +41,14 @@ class ScriptRunner {
 
             self.remove([scriptName])
         }
+        
+        self.context.events.handle(self, channel: "ol:game:parse") { result in
+            guard let data = result as? String else {
+                return
+            }
+
+            self.stream(data, [])
+        }
     }
 
     func stream(_ data: String, _ tokens: [StreamCommand]) {
@@ -51,6 +59,11 @@ class ScriptRunner {
 
     private func run(_ scriptName: String) {
         do {
+            guard loader.exists(scriptName) else {
+                context.events.echoError("Script '\(scriptName)' does not exist.")
+                return
+            }
+            
             if let previous = scripts.first(where: { $0.fileName == scriptName }) {
                 previous.cancel()
             }
@@ -59,7 +72,7 @@ class ScriptRunner {
             scripts.append(script)
             script.run([])
         } catch {
-            context.events.echoError("Error occurred running script \(scriptName)")
+            context.events.echoError("An error occurred running script '\(scriptName)'.")
         }
     }
 

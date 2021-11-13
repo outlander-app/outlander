@@ -496,6 +496,7 @@ enum StreamCommand: CustomStringConvertible {
     case hands(String, String)
     case character(String, String)
     case indicator(String, Bool)
+    case prompt(String)
 
     var description: String {
         switch self {
@@ -648,6 +649,7 @@ class GameStream {
                     tags.removeAll()
 
                     // TODO: should this be combined text?
+                    // if combined, can mess up trigger regex with leading ^
                     for tag in combined {
                         sendToHandlers(text: tag.text)
                     }
@@ -667,11 +669,14 @@ class GameStream {
 
         switch tagName {
         case "prompt":
-            context.globalVars["prompt"] = token.value()?.replacingOccurrences(of: "&gt;", with: ">") ?? ""
+            let promptValue = token.value()?.replacingOccurrences(of: "&gt;", with: ">") ?? ""
+
+            context.globalVars["prompt"] = promptValue
             context.globalVars["gametime"] = token.attr("time") ?? ""
 
             let today = Date().timeIntervalSince1970
             context.globalVars["gametimeupdate"] = "\(today)"
+            streamCommands(.prompt(promptValue))
 
         case "roundtime":
             if let num = Int(token.attr("value") ?? "") {

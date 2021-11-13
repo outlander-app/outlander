@@ -31,10 +31,13 @@ struct Label {
 }
 
 class ScriptContext {
+    private var context: GameContext
+
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
     var variables: [String: String] = [:]
-
+    var parameters: [String: String] = [:]
+    var regexVars: [String: String] = [:]
     var currentLineNumber: Int = -1
 
     var currentLine: ScriptLine? {
@@ -53,12 +56,27 @@ class ScriptContext {
         return lines[currentLineNumber - 1]
     }
 
+    init(context: GameContext) {
+        self.context = context
+    }
+
     func advance() {
         currentLineNumber += 1
     }
 
     func retreat() {
         currentLineNumber -= 1
+    }
+
+    func replaceVars(_ input: String) -> String {
+        VariableReplacer().replace(input, globalVars: context.globalVars, scriptVars: variables, paramVars: parameters, regexVars: regexVars)
+    }
+
+    func setRegexVars(_ vars: [String]) {
+        regexVars = [:]
+        for (index, param) in vars.enumerated() {
+            regexVars["\(index)"] = param
+        }
     }
 }
 
@@ -78,11 +96,16 @@ class ScriptLine {
 }
 
 protocol IScriptLoader {
+    func exists(_ file: String) -> Bool
     func load(_ fileName: String) -> [String]
 }
 
 class InMemoryScriptLoader: IScriptLoader {
     var lines: [String: [String]] = [:]
+
+    func exists(_ file: String) -> Bool {
+        return lines.count > 0
+    }
 
     func load(_ fileName: String) -> [String] {
         lines[fileName]!
@@ -96,6 +119,11 @@ class ScriptLoader: IScriptLoader {
     init(_ files: FileSystem, settings: ApplicationSettings) {
         self.files = files
         self.settings = settings
+    }
+
+    func exists(_ file: String) -> Bool {
+        let fileUrl = settings.paths.scripts.appendingPathComponent("\(file).cmd")
+        return files.fileExists(fileUrl)
     }
 
     func load(_ file: String) -> [String] {
@@ -166,7 +194,7 @@ class Script {
         includeRegex = RegexFactory.get("^\\s*include (.+)$")!
         labelRegex = RegexFactory.get("^\\s*(\\w+((\\.|-|\\w)+)?):")!
 
-        context = ScriptContext()
+        context = ScriptContext(context: gameContext)
         tokenHandlers = [:]
         tokenHandlers["comment"] = handleComment
         tokenHandlers["debug"] = handleDebug
@@ -183,6 +211,7 @@ class Script {
         tokenHandlers["save"] = handleSave
         tokenHandlers["send"] = handleSend
         tokenHandlers["variable"] = handleVariable
+        tokenHandlers["wait"] = handleWaitforPrompt
         tokenHandlers["waitfor"] = handleWaitfor
         tokenHandlers["waitforre"] = handleWaitforRe
 
@@ -325,9 +354,7 @@ class Script {
         matchwait = nil
         matchStack.removeAll()
 
-        // TODO: resolve variables
-//        let label = self.context.simplify(match.label)
-        let label = match.label
+        let label = context.replaceVars(match.label)
 
         notify("match \(label)", debug: ScriptLogLevel.wait, scriptLine: match.lineNumber)
         let result = gotoLabel(label, match.groups)
@@ -428,8 +455,7 @@ class Script {
     }
 
     func gotoLabel(_ label: String, _: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
-        // TODO: resolve variables
-        let result = label
+        let result = context.replaceVars(label)
 
         guard let currentLine = context.currentLine else {
             sendText("Tried to goto \(result) but had no 'currentLine'", preset: "scripterror", fileName: fileName)
@@ -442,14 +468,13 @@ class Script {
         }
 
         delayedTask?.cancel()
-//        self.matchwait = nil
-//        self.matchStack.removeAll()
+        matchwait = nil
+        matchStack.removeAll()
 
         let command = isGosub ? "gosub" : "goto"
 
         notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
 
-//        let currentLineNumber = self.context.currentLineNumber
         context.currentLineNumber = target.line - 1
 
         return .next
@@ -468,9 +493,9 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let targetLevel = context.replaceVars(level)
 
-        debugLevel = ScriptLogLevel(rawValue: Int(level) ?? 0) ?? ScriptLogLevel.none
+        debugLevel = ScriptLogLevel(rawValue: Int(targetLevel) ?? 0) ?? ScriptLogLevel.none
         notify("debug \(debugLevel.rawValue) (\(debugLevel))", debug: ScriptLogLevel.none, scriptLine: line.lineNumber)
 
         return .next
@@ -481,11 +506,10 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let targetText = context.replaceVars(text)
+        notify("echo \(targetText)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
-        notify("echo \(text)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
-
-        gameContext.events.echoText(text, preset: "scriptecho")
+        gameContext.events.echoText(targetText, preset: "scriptecho")
         return .next
     }
 
@@ -539,7 +563,8 @@ class Script {
             return .next
         }
 
-        let timeout = Double(str) ?? -1
+        let maybeNumber = context.replaceVars(str)
+        let timeout = Double(maybeNumber) ?? -1
 
         let time = timeout > 0 ? "\(timeout)" : ""
         notify("matchwait \(time)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
@@ -562,12 +587,11 @@ class Script {
     }
 
     func handlePause(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        guard case let .pause(maybeNumber) = token else {
+        guard case let .pause(str) = token else {
             return .next
         }
 
-        // TODO: resolve variables
-
+        let maybeNumber = context.replaceVars(str)
         let duration = Double(maybeNumber) ?? 1
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
@@ -584,22 +608,23 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let send = context.replaceVars(text)
 
-        notify("put \(text)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("put \(send)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
-        let command = Command2(command: text)
+        let command = Command2(command: send)
         gameContext.events.sendCommand(command)
 
         return .next
     }
 
     func handleRandom(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        guard case let .random(min, max) = token else {
+        guard case let .random(minStr, maxStr) = token else {
             return .next
         }
 
-        // TODO: resolve variables
+        let min = context.replaceVars(minStr)
+        let max = context.replaceVars(maxStr)
 
         guard let minN = Int(min), let maxN = Int(max) else {
             return .next
@@ -619,11 +644,10 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let result = context.replaceVars(value)
+        context.variables["s"] = result
 
-        context.variables["s"] = value
-
-        notify("save \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("save \(result)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .next
     }
@@ -633,11 +657,11 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let result = context.replaceVars(text)
 
-        notify("#send \(text)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+        notify("#send \(result)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
 
-        let command = Command2(command: "#send \(text)")
+        let command = Command2(command: "#send \(result)")
         gameContext.events.sendCommand(command)
 
         return .next
@@ -648,21 +672,32 @@ class Script {
             return .next
         }
 
-        // TODO: resolve variables
+        let varName = context.replaceVars(variable)
+        let varValue = context.replaceVars(value)
 
-        context.variables[variable] = value
+        context.variables[varName] = varValue
 
-        notify("var \(variable) \(value)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        notify("var \(varName) \(varValue)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .next
+    }
+
+    func handleWaitforPrompt(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .waitforPrompt(text) = token else {
+            return .next
+        }
+
+        notify("wait \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
+
+        reactToStream.append(WaitforOp(text))
+
+        return .wait
     }
 
     func handleWaitfor(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .waitfor(text) = token else {
             return .next
         }
-
-        // TODO: resolve variables
 
         notify("waitfor \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
@@ -675,8 +710,6 @@ class Script {
         guard case let .waitforre(pattern) = token else {
             return .next
         }
-
-        // TODO: resolve variables
 
         notify("waitforre \(pattern)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 

@@ -129,7 +129,7 @@ class Variables {
 }
 
 class VariableReplacer {
-    func replace(_ input: String, globalVars: Variables, actionVars: [String: String] = [:], scriptVars: [String: String] = [:], paramVars: [String: String] = [:]) -> String {
+    func replace(_ input: String, globalVars: Variables, actionVars: [String: String] = [:], scriptVars: [String: String] = [:], paramVars: [String: String] = [:], regexVars: [String: String] = [:]) -> String {
         guard hasPotentialVars(input) else {
             return input
         }
@@ -138,6 +138,7 @@ class VariableReplacer {
 
         func doReplace() {
             simplify(prefix: "$", target: &result, sortedKeys: actionVars.keys.sorted { $0.count > $1.count }, value: { key in actionVars[key] })
+            simplify(prefix: "$", target: &result, sortedKeys: regexVars.keys.sorted { $0.count > $1.count }, value: { key in regexVars[key] })
             simplify(prefix: "%", target: &result, sortedKeys: scriptVars.keys.sorted { $0.count > $1.count }, value: { key in scriptVars[key] })
             simplify(prefix: "%", target: &result, sortedKeys: paramVars.keys.sorted { $0.count > $1.count }, value: { key in paramVars[key] })
             simplify(prefix: "$", target: &result, sortedKeys: globalVars.keys(), value: { key in globalVars[key] })

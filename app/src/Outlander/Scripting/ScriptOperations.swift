@@ -22,11 +22,72 @@ class MoveOp: IWantStreamInfo {
         self.target = target
     }
 
-    func stream(_: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
-        .none
+    func stream(_: String, _ commands: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+        for cmd in commands {
+            switch cmd {
+            case .compass:
+                return .match("")
+            default:
+                continue
+            }
+        }
+
+        return .none
     }
 
     func execute(_ script: Script, _: ScriptContext) {
+        script.next()
+    }
+}
+
+class NextRoomOp: IWantStreamInfo {
+    var id = ""
+
+    init() {
+        id = UUID().uuidString
+    }
+
+    func stream(_: String, _ commands: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+        for cmd in commands {
+            switch cmd {
+            case .compass:
+                return .match("")
+            default:
+                continue
+            }
+        }
+
+        return .none
+    }
+
+    func execute(_ script: Script, _: ScriptContext) {
+        // TODO: next after roundtime
+        script.next()
+    }
+}
+
+class WaitforPromptOp: IWantStreamInfo {
+    var id = ""
+
+    init() {
+        id = UUID().uuidString
+    }
+
+    func stream(_: String, _ commands: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
+        for cmd in commands {
+            switch cmd {
+            case .prompt:
+                return .match("")
+            default:
+                continue
+            }
+        }
+
+        return .none
+    }
+
+    func execute(_ script: Script, _: ScriptContext) {
+        // TODO: next after roundtime
         script.next()
     }
 }
@@ -40,9 +101,9 @@ class WaitforOp: IWantStreamInfo {
         self.target = target
     }
 
-    func stream(_ text: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
-        // TODO: resolve target before comparision, it could contain a variable
-        text.range(of: target) != nil
+    func stream(_ text: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+        let check = context.replaceVars(target)
+        return text.range(of: check) != nil
             ? .match(text)
             : .none
     }
@@ -63,11 +124,11 @@ class WaitforReOp: IWantStreamInfo {
         groups = []
     }
 
-    func stream(_ text: String, _: [StreamCommand], _: ScriptContext) -> CheckStreamResult {
-        // TODO: resolve pattern before comparision, it could contain a variable
+    func stream(_ text: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+        let resolved = context.replaceVars(pattern)
         var txt = text
 
-        let regex = RegexFactory.get(pattern)
+        let regex = RegexFactory.get(resolved)
         guard let match = regex?.firstMatch(&txt) else {
             return .none
         }
@@ -75,8 +136,8 @@ class WaitforReOp: IWantStreamInfo {
         return groups.count > 0 ? .match(txt) : .none
     }
 
-    func execute(_ script: Script, _: ScriptContext) {
-//        context.setRegexVars(self.groups)
+    func execute(_ script: Script, _ context: ScriptContext) {
+        context.setRegexVars(groups)
         script.next()
     }
 }

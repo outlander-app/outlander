@@ -30,6 +30,7 @@ enum ScriptTokenValue: Hashable {
     case save(String)
     case send(String)
     case variable(String, String)
+    case waitforPrompt(String)
     case waitfor(String)
     case waitforre(String)
 }
@@ -67,6 +68,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "send"
         case .variable:
             return "variable"
+        case .waitforPrompt:
+            return "wait"
         case .waitfor:
             return "waitfor"
         case .waitforre:

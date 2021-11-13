@@ -40,9 +40,9 @@ class GameStreamTests: XCTestCase {
             "<prompt time=\"1576081991\">&gt;</prompt>\r\n",
         ])
 
-        XCTAssertEqual(commands.count, 3)
+        XCTAssertEqual(commands.count, 4)
 
-        switch commands[2] {
+        switch commands[3] {
         case let .text(tags):
             XCTAssertEqual(tags.count, 2)
         default:
