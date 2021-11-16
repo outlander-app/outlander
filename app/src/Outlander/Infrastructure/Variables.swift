@@ -128,20 +128,42 @@ class Variables {
     }
 }
 
+struct VariableSetting {
+    var token: String
+    var sortedKeys: [String]
+    var values: (String) -> String?
+}
+
+class VariableContext {
+    var settings: [VariableSetting] = []
+
+    var keys: [String] {
+        Array(Set(settings.map { $0.token }))
+    }
+
+    func add(_ token: String, sortedKeys: [String], values: @escaping ((String) -> String?)) {
+        settings.append(VariableSetting(token: token, sortedKeys: sortedKeys, values: values))
+    }
+}
+
 class VariableReplacer {
-    func replace(_ input: String, globalVars: Variables, actionVars: [String: String] = [:], scriptVars: [String: String] = [:], paramVars: [String: String] = [:], regexVars: [String: String] = [:]) -> String {
-        guard hasPotentialVars(input) else {
+    func replace(_ input: String, globalVars: Variables) -> String {
+        let context = VariableContext()
+        context.add("$", sortedKeys: globalVars.keys(), values: { key in globalVars[key] })
+        return replace(input, context: context)
+    }
+
+    func replace(_ input: String, context: VariableContext) -> String {
+        guard hasPotentialVars(input, context: context) else {
             return input
         }
 
         var result = input
 
         func doReplace() {
-            simplify(prefix: "$", target: &result, sortedKeys: actionVars.keys.sorted { $0.count > $1.count }, value: { key in actionVars[key] })
-            simplify(prefix: "$", target: &result, sortedKeys: regexVars.keys.sorted { $0.count > $1.count }, value: { key in regexVars[key] })
-            simplify(prefix: "%", target: &result, sortedKeys: scriptVars.keys.sorted { $0.count > $1.count }, value: { key in scriptVars[key] })
-            simplify(prefix: "%", target: &result, sortedKeys: paramVars.keys.sorted { $0.count > $1.count }, value: { key in paramVars[key] })
-            simplify(prefix: "$", target: &result, sortedKeys: globalVars.keys(), value: { key in globalVars[key] })
+            for setting in context.settings {
+                simplify(prefix: setting.token, target: &result, sortedKeys: setting.sortedKeys, value: setting.values)
+            }
         }
 
         let max = 15
@@ -152,16 +174,19 @@ class VariableReplacer {
             doReplace()
             last = result
             count += 1
-        } while count < max && last != result && hasPotentialVars(result)
+        } while count < max && last != result && hasPotentialVars(result, context: context)
 
         return result
     }
 
-    func hasPotentialVars(_ input: String) -> Bool {
-        guard input.range(of: "$") != nil || input.range(of: "%") != nil else {
-            return false
+    func hasPotentialVars(_ input: String, context: VariableContext) -> Bool {
+        for key in context.keys {
+            if input.range(of: key) != nil {
+                return true
+            }
         }
-        return true
+
+        return false
     }
 
     private func simplify(prefix: String, target: inout String, sortedKeys: [String], value: (String) -> String?) {

@@ -13,13 +13,77 @@ enum CheckStreamResult {
     case none
 }
 
+class ActionOp: IAction {
+    var id: String
+    var enabled: Bool
+
+    var name: String
+    var command: String
+    var pattern: String
+
+    var groups: [String]
+
+    var line: ScriptLine
+
+    init(name: String, command: String, pattern: String, line: ScriptLine) {
+        id = UUID().uuidString
+        enabled = true
+
+        self.name = name
+        self.command = command
+        self.pattern = pattern
+        self.line = line
+
+        groups = []
+    }
+
+    func stream(_ text: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+        guard pattern.count > 0 else {
+            return .none
+        }
+
+        let resolvedPattern = context.replaceVars(pattern)
+        let regex = RegexFactory.get(resolvedPattern)
+
+        var input = text
+        if let match = regex?.firstMatch(&input) {
+            groups = match.values()
+            return .match("action (line \(line.lineNumber)) triggered by: \(text)")
+        }
+
+        return .none
+    }
+
+    func execute(_ script: Script, _ context: ScriptContext) {
+        context.setActionVars(groups)
+        let commands = context.replaceActionVars(command).commandsSeperated()
+
+        let tokenizer = ScriptTokenizer()
+
+        for command in commands {
+            guard let token = tokenizer.read(command) else {
+                continue
+            }
+
+            let result = script.executeToken(line, token)
+            switch result {
+            case .next:
+                guard case .goto = token else {
+                    continue
+                }
+                script.next()
+            case .exit: script.cancel()
+            default: continue
+            }
+        }
+    }
+}
+
 class MoveOp: IWantStreamInfo {
     var id = ""
-    let target: String
 
-    init(_ target: String) {
+    init() {
         id = UUID().uuidString
-        self.target = target
     }
 
     func stream(_: String, _ commands: [StreamCommand], _: ScriptContext) -> CheckStreamResult {

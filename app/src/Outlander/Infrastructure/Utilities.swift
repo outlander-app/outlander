@@ -80,7 +80,7 @@ class MemoizeHash<T: Hashable, U> {
 }
 
 enum RegexFactory {
-    static let created = MemoizeHash<String, Regex>({ pattern in try? Regex(pattern, options: [.caseInsensitive]) })
+    static let created = MemoizeHash<String, Regex>({ pattern in try? Regex(pattern, options: [.caseInsensitive, .anchorsMatchLines]) })
     static let get: (String) -> (Regex?) = { (pattern: String) in
         created[pattern]
     }

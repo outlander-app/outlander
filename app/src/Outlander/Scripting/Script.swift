@@ -36,7 +36,10 @@ class ScriptContext {
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
     var variables: [String: String] = [:]
-    var parameters: [String: String] = [:]
+    var args: [String] = []
+    var argumentVars: [String: String] = [:]
+    var actionVars: [String: String] = [:]
+    var labelVars: [String: String] = [:]
     var regexVars: [String: String] = [:]
     var currentLineNumber: Int = -1
 
@@ -69,13 +72,35 @@ class ScriptContext {
     }
 
     func replaceVars(_ input: String) -> String {
-        VariableReplacer().replace(input, globalVars: context.globalVars, scriptVars: variables, paramVars: parameters, regexVars: regexVars)
+        let context = VariableContext()
+        context.add("$", sortedKeys: regexVars.keys.sorted { $0.count > $1.count }, values: { key in self.regexVars[key] })
+        context.add("$", sortedKeys: labelVars.keys.sorted { $0.count > $1.count }, values: { key in self.labelVars[key] })
+        context.add("%", sortedKeys: variables.keys.sorted { $0.count > $1.count }, values: { key in self.variables[key] })
+        context.add("%", sortedKeys: argumentVars.keys.sorted { $0.count > $1.count }, values: { key in self.argumentVars[key] })
+        context.add("$", sortedKeys: self.context.globalVars.keys(), values: { key in self.context.globalVars[key] })
+        return VariableReplacer().replace(input, context: context)
+    }
+
+    func replaceActionVars(_ input: String) -> String {
+        let context = VariableContext()
+        context.add("$", sortedKeys: actionVars.keys.sorted { $0.count > $1.count }, values: { key in self.actionVars[key] })
+        context.add("%", sortedKeys: variables.keys.sorted { $0.count > $1.count }, values: { key in self.variables[key] })
+        context.add("%", sortedKeys: argumentVars.keys.sorted { $0.count > $1.count }, values: { key in self.argumentVars[key] })
+        context.add("$", sortedKeys: self.context.globalVars.keys(), values: { key in self.context.globalVars[key] })
+        return VariableReplacer().replace(input, context: context)
     }
 
     func setRegexVars(_ vars: [String]) {
         regexVars = [:]
         for (index, param) in vars.enumerated() {
             regexVars["\(index)"] = param
+        }
+    }
+
+    func setActionVars(_ vars: [String]) {
+        actionVars = [:]
+        for (index, param) in vars.enumerated() {
+            actionVars["\(index)"] = param
         }
     }
 }
@@ -103,8 +128,8 @@ protocol IScriptLoader {
 class InMemoryScriptLoader: IScriptLoader {
     var lines: [String: [String]] = [:]
 
-    func exists(_ file: String) -> Bool {
-        return lines.count > 0
+    func exists(_: String) -> Bool {
+        lines.count > 0
     }
 
     func load(_ fileName: String) -> [String] {
@@ -155,6 +180,11 @@ protocol IWantStreamInfo {
     func execute(_ script: Script, _ context: ScriptContext)
 }
 
+protocol IAction: IWantStreamInfo {
+    var name: String { get set }
+    var enabled: Bool { get set }
+}
+
 class Script {
     var started: Date?
     var fileName: String = ""
@@ -165,6 +195,7 @@ class Script {
     private var reactToStream: [IWantStreamInfo] = []
     private var matchStack: [IMatch] = []
     private var matchwait: Matchwait?
+    private var actions: [IAction] = []
 
     var stopped = false
     var paused = false
@@ -196,6 +227,8 @@ class Script {
 
         context = ScriptContext(context: gameContext)
         tokenHandlers = [:]
+        tokenHandlers["action"] = handleAction
+        tokenHandlers["actiontoggle"] = handleActionToggle
         tokenHandlers["comment"] = handleComment
         tokenHandlers["debug"] = handleDebug
         tokenHandlers["echo"] = handleEcho
@@ -205,6 +238,8 @@ class Script {
         tokenHandlers["match"] = handleMatch
         tokenHandlers["matchre"] = handleMatchre
         tokenHandlers["matchwait"] = handleMatchwait
+        tokenHandlers["move"] = handleMove
+        tokenHandlers["nextroom"] = handleNextroom
         tokenHandlers["pause"] = handlePause
         tokenHandlers["put"] = handlePut
         tokenHandlers["random"] = handleRandom
@@ -311,6 +346,8 @@ class Script {
             return
         }
 
+        _ = checkActions(text, tokens)
+
         let handlers = reactToStream.filter { x in
             let res = x.stream(text, tokens, self.context)
             switch res {
@@ -333,6 +370,29 @@ class Script {
         checkMatches(text)
     }
 
+    private func checkActions(_ text: String, _ tokens: [StreamCommand]) -> Bool {
+        let actions = self.actions.filter { a in
+            guard a.enabled else {
+                return false
+            }
+
+            let result = a.stream(text, tokens, context)
+            switch result {
+            case let .match(txt):
+                notify(txt, debug: .actions)
+                return true
+            case .none:
+                return false
+            }
+        }
+
+        for action in actions {
+            action.execute(self, context)
+        }
+
+        return actions.count > 0
+    }
+
     private func checkMatches(_ text: String) {
         guard let _ = matchwait else {
             return
@@ -341,7 +401,7 @@ class Script {
         var foundMatch: IMatch?
 
         for match in matchStack {
-            if match.isMatch(text) {
+            if match.isMatch(text, context) {
                 foundMatch = match
                 break
             }
@@ -379,7 +439,7 @@ class Script {
     }
 
     private func notify(_ text: String, debug: ScriptLogLevel, preset: String = "scriptinfo", scriptLine: Int = -1, fileName: String = "") {
-        guard debugLevel.rawValue > debug.rawValue else {
+        guard debugLevel.rawValue >= debug.rawValue else {
             return
         }
 
@@ -476,6 +536,40 @@ class Script {
         notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
 
         context.currentLineNumber = target.line - 1
+
+        return .next
+    }
+
+    func handleAction(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .action(name, action, pattern) = token else {
+            return .next
+        }
+
+        let nameText = name.count > 0 ? " (\(name))" : ""
+        let resolvedPattern = context.replaceVars(pattern)
+
+        let message = "action\(nameText) \(action) \(resolvedPattern)"
+        notify(message, debug: .actions, scriptLine: line.lineNumber)
+
+        let actionOp = ActionOp(name: name, command: action, pattern: pattern, line: line)
+        actions.append(actionOp)
+
+        return .next
+    }
+
+    func handleActionToggle(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .actionToggle(name, toggle) = token else {
+            return .next
+        }
+
+        let maybeToggle = context.replaceVars(toggle)
+        let enabled = maybeToggle.trimmingCharacters(in: CharacterSet.whitespaces).lowercased() == "on"
+
+        notify("action \(name) \(maybeToggle)", debug: .actions, scriptLine: line.lineNumber)
+
+        if var action = actions.first(where: { $0.name == name }) {
+            action.enabled = enabled
+        }
 
         return .next
     }
@@ -582,6 +676,35 @@ class Script {
                 }
             }
         }
+
+        return .wait
+    }
+
+    func handleMove(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .move(text) = token else {
+            return .next
+        }
+
+        let send = context.replaceVars(text)
+
+        notify("move \(send)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
+
+        reactToStream.append(MoveOp())
+
+        let command = Command2(command: send)
+        gameContext.events.sendCommand(command)
+
+        return .wait
+    }
+
+    func handleNextroom(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case .nextroom = token else {
+            return .next
+        }
+
+        notify("nextroom", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
+
+        reactToStream.append(NextRoomOp())
 
         return .wait
     }

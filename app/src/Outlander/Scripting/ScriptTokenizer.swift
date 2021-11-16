@@ -15,6 +15,8 @@ enum Expression {
 }
 
 enum ScriptTokenValue: Hashable {
+    case action(String, String, String)
+    case actionToggle(String, String)
     case comment(String)
     case debug(String)
     case echo(String)
@@ -24,6 +26,8 @@ enum ScriptTokenValue: Hashable {
     case match(String, String)
     case matchre(String, String)
     case matchwait(String)
+    case move(String)
+    case nextroom
     case pause(String)
     case put(String)
     case random(String, String)
@@ -38,6 +42,10 @@ enum ScriptTokenValue: Hashable {
 extension ScriptTokenValue: CustomStringConvertible {
     var description: String {
         switch self {
+        case .action:
+            return "action"
+        case .actionToggle:
+            return "actiontoggle"
         case .comment:
             return "comment"
         case .debug:
@@ -56,6 +64,10 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "matchre"
         case .matchwait:
             return "matchwait"
+        case .move:
+            return "move"
+        case .nextroom:
+            return "nextroom"
         case .pause:
             return "pause"
         case .put:
@@ -153,6 +165,7 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
 
 class CommandMode: IScriptReaderMode {
     var knownCommands: [String: IScriptReaderMode?] = [
+        "action": ActionMode(),
         "debug": DebugMode(),
         "echo": EchoMode(),
         "exit": ExitMode(),
@@ -160,6 +173,8 @@ class CommandMode: IScriptReaderMode {
         "match": MatchMode(),
         "matchre": MatchreMode(),
         "matchwait": MatchwaitMode(),
+        "move": MoveMode(),
+        "nextroom": NextroomMode(),
         "pause": PauseMode(),
         "put": PutMode(),
         "random": RandomMode(),
@@ -167,6 +182,7 @@ class CommandMode: IScriptReaderMode {
         "send": SendMode(),
         "setvariable": VariableMode(),
         "var": VariableMode(),
+        "wait": WaitforPromptMode(),
         "waitfor": WaitforMode(),
         "waitforre": WaitforReMode(),
     ]
@@ -206,11 +222,46 @@ class CommandMode: IScriptReaderMode {
     }
 }
 
+class ActionMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd()).components(separatedBy: "when").map {
+            $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        }
+
+        if rest.count == 1, let name = readName(rest[0]) {
+            let toggle = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            context.target.append(.actionToggle(String(name), String(toggle)))
+            return nil
+        }
+
+        guard rest.count > 1 else {
+            return nil
+        }
+        if let name = readName(rest[0]) {
+            let action = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            context.target.append(.action(name, action, rest[1]))
+        }
+        context.target.append(.action("", rest[0], rest[1]))
+        return nil
+    }
+
+    func readName(_ rest: String) -> String? {
+        if rest.hasPrefix("("), let range = rest.range(of: ")") {
+            let start = rest.index(after: rest.startIndex)
+            let end = rest.index(before: range.upperBound)
+            return String(rest[start ..< end])
+        }
+
+        return nil
+    }
+}
+
 class DebugMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.debug(rest))
+        context.target.append(.debug(rest))
         return nil
     }
 }
@@ -219,14 +270,14 @@ class EchoMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.echo(rest))
+        context.target.append(.echo(rest))
         return nil
     }
 }
 
 class ExitMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
-        context.target.append(ScriptTokenValue.exit)
+        context.target.append(.exit)
         return nil
     }
 }
@@ -235,7 +286,7 @@ class GotoMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseWord())
-        context.target.append(ScriptTokenValue.goto(rest))
+        context.target.append(.goto(rest))
         return nil
     }
 }
@@ -246,7 +297,7 @@ class MatchMode: IScriptReaderMode {
         let label = String(context.text.parseWord())
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.match(label, rest))
+        context.target.append(.match(label, rest))
         return nil
     }
 }
@@ -257,7 +308,7 @@ class MatchreMode: IScriptReaderMode {
         let label = String(context.text.parseWord())
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.matchre(label, rest))
+        context.target.append(.matchre(label, rest))
         return nil
     }
 }
@@ -266,7 +317,23 @@ class MatchwaitMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.matchwait(rest))
+        context.target.append(.matchwait(rest))
+        return nil
+    }
+}
+
+class MoveMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(.move(rest))
+        return nil
+    }
+}
+
+class NextroomMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.target.append(.nextroom)
         return nil
     }
 }
@@ -275,7 +342,7 @@ class PauseMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.pause(rest))
+        context.target.append(.pause(rest))
         return nil
     }
 }
@@ -284,7 +351,7 @@ class PutMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.put(rest))
+        context.target.append(.put(rest))
         return nil
     }
 }
@@ -295,7 +362,7 @@ class RandomMode: IScriptReaderMode {
         let min = String(context.text.parseWord())
         context.text.consumeSpaces()
         let max = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.random(min, max))
+        context.target.append(.random(min, max))
         return nil
     }
 }
@@ -304,7 +371,7 @@ class SaveMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.save(rest))
+        context.target.append(.save(rest))
         return nil
     }
 }
@@ -313,7 +380,7 @@ class SendMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.send(rest))
+        context.target.append(.send(rest))
         return nil
     }
 }
@@ -324,7 +391,16 @@ class VariableMode: IScriptReaderMode {
         let variable = String(context.text.parseWord())
         context.text.consumeSpaces()
         let value = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.variable(variable, value))
+        context.target.append(.variable(variable, value))
+        return nil
+    }
+}
+
+class WaitforPromptMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(.waitforPrompt(rest))
         return nil
     }
 }
@@ -333,7 +409,7 @@ class WaitforMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.waitfor(rest))
+        context.target.append(.waitfor(rest))
         return nil
     }
 }
@@ -342,7 +418,7 @@ class WaitforReMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
-        context.target.append(ScriptTokenValue.waitforre(rest))
+        context.target.append(.waitforre(rest))
         return nil
     }
 }

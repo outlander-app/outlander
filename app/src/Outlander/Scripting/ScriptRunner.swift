@@ -41,7 +41,7 @@ class ScriptRunner {
 
             self.remove([scriptName])
         }
-        
+
         self.context.events.handle(self, channel: "ol:game:parse") { result in
             guard let data = result as? String else {
                 return
@@ -63,7 +63,7 @@ class ScriptRunner {
                 context.events.echoError("Script '\(scriptName)' does not exist.")
                 return
             }
-            
+
             if let previous = scripts.first(where: { $0.fileName == scriptName }) {
                 previous.cancel()
             }

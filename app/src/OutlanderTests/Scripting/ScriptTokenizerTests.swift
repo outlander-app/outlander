@@ -142,4 +142,51 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
+
+    func test_action() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action put hello when Sorry")
+
+        switch token {
+        case let .action(name, action, trigger):
+            XCTAssertEqual(name, "")
+            XCTAssertEqual(action, "put hello")
+            XCTAssertEqual(trigger, "Sorry")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
+    func test_named_action() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action (mapper) put hello when Sorry")
+
+        switch token {
+        case let .action(name, action, trigger):
+            XCTAssertEqual(name, "mapper")
+            XCTAssertEqual(action, "put hello")
+            XCTAssertEqual(trigger, "Sorry")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
+    func test_action_toggle() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action (mapper) on")
+
+        switch token {
+        case let .actionToggle(name, toggle):
+            XCTAssertEqual(name, "mapper")
+            XCTAssertEqual(toggle, "on")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
+    func test_action_invalid() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action whoops")
+        XCTAssertNil(token)
+    }
 }
