@@ -195,14 +195,14 @@ class CommandMode: IScriptReaderMode {
 
         if first == "#" {
             let text = context.text.parseToEnd()
-            context.target.append(ScriptTokenValue.comment(String(text)))
+            context.target.append(.comment(String(text)))
             return nil
         }
 
         let result = context.text.parseWord()
         if result.count > 0 {
             if result.last == ":" {
-                context.target.append(ScriptTokenValue.label(String(result.dropLast())))
+                context.target.append(.label(String(result.dropLast())))
                 return nil
             }
 

@@ -154,11 +154,11 @@ class VariableReplacer {
     }
 
     func replace(_ input: String, context: VariableContext) -> String {
+        var result = replaceIndexedVars(input, context: context)
+
         guard hasPotentialVars(input, context: context) else {
             return input
         }
-
-        var result = input
 
         func doReplace() {
             for setting in context.settings {
@@ -177,6 +177,44 @@ class VariableReplacer {
         } while count < max && last != result && hasPotentialVars(result, context: context)
 
         return result
+    }
+
+    func replaceIndexedVars(_ result: String, context: VariableContext) -> String {
+        guard result.index(of: "[") != nil || result.index(of: "(") != nil else {
+            return result
+        }
+
+        let tokens = VariableTokenizer().read(result)
+        guard tokens.count > 0 else {
+            return result
+        }
+
+        var results: [String] = []
+        for v in tokens {
+            switch v {
+            case let .value(val):
+                results.append(val)
+            case let .indexed(varname, index):
+                let name = replace(varname, context: context)
+                let idx = replace(index, context: context)
+
+                guard let number = Int(idx) else {
+                    results.append("\(name)[\(idx)]")
+                    continue
+                }
+
+                let list = name.components(separatedBy: "|")
+                guard number > -1, number < list.count else {
+                    results.append("\(name)[\(idx)]")
+                    continue
+                }
+
+                let val = list[number]
+                results.append(val)
+            }
+        }
+
+        return results.joined(separator: "")
     }
 
     func hasPotentialVars(_ input: String, context: VariableContext) -> Bool {

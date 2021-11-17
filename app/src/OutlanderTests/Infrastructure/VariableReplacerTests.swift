@@ -35,4 +35,57 @@ class VariableReplacerTests: XCTestCase {
         let result = replacer.replace("$brawling_moves", globalVars: variables)
         XCTAssertEqual("$brawling_moves", result)
     }
+
+    func test_indexed_brackets() {
+        variables["weapons"] = "one|two|three"
+        let result = replacer.replace("$weapons[0]", globalVars: variables)
+        XCTAssertEqual("one", result)
+    }
+
+    func test_indexed_parens() {
+        variables["weapons"] = "one|two|three"
+        let result = replacer.replace("$weapons(0)", globalVars: variables)
+        XCTAssertEqual("one", result)
+    }
+
+    func test_indexed_parens_missing() {
+        variables["weapons"] = "one|two|three"
+        let result = replacer.replace("$weapons(0", globalVars: variables)
+        XCTAssertEqual("one|two|three(0", result)
+    }
+
+    func test_indexed_parens_missing_other_vars() {
+        variables["weapons"] = "one|two|three"
+        variables["lefthand"] = "tankard"
+        let result = replacer.replace("$weapons(0  $lefthand", globalVars: variables)
+        XCTAssertEqual("one|two|three(0  tankard", result)
+    }
+
+    func test_indexed_parens_missing_other_vars_other_indexed() {
+        variables["weapons"] = "one|two|three"
+        variables["exits"] = "north|south"
+        variables["lefthand"] = "tankard"
+        let result = replacer.replace("$weapons(0  $lefthand $exits[1]", globalVars: variables)
+        XCTAssertEqual("one|two|three(0  tankard south", result)
+    }
+
+    func test_indexed_parens_missing_other_vars_other_indexed_middle() {
+        variables["weapons"] = "one|two|three"
+        variables["exits"] = "north|south"
+        variables["lefthand"] = "tankard"
+        let result = replacer.replace("$weapons(0  $exits[1]  $lefthand ", globalVars: variables)
+        XCTAssertEqual("one|two|three(0  south  tankard ", result)
+    }
+
+    func test_delimiters() {
+        let result = replacer.replace("( ) [] [one] \\( ]", globalVars: variables)
+        XCTAssertEqual("( ) [] [one] \\( ]", result)
+    }
+
+    func test_mixed_delimiters() {
+        variables["testing"] = "tankard"
+
+        let result = replacer.replace("testing(0]", globalVars: variables)
+        XCTAssertEqual("testing(0]", result)
+    }
 }

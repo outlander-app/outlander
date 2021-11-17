@@ -63,6 +63,8 @@
 		7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
 		7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
 		7BCBBD0D273F499D00219CA0 /* VariableReplacerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */; };
+		7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
+		7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
 		7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = 7BCE4A2225C5007A00AF0444 /* Fuzi */; };
 		7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
 		7BCE4A2825C5011B00AF0444 /* MapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCE4A2625C5011B00AF0444 /* MapLoader.swift */; };
@@ -264,6 +266,7 @@
 		7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseCommandHandler.swift; sourceTree = "<group>"; };
 		7BAC842C25ECA23C00A6C7D5 /* Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matches.swift; sourceTree = "<group>"; };
 		7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableReplacerTests.swift; sourceTree = "<group>"; };
+		7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableTokenizer.swift; sourceTree = "<group>"; };
 		7BCE4A2625C5011B00AF0444 /* MapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLoader.swift; sourceTree = "<group>"; };
 		7BCE4A2B25C5016400AF0444 /* MapZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapZone.swift; sourceTree = "<group>"; };
 		7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperCommandHandler.swift; sourceTree = "<group>"; };
@@ -455,6 +458,7 @@
 				7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */,
 				7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */,
 				7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */,
+				7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */,
 			);
 			path = Scripting;
 			sourceTree = "<group>";
@@ -813,6 +817,7 @@
 				F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F98B49262470F685000E2D92 /* Events.swift in Sources */,
 				7BDF5C88272736300020A3B0 /* MacroExtensions.swift in Sources */,
+				7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
 				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
@@ -979,6 +984,7 @@
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7BDF5C79271A53E10020A3B0 /* MacroLoader.swift in Sources */,
+				7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BDF5C7C271AB4F40020A3B0 /* BoolExtensions.swift in Sources */,
 				7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,
 				F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
