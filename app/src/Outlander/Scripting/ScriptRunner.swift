@@ -19,11 +19,17 @@ class ScriptRunner {
         self.loader = loader
 
         self.context.events.handle(self, channel: "ol:script:run") { result in
-            guard let scriptName = result as? String else {
+            guard let arguments = result as? [String: String] else {
                 return
             }
 
-            self.run(scriptName)
+            guard let scriptName = arguments["name"] else {
+                return
+            }
+
+            let scriptArgs = arguments["arguments"] ?? ""
+
+            self.run(scriptName, arguments: scriptArgs.argumentsSeperated())
         }
 
         self.context.events.handle(self, channel: "ol:script") { result in
@@ -57,7 +63,7 @@ class ScriptRunner {
         }
     }
 
-    private func run(_ scriptName: String) {
+    private func run(_ scriptName: String, arguments: [String]) {
         do {
             guard loader.exists(scriptName) else {
                 context.events.echoError("Script '\(scriptName)' does not exist.")
@@ -70,7 +76,7 @@ class ScriptRunner {
 
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
-            script.run([])
+            script.run(arguments)
         } catch {
             context.events.echoError("An error occurred running script '\(scriptName)'.")
         }

@@ -21,6 +21,7 @@ enum ScriptTokenValue: Hashable {
     case debug(String)
     case echo(String)
     case exit
+    case gosub(String, String)
     case goto(String)
     case label(String)
     case match(String, String)
@@ -31,8 +32,10 @@ enum ScriptTokenValue: Hashable {
     case pause(String)
     case put(String)
     case random(String, String)
+    case `return`
     case save(String)
     case send(String)
+    case shift
     case variable(String, String)
     case waitforPrompt(String)
     case waitfor(String)
@@ -54,6 +57,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "echo"
         case .exit:
             return "exit"
+        case .gosub:
+            return "gosub"
         case .goto:
             return "goto"
         case .label:
@@ -74,10 +79,14 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "put"
         case .random:
             return "random"
+        case .return:
+            return "return"
         case .save:
             return "save"
         case .send:
             return "send"
+        case .shift:
+            return "shift"
         case .variable:
             return "variable"
         case .waitforPrompt:
@@ -169,6 +178,7 @@ class CommandMode: IScriptReaderMode {
         "debug": DebugMode(),
         "echo": EchoMode(),
         "exit": ExitMode(),
+        "gosub": GosubMode(),
         "goto": GotoMode(),
         "match": MatchMode(),
         "matchre": MatchreMode(),
@@ -178,8 +188,10 @@ class CommandMode: IScriptReaderMode {
         "pause": PauseMode(),
         "put": PutMode(),
         "random": RandomMode(),
+        "return": ReturnMode(),
         "save": SaveMode(),
         "send": SendMode(),
+        "shift": ShiftMode(),
         "setvariable": VariableMode(),
         "var": VariableMode(),
         "wait": WaitforPromptMode(),
@@ -282,11 +294,22 @@ class ExitMode: IScriptReaderMode {
     }
 }
 
+class GosubMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let label = String(context.text.parseWord())
+        context.text.consumeSpaces()
+        let args = String(context.text.parseToEnd())
+        context.target.append(.gosub(label, args))
+        return nil
+    }
+}
+
 class GotoMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
-        let rest = String(context.text.parseWord())
-        context.target.append(.goto(rest))
+        let label = String(context.text.parseWord())
+        context.target.append(.goto(label))
         return nil
     }
 }
@@ -367,6 +390,13 @@ class RandomMode: IScriptReaderMode {
     }
 }
 
+class ReturnMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.target.append(.return)
+        return nil
+    }
+}
+
 class SaveMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
@@ -381,6 +411,13 @@ class SendMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(.send(rest))
+        return nil
+    }
+}
+
+class ShiftMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.target.append(.shift)
         return nil
     }
 }

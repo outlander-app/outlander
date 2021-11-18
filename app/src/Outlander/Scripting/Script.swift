@@ -30,6 +30,22 @@ struct Label {
     var fileName: String
 }
 
+class GosubContext {
+    var label: Label
+    var line: ScriptLine
+    var arguments: [String]
+    var isGosub: Bool
+    var returnToLine: ScriptLine?
+    var returnToIndex: Int?
+
+    init(label: Label, line: ScriptLine, arguments: [String], isGosub: Bool) {
+        self.label = label
+        self.line = line
+        self.arguments = arguments
+        self.isGosub = isGosub
+    }
+}
+
 class ScriptContext {
     private var context: GameContext
 
@@ -42,7 +58,7 @@ class ScriptContext {
     var labelVars: [String: String] = [:]
     var regexVars: [String: String] = [:]
     var currentLineNumber: Int = -1
-
+    
     var currentLine: ScriptLine? {
         if currentLineNumber < 0 || currentLineNumber >= lines.count {
             return nil
@@ -103,6 +119,34 @@ class ScriptContext {
             actionVars["\(index)"] = param
         }
     }
+
+    func setLabelVars(_ vars: [String]) {
+        labelVars = [:]
+        for (index, param) in vars.enumerated() {
+            labelVars["\(index)"] = param
+        }
+    }
+
+    func setArgumentVars(_ args: [String]) {
+        self.args = args
+        argumentVars = [:]
+        
+        guard args.count > 0 else {
+            return
+        }
+
+        argumentVars["0"] = args.joined(separator: " ")
+        for (index, param) in args.enumerated() {
+            argumentVars["\(index + 1)"] = param.trimmingCharacters(in: CharacterSet(["\""]))
+        }
+    }
+
+    func shiftArgs() {
+        guard self.args.count > 0 else {
+            return
+        }
+        setArgumentVars(Array(args.dropFirst()))
+    }
 }
 
 class ScriptLine {
@@ -162,7 +206,7 @@ class ScriptLoader: IScriptLoader {
             return []
         }
 
-        return fileString.components(separatedBy: .newlines)
+        return fileString.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: .newlines)
     }
 }
 
@@ -197,6 +241,8 @@ class Script {
     private var matchwait: Matchwait?
     private var actions: [IAction] = []
 
+    private var gosubStack: Stack<GosubContext>
+
     var stopped = false
     var paused = false
     var nextAfterUnpause = false
@@ -221,11 +267,21 @@ class Script {
         tokenizer = ScriptTokenizer()
 
         stackTrace = Stack<ScriptLine>(30)
+        gosubStack = Stack<GosubContext>(101)
 
         includeRegex = RegexFactory.get("^\\s*include (.+)$")!
         labelRegex = RegexFactory.get("^\\s*(\\w+((\\.|-|\\w)+)?):")!
 
         context = ScriptContext(context: gameContext)
+        // eval
+        // eval math
+        // if
+        // else if
+        // else
+        // if_arg
+        // math
+        // unvar
+        // wait eval
         tokenHandlers = [:]
         tokenHandlers["action"] = handleAction
         tokenHandlers["actiontoggle"] = handleActionToggle
@@ -233,6 +289,7 @@ class Script {
         tokenHandlers["debug"] = handleDebug
         tokenHandlers["echo"] = handleEcho
         tokenHandlers["exit"] = handleExit
+        tokenHandlers["gosub"] = handleGosub
         tokenHandlers["goto"] = handleGoto
         tokenHandlers["label"] = handleLabel
         tokenHandlers["match"] = handleMatch
@@ -243,8 +300,10 @@ class Script {
         tokenHandlers["pause"] = handlePause
         tokenHandlers["put"] = handlePut
         tokenHandlers["random"] = handleRandom
+        tokenHandlers["return"] = handleReturn
         tokenHandlers["save"] = handleSave
         tokenHandlers["send"] = handleSend
+        tokenHandlers["shift"] = handleShift
         tokenHandlers["variable"] = handleVariable
         tokenHandlers["wait"] = handleWaitforPrompt
         tokenHandlers["waitfor"] = handleWaitfor
@@ -257,12 +316,14 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_: [String]) {
+    func run(_ args: [String]) {
         started = Date()
 
         let formattedDate = Script.dateFormatter.string(from: started!)
 
         sendText("[Starting '\(fileName)' at \(formattedDate)]")
+
+        context.setArgumentVars(args)
 
         initialize(fileName)
 
@@ -514,7 +575,7 @@ class Script {
         return .exit
     }
 
-    func gotoLabel(_ label: String, _: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
+    func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
         let result = context.replaceVars(label)
 
         guard let currentLine = context.currentLine else {
@@ -530,10 +591,21 @@ class Script {
         delayedTask?.cancel()
         matchwait = nil
         matchStack.removeAll()
+        
+        context.setLabelVars(args)
 
         let command = isGosub ? "gosub" : "goto"
 
         notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
+
+        let line = self.context.lines[target.line]
+        let gosubContext = GosubContext(label: target, line: line, arguments: args, isGosub: isGosub)
+
+        if isGosub {
+            gosubContext.returnToLine = currentLine
+            gosubContext.returnToIndex = context.currentLineNumber
+            gosubStack.push(gosubContext)
+        }
 
         context.currentLineNumber = target.line - 1
 
@@ -615,6 +687,28 @@ class Script {
         notify("exit", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
         return .exit
+    }
+
+    func handleGosub(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .gosub(label, args) = token else {
+            return .next
+        }
+    
+        // TODO: check gosub stack > 100
+        // Potential infinite loop of 100+ gosubs - use gosub clear if this is intended
+        
+        let replacedLabel = context.replaceVars(label)
+
+        if replacedLabel == "clear" {
+            // TODO: clear gosub stack
+            notify("gosub clear", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+            return .next
+        }
+
+        let replaced = context.replaceVars(args)
+        let arguments = [replaced] + replaced.argumentsSeperated()
+
+        return gotoLabel(label, arguments, true)
     }
 
     func handleGoto(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
@@ -761,6 +855,32 @@ class Script {
 
         return .next
     }
+    
+    func handleReturn(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case .return = token else {
+            return .next
+        }
+
+        guard let ctx = self.gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
+            notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+            sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            return .exit
+        }
+
+        if let prev = self.gosubStack.last {
+            context.setLabelVars(prev.arguments)
+        } else {
+            context.setLabelVars([])
+        }
+
+        // TODO: set ifStack
+
+        notify("returning to line \(returnToLine.lineNumber)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+        
+        context.currentLineNumber = returnToIndex
+
+        return .next
+    }
 
     func handleSave(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .save(value) = token else {
@@ -774,7 +894,7 @@ class Script {
 
         return .next
     }
-
+    
     func handleSend(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .send(text) = token else {
             return .next
@@ -786,6 +906,18 @@ class Script {
 
         let command = Command2(command: "#send \(result)")
         gameContext.events.sendCommand(command)
+
+        return .next
+    }
+    
+    func handleShift(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case .shift = token else {
+            return .next
+        }
+
+        notify("shift", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+
+        context.shiftArgs()
 
         return .next
     }

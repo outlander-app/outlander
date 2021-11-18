@@ -24,7 +24,7 @@ public class Stack<T> {
         }
     }
 
-    public func pop() -> T {
+    public func pop() -> T? {
         stack.remove(at: stack.count - 1)
     }
 

@@ -32,4 +32,24 @@ class SplitToCommandsTests: XCTestCase {
             _ = "room recite neath the depths of darkness i go\\;to 'scape the prying eyes of light\\;under dragon's spine i crawl\\;to crawl out from under the dragon's shadow".commandsSeperated()
         }
     }
+
+    func test_split_quotes() {
+        let commands = "one \"two three\"".argumentsSeperated()
+        XCTAssertEqual(commands, ["one", "\"two three\""])
+    }
+
+    func test_split_no_quotes() {
+        let commands = "one".argumentsSeperated()
+        XCTAssertEqual(commands, ["one"])
+    }
+
+    func test_split_multiple_quotes() {
+        let commands = "\"one\" two \"three\"".argumentsSeperated()
+        XCTAssertEqual(commands, ["\"one\"", "two", "\"three\""])
+    }
+
+    func test_split_missing_quotes() {
+        let commands = "one \"two three".argumentsSeperated()
+        XCTAssertEqual(commands, ["one", "\"two three"])
+    }
 }

@@ -99,4 +99,47 @@ extension String {
         }
         return result
     }
+
+    func argumentsSeperated() -> [String] {
+        let delimiter = "\""
+        if !contains(delimiter) {
+            return components(separatedBy: " ")
+        }
+
+        var result: [String] = []
+        var current = ""
+        var previous = ""
+        var inArg = false
+        for c in self {
+            if String(c) == " ", inArg == false {
+                if current.count > 0 {
+                    result.append(current)
+                }
+                current = ""
+                continue
+            }
+
+            if String(c) == delimiter, inArg == false, previous != "\\" {
+                inArg = true
+                continue
+            }
+
+            if String(c) == delimiter, inArg == true, previous != "\\" {
+                inArg = false
+                result.append("\"\(current)\"")
+                current = ""
+                continue
+            }
+
+            current += String(c)
+            previous = String(c)
+        }
+        if inArg {
+            current = "\"\(current)"
+        }
+        if current.count > 0 {
+            result.append(current)
+        }
+        return result
+    }
 }
