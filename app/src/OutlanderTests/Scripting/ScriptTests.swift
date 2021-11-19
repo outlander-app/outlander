@@ -62,7 +62,7 @@ class ScriptTests: XCTestCase {
         let script = try Script("forage.cmd", loader: loader, gameContext: context)
         script.run([])
     }
-    
+
     func test_argument_shift() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
@@ -70,11 +70,11 @@ class ScriptTests: XCTestCase {
         let script = try Script("forage.cmd", loader: loader, gameContext: context)
         script.run(["one", "two"])
         XCTAssertEqual(script.context.args, ["one", "two"])
-        XCTAssertEqual(script.context.argumentVars, ["0":"one two", "1": "one","2": "two"])
+        XCTAssertEqual(script.context.argumentVars, ["0": "one two", "1": "one", "2": "two"])
 
         script.context.shiftArgs()
         XCTAssertEqual(script.context.args, ["two"])
-        XCTAssertEqual(script.context.argumentVars, ["0":"two", "1": "two"])
+        XCTAssertEqual(script.context.argumentVars, ["0": "two", "1": "two"])
 
         script.context.shiftArgs()
         XCTAssertEqual(script.context.args, [])

@@ -176,6 +176,7 @@ class CommandMode: IScriptReaderMode {
     var knownCommands: [String: IScriptReaderMode?] = [
         "action": ActionMode(),
         "debug": DebugMode(),
+        "debuglevel": DebugMode(),
         "echo": EchoMode(),
         "exit": ExitMode(),
         "gosub": GosubMode(),

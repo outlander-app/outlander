@@ -58,7 +58,7 @@ class ScriptContext {
     var labelVars: [String: String] = [:]
     var regexVars: [String: String] = [:]
     var currentLineNumber: Int = -1
-    
+
     var currentLine: ScriptLine? {
         if currentLineNumber < 0 || currentLineNumber >= lines.count {
             return nil
@@ -130,7 +130,7 @@ class ScriptContext {
     func setArgumentVars(_ args: [String]) {
         self.args = args
         argumentVars = [:]
-        
+
         guard args.count > 0 else {
             return
         }
@@ -142,7 +142,7 @@ class ScriptContext {
     }
 
     func shiftArgs() {
-        guard self.args.count > 0 else {
+        guard args.count > 0 else {
             return
         }
         setArgumentVars(Array(args.dropFirst()))
@@ -278,7 +278,7 @@ class Script {
         // if
         // else if
         // else
-        // if_arg
+        // if_0
         // math
         // unvar
         // wait eval
@@ -591,14 +591,14 @@ class Script {
         delayedTask?.cancel()
         matchwait = nil
         matchStack.removeAll()
-        
+
         context.setLabelVars(args)
 
         let command = isGosub ? "gosub" : "goto"
 
         notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber)
 
-        let line = self.context.lines[target.line]
+        let line = context.lines[target.line]
         let gosubContext = GosubContext(label: target, line: line, arguments: args, isGosub: isGosub)
 
         if isGosub {
@@ -693,10 +693,10 @@ class Script {
         guard case let .gosub(label, args) = token else {
             return .next
         }
-    
+
         // TODO: check gosub stack > 100
         // Potential infinite loop of 100+ gosubs - use gosub clear if this is intended
-        
+
         let replacedLabel = context.replaceVars(label)
 
         if replacedLabel == "clear" {
@@ -855,19 +855,19 @@ class Script {
 
         return .next
     }
-    
+
     func handleReturn(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case .return = token else {
             return .next
         }
 
-        guard let ctx = self.gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
+        guard let ctx = gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
             notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
-            sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .exit
         }
 
-        if let prev = self.gosubStack.last {
+        if let prev = gosubStack.last {
             context.setLabelVars(prev.arguments)
         } else {
             context.setLabelVars([])
@@ -876,7 +876,7 @@ class Script {
         // TODO: set ifStack
 
         notify("returning to line \(returnToLine.lineNumber)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
-        
+
         context.currentLineNumber = returnToIndex
 
         return .next
@@ -894,7 +894,7 @@ class Script {
 
         return .next
     }
-    
+
     func handleSend(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .send(text) = token else {
             return .next
@@ -909,7 +909,7 @@ class Script {
 
         return .next
     }
-    
+
     func handleShift(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case .shift = token else {
             return .next
