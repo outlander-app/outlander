@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Expression {
+enum Expression: Hashable {
     case value(String)
     case function(String, String)
     indirect case expression(Expression)
@@ -20,6 +20,7 @@ enum ScriptTokenValue: Hashable {
     case comment(String)
     case debug(String)
     case echo(String)
+    case eval(String, Expression)
     case exit
     case gosub(String, String)
     case goto(String)
@@ -38,6 +39,7 @@ enum ScriptTokenValue: Hashable {
     case send(String)
     case shift
     case variable(String, String)
+    case waitEval(String)
     case waitforPrompt(String)
     case waitfor(String)
     case waitforre(String)
@@ -56,6 +58,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "debug"
         case .echo:
             return "echo"
+        case .eval:
+            return "eval"
         case .exit:
             return "exit"
         case .gosub:
@@ -92,6 +96,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "shift"
         case .variable:
             return "variable"
+        case .waitEval:
+            return "waiteval"
         case .waitforPrompt:
             return "wait"
         case .waitfor:
@@ -99,6 +105,12 @@ extension ScriptTokenValue: CustomStringConvertible {
         case .waitforre:
             return "waitforre"
         }
+    }
+}
+
+extension ScriptTokenValue: Equatable {
+    static func == (lhs: ScriptTokenValue, rhs: ScriptTokenValue) -> Bool {
+        lhs.description == rhs.description
     }
 }
 
@@ -181,6 +193,7 @@ class CommandMode: IScriptReaderMode {
         "debug": DebugMode(),
         "debuglevel": DebugMode(),
         "echo": EchoMode(),
+        "eval": EvalMode(),
         "exit": ExitMode(),
         "gosub": GosubMode(),
         "goto": GotoMode(),
@@ -199,6 +212,7 @@ class CommandMode: IScriptReaderMode {
         "shift": ShiftMode(),
         "setvariable": VariableMode(),
         "var": VariableMode(),
+        "waiteval": WaitEvalMode(),
         "wait": WaitforPromptMode(),
         "waitfor": WaitforMode(),
         "waitforre": WaitforReMode(),
@@ -292,6 +306,13 @@ class EchoMode: IScriptReaderMode {
     }
 }
 
+class EvalMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        return nil
+    }
+}
+
 class ExitMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.target.append(.exit)
@@ -354,18 +375,18 @@ class MathMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let variable = context.text.parseWord()
-        
+
         guard variable.count > 0 else {
             return nil
         }
 
         context.text.consumeSpaces()
         let action = context.text.parseWord()
-        
+
         guard action.count > 0 else {
             return nil
         }
-    
+
         context.text.consumeSpaces()
         let number = String(context.text.parseToEnd())
 
@@ -462,6 +483,15 @@ class VariableMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let value = String(context.text.parseToEnd())
         context.target.append(.variable(variable, value))
+        return nil
+    }
+}
+
+class WaitEvalMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(.waitEval(rest))
         return nil
     }
 }

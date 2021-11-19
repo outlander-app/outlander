@@ -58,7 +58,7 @@ class MatchreMessage: IMatch {
     }
 
     func isMatch(_ text: String, _ context: ScriptContext) -> Bool {
-        let val = context.replaceVars(text)
+        let val = context.replaceVars(value)
         var txt = text
         let regex = RegexFactory.get(val)
         guard let match = regex?.firstMatch(&txt) else {

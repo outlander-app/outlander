@@ -15,8 +15,8 @@ protocol Events {
 }
 
 extension Events {
-    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono _: Bool = false) {
-        let data = TextData(text: "\(text)\n", preset: preset, color: color)
+    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
+        let data = TextData(text: "\(text)\n", preset: preset, color: color, mono: mono)
         post("ol:text", data: data)
     }
 

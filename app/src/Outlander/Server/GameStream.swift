@@ -542,8 +542,30 @@ enum StreamCommand: CustomStringConvertible {
         switch self {
         case .text:
             return "text"
-        default:
-            return "other stream command"
+        case .clearStream:
+            return "clearStream"
+        case .createWindow:
+            return "createWindow"
+        case .vitals:
+            return "vitals"
+        case .launchUrl:
+            return "launchUrl"
+        case .spell:
+            return "spell"
+        case .roundtime:
+            return "roundtime"
+        case .room:
+            return "room"
+        case .compass:
+            return "compass"
+        case .hands:
+            return "hands"
+        case .character:
+            return "character"
+        case .indicator:
+            return "indicator"
+        case .prompt:
+            return "prompt"
         }
     }
 }

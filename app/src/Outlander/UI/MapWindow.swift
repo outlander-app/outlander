@@ -63,7 +63,7 @@ class MapWindow: NSWindowController {
 
         mapView?.nodeTravelTo = { node in
             self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "scriptinput")
-            self.context?.events.sendCommand(Command2(command: "#goto \(node.id)"))
+            self.context?.events.sendCommand(Command2(command: "#goto \(node.id)", isSystemCommand: true))
         }
 
         mapView?.nodeClicked = { node in

@@ -10,7 +10,7 @@ import Foundation
 
 func delay(_ delay: Double, _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
-    // TODO: swap from main queue
+    // TODO: swap from main queue?
     DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: task)
     return task
 }
@@ -73,6 +73,10 @@ class ScriptContext {
         }
 
         return lines[currentLineNumber - 1]
+    }
+
+    var roundtime: Double? {
+        Double(context.globalVars["roundtime"] ?? "")
     }
 
     init(context: GameContext) {
@@ -139,6 +143,21 @@ class ScriptContext {
         for (index, param) in args.enumerated() {
             argumentVars["\(index + 1)"] = param.trimmingCharacters(in: CharacterSet(["\""]))
         }
+
+        let originalCount = self.args.count
+
+        let maxArgs = 9
+
+        let diff = maxArgs - originalCount
+
+        if diff > 0 {
+            let start = maxArgs - diff
+            for index in start ..< maxArgs {
+                argumentVars["\(index + 1)"] = ""
+            }
+        }
+
+        variables["argcount"] = "\(originalCount)"
     }
 
     func shiftArgs() {
@@ -251,6 +270,7 @@ class Script {
     var loader: IScriptLoader
     var context: ScriptContext
     var gameContext: GameContext
+    let funcEvaluator: FunctionEvaluator
 
     var includeRegex: Regex
     var labelRegex: Regex
@@ -273,21 +293,23 @@ class Script {
         labelRegex = RegexFactory.get("^\\s*(\\w+((\\.|-|\\w)+)?):")!
 
         context = ScriptContext(context: gameContext)
+        context.variables["scriptname"] = fileName
+        funcEvaluator = FunctionEvaluator(context.replaceVars)
+
         // eval
         // eval math
         // if
         // else if
         // else
         // if_0
-        // math
         // unvar
-        // wait eval
         tokenHandlers = [:]
         tokenHandlers["action"] = handleAction
         tokenHandlers["actiontoggle"] = handleActionToggle
         tokenHandlers["comment"] = handleComment
         tokenHandlers["debug"] = handleDebug
         tokenHandlers["echo"] = handleEcho
+        tokenHandlers["eval"] = handleEval
         tokenHandlers["exit"] = handleExit
         tokenHandlers["gosub"] = handleGosub
         tokenHandlers["goto"] = handleGoto
@@ -306,6 +328,7 @@ class Script {
         tokenHandlers["send"] = handleSend
         tokenHandlers["shift"] = handleShift
         tokenHandlers["variable"] = handleVariable
+        tokenHandlers["waiteval"] = handleWaitEval
         tokenHandlers["wait"] = handleWaitforPrompt
         tokenHandlers["waitfor"] = handleWaitfor
         tokenHandlers["waitforre"] = handleWaitforRe
@@ -363,6 +386,19 @@ class Script {
         case .advanceToNextBlock: cancel()
         case .advanceToEndOfBlock: cancel()
         }
+    }
+
+    func nextAfterRoundtime() {
+        if let roundtime = context.roundtime {
+            if roundtime > 0 {
+                delayedTask = delay(roundtime) {
+                    self.nextAfterRoundtime()
+                }
+                return
+            }
+        }
+
+        next()
     }
 
     func pause() {
@@ -483,7 +519,7 @@ class Script {
 
         switch result {
         case .exit: cancel()
-        case .next: next()
+        case .next: nextAfterRoundtime()
         default: return
         }
     }
@@ -676,7 +712,21 @@ class Script {
         let targetText = context.replaceVars(text)
         notify("echo \(targetText)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
-        gameContext.events.echoText(targetText, preset: "scriptecho")
+        gameContext.events.echoText(targetText, preset: "scriptecho", mono: true)
+        return .next
+    }
+
+    func handleEval(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .eval(variable, expression) = token else {
+            return .next
+        }
+
+        let result = funcEvaluator.evaluateBool(expression)
+
+        notify("eval \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber)
+
+        context.variables[variable] = result.result
+
         return .next
     }
 
@@ -695,14 +745,16 @@ class Script {
             return .next
         }
 
-        // TODO: check gosub stack > 100
-        // Potential infinite loop of 100+ gosubs - use gosub clear if this is intended
+        guard gosubStack.count <= 100 else {
+            sendText("Potential infinite loop of 100+ gosubs - use gosub clear if this is intended", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+            return .exit
+        }
 
         let replacedLabel = context.replaceVars(label)
 
         if replacedLabel == "clear" {
-            // TODO: clear gosub stack
             notify("gosub clear", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+            gosubStack.clear()
             return .next
         }
 
@@ -743,7 +795,7 @@ class Script {
             return .next
         }
 
-        matchStack.append(MatchMessage(label, value, line.lineNumber))
+        matchStack.append(MatchreMessage(label, value, line.lineNumber))
         return .next
     }
 
@@ -774,7 +826,7 @@ class Script {
 
         return .wait
     }
-    
+
     func handleMath(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .math(variable, function, number) = token else {
             return .next
@@ -783,45 +835,40 @@ class Script {
         let existingVariable = context.replaceVars(context.variables[variable] ?? "0")
 
         guard let existingValue = Double(existingVariable) else {
-            self.sendText("unable to convert '\(existingVariable)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            sendText("unable to convert '\(existingVariable)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .next
         }
 
         guard let numberValue = Double(number) else {
-            self.sendText("unable to convert '\(number)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            sendText("unable to convert '\(number)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .next
         }
-        
+
         var result: Double = 0
 
         switch function.lowercased() {
         case "set":
             result = numberValue
-            break
-            
+
         case "add":
             result = existingValue + numberValue
-            break
-            
+
         case "subtract":
             result = existingValue - numberValue
-            break
-            
+
         case "multiply":
             result = existingValue * numberValue
-            break
 
         case "divide":
             guard numberValue != 0 else {
-                self.sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+                sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
                 return .next
             }
 
             result = existingValue / numberValue
-            break
-            
+
         default:
-            self.sendText("unknown math function '\(function)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            sendText("unknown math function '\(function)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
             return .next
         }
 
@@ -832,9 +879,9 @@ class Script {
         }
 
         context.variables[variable] = textResult
-        
+
         notify("math \(variable): \(existingValue) \(function) \(numberValue) = \(textResult)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
-        
+
         return .next
     }
 
@@ -849,7 +896,7 @@ class Script {
 
         reactToStream.append(MoveOp())
 
-        let command = Command2(command: send)
+        let command = Command2(command: send, fileName: fileName, preset: "scriptinput")
         gameContext.events.sendCommand(command)
 
         return .wait
@@ -966,9 +1013,9 @@ class Script {
 
         let result = context.replaceVars(text)
 
-        notify("#send \(result)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
+        notify("send \(result)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
 
-        let command = Command2(command: "#send \(result)")
+        let command = Command2(command: "#send \(result)", fileName: fileName, preset: "scriptinput")
         gameContext.events.sendCommand(command)
 
         return .next
@@ -1001,6 +1048,18 @@ class Script {
         return .next
     }
 
+    func handleWaitEval(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .waitEval(text) = token else {
+            return .next
+        }
+
+        notify("waiteval \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
+
+        reactToStream.append(WaitEvalOp(text))
+
+        return .wait
+    }
+
     func handleWaitforPrompt(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .waitforPrompt(text) = token else {
             return .next
@@ -1008,7 +1067,7 @@ class Script {
 
         notify("wait \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
-        reactToStream.append(WaitforOp(text))
+        reactToStream.append(WaitforPromptOp())
 
         return .wait
     }

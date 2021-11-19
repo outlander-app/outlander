@@ -19,6 +19,7 @@ struct Command2 {
     var command: String
     var isSystemCommand: Bool = false
     var fileName: String = ""
+    var preset: String = ""
 }
 
 class CommandProcesssor {
@@ -81,7 +82,7 @@ class CommandProcesssor {
                 }
             }
             if !handled {
-                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName))
+                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
             }
         }
     }

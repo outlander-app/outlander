@@ -8,6 +8,33 @@
 
 import Foundation
 
+public class Queue<T> {
+    private var queue: [T] = []
+
+    public func queue(_ item: T) {
+        queue.append(item)
+    }
+
+    public func dequeue() -> T? {
+        guard queue.count > 0 else {
+            return nil
+        }
+        return queue.remove(at: 0)
+    }
+
+    public func peek() -> T? {
+        queue.first
+    }
+
+    public func hasItems() -> Bool {
+        queue.count > 0
+    }
+
+    public var count: Int {
+        queue.count
+    }
+}
+
 public class Stack<T> {
     private var stack: [T] = []
     private var maxCapacity = 0
@@ -25,7 +52,10 @@ public class Stack<T> {
     }
 
     public func pop() -> T? {
-        stack.remove(at: stack.count - 1)
+        guard stack.count > 0 else {
+            return nil
+        }
+        return stack.remove(at: stack.count - 1)
     }
 
     public func peek() -> T? {

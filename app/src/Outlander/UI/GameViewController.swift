@@ -58,6 +58,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var game: String = "DR"
     var character: String = ""
 
+    var shouldUpdateRoom: Bool = false
+
     private var apperanceObserver: NSKeyValueObservation?
 
     override func viewDidLoad() {
@@ -130,7 +132,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
-                    self?.scriptRunner?.stream(tag.text, [])
+                    if tag.window != "raw" {
+                        self?.scriptRunner?.stream(tag.text, [])
+                    }
                 }
 
             case let .vitals(name, value):
@@ -170,7 +174,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 }
 
             case .room:
-                self?.updateRoom()
+                self?.shouldUpdateRoom = true
 
             case let .character(game, character):
                 self?.game = game
@@ -185,6 +189,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case .compass:
                 DispatchQueue.main.async {
                     self?.statusBarController?.avaialbleDirections = self?.gameContext.availableExits() ?? []
+                }
+
+            case .prompt:
+                DispatchQueue.main.async {
+                    if self?.shouldUpdateRoom == true {
+                        self?.shouldUpdateRoom = false
+                        self?.updateRoom()
+                    }
                 }
 
             default:
@@ -207,11 +219,17 @@ class GameViewController: NSViewController, NSWindowDelegate {
             guard let command = result as? Command2 else {
                 return
             }
-    
-            let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
-            let preset = command.fileName.count > 0 ? "scriptinput" : nil
 
-            self.logText(text, preset: preset, playerCommand: !command.isSystemCommand)
+            let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
+            let mono = command.fileName.count > 0 ? true : false
+
+            var preset = command.fileName.count > 0 ? "scriptinput" : nil
+
+            if command.preset.count > 0 {
+                preset = command.preset
+            }
+
+            self.logText(text, preset: preset, mono: mono, playerCommand: !command.isSystemCommand)
             self.gameServer?.sendCommand(command.command)
         }
 
@@ -259,7 +277,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     self.pluginManager.variableChanged(variable: key, value: value)
 
                     if key == "zoneid" || key == "roomid" {
-                        self.updateRoom()
+                        self.shouldUpdateRoom = true
                     }
 
                     if indicators.contains(key) {
@@ -670,11 +688,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func windowFor(name: String) -> String? {
-        if let window = gameWindows[name] {
-            if window.visible { return name }
+        if let window = gameWindows[name.lowercased()] {
+            if window.visible { return name.lowercased() }
 
             if let closedTarget = window.closedTarget, closedTarget.count > 0 {
-                return windowFor(name: closedTarget)
+                return windowFor(name: closedTarget.lowercased())
             }
 
             return nil

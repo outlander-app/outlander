@@ -125,8 +125,38 @@ class NextRoomOp: IWantStreamInfo {
     }
 
     func execute(_ script: Script, _: ScriptContext) {
-        // TODO: next after roundtime
-        script.next()
+        script.nextAfterRoundtime()
+    }
+}
+
+class WaitEvalOp: IWantStreamInfo {
+    var id = ""
+    private let evaluator: ExpressionEvaluator
+    private let expression: String
+
+    init(_ expression: String) {
+        id = UUID().uuidString
+        evaluator = ExpressionEvaluator()
+        self.expression = expression
+    }
+
+    func stream(_: String, _ commands: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+        for cmd in commands {
+            switch cmd {
+            case .prompt:
+                let simplified = context.replaceVars(expression)
+                if evaluator.evaluateLogic(simplified) {
+                    return .match("waiteval = true")
+                }
+            default:
+                continue
+            }
+        }
+        return .none
+    }
+
+    func execute(_ script: Script, _: ScriptContext) {
+        script.nextAfterRoundtime()
     }
 }
 
@@ -151,8 +181,7 @@ class WaitforPromptOp: IWantStreamInfo {
     }
 
     func execute(_ script: Script, _: ScriptContext) {
-        // TODO: next after roundtime
-        script.next()
+        script.nextAfterRoundtime()
     }
 }
 
