@@ -295,6 +295,7 @@ class Script {
         tokenHandlers["match"] = handleMatch
         tokenHandlers["matchre"] = handleMatchre
         tokenHandlers["matchwait"] = handleMatchwait
+        tokenHandlers["math"] = handleMath
         tokenHandlers["move"] = handleMove
         tokenHandlers["nextroom"] = handleNextroom
         tokenHandlers["pause"] = handlePause
@@ -773,6 +774,69 @@ class Script {
 
         return .wait
     }
+    
+    func handleMath(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .math(variable, function, number) = token else {
+            return .next
+        }
+
+        let existingVariable = context.replaceVars(context.variables[variable] ?? "0")
+
+        guard let existingValue = Double(existingVariable) else {
+            self.sendText("unable to convert '\(existingVariable)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            return .next
+        }
+
+        guard let numberValue = Double(number) else {
+            self.sendText("unable to convert '\(number)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            return .next
+        }
+        
+        var result: Double = 0
+
+        switch function.lowercased() {
+        case "set":
+            result = numberValue
+            break
+            
+        case "add":
+            result = existingValue + numberValue
+            break
+            
+        case "subtract":
+            result = existingValue - numberValue
+            break
+            
+        case "multiply":
+            result = existingValue * numberValue
+            break
+
+        case "divide":
+            guard numberValue != 0 else {
+                self.sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+                return .next
+            }
+
+            result = existingValue / numberValue
+            break
+            
+        default:
+            self.sendText("unknown math function '\(function)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: self.fileName)
+            return .next
+        }
+
+        var textResult = "\(result)"
+
+        if result == rint(result) {
+            textResult = "\(Int(result))"
+        }
+
+        context.variables[variable] = textResult
+        
+        notify("math \(variable): \(existingValue) \(function) \(numberValue) = \(textResult)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
+        
+        return .next
+    }
 
     func handleMove(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .move(text) = token else {
@@ -829,7 +893,7 @@ class Script {
 
         notify("put \(send)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber)
 
-        let command = Command2(command: send)
+        let command = Command2(command: send, fileName: fileName)
         gameContext.events.sendCommand(command)
 
         return .next

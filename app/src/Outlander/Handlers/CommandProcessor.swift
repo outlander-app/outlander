@@ -18,6 +18,7 @@ protocol ICommandHandler {
 struct Command2 {
     var command: String
     var isSystemCommand: Bool = false
+    var fileName: String = ""
 }
 
 class CommandProcesssor {
@@ -80,7 +81,7 @@ class CommandProcesssor {
                 }
             }
             if !handled {
-                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand))
+                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName))
             }
         }
     }

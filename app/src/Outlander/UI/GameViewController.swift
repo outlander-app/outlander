@@ -207,8 +207,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
             guard let command = result as? Command2 else {
                 return
             }
+    
+            let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
+            let preset = command.fileName.count > 0 ? "scriptinput" : nil
 
-            self.logText("\(command.command)\n", playerCommand: !command.isSystemCommand)
+            self.logText(text, preset: preset, playerCommand: !command.isSystemCommand)
             self.gameServer?.sendCommand(command.command)
         }
 

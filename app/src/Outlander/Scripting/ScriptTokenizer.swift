@@ -27,6 +27,7 @@ enum ScriptTokenValue: Hashable {
     case match(String, String)
     case matchre(String, String)
     case matchwait(String)
+    case math(String, String, String)
     case move(String)
     case nextroom
     case pause(String)
@@ -69,6 +70,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "matchre"
         case .matchwait:
             return "matchwait"
+        case .math:
+            return "math"
         case .move:
             return "move"
         case .nextroom:
@@ -184,6 +187,7 @@ class CommandMode: IScriptReaderMode {
         "match": MatchMode(),
         "matchre": MatchreMode(),
         "matchwait": MatchwaitMode(),
+        "math": MathMode(),
         "move": MoveMode(),
         "nextroom": NextroomMode(),
         "pause": PauseMode(),
@@ -342,6 +346,34 @@ class MatchwaitMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(.matchwait(rest))
+        return nil
+    }
+}
+
+class MathMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let variable = context.text.parseWord()
+        
+        guard variable.count > 0 else {
+            return nil
+        }
+
+        context.text.consumeSpaces()
+        let action = context.text.parseWord()
+        
+        guard action.count > 0 else {
+            return nil
+        }
+    
+        context.text.consumeSpaces()
+        let number = String(context.text.parseToEnd())
+
+        guard number.count > 0 else {
+            return nil
+        }
+
+        context.target.append(.math(String(variable), String(action), String(number)))
         return nil
     }
 }

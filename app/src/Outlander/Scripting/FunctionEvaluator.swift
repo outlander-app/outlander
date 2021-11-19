@@ -23,6 +23,22 @@ class FunctionEvaluator {
         evaluator = ExpressionEvaluator()
     }
 
+    func evaluateBool(_ e: Expression) -> EvalResult {
+        switch e {
+        case let .value(val):
+            let simp = simplify(val)
+            let result = evaluator.evaluateLogic(simp)
+            return EvalResult(text: simp, result: "\(result)", groups: [])
+        case let .function(name, args):
+            let simp = simplify(args)
+            let (result, groups) = executeFunction(name, simp)
+            let text = "\(name)(\(simp))"
+            return EvalResult(text: text, result: result, groups: groups)
+        case let .expression(exp):
+            return evaluateBool(exp)
+        }
+    }
+
     func evaluateValue(_ e: Expression) -> EvalResult {
         switch e {
         case let .value(val):
