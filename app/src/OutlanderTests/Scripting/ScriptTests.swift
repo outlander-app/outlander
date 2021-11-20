@@ -70,18 +70,24 @@ class ScriptTests: XCTestCase {
         let script = try Script("forage.cmd", loader: loader, gameContext: context)
         script.run(["one", "two"])
         XCTAssertEqual(script.context.args, ["one", "two"])
-        XCTAssertEqual(script.context.argumentVars, ["0": "one two", "1": "one", "2": "two"])
+        XCTAssertEqual(
+            script.context.argumentVars.keysAndValues(),
+            ["0": "one two", "1": "one", "2": "two", "3": "", "4": "", "5": "", "6": "", "7": "", "8": "", "9": ""]
+        )
 
         script.context.shiftArgs()
         XCTAssertEqual(script.context.args, ["two"])
-        XCTAssertEqual(script.context.argumentVars, ["0": "two", "1": "two"])
+        XCTAssertEqual(
+            script.context.argumentVars.keysAndValues(),
+            ["0": "two", "1": "two", "2": "", "3": "", "4": "", "5": "", "6": "", "7": "", "8": "", "9": ""]
+        )
 
         script.context.shiftArgs()
         XCTAssertEqual(script.context.args, [])
-        XCTAssertEqual(script.context.argumentVars, [:])
+        XCTAssertEqual(script.context.argumentVars.keysAndValues(), [:])
 
         script.context.shiftArgs()
         XCTAssertEqual(script.context.args, [])
-        XCTAssertEqual(script.context.argumentVars, [:])
+        XCTAssertEqual(script.context.argumentVars.keysAndValues(), [:])
     }
 }

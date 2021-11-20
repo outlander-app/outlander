@@ -17,6 +17,7 @@ enum Expression: Hashable {
 enum ScriptTokenValue: Hashable {
     case action(String, String, String)
     case actionToggle(String, String)
+    case brace(String)
     case comment(String)
     case debug(String)
     case echo(String)
@@ -52,6 +53,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "action"
         case .actionToggle:
             return "actiontoggle"
+        case .brace:
+            return "brace"
         case .comment:
             return "comment"
         case .debug:
@@ -238,6 +241,9 @@ class CommandMode: IScriptReaderMode {
             }
 
             let command = String(result).lowercased()
+            
+            // TODO: check for if_
+            
             if let mode = knownCommands[command] {
                 return mode
             } else {

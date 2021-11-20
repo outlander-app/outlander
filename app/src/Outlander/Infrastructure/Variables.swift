@@ -42,21 +42,48 @@ enum DynamicValue {
     }
 }
 
+class GlobalVariables: Variables {
+    private var clock: IClock
+    private var settings: ApplicationSettings
+
+    init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
+        self.clock = clock
+        self.settings = settings
+        super.init(eventKey: "ol:variable:changed", events: events)
+    }
+
+    override func addDynamics() {
+        addDynamic(key: "date", value: .dynamic {
+            Variables.dateFormatter.dateFormat = self.settings.variableDateFormat
+            return Variables.dateFormatter.string(from: self.clock.now)
+        })
+
+        addDynamic(key: "datetime", value: .dynamic {
+            Variables.dateFormatter.dateFormat = self.settings.variableDatetimeFormat
+            return Variables.dateFormatter.string(from: self.clock.now)
+        })
+
+        addDynamic(key: "time", value: .dynamic {
+            Variables.dateFormatter.dateFormat = self.settings.variableTimeFormat
+            return Variables.dateFormatter.string(from: self.clock.now)
+        })
+    }
+}
+
 class Variables {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)")
+    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)", attributes: .concurrent)
     private var vars: [String: DynamicValue] = [:]
     private var events: Events
-    private var settings: ApplicationSettings
-    private var clock: IClock
 
-    private static var dynamicKeys: [String] = ["date", "datetime", "time"]
+    private var eventKey: String
+
+    private var dynamicKeys: [String] = []
 
     static var dateFormatter = DateFormatter()
 
-    init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
+    init(eventKey: String, events: Events = NulloEvents()) {
         self.events = events
-        self.settings = settings
-        self.clock = clock
+        self.eventKey = eventKey
 
         addDynamics()
     }
@@ -67,19 +94,22 @@ class Variables {
                 vars[key]?.rawValue
             }
         }
-        set(newValue) {
-            lockQueue.sync(flags: .barrier) {
-                guard !Variables.dynamicKeys.contains(key) else {
+        set {
+            lockQueue.async(flags: .barrier) {
+                guard !self.dynamicKeys.contains(key) else {
                     return
                 }
 
                 let res = newValue ?? ""
-                guard vars[key]?.rawValue != res else {
+                guard self.vars[key]?.rawValue != res else {
                     return
                 }
-                vars[key] = .value(res)
+                self.vars[key] = .value(res)
                 DispatchQueue.main.async {
-                    self.events.variableChanged(key, value: res)
+                    if self.eventKey.count > 0 {
+                        print("var changed: \(key): \(res)")
+                        self.events.post(self.eventKey, data: [key: res])
+                    }
                 }
             }
         }
@@ -98,34 +128,30 @@ class Variables {
         }
     }
 
-    func sorted() -> [(String, DynamicValue)] {
+    func keysAndValues() -> [String: String] {
         lockQueue.sync(flags: .barrier) {
-            vars.sorted(by: { $0.key < $1.key })
+            Dictionary(uniqueKeysWithValues: vars.sorted(by: { $0.key < $1.key }).map { key, value in (key, value.rawValue ?? "") })
         }
     }
 
-    func keys() -> [String] {
+    func sorted() -> [(String, String)] {
+        lockQueue.sync(flags: .barrier) {
+            vars.sorted(by: { $0.key < $1.key }).map { key, value in (key, value.rawValue ?? "") }
+        }
+    }
+
+    var keys: [String] {
         lockQueue.sync(flags: .barrier) {
             vars.map { $0.key }.sorted(by: { $0.count > $1.count })
         }
     }
 
-    private func addDynamics() {
-        vars["date"] = .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableDateFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
-        }
-
-        vars["datetime"] = .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableDatetimeFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
-        }
-
-        vars["time"] = .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableTimeFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
-        }
+    func addDynamic(key: String, value: DynamicValue) {
+        dynamicKeys.append(key)
+        vars[key] = value
     }
+
+    open func addDynamics() {}
 }
 
 struct VariableSetting {
@@ -149,7 +175,7 @@ class VariableContext {
 class VariableReplacer {
     func replace(_ input: String, globalVars: Variables) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: globalVars.keys(), values: { key in globalVars[key] })
+        context.add("$", sortedKeys: globalVars.keys, values: { key in globalVars[key] })
         return replace(input, context: context)
     }
 

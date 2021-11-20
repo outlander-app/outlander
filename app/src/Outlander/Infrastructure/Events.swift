@@ -41,6 +41,14 @@ struct TextData {
     var mono: Bool = false
 }
 
+class NulloEvents: Events {
+    func post(_: String, data _: Any?) {}
+
+    func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
+
+    func unregister(_: AnyObject) {}
+}
+
 class SwiftEventBusEvents: Events {
     public static var instance: Int = 0
 

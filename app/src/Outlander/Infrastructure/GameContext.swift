@@ -50,7 +50,7 @@ class GameContext {
     }
 
     init() {
-        globalVars = Variables(events: events, settings: applicationSettings)
+        globalVars = GlobalVariables(events: events, settings: applicationSettings)
     }
 }
 

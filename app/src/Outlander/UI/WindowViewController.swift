@@ -286,7 +286,11 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
                 let displayTimestamp = first && self.displayTimestamp
 
-                if let str = self.stringFromTag(tag, text: text, timestamp: displayTimestamp) {
+                if let str = self.stringFromTag(tag, text: text) {
+                    if displayTimestamp, let stampStr = self.createTimestamp(for: tag) {
+                        target.append(stampStr)
+                    }
+                    
                     target.append(str)
                 }
                 first = false
@@ -297,7 +301,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
     }
 
-    func stringFromTag(_ tag: TextTag, text: String, timestamp: Bool = false) -> NSMutableAttributedString? {
+    func stringFromTag(_ tag: TextTag, text: String) -> NSMutableAttributedString? {
         guard let context = gameContext else {
             return nil
         }
@@ -342,13 +346,13 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             attributes[NSAttributedString.Key.link] = "command:\(command)"
         }
 
-        var stamped = text
+//        var stamped = text
+//
+//        if timestamp {
+//            stamped = "[\(WindowViewController.dateFormatter.string(from: Date()))] \(text)"
+//        }
 
-        if timestamp {
-            stamped = "[\(WindowViewController.dateFormatter.string(from: Date()))] \(text)"
-        }
-
-        return NSMutableAttributedString(string: stamped, attributes: attributes)
+        return NSMutableAttributedString(string: text, attributes: attributes)
     }
 
     func processHighlights(_ text: NSMutableAttributedString, context: GameContext, highlightMonsters: Bool = false) {
@@ -479,17 +483,33 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             let displayTimestamp = self.displayTimestamp && !tag.playerCommand
 
             let text = self.processSubs(tag.text)
-            guard let str = self.stringFromTag(tag, text: text, timestamp: displayTimestamp) else { return }
+            guard let str = self.stringFromTag(tag, text: text) else { return }
             self.processHighlights(str, context: context)
+
+            if displayTimestamp {
+                if let stampStr = self.createTimestamp(for: tag) {
+                    self.appendWithoutProcessing(stampStr)
+                }
+            }
 
             self.appendWithoutProcessing(str)
         }
     }
 
+    func createTimestamp(for tag: TextTag) -> NSAttributedString? {
+        let stamp = "[\(WindowViewController.dateFormatter.string(from: Date()))] "
+        return self.stringFromTag(TextTag.tagFor(stamp, mono: tag.mono), text: stamp)
+    }
+
     func appendWithoutProcessing(_ text: NSAttributedString) {
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
-            let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
+            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
+            let smartScroll = percentScroll >= CGFloat(0.95)
+
+            if self.name == "main" {
+                print("** Window rect: \(percentScroll)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
+            }
 
             self.textView.textStorage?.append(text)
 
@@ -502,7 +522,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     func setWithoutProcessing(_ text: NSMutableAttributedString) {
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
-            let smartScroll = self.textView.visibleRect.maxY == self.textView.bounds.maxY
+            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
+            let smartScroll = percentScroll >= CGFloat(0.95)
 
             self.textView.textStorage?.setAttributedString(text)
 

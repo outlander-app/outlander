@@ -32,7 +32,7 @@ class VariablesLoaderTests: XCTestCase {
 
     override func setUp() {
         loader = VariablesLoader(fileSystem)
-        context.globalVars = Variables(events: context.events, settings: context.applicationSettings, clock: clock)
+        context.globalVars = GlobalVariables(events: context.events, settings: context.applicationSettings, clock: clock)
     }
 
     func test_load() {

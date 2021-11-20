@@ -8,10 +8,10 @@
 
 import Foundation
 
-func delay(_ delay: Double, _ closure: @escaping () -> Void) -> DispatchWorkItem {
+func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.main, _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
     // TODO: swap from main queue?
-    DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: task)
+    queue.asyncAfter(deadline: .now() + delay, execute: task)
     return task
 }
 
@@ -51,12 +51,12 @@ class ScriptContext {
 
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
-    var variables: [String: String] = [:]
+    var variables = Variables(eventKey: "")
     var args: [String] = []
-    var argumentVars: [String: String] = [:]
-    var actionVars: [String: String] = [:]
-    var labelVars: [String: String] = [:]
-    var regexVars: [String: String] = [:]
+    var argumentVars = Variables(eventKey: "")
+    var actionVars = Variables(eventKey: "")
+    var labelVars = Variables(eventKey: "")
+    var regexVars = Variables(eventKey: "")
     var currentLineNumber: Int = -1
 
     var currentLine: ScriptLine? {
@@ -93,39 +93,39 @@ class ScriptContext {
 
     func replaceVars(_ input: String) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: regexVars.keys.sorted { $0.count > $1.count }, values: { key in self.regexVars[key] })
-        context.add("$", sortedKeys: labelVars.keys.sorted { $0.count > $1.count }, values: { key in self.labelVars[key] })
-        context.add("%", sortedKeys: variables.keys.sorted { $0.count > $1.count }, values: { key in self.variables[key] })
-        context.add("%", sortedKeys: argumentVars.keys.sorted { $0.count > $1.count }, values: { key in self.argumentVars[key] })
-        context.add("$", sortedKeys: self.context.globalVars.keys(), values: { key in self.context.globalVars[key] })
+        context.add("$", sortedKeys: regexVars.keys, values: { key in self.regexVars[key] })
+        context.add("$", sortedKeys: labelVars.keys, values: { key in self.labelVars[key] })
+        context.add("%", sortedKeys: variables.keys, values: { key in self.variables[key] })
+        context.add("%", sortedKeys: argumentVars.keys, values: { key in self.argumentVars[key] })
+        context.add("$", sortedKeys: self.context.globalVars.keys, values: { key in self.context.globalVars[key] })
         return VariableReplacer().replace(input, context: context)
     }
 
     func replaceActionVars(_ input: String) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: actionVars.keys.sorted { $0.count > $1.count }, values: { key in self.actionVars[key] })
-        context.add("%", sortedKeys: variables.keys.sorted { $0.count > $1.count }, values: { key in self.variables[key] })
-        context.add("%", sortedKeys: argumentVars.keys.sorted { $0.count > $1.count }, values: { key in self.argumentVars[key] })
-        context.add("$", sortedKeys: self.context.globalVars.keys(), values: { key in self.context.globalVars[key] })
+        context.add("$", sortedKeys: actionVars.keys, values: { key in self.actionVars[key] })
+        context.add("%", sortedKeys: variables.keys, values: { key in self.variables[key] })
+        context.add("%", sortedKeys: argumentVars.keys, values: { key in self.argumentVars[key] })
+        context.add("$", sortedKeys: self.context.globalVars.keys, values: { key in self.context.globalVars[key] })
         return VariableReplacer().replace(input, context: context)
     }
 
     func setRegexVars(_ vars: [String]) {
-        regexVars = [:]
+        regexVars.removeAll()
         for (index, param) in vars.enumerated() {
             regexVars["\(index)"] = param
         }
     }
 
     func setActionVars(_ vars: [String]) {
-        actionVars = [:]
+        regexVars.removeAll()
         for (index, param) in vars.enumerated() {
             actionVars["\(index)"] = param
         }
     }
 
     func setLabelVars(_ vars: [String]) {
-        labelVars = [:]
+        labelVars.removeAll()
         for (index, param) in vars.enumerated() {
             labelVars["\(index)"] = param
         }
@@ -133,7 +133,7 @@ class ScriptContext {
 
     func setArgumentVars(_ args: [String]) {
         self.args = args
-        argumentVars = [:]
+        argumentVars.removeAll()
 
         guard args.count > 0 else {
             return
@@ -248,7 +248,32 @@ protocol IAction: IWantStreamInfo {
     var enabled: Bool { get set }
 }
 
+@propertyWrapper
+struct Atomic<Value> {
+    private let lock = DispatchSemaphore(value: 1)
+    private var value: Value
+
+    init(wrappedValue value: Value) {
+        self.value = value
+    }
+
+    var wrappedValue: Value {
+        get {
+            lock.wait()
+            defer { lock.signal() }
+            return value
+        }
+        set {
+            lock.wait()
+            value = newValue
+            lock.signal()
+        }
+    }
+}
+
 class Script {
+    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+
     var started: Date?
     var fileName: String = ""
     var debugLevel = ScriptLogLevel.none
@@ -256,11 +281,12 @@ class Script {
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
     private var reactToStream: [IWantStreamInfo] = []
-    private var matchStack: [IMatch] = []
-    private var matchwait: Matchwait?
     private var actions: [IAction] = []
 
     private var gosubStack: Stack<GosubContext>
+
+    @Atomic() private var matchStack: [IMatch] = []
+    @Atomic() private var matchwait: Matchwait? = nil
 
     var stopped = false
     var paused = false
@@ -341,17 +367,19 @@ class Script {
     }
 
     func run(_ args: [String]) {
-        started = Date()
+        lockQueue.async {
+            self.started = Date()
 
-        let formattedDate = Script.dateFormatter.string(from: started!)
+            let formattedDate = Script.dateFormatter.string(from: self.started!)
 
-        sendText("[Starting '\(fileName)' at \(formattedDate)]")
+            self.sendText("[Starting '\(self.fileName)' at \(formattedDate)]")
 
-        context.setArgumentVars(args)
+            self.context.setArgumentVars(args)
 
-        initialize(fileName)
+            self.initialize(self.fileName)
 
-        next()
+            self.next()
+        }
     }
 
     func next() {
@@ -379,9 +407,7 @@ class Script {
 
         switch result {
         case .next: next()
-        case .wait:
-            print("waiting")
-            return
+        case .wait: return
         case .exit: cancel()
         case .advanceToNextBlock: cancel()
         case .advanceToEndOfBlock: cancel()
@@ -391,7 +417,7 @@ class Script {
     func nextAfterRoundtime() {
         if let roundtime = context.roundtime {
             if roundtime > 0 {
-                delayedTask = delay(roundtime) {
+                delayedTask = delay(roundtime, queue: lockQueue) {
                     self.nextAfterRoundtime()
                 }
                 return
@@ -604,12 +630,14 @@ class Script {
     }
 
     func executeToken(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        if let handler = tokenHandlers[token.description] {
-            return handler(line, token)
-        }
+        lockQueue.sync {
+            if let handler = tokenHandlers[token.description] {
+                return handler(line, token)
+            }
 
-        sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
-        return .exit
+            sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+            return .exit
+        }
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
@@ -814,7 +842,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            delayedTask = delay(timeout) {
+            delayedTask = delay(timeout, queue: lockQueue) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -924,7 +952,7 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
 
-        delayedTask = delay(duration) {
+        delayedTask = delay(duration, queue: lockQueue) {
             self.next()
         }
 

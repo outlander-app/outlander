@@ -111,31 +111,27 @@ class ScriptRunner {
     }
 
     private func abort(_ scriptName: String) {
-        var names: [String] = []
+        let aborting = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
 
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.cancel()
-                names.append(script.fileName)
-            }
+        for script in aborting {
+            script.cancel()
+            remove([script.fileName])
         }
-
-        remove(names)
     }
 
     private func pause(_ scriptName: String) {
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.pause()
-            }
+        let pausing = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in pausing {
+            script.pause()
         }
     }
 
     private func resume(_ scriptName: String) {
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.resume()
-            }
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.resume()
         }
     }
 
