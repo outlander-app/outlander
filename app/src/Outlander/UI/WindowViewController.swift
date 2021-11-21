@@ -458,6 +458,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         queue?.async {
+            var addedNewline = false
             if self.lastTag?.isPrompt == true, !tag.playerCommand {
                 // skip multiple prompts of the same type
                 if tag.isPrompt, self.lastTag?.text == tag.text {
@@ -465,7 +466,11 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 }
 
                 self.appendWithoutProcessing(NSAttributedString(string: "\n"))
+                addedNewline = true
             }
+            
+            // TODO: do not display timestamp if previous tag did not end with a newline
+            let previousEndendWithNewline = addedNewline || self.lastTag?.text.hasSuffix("\n") ?? true
 
             self.lastTag = tag
 
@@ -474,7 +479,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 return
             }
 
-            let displayTimestamp = self.displayTimestamp && !tag.playerCommand
+            let displayTimestamp = self.displayTimestamp && previousEndendWithNewline && !tag.playerCommand
 
             let text = self.processSubs(tag.text)
             guard let str = self.stringFromTag(tag, text: text) else { return }

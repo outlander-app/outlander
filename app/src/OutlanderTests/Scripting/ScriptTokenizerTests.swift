@@ -583,9 +583,43 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func test_else_single_line() throws {
+    func test_else_single_line_with_then() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("else then echo hello")
+
+        switch token {
+        case let .elseSingle(token):
+            switch token {
+            case let .echo(text):
+                XCTAssertEqual(text, "hello")
+            default:
+                XCTFail("wrong value, found \(String(describing: token.description))")
+            }
+        default:
+            XCTFail("wrong token value, found \(String(describing: token?.description))")
+        }
+    }
+    
+    func test_else_single_line_without_then() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("else echo hello")
+
+        switch token {
+        case let .elseSingle(token):
+            switch token {
+            case let .echo(text):
+                XCTAssertEqual(text, "hello")
+            default:
+                XCTFail("wrong value, found \(String(describing: token.description))")
+            }
+        default:
+            XCTFail("wrong token value, found \(String(describing: token?.description))")
+        }
+    }
+
+    func test_else_single_line_without_then_with_brackets() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("else { echo hello }")
 
         switch token {
         case let .elseSingle(token):

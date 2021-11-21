@@ -115,7 +115,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.handleRawStream(data: str, streamData: true)
             case .closed:
                 self?.gameStream?.reset()
-                self?.logText("\n\(self?.timestamp() ?? "")Disconnected from game server\n")
+                self?.logText("\n\(self?.timestamp() ?? "")Disconnected from game server\n", mono: true)
                 self?.updateWindowTitle()
                 self?.saveSettings()
             }
@@ -413,24 +413,23 @@ class GameViewController: NSViewController, NSWindowDelegate {
         reloadWindows(gameContext.applicationSettings.profile.layout) {
             self.reloadTheme()
             self.printSettingsLocations()
-            self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: true, playerCommand: false)
+            self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: false, playerCommand: false)
 
             self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-//            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
             self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
             self.updateWindowTitle()
         }
     }
 
     func printSettingsLocations() {
-        logText("Config: \(gameContext.applicationSettings.paths.config.path)\n", mono: true, playerCommand: false)
-        logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: true, playerCommand: false)
-        logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: true, playerCommand: false)
-        logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: true, playerCommand: false)
-        logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: true, playerCommand: false)
+        logText("Config: \(gameContext.applicationSettings.paths.config.path)\n", mono: false, playerCommand: false)
+        logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: false, playerCommand: false)
+        logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: false, playerCommand: false)
+        logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: false, playerCommand: false)
+        logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: false, playerCommand: false)
     }
 
     func reloadTheme() {}
@@ -448,12 +447,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         if command == "layout:SaveDefault" {
             gameContext.applicationSettings.profile.layout = "default.cfg"
-//            let layout = buildWindowsLayout()
-//            windowLayoutLoader?.save(
-//                applicationSettings!,
-//                file: "default.cfg",
-//                windows: layout
-//            )
+            let layout = buildWindowsLayout()
+            windowLayoutLoader?.save(
+                applicationSettings!,
+                file: "default.cfg",
+                windows: layout
+            )
 
             return
         }
@@ -529,8 +528,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     func saveSettings() {
         ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
         ProfileLoader(fileSystem!).save(gameContext)
-        let str = "\(timestamp())settings saved\n"
-        logText(str, mono: true, playerCommand: false)
+        logText("\(timestamp())settings saved\n", mono: true, playerCommand: false)
     }
 
     func buildWindowsLayout() -> WindowLayout {
@@ -631,11 +629,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //                    self?.logText("Connected to authentication server\n")
 
                 case let .success(connection):
-                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n")
+                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                 case .closed:
-                    self?.logText("Disconnected from authentication server\n")
+                    self?.logText("Disconnected from authentication server\n", mono: true)
 
                 case let .error(error):
                     self?.logError("\(error)\n")

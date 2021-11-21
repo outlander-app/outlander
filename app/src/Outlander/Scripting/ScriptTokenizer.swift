@@ -313,6 +313,8 @@ class CommandMode: IScriptReaderMode {
     ]
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeWhitespace()
+
         let first = context.text.first
         guard first != nil else {
             return nil
@@ -402,7 +404,7 @@ class LeftBraceMode: IScriptReaderMode {
         guard context.text.count == 0 else {
             return CommandMode()
         }
-        
+
         context.target.append(.leftBrace)
 
         return nil
@@ -486,8 +488,24 @@ class ElseMode: IScriptReaderMode {
             return nil
         }
 
-        if maybeThen == "{" || maybeBrace == "{" {
+        var fullText = "\(maybeThen) \(maybeBrace)".trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let surrounded = fullText.hasPrefix("{") && fullText.hasSuffix("}")
+
+        if !surrounded && (maybeThen == "{" || maybeBrace == "{") {
             context.target.append(.else)
+            return nil
+        }
+
+        if surrounded {
+            fullText = fullText.trimmingCharacters(in: CharacterSet(["{", "}", " "]))
+        }
+
+        if maybeBrace != "{", let token = ScriptTokenizer().read(fullText) {
+            context.target.append(.elseSingle(token))
+            return nil
+        }
+
+        guard fullText == "then" || fullText.count == 0 else {
             return nil
         }
 

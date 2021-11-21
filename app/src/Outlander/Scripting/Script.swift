@@ -120,7 +120,7 @@ class ScriptContext {
                 return false
             }
 
-            //let previousResultSuccess = currentIf.ifResult == true
+            // let previousResultSuccess = currentIf.ifResult == true
 
             if line.token == nil {
                 line.token = tokenizer.read(line.originalText)
@@ -130,9 +130,9 @@ class ScriptContext {
                 continue
             }
 
-            if (lineToken.isIfToken || lineToken.isElseToken) {
+            if lineToken.isIfToken || lineToken.isElseToken {
                 if currentIf.lineNumber == target.lineNumber {
-                    //popIfStack()
+                    // popIfStack()
                     currentIf.endOfBlock = currentLineNumber - 1
                     retreat()
                     return true
@@ -144,7 +144,7 @@ class ScriptContext {
             switch lineToken {
             case .rightBrace:
                 if currentIf.lineNumber == target.lineNumber {
-                    //popIfStack()
+                    // popIfStack()
                     currentIf.endOfBlock = currentLineNumber
                     return true
                 }
@@ -1033,15 +1033,17 @@ class Script {
             return .next
         }
 
-        guard lastTokenWasIf else {
-            sendText("Expected previous command to be an 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        guard context.ifStack.count > 0 else {
+            sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
+        
+        context.pushCurrentLineToIfStack()
 
         var execute = false
         var result = false
 
-        if lastLine!.ifResult == false {
+        if context.ifStack.last2!.ifResult == false {
             execute = true
         } else {
             result = true
@@ -1073,13 +1075,18 @@ class Script {
         guard case let .elseIf(exp) = token else {
             return .next
         }
+        
+        guard context.ifStack.count > 0 else {
+            sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .exit
+        }
 
         context.pushCurrentLineToIfStack()
-
+        
         var execute = false
         var result = false
 
-        if lastLine!.ifResult == false {
+        if context.ifStack.last2!.ifResult == false {
             execute = true
         } else {
             result = true
@@ -1111,6 +1118,11 @@ class Script {
         guard case let .elseIfNeedsBrace(exp) = token else {
             return .next
         }
+        
+        guard context.ifStack.count > 0 else {
+            sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .exit
+        }
 
         if !context.consumeToken(.leftBrace) {
             sendText("Expecting opening bracket", preset: "scripterror", scriptLine: line.lineNumber + 1, fileName: line.fileName)
@@ -1122,7 +1134,7 @@ class Script {
         var execute = false
         var result = false
 
-        if lastLine!.ifResult == false {
+        if context.ifStack.last2!.ifResult == false {
             execute = true
         } else {
             result = true
@@ -1155,14 +1167,16 @@ class Script {
             return .next
         }
 
-        guard lastTokenWasIf else {
-            sendText("Expected previous command to be an 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        guard context.ifStack.count > 0 else {
+            sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
+        
+        context.pushCurrentLineToIfStack()
 
         var execute = false
 
-        if lastLine!.ifResult == false {
+        if context.ifStack.last2!.ifResult == false {
             execute = true
         }
 
@@ -1185,13 +1199,13 @@ class Script {
             return .exit
         }
 
+        context.pushCurrentLineToIfStack()
+
         var execute = false
 
-        if context.ifStack.last!.ifResult == false {
+        if context.ifStack.last2!.ifResult == false {
             execute = true
         }
-
-        context.pushLineToIfStack(line)
 
         notify("else: \(execute)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
@@ -1259,6 +1273,7 @@ class Script {
 
         let hasArgs = context.args.count >= argCount
         line.ifResult = hasArgs
+        context.pushCurrentLineToIfStack()
 
         notify("if_\(argCount) \(context.args.count) >= \(argCount) = \(hasArgs)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
@@ -1315,6 +1330,8 @@ class Script {
         guard case let .ifSingle(expression, action) = token else {
             return .next
         }
+
+        context.pushCurrentLineToIfStack()
 
         let execute = funcEvaluator.evaluateBool(expression)
         line.ifResult = execute.result.toBool() == true

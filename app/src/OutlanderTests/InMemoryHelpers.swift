@@ -46,11 +46,12 @@ struct TestEvent {
 }
 
 class InMemoryEvents: Events {
-    public var lastData: Any?
     public var history: [TestEvent] = []
+    public var lastData: Any? {
+        history.last?.data
+    }
 
     func post(_ channel: String, data: Any?) {
-        lastData = data
         history.append(TestEvent(channel: channel, data: data))
     }
 

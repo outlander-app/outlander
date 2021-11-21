@@ -46,6 +46,8 @@ class GlobalVariables: Variables {
     private var clock: IClock
     private var settings: ApplicationSettings
 
+    static var dateFormatter = DateFormatter()
+
     init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
         self.clock = clock
         self.settings = settings
@@ -54,18 +56,18 @@ class GlobalVariables: Variables {
 
     override func addDynamics() {
         addDynamic(key: "date", value: .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableDateFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
+            GlobalVariables.dateFormatter.dateFormat = self.settings.variableDateFormat
+            return GlobalVariables.dateFormatter.string(from: self.clock.now)
         })
 
         addDynamic(key: "datetime", value: .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableDatetimeFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
+            GlobalVariables.dateFormatter.dateFormat = self.settings.variableDatetimeFormat
+            return GlobalVariables.dateFormatter.string(from: self.clock.now)
         })
 
         addDynamic(key: "time", value: .dynamic {
-            Variables.dateFormatter.dateFormat = self.settings.variableTimeFormat
-            return Variables.dateFormatter.string(from: self.clock.now)
+            GlobalVariables.dateFormatter.dateFormat = self.settings.variableTimeFormat
+            return GlobalVariables.dateFormatter.string(from: self.clock.now)
         })
     }
 }
@@ -78,8 +80,6 @@ class Variables {
     private var eventKey: String
 
     private var dynamicKeys: [String] = []
-
-    static var dateFormatter = DateFormatter()
 
     init(eventKey: String, events: Events = NulloEvents()) {
         self.events = events
