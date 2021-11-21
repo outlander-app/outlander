@@ -290,6 +290,8 @@ protocol StringView: Collection {
     static var equal: Element { get }
     static var rightBracket: Element { get }
     static var leftBracket: Element { get }
+    static var rightBrace: Element { get }
+    static var leftBrace: Element { get }
     static var greaterThan: Element { get }
     static var lessThan: Element { get }
     static var leftParen: Element { get }
@@ -311,6 +313,8 @@ extension Substring: StringView {
     static let equal: Character = "="
     static let rightBracket: Character = "]"
     static let leftBracket: Character = "["
+    static let rightBrace: Character = "}"
+    static let leftBrace: Character = "{"
     static let greaterThan: Character = ">"
     static let lessThan: Character = "<"
 
@@ -393,6 +397,39 @@ extension StringView where SubSequence == Self, Element: Equatable {
             result.append(next)
         }
         return result
+    }
+
+    mutating func parseToComponents() -> (String, Bool) {
+        var result: [String] = []
+        var current: [Element] = []
+        var lastWord: String = ""
+        while let c = first {
+            if c == Self.leftBrace {
+                break
+            }
+
+            if c == Self.space {
+                lastWord = Self.string(current)
+                if lastWord == "then" {
+                    current = []
+                    break
+                }
+                result.append(lastWord)
+                current = []
+            } else {
+                current.append(c)
+            }
+            removeFirst()
+        }
+
+        if current.count > 0 {
+            lastWord = Self.string(current)
+            if lastWord != "then" {
+                result.append(Self.string(current))
+            }
+        }
+
+        return (result.joined(separator: " "), lastWord == "then")
     }
 
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {

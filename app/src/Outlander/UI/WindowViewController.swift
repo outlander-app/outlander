@@ -468,7 +468,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 self.appendWithoutProcessing(NSAttributedString(string: "\n"))
                 addedNewline = true
             }
-            
+
             // TODO: do not display timestamp if previous tag did not end with a newline
             let previousEndendWithNewline = addedNewline || self.lastTag?.text.hasSuffix("\n") ?? true
 

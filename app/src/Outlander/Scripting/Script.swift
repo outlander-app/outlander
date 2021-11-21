@@ -120,8 +120,6 @@ class ScriptContext {
                 return false
             }
 
-            // let previousResultSuccess = currentIf.ifResult == true
-
             if line.token == nil {
                 line.token = tokenizer.read(line.originalText)
             }
@@ -153,54 +151,6 @@ class ScriptContext {
                 if !popped {
                     return false
                 }
-//            case .ifArgSingle: return true
-//            case .ifArg:
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//            case .ifArgNeedsBrace:
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//                if !consumeToken(.leftBrace) {
-//                    return false
-//                }
-//            case .ifSingle: return true
-//            case .if:
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//            case .ifNeedsBrace:
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//                if !consumeToken(.leftBrace) {
-//                    return false
-//                }
-//            case .elseIfSingle: return true
-//            case .elseIf: return true
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//            case .elseIfNeedsBrace:
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//                if !consumeToken(.leftBrace) {
-//                    return false
-//                }
-//            case .elseSingle: return true
-//            case .else: return true
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//            case .elseNeedsBrace: return true
-//                if !pushCurrentLineToIfStack() {
-//                    return false
-//                }
-//                if !consumeToken(.leftBrace) {
-//                    return false
-//                }
             default:
                 continue
             }
@@ -1037,7 +987,7 @@ class Script {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
-        
+
         context.pushCurrentLineToIfStack()
 
         var execute = false
@@ -1075,14 +1025,14 @@ class Script {
         guard case let .elseIf(exp) = token else {
             return .next
         }
-        
+
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
 
         context.pushCurrentLineToIfStack()
-        
+
         var execute = false
         var result = false
 
@@ -1118,7 +1068,7 @@ class Script {
         guard case let .elseIfNeedsBrace(exp) = token else {
             return .next
         }
-        
+
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
@@ -1171,7 +1121,7 @@ class Script {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
-        
+
         context.pushCurrentLineToIfStack()
 
         var execute = false
@@ -1210,7 +1160,7 @@ class Script {
         notify("else: \(execute)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
         if execute { return .next }
-        return .advanceToEndOfBlock
+        return .advanceToNextBlock
     }
 
     func handleElseNeedsBrace(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
@@ -1317,7 +1267,7 @@ class Script {
         }
 
         line.ifResult = hasArgs
-        context.pushCurrentLineToIfStack()
+        context.pushLineToIfStack(line)
 
         if hasArgs {
             return .next
@@ -1382,7 +1332,7 @@ class Script {
             return .exit
         }
 
-        context.pushCurrentLineToIfStack()
+        context.pushLineToIfStack(line)
 
         let execute = funcEvaluator.evaluateBool(expression)
         line.ifResult = execute.result.toBool() == true

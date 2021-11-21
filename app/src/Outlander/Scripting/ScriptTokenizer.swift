@@ -445,27 +445,31 @@ class EchoMode: IScriptReaderMode {
 
 class ElseIfMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
-        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
+        let tokenizer = ExpressionTokenizer()
+        let result = tokenizer.read(String(context.text.parseToEnd()))
 
-        let fullExpression = expression.trimmingCharacters(in: CharacterSet.whitespaces)
-
-        guard fullExpression.count > 0 else {
+        guard let expression = result.expression else {
             return nil
         }
 
-        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var rest = result.rest
 
-        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
-            context.target.append(.elseIfSingle(.value(fullExpression), token))
+        let surrounded = rest.hasPrefix("{") && rest.hasSuffix("}")
+
+        if surrounded {
+            rest = rest.trimmingCharacters(in: CharacterSet(["{", "}", " "]))
+        }
+
+        if rest != "{", surrounded || result.hadThen, let token = ScriptTokenizer().read(rest) {
+            context.target.append(.elseIfSingle(expression, token))
             return nil
         }
 
-        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
-            context.target.append(.elseIf(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
-            return nil
+        if rest == "{" {
+            context.target.append(.elseIf(expression))
+        } else {
+            context.target.append(.elseIfNeedsBrace(expression))
         }
-
-        context.target.append(.elseIfNeedsBrace(.value(fullExpression)))
 
         return nil
     }

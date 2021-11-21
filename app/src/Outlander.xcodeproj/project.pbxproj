@@ -39,6 +39,9 @@
 		7B228B2F273B82A80052610B /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B2E273B82A80052610B /* StringExtensionTests.swift */; };
 		7B228B32273B90130052610B /* AutoMapperPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B31273B90130052610B /* AutoMapperPlugin.swift */; };
 		7B228B33273B90130052610B /* AutoMapperPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228B31273B90130052610B /* AutoMapperPlugin.swift */; };
+		7B27C5AB274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */; };
+		7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */; };
+		7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -263,6 +266,8 @@
 		7B228B2B273B76B20052610B /* TriggerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerHandler.swift; sourceTree = "<group>"; };
 		7B228B2E273B82A80052610B /* StringExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionTests.swift; sourceTree = "<group>"; };
 		7B228B31273B90130052610B /* AutoMapperPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoMapperPlugin.swift; sourceTree = "<group>"; };
+		7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizer.swift; sourceTree = "<group>"; };
+		7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizerTests.swift; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
@@ -455,6 +460,7 @@
 			isa = PBXGroup;
 			children = (
 				7BCBBD17274743B300219CA0 /* ExpressionEvaluatorTests.swift */,
+				7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */,
 				7BCBBD1F27474EB600219CA0 /* FunctionEvaluatorTests.swift */,
 				7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */,
 				7BA27B5625DF966400A88B80 /* ScriptTokenizerTests.swift */,
@@ -475,6 +481,7 @@
 			children = (
 				7BA27B4F25DF93C500A88B80 /* Combinators.swift */,
 				7BCBBD142746D1D800219CA0 /* ExpressionEvaluator.swift */,
+				7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */,
 				7BCBBD112746C03E00219CA0 /* FunctionEvaluator.swift */,
 				7BAC842C25ECA23C00A6C7D5 /* Matches.swift */,
 				7BA27B3625DF6D9D00A88B80 /* Script.swift */,
@@ -883,6 +890,7 @@
 				F98B490E246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
 				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				7BCBBD152746D1D800219CA0 /* ExpressionEvaluator.swift in Sources */,
+				7B27C5AB274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				F9CA2063246669D800A92736 /* FileSystem.swift in Sources */,
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
@@ -949,6 +957,7 @@
 				7B228B102734FDCE0052610B /* SkillExpTests.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				7B228B2A273B09D70052610B /* NSViewExtensions.swift in Sources */,
+				7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
 				7BAC840425E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
@@ -1023,6 +1032,7 @@
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7BDF5C79271A53E10020A3B0 /* MacroLoader.swift in Sources */,
+				7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BDF5C7C271AB4F40020A3B0 /* BoolExtensions.swift in Sources */,
 				7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,

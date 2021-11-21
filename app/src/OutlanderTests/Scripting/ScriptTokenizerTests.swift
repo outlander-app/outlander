@@ -433,6 +433,54 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
+    func test_else_if_single_line_with_brackets() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("else if 1==1 { echo hello }")
+
+        switch token {
+        case let .elseIfSingle(expression, token):
+            switch expression {
+            case let .value(text):
+                XCTAssertEqual(text, "1==1")
+
+                switch token {
+                case let .echo(text):
+                    XCTAssertEqual(text, "hello")
+                default:
+                    XCTFail("wrong value, found \(String(describing: token.description))")
+                }
+            default:
+                XCTFail("wrong expression value, found \(String(describing: expression))")
+            }
+        default:
+            XCTFail("wrong token value, found \(String(describing: token?.description))")
+        }
+    }
+
+    func test_else_if_single_line_with_brackets_no_spaces() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("else if 1==1 {echo hello}")
+
+        switch token {
+        case let .elseIfSingle(expression, token):
+            switch expression {
+            case let .value(text):
+                XCTAssertEqual(text, "1==1")
+
+                switch token {
+                case let .echo(text):
+                    XCTAssertEqual(text, "hello")
+                default:
+                    XCTFail("wrong value, found \(String(describing: token.description))")
+                }
+            default:
+                XCTFail("wrong expression value, found \(String(describing: expression))")
+            }
+        default:
+            XCTFail("wrong token value, found \(String(describing: token?.description))")
+        }
+    }
+
     func test_else_if_with_brace() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("else if 1==1 {")
@@ -599,7 +647,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value, found \(String(describing: token?.description))")
         }
     }
-    
+
     func test_else_single_line_without_then() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("else echo hello")
