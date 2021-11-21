@@ -16,6 +16,10 @@ class ExpressionEvaluator {
             return false
         }
 
+        if let result = input.toBool() {
+            return result
+        }
+
         do {
             var result = false
             try ObjC.perform {

@@ -30,12 +30,12 @@ class MapperComandHandler: ICommandHandler {
         case "reset":
             context.resetMap()
         default:
-            context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper")
+            context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper", mono: true)
         }
     }
 
     func reload(with context: GameContext) {
-        context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper")
+        context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper", mono: true)
 
         DispatchQueue.global(qos: .utility).async {
             let startTime = Date()
@@ -65,7 +65,7 @@ class MapperComandHandler: ICommandHandler {
             }
 
             let timeElapsed = Date() - startTime
-            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper")
+            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper", mono: true)
             context.resetMap()
         }
     }

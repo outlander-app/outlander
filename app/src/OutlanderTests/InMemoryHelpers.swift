@@ -37,11 +37,21 @@ class InMemoryFileSystem: FileSystem {
     }
 }
 
+struct TestEvent {
+    var channel: String
+    var data: Any?
+    var text: TextData? {
+        data as? TextData
+    }
+}
+
 class InMemoryEvents: Events {
     public var lastData: Any?
+    public var history: [TestEvent] = []
 
-    func post(_: String, data: Any?) {
+    func post(_ channel: String, data: Any?) {
         lastData = data
+        history.append(TestEvent(channel: channel, data: data))
     }
 
     func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}

@@ -356,6 +356,28 @@ extension StringView where SubSequence == Self, Element: Equatable {
         parseMany(while: { $0 != Self.space })
     }
 
+    mutating func parseWords(while cond: (String) -> Bool) -> (String, String) {
+        var results: [String] = []
+
+        var word: String = ""
+
+        while let _ = first {
+            consumeSpaces()
+            word = Self.string(parseWord())
+            guard cond(word) else {
+                break
+            }
+            results.append(word)
+        }
+
+        return (results.joined(separator: " "), word)
+    }
+
+    mutating func parseInt() -> Int? {
+        let maybeNumber = parseMany(while: { $0 != Self.space })
+        return Int(Self.string(maybeNumber))
+    }
+
     mutating func parseMany(while cond: (Element) -> Bool) -> [Element] {
         var result: [Element] = []
         while let c = first, cond(c) {

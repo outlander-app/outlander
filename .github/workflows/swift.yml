@@ -10,10 +10,16 @@ jobs:
   build:
 
     runs-on: macos-11
+    strategy:
+      matrix:
+        xcode-version:
+        - /Applications/Xcode_13.1.app
 
     steps:
     - uses: actions/checkout@v2
-    - name: Force Xcode 12.5.1
-      run: sudo xcode-select -switch /Applications/Xcode_12.5.1.app
+
+    - name: Force Xcode ${{ matrix.xcode-version }}
+      run: if [ "default" != "${{ matrix.xcode-version }}" ]; then sudo xcode-select -s "${{ matrix.xcode-version }}"; fi
+
     - name: Run tests
       run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO

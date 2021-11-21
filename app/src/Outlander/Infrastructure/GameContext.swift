@@ -29,7 +29,7 @@ class LocalHost: IHost {
 }
 
 class GameContext {
-    var events: Events = SwiftEventBusEvents()
+    var events: Events
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
@@ -49,7 +49,8 @@ class GameContext {
         }
     }
 
-    init() {
+    init(_ events: Events = SwiftEventBusEvents()) {
+        self.events = events
         globalVars = GlobalVariables(events: events, settings: applicationSettings)
     }
 }

@@ -290,7 +290,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                     if displayTimestamp, let stampStr = self.createTimestamp(for: tag) {
                         target.append(stampStr)
                     }
-                    
+
                     target.append(str)
                 }
                 first = false
@@ -345,12 +345,6 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         if let command = tag.command {
             attributes[NSAttributedString.Key.link] = "command:\(command)"
         }
-
-//        var stamped = text
-//
-//        if timestamp {
-//            stamped = "[\(WindowViewController.dateFormatter.string(from: Date()))] \(text)"
-//        }
 
         return NSMutableAttributedString(string: text, attributes: attributes)
     }
@@ -498,7 +492,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
     func createTimestamp(for tag: TextTag) -> NSAttributedString? {
         let stamp = "[\(WindowViewController.dateFormatter.string(from: Date()))] "
-        return self.stringFromTag(TextTag.tagFor(stamp, mono: tag.mono), text: stamp)
+        return stringFromTag(TextTag.tagFor(stamp, mono: tag.mono), text: stamp)
     }
 
     func appendWithoutProcessing(_ text: NSAttributedString) {
@@ -508,7 +502,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             let smartScroll = percentScroll >= CGFloat(0.95)
 
             if self.name == "main" {
-                print("** Window rect: \(percentScroll)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
+                print("** Window rect: \(percentScroll * 100)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
             }
 
             self.textView.textStorage?.append(text)

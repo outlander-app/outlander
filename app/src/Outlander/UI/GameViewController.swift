@@ -115,8 +115,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.handleRawStream(data: str, streamData: true)
             case .closed:
                 self?.gameStream?.reset()
-                self?.logText("\nDisconnected from game server\n\n")
+                self?.logText("\n\(self?.timestamp() ?? "")Disconnected from game server\n")
                 self?.updateWindowTitle()
+                self?.saveSettings()
             }
         }
 
@@ -511,14 +512,25 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if command == "profile:save" {
-            ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
-            ProfileLoader(fileSystem!).save(gameContext)
-            logText("settings saved\n", mono: true, playerCommand: false)
-
+            saveSettings()
             return
         }
 
         log.warn("Unhandled event command \(command)")
+    }
+
+    func timestamp() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+
+        return "[\(formatter.string(from: Date()))]: "
+    }
+
+    func saveSettings() {
+        ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
+        ProfileLoader(fileSystem!).save(gameContext)
+        let str = "\(timestamp())settings saved\n"
+        logText(str, mono: true, playerCommand: false)
     }
 
     func buildWindowsLayout() -> WindowLayout {

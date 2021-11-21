@@ -101,8 +101,12 @@ extension String {
     }
 
     func argumentsSeperated() -> [String] {
+        guard count > 0 else {
+            return []
+        }
+
         let delimiter = "\""
-        if !contains(delimiter) {
+        guard contains(delimiter) else {
             return components(separatedBy: " ")
         }
 

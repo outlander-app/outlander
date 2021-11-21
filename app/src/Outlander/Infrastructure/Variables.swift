@@ -121,6 +121,12 @@ class Variables {
         }
     }
 
+    func removeValue(forKey key: String) {
+        lockQueue.async(flags: .barrier) {
+            self.vars.removeValue(forKey: key)
+        }
+    }
+
     func removeAll() {
         lockQueue.sync(flags: .barrier) {
             vars.removeAll()

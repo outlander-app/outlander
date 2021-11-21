@@ -17,12 +17,25 @@ enum Expression: Hashable {
 enum ScriptTokenValue: Hashable {
     case action(String, String, String)
     case actionToggle(String, String)
-    case brace(String)
+    case leftBrace
+    case rightBrace
     case comment(String)
     case debug(String)
     case echo(String)
+    indirect case elseIfSingle(Expression, ScriptTokenValue)
+    case elseIf(Expression)
+    case elseIfNeedsBrace(Expression)
+    case `else`
+    indirect case elseSingle(ScriptTokenValue)
+    case elseNeedsBrace
     case eval(String, Expression)
     case exit
+    indirect case ifArgSingle(Int, ScriptTokenValue)
+    case ifArg(Int)
+    case ifArgNeedsBrace(Int)
+    indirect case ifSingle(Expression, ScriptTokenValue)
+    case `if`(Expression)
+    case ifNeedsBrace(Expression)
     case gosub(String, String)
     case goto(String)
     case label(String)
@@ -39,11 +52,58 @@ enum ScriptTokenValue: Hashable {
     case save(String)
     case send(String)
     case shift
+    case unvar(String)
     case variable(String, String)
     case waitEval(String)
     case waitforPrompt(String)
     case waitfor(String)
     case waitforre(String)
+
+    var isTopLevelIf: Bool {
+        switch self {
+        case .ifArg: return true
+        case .ifArgSingle: return true
+        case .ifArgNeedsBrace: return true
+        case .ifSingle: return true
+        case .if: return true
+        case .ifNeedsBrace: return true
+        default: return false
+        }
+    }
+
+    var isIfToken: Bool {
+        switch self {
+        case .ifArg: return true
+        case .ifArgSingle: return true
+        case .ifArgNeedsBrace: return true
+        case .ifSingle: return true
+        case .if: return true
+        case .ifNeedsBrace: return true
+        case .elseIfSingle: return true
+        case .elseIf: return true
+        case .elseIfNeedsBrace: return true
+        default: return false
+        }
+    }
+
+    var isElseToken: Bool {
+        switch self {
+        case .elseSingle: return true
+        case .else: return true
+        case .elseNeedsBrace: return true
+        default: return false
+        }
+    }
+
+    var isSingleToken: Bool {
+        switch self {
+        case .ifArgSingle: return true
+        case .ifSingle: return true
+        case .elseIfSingle: return true
+        case .elseSingle: return true
+        default: return false
+        }
+    }
 }
 
 extension ScriptTokenValue: CustomStringConvertible {
@@ -53,18 +113,44 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "action"
         case .actionToggle:
             return "actiontoggle"
-        case .brace:
-            return "brace"
+        case .leftBrace:
+            return "leftbrace"
+        case .rightBrace:
+            return "rightbrace"
         case .comment:
             return "comment"
         case .debug:
             return "debug"
         case .echo:
             return "echo"
+        case .elseIfSingle:
+            return "elseifsingle"
+        case .elseIf:
+            return "elseif"
+        case .elseIfNeedsBrace:
+            return "elseifneedsbrace"
+        case .else:
+            return "else"
+        case .elseSingle:
+            return "elsesingle"
+        case .elseNeedsBrace:
+            return "elseneedsbrace"
         case .eval:
             return "eval"
         case .exit:
             return "exit"
+        case .ifArgSingle:
+            return "ifargsingle"
+        case .ifArg:
+            return "ifarg"
+        case .ifArgNeedsBrace:
+            return "ifargneedsbrace"
+        case .ifSingle:
+            return "ifsingle"
+        case .if:
+            return "if"
+        case .ifNeedsBrace:
+            return "ifneedsbrace"
         case .gosub:
             return "gosub"
         case .goto:
@@ -97,6 +183,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "send"
         case .shift:
             return "shift"
+        case .unvar:
+            return "unvar"
         case .variable:
             return "variable"
         case .waitEval:
@@ -192,6 +280,8 @@ class ScriptTokenizer: ScriptReaderBase<[ScriptTokenValue]> {
 
 class CommandMode: IScriptReaderMode {
     var knownCommands: [String: IScriptReaderMode?] = [
+        "{": LeftBraceMode(),
+        "}": RightBraceMode(),
         "action": ActionMode(),
         "debug": DebugMode(),
         "debuglevel": DebugMode(),
@@ -213,6 +303,7 @@ class CommandMode: IScriptReaderMode {
         "save": SaveMode(),
         "send": SendMode(),
         "shift": ShiftMode(),
+        "unvar": UnVarMode(),
         "setvariable": VariableMode(),
         "var": VariableMode(),
         "waiteval": WaitEvalMode(),
@@ -241,9 +332,19 @@ class CommandMode: IScriptReaderMode {
             }
 
             let command = String(result).lowercased()
-            
-            // TODO: check for if_
-            
+
+            guard !command.hasPrefix("if_") else {
+                return IfArgMode(command)
+            }
+
+            guard !command.hasPrefix("if") else {
+                return IfMode(command)
+            }
+
+            guard !command.hasPrefix("else") else {
+                return ElseMode()
+            }
+
             if let mode = knownCommands[command] {
                 return mode
             } else {
@@ -294,6 +395,34 @@ class ActionMode: IScriptReaderMode {
     }
 }
 
+class LeftBraceMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+
+        guard context.text.count == 0 else {
+            return CommandMode()
+        }
+        
+        context.target.append(.leftBrace)
+
+        return nil
+    }
+}
+
+class RightBraceMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+
+        guard context.text.count == 0 else {
+            return CommandMode()
+        }
+
+        context.target.append(.rightBrace)
+
+        return nil
+    }
+}
+
 class DebugMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
@@ -312,6 +441,62 @@ class EchoMode: IScriptReaderMode {
     }
 }
 
+class ElseIfMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
+
+        let fullExpression = expression.trimmingCharacters(in: CharacterSet.whitespaces)
+
+        guard fullExpression.count > 0 else {
+            return nil
+        }
+
+        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+
+        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
+            context.target.append(.elseIfSingle(.value(fullExpression), token))
+            return nil
+        }
+
+        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
+            context.target.append(.elseIf(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
+            return nil
+        }
+
+        context.target.append(.elseIfNeedsBrace(.value(fullExpression)))
+
+        return nil
+    }
+}
+
+class ElseMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeWhitespace()
+
+        let maybeThen = String(context.text.parseWord())
+
+        if maybeThen == "if" {
+            return ElseIfMode()
+        }
+
+        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+
+        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
+            context.target.append(.elseSingle(token))
+            return nil
+        }
+
+        if maybeThen == "{" || maybeBrace == "{" {
+            context.target.append(.else)
+            return nil
+        }
+
+        context.target.append(.elseNeedsBrace)
+
+        return nil
+    }
+}
+
 class EvalMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
@@ -322,6 +507,86 @@ class EvalMode: IScriptReaderMode {
 class ExitMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.target.append(.exit)
+        return nil
+    }
+}
+
+class IfArgMode: IScriptReaderMode {
+    let input: String
+
+    init(_ input: String) {
+        self.input = input
+    }
+
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        guard let number = Int(input.dropFirst(3)) else {
+            return nil
+        }
+
+        context.text.consumeSpaces()
+        let maybeThen = String(context.text.parseWord())
+        let rest = String(context.text.parseToEnd())
+
+        if maybeThen == "{" || (maybeThen == "then" && rest.trimmingCharacters(in: CharacterSet.whitespaces) == "{") {
+            context.target.append(.ifArg(number))
+            return nil
+        }
+
+        if maybeThen == "then", let token = ScriptTokenizer().read(rest.trimmingCharacters(in: CharacterSet.whitespaces)) {
+            context.target.append(.ifArgSingle(number, token))
+            return nil
+        }
+
+        if maybeThen == "then", rest.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).count == 0 {
+            context.target.append(.ifArgNeedsBrace(number))
+            return nil
+        }
+
+        if let token = ScriptTokenizer().read((maybeThen + rest).trimmingCharacters(in: CharacterSet.whitespaces)) {
+            context.target.append(.ifArgSingle(number, token))
+            return nil
+        }
+
+        if maybeThen.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).count == 0 {
+            context.target.append(.ifArgNeedsBrace(number))
+            return nil
+        }
+
+        return nil
+    }
+}
+
+class IfMode: IScriptReaderMode {
+    var input: String
+
+    init(_ input: String) {
+        self.input = input
+    }
+
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        let start = String(input.dropFirst(2))
+        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
+
+        let fullExpression = (start + expression).trimmingCharacters(in: CharacterSet.whitespaces)
+
+        guard fullExpression.count > 0 else {
+            return nil
+        }
+
+        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+
+        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
+            context.target.append(.ifSingle(.value(fullExpression), token))
+            return nil
+        }
+
+        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
+            context.target.append(.if(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
+            return nil
+        }
+
+        context.target.append(.ifNeedsBrace(.value(fullExpression)))
+
         return nil
     }
 }
@@ -478,6 +743,15 @@ class SendMode: IScriptReaderMode {
 class ShiftMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.target.append(.shift)
+        return nil
+    }
+}
+
+class UnVarMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let variable = String(context.text.parseWord())
+        context.target.append(.unvar(variable))
         return nil
     }
 }
