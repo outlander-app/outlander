@@ -154,6 +154,7 @@ struct Atomic<Value> {
 
 class Script {
     private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    private let log = LogManager.getLog("Script")
 
     var started: Date?
     var fileName: String = ""
@@ -318,6 +319,8 @@ class Script {
         }
 
         stackTrace.push(line)
+
+        log.info("passing \(line.lineNumber) - \(line.originalText)")
 
         let result = handleLine(line)
 
@@ -741,11 +744,16 @@ class Script {
 
         line.ifResult = result
 
-        if execute, result {
+        if result {
+            context.ifStack.pop()
+            context.pushLineToIfStack(line)
+        }
+
+        if execute && result {
             return executeToken(line, lineToken)
         }
 
-        return .advanceToNextBlock
+        return .advanceToEndOfBlock
     }
 
     func handleElseIf(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
@@ -763,9 +771,6 @@ class Script {
 
         if context.ifStack.last!.ifResult == false {
             execute = true
-            context.pushCurrentLineToIfStack()
-        } else {
-            result = true
         }
 
         if execute {
@@ -782,6 +787,11 @@ class Script {
         }
 
         line.ifResult = result
+
+        if result {
+            context.ifStack.pop()
+            context.pushLineToIfStack(line)
+        }
 
         if execute, result {
             return .next
@@ -810,9 +820,6 @@ class Script {
 
         if context.ifStack.last!.ifResult == false {
             execute = true
-            context.pushLineToIfStack(line)
-        } else {
-            result = true
         }
 
         if execute {
@@ -829,6 +836,11 @@ class Script {
         }
 
         line.ifResult = result
+        
+        if result {
+            context.ifStack.pop()
+            context.pushLineToIfStack(line)
+        }
 
         if execute, result {
             return .next
@@ -851,7 +863,9 @@ class Script {
 
         if context.ifStack.last!.ifResult == false {
             execute = true
+            context.ifStack.pop()
             context.pushCurrentLineToIfStack()
+            line.ifResult = true
         }
 
         notify("else: \(execute)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
@@ -877,7 +891,9 @@ class Script {
 
         if context.ifStack.last!.ifResult == false {
             execute = true
+            context.ifStack.pop()
             context.pushCurrentLineToIfStack()
+            line.ifResult = true
         }
 
         notify("else: \(execute)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
@@ -905,7 +921,9 @@ class Script {
 
         if context.ifStack.last!.ifResult == false {
             execute = true
+            context.ifStack.pop()
             context.pushLineToIfStack(line)
+            line.ifResult = true
         }
 
         notify("else: \(execute)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)

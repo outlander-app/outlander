@@ -587,27 +587,54 @@ class IfMode: IScriptReaderMode {
 
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         let start = String(input.dropFirst(2))
-        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
+        let tokenizer = ExpressionTokenizer()
+        let result = tokenizer.read(String(start + context.text.parseToEnd()))
 
-        let fullExpression = (start + expression).trimmingCharacters(in: CharacterSet.whitespaces)
-
-        guard fullExpression.count > 0 else {
+        guard let expression = result.expression else {
             return nil
         }
 
-        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var rest = result.rest.trimmingCharacters(in: CharacterSet.whitespaces)
 
-        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
-            context.target.append(.ifSingle(.value(fullExpression), token))
+        let surrounded = rest.hasPrefix("{") && rest.hasSuffix("}")
+
+        if surrounded {
+            rest = rest.trimmingCharacters(in: CharacterSet(["{", "}", " "]))
+        }
+
+        if rest != "{", surrounded || result.hadThen, let token = ScriptTokenizer().read(rest) {
+            context.target.append(.ifSingle(expression, token))
             return nil
         }
 
-        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
-            context.target.append(.if(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
-            return nil
+        if rest == "{" {
+            context.target.append(.if(expression))
+        } else {
+            context.target.append(.ifNeedsBrace(expression))
         }
-
-        context.target.append(.ifNeedsBrace(.value(fullExpression)))
+        
+//        let start = String(input.dropFirst(2))
+//        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
+//
+//        let fullExpression = (start + expression).trimmingCharacters(in: CharacterSet.whitespaces)
+//
+//        guard fullExpression.count > 0 else {
+//            return nil
+//        }
+//
+//        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+//
+//        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
+//            context.target.append(.ifSingle(.value(fullExpression), token))
+//            return nil
+//        }
+//
+//        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
+//            context.target.append(.if(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
+//            return nil
+//        }
+//
+//        context.target.append(.ifNeedsBrace(.value(fullExpression)))
 
         return nil
     }

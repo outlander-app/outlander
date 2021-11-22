@@ -288,7 +288,8 @@ class ScriptTests: XCTestCase {
             "  echo one",
             "  echo two",
             "}",
-            "else if 2 == 2 {",
+            "else if 2 == 2",
+            "{",
             "  echo three",
             "}",
             "else if 2 == 2 {",
@@ -354,6 +355,7 @@ class ScriptTests: XCTestCase {
     }
 
     func test_multi_line_if_else_nested_mixed_braces() throws {
+        LogManager.getLog = { name in PrintLogger(name)}
         try scenario([
             "if 1 < 2",
             "{",
@@ -382,5 +384,48 @@ class ScriptTests: XCTestCase {
             "echo end",
         ],
         expect: ["one\n", "two\n", "or else\n", "after\n", "end\n"])
+    }
+    
+    func test_multi_line_if_else_tripple_nested_mixed_braces() throws {
+        LogManager.getLog = { name in PrintLogger(name)}
+        try scenario([
+            "if 1 < 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "  if 1 == 2",
+            "  {",
+            "    echo middle",
+            "  }",
+            "  else if 2 > 1 {",
+            "    echo another",
+            "    if 2 == 2 then",
+            "    {",
+            "      echo trippple threat",
+            "      if 3 < 1 then {",
+            "        echo do some things",
+            "        echo and more things",
+            "      }",
+            "      else { echo not those things }",
+            "    }",
+            "    echo after threat",
+            "  }",
+            "  else echo or else",
+            "  echo after",
+            "}",
+            "else if 2 == 2 {",
+            "  echo three",
+            "}",
+            "else if 2 == 2 {",
+            "  echo six",
+            "}",
+            "else {",
+            "  echo four",
+            "  echo five",
+            "}",
+            "echo end",
+            "if 3 == 3 then { echo yarg }"
+        ],
+        expect: ["one\n", "two\n", "another\n", "trippple threat\n", "not those things\n", "after threat\n", "after\n", "end\n", "yarg\n"])
     }
 }

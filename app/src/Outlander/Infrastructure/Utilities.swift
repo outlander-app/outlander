@@ -51,7 +51,7 @@ public class Stack<T> {
         }
     }
 
-    public func pop() -> T? {
+    @discardableResult public func pop() -> T? {
         guard stack.count > 0 else {
             return nil
         }

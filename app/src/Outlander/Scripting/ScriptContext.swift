@@ -63,11 +63,6 @@ class ScriptContext {
             return false
         }
 
-        if let endOfBlock = target.endOfBlock {
-            currentLineNumber = endOfBlock
-            return true
-        }
-
         while currentLineNumber < lines.count {
             advance()
 
@@ -87,20 +82,9 @@ class ScriptContext {
                 continue
             }
 
-            if lineToken.isIfToken || lineToken.isElseToken {
-                if currentIf.lineNumber == target.lineNumber {
-                    // popIfStack()
-                    currentIf.endOfBlock = line.lineNumber
-                    retreat()
-                    return true
-                }
-            }
-
             switch lineToken {
             case .rightBrace:
                 if currentIf.lineNumber == target.lineNumber {
-                    // popIfStack()
-                    currentIf.endOfBlock = line.lineNumber
                     return true
                 }
 
