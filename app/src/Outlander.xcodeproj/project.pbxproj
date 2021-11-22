@@ -42,6 +42,8 @@
 		7B27C5AB274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */; };
 		7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */; };
 		7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */; };
+		7B27C5B0274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
+		7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -268,6 +270,7 @@
 		7B228B31273B90130052610B /* AutoMapperPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoMapperPlugin.swift; sourceTree = "<group>"; };
 		7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizer.swift; sourceTree = "<group>"; };
 		7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizerTests.swift; sourceTree = "<group>"; };
+		7B27C5AF274B23760095B9BF /* ScriptContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptContext.swift; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
@@ -485,6 +488,7 @@
 				7BCBBD112746C03E00219CA0 /* FunctionEvaluator.swift */,
 				7BAC842C25ECA23C00A6C7D5 /* Matches.swift */,
 				7BA27B3625DF6D9D00A88B80 /* Script.swift */,
+				7B27C5AF274B23760095B9BF /* ScriptContext.swift */,
 				7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */,
 				7BAC840225E08C2F00A6C7D5 /* ScriptRunner.swift */,
 				7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */,
@@ -921,6 +925,7 @@
 				F969A0FE23A4C85700408CE5 /* BookmarkHelper.swift in Sources */,
 				F9BCF32122E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
+				7B27C5B0274B23760095B9BF /* ScriptContext.swift in Sources */,
 				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
 				7B228B1D273871720052610B /* Pathfinder.swift in Sources */,
 				F98B48FF246F6570000E2D92 /* GagLoader.swift in Sources */,
@@ -1026,6 +1031,7 @@
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
 				7B228B2127387B360052610B /* PathfinderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,
+				7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */,
 				7BCBBD162746D1D800219CA0 /* ExpressionEvaluator.swift in Sources */,
 				F9D78D3123A9E3A500FE2343 /* PresetLoader.swift in Sources */,
 				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,

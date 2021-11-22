@@ -13,6 +13,20 @@ class ScriptTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
+    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", expect: [String] = []) throws -> InMemoryEvents {
+        let events = InMemoryEvents()
+        let context = GameContext(events)
+        let loader = InMemoryScriptLoader()
+        loader.lines[fileName] = lines
+        let script = try Script(fileName, loader: loader, gameContext: context)
+        script.run([], runAsync: false)
+
+        for (index, message) in expect.enumerated() {
+            XCTAssertEqual(message, events.history.dropFirst(index + 1).first?.text?.text)
+        }
+        return events
+    }
+
     func testCanReadBasicScript() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
@@ -250,5 +264,123 @@ class ScriptTests: XCTestCase {
 
         XCTAssertEqual(events.history.dropFirst().first?.text?.text, "four\n")
         XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+    }
+
+    func test_if_single_line_blocks() throws {
+        let events = InMemoryEvents()
+        let context = GameContext(events)
+        let loader = InMemoryScriptLoader()
+        loader.lines["if.cmd"] = [
+            "if 1 < 2 then echo one",
+            "else if 2 == 2 then echo two",
+            "esel echo three",
+        ]
+        let script = try Script("if.cmd", loader: loader, gameContext: context)
+        script.run([], runAsync: false)
+
+        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "one\n")
+    }
+
+    func test_multi_line_if_else_scenario_1() throws {
+        try scenario([
+            "if 1 > 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "}",
+            "else if 2 == 2 {",
+            "  echo three",
+            "}",
+            "else if 2 == 2 {",
+            "  echo six",
+            "}",
+            "else {",
+            "  echo four",
+            "  echo five",
+            "}",
+        ],
+        expect: ["three\n"])
+    }
+
+    func test_multi_line_if_else_scenario_2() throws {
+        try scenario([
+            "if 1 < 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "}",
+            "else if 2 == 2 {",
+            "  echo three",
+            "}",
+            "else if 2 == 2 {",
+            "  echo six",
+            "}",
+            "else {",
+            "  echo four",
+            "  echo five",
+            "}",
+        ],
+        expect: ["one\n", "two\n"])
+    }
+
+    func test_multi_line_if_else_nested() throws {
+        try scenario([
+            "if 1 < 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "  if 1 == 2",
+            "  {",
+            "    echo middle",
+            "  }",
+            "  else if 1 == 1 {",
+            "    echo another",
+            "  }",
+            "  echo after",
+            "}",
+            "else if 2 == 2 {",
+            "  echo three",
+            "}",
+            "else if 2 == 2 {",
+            "  echo six",
+            "}",
+            "else {",
+            "  echo four",
+            "  echo five",
+            "}",
+            "echo end",
+        ],
+        expect: ["one\n", "two\n", "another\n", "after\n", "end\n"])
+    }
+
+    func test_multi_line_if_else_nested_mixed_braces() throws {
+        try scenario([
+            "if 1 < 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "  if 1 == 2",
+            "  {",
+            "    echo middle",
+            "  }",
+            "  else if 1 > 2 {",
+            "    echo another",
+            "  }",
+            "  else echo or else",
+            "  echo after",
+            "}",
+            "else if 2 == 2 {",
+            "  echo three",
+            "}",
+            "else if 2 == 2 {",
+            "  echo six",
+            "}",
+            "else {",
+            "  echo four",
+            "  echo five",
+            "}",
+            "echo end",
+        ],
+        expect: ["one\n", "two\n", "or else\n", "after\n", "end\n"])
     }
 }
