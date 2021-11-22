@@ -93,9 +93,17 @@ class ExpressionTokenizer: ExpressionReaderBase<[Expression]> {
 }
 
 let knownFunctions = [
-    "tocaps",
+    "contains",
+    "count",
+    "countsplit",
     "tolower",
+    "tocaps",
     "toupper",
+    "len",
+    "length",
+    "endswith",
+    "startswith",
+    "trim",
 ]
 
 class ExpressionBodyMode: IExpressionReaderMode {
@@ -123,8 +131,18 @@ class ExpressionMode: IExpressionReaderMode {
     func read(_ context: ExpressionTokenizerContext) -> IExpressionReaderMode? {
         context.text.consumeSpaces()
 
-        if let exp = context.text.parseExpression(knownFunctions) {
-            context.target.append(exp)
+        var list: [Expression] = []
+
+        while context.text.count > 0 {
+            if let exp = context.text.parseExpression(knownFunctions) {
+                list.append(exp)
+            } else {
+                return nil
+            }
+        }
+
+        if let res = Expression.combine(tags: list) {
+            context.target.append(res)
         }
 
         return nil

@@ -297,6 +297,7 @@ protocol StringView: Collection {
     static var leftParen: Element { get }
     static var rightParen: Element { get }
 
+    static var and: Element { get }
     static var comma: Element { get }
     static var pipe: Element { get }
 }
@@ -329,6 +330,10 @@ extension Substring: StringView {
 }
 
 extension StringView where SubSequence == Self, Element: Equatable {
+    var logicalCharacter: Bool {
+        first == Self.pipe || first == Self.equal || first == Self.and
+    }
+
     var second: Element? {
         let idx = index(after: startIndex)
         return self[idx]
@@ -447,7 +452,13 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func parseExpression(_ knownFunctions: [String]) -> Expression? {
-        let words = Self.string(parseMany(while: { $0 != Self.leftParen }))
+        consumeSpaces()
+        let words = Self.string(parseMany(while: { $0 != Self.leftParen && $0 != Self.equal && $0 != Self.pipe && $0 != Self.and }))
+
+        if words.count == 0, logicalCharacter {
+            let logic = Self.string(parseMany(while: { $0 == Self.equal || $0 == Self.pipe || $0 == Self.and }))
+            return .value(logic)
+        }
 
         if knownFunctions.contains(words.lowercased()) {
             consume(expecting: Self.leftParen)
@@ -456,7 +467,9 @@ extension StringView where SubSequence == Self, Element: Equatable {
             return .function(words.lowercased(), rest)
         }
 
-        let rest = Self.string(parseToEnd())
+        consumeSpaces()
+
+        let rest = Self.string(parseMany(while: { $0 != Self.space }))
 
         return .value(words + rest)
     }
@@ -560,7 +573,7 @@ struct TextTag {
     var preset: String?
     var playerCommand: Bool = false
 
-    func canCombineWith(_ tag: TextTag) -> Bool {
+    func canCombine(with tag: TextTag) -> Bool {
         guard window == tag.window else { return false }
         guard isPrompt == tag.isPrompt else { return false }
         guard mono == tag.mono else { return false }
@@ -576,7 +589,7 @@ struct TextTag {
     }
 
     func combine(_ tag: TextTag) -> [TextTag] {
-        guard canCombineWith(tag) else { return [self, tag] }
+        guard canCombine(with: tag) else { return [self, tag] }
 
         return [TextTag(
             text: text + tag.text,
@@ -596,9 +609,7 @@ struct TextTag {
     }
 
     static func combine(tags: [TextTag]) -> [TextTag] {
-        let start: [TextTag] = []
-
-        let combined = tags.reduce(start) { list, next in
+        let combined = tags.reduce([TextTag]()) { list, next in
 
             if let last = list.last {
                 return list.dropLast() + last.combine(next)

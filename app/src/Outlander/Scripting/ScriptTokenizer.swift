@@ -11,7 +11,75 @@ import Foundation
 enum Expression: Hashable {
     case value(String)
     case function(String, String)
-    indirect case expression(Expression)
+    indirect case expression(Expression, String, Expression)
+
+    static func combine(tags: [Expression]) -> Expression? {
+        let combined = tags.reduce([Expression]()) { list, next in
+
+            if let last = list.last {
+                return list.dropLast() + last.combine(with: next)
+            }
+
+            return [next]
+        }
+
+        if combined.count == 1 {
+            return combined.first!
+        }
+//
+//        guard combined.count % 3 == 0 else {
+//            return nil
+//        }
+
+//        var start = combined.count - 3
+//        var end = combined.count
+//        while start >= 0 {
+//          let res = combined[start..<end]
+//          print(res)
+//          start -= 3
+//          end -= 3
+//        }
+
+        return nil
+    }
+}
+
+extension Expression: CustomStringConvertible {
+    var isValue: Bool {
+        switch self {
+        case .value:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var description: String {
+        switch self {
+        case let .value(str):
+            return str
+        case let .function(function, args):
+            return "\(function)(\(args))"
+        case let .expression(left, op, right):
+            return "\(left.description) \(op) \(right.description)"
+        }
+    }
+}
+
+extension Expression {
+    func canCombine(with other: Expression) -> Bool {
+        isValue && other.isValue
+    }
+
+    func combine(with exp: Expression) -> [Expression] {
+        guard canCombine(with: exp) else {
+            return [self, exp]
+        }
+
+        return [
+            .value(description + exp.description),
+        ]
+    }
 }
 
 enum ScriptTokenValue: Hashable {

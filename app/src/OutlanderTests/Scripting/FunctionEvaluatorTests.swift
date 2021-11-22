@@ -16,6 +16,11 @@ class FunctionEvaluatorTests: XCTestCase {
         XCTAssertEqual(result.result, "4")
     }
 
+    func test_evals_logic() {
+        let result = evaluator.evaluateBool(.value("BARD = BARD && YES = YES"))
+        XCTAssertEqual(result.result, "true")
+    }
+
     func test_evals_tolower_function() {
         let result = evaluator.evaluateValue(.function("tolower", "ABCD"))
         XCTAssertEqual(result.result, "abcd")
@@ -33,6 +38,12 @@ class FunctionEvaluatorTests: XCTestCase {
 
     func test_evals_startswith_function_fail() {
         let result = evaluator.evaluateValue(.function("startswith", "one two, three"))
+        XCTAssertEqual(result.result, "false")
+    }
+
+    func test_evals_empty_value_to_false() {
+        let expr: Expression = .value("")
+        let result = evaluator.evaluateBool(expr)
         XCTAssertEqual(result.result, "false")
     }
 }

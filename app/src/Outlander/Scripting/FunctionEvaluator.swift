@@ -34,8 +34,10 @@ class FunctionEvaluator {
             let (result, groups) = executeFunction(name, simp)
             let text = "\(name)(\(simp))"
             return EvalResult(text: text, result: result, groups: groups)
-        case let .expression(exp):
-            return evaluateBool(exp)
+        case let .expression(leftOp, op, rightOp):
+            let left = evaluateBool(leftOp)
+            let right = evaluateBool(rightOp)
+            return evaluateBool(.value("\(left.result) \(op) \(right.result)"))
         }
     }
 
@@ -59,8 +61,10 @@ class FunctionEvaluator {
             let (result, groups) = executeFunction(name, simp)
             let text = "\(name)(\(simp))"
             return EvalResult(text: text, result: result, groups: groups)
-        case let .expression(exp):
-            return evaluateValue(exp)
+        case let .expression(leftOp, op, rightOp):
+            let left = evaluateValue(leftOp)
+            let right = evaluateValue(rightOp)
+            return evaluateValue(.value("\(left.result) \(op) \(right.result)"))
         }
     }
 

@@ -40,7 +40,7 @@ class ExpressionTokenizerTests: XCTestCase {
 
         switch result.expression {
         case let .value(txt):
-            XCTAssertEqual(txt, "3 == 3")
+            XCTAssertEqual(txt, "3 ==3")
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -124,7 +124,7 @@ class ExpressionTokenizerTests: XCTestCase {
 
         switch result.expression {
         case let .value(txt):
-            XCTAssertEqual(txt, "(\"%one\" == \"%two\")")
+            XCTAssertEqual(txt, "(\"%one\"==\"%two\")")
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -151,6 +151,47 @@ class ExpressionTokenizerTests: XCTestCase {
         case let .function(name, args):
             XCTAssertEqual(name, "tolower")
             XCTAssertEqual(args, "one, two, three")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_function_multi_params_quoted() {
+        let result = tokenizer.read("tolower(\"one\", two, \"three\"){")
+
+        switch result.expression {
+        case let .function(name, args):
+            XCTAssertEqual(name, "tolower")
+            XCTAssertEqual(args, "\"one\", two, \"three\"")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_two_logical_functions() {
+        let result = tokenizer.read("tolower(ONE) || tocaps(TWO) {")
+
+        switch result.expression {
+        case let .expression(left, op, right):
+            XCTAssertEqual(left.description, "tolower(ONE)")
+            XCTAssertEqual(op, "||")
+            XCTAssertEqual(right.description, "tocaps(TWO)")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_three_logical_functions() {
+        let result = tokenizer.read("tolower(ONE) || tocaps(TWO) || contains(a, b) {")
+
+        switch result.expression {
+        case let .expression(left, op, right):
+            XCTAssertEqual(left.description, "tolower(ONE)")
+            XCTAssertEqual(op, "||")
+            XCTAssertEqual(right.description, "tocaps(TWO) || contains(a, b)")
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
