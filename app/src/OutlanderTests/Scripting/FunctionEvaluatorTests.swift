@@ -15,4 +15,24 @@ class FunctionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateValue(.value("2+2"))
         XCTAssertEqual(result.result, "4")
     }
+
+    func test_evals_tolower_function() {
+        let result = evaluator.evaluateValue(.function("tolower", "ABCD"))
+        XCTAssertEqual(result.result, "abcd")
+    }
+
+    func test_evals_tolower_function_ignores_case() {
+        let result = evaluator.evaluateValue(.function("ToLower", "ABCD"))
+        XCTAssertEqual(result.result, "abcd")
+    }
+
+    func test_evals_startswith_function_success() {
+        let result = evaluator.evaluateValue(.function("startswith", "one two, one"))
+        XCTAssertEqual(result.result, "true")
+    }
+
+    func test_evals_startswith_function_fail() {
+        let result = evaluator.evaluateValue(.function("startswith", "one two, three"))
+        XCTAssertEqual(result.result, "false")
+    }
 }

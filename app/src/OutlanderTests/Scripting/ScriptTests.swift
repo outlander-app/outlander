@@ -355,7 +355,7 @@ class ScriptTests: XCTestCase {
     }
 
     func test_multi_line_if_else_nested_mixed_braces() throws {
-        LogManager.getLog = { name in PrintLogger(name)}
+        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if 1 < 2",
             "{",
@@ -385,9 +385,9 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["one\n", "two\n", "or else\n", "after\n", "end\n"])
     }
-    
+
     func test_multi_line_if_else_tripple_nested_mixed_braces() throws {
-        LogManager.getLog = { name in PrintLogger(name)}
+        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if 1 < 2",
             "{",
@@ -424,8 +424,16 @@ class ScriptTests: XCTestCase {
             "  echo five",
             "}",
             "echo end",
-            "if 3 == 3 then { echo yarg }"
+            "if 3 == 3 then { echo yarg }",
         ],
         expect: ["one\n", "two\n", "another\n", "trippple threat\n", "not those things\n", "after threat\n", "after\n", "end\n", "yarg\n"])
+    }
+
+    func test_single_line_no_then_with_braces() throws {
+        LogManager.getLog = { name in PrintLogger(name) }
+        try scenario([
+            "if 3 == 3 { echo yarg }",
+        ],
+        expect: ["yarg\n"])
     }
 }

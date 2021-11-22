@@ -296,6 +296,9 @@ protocol StringView: Collection {
     static var lessThan: Element { get }
     static var leftParen: Element { get }
     static var rightParen: Element { get }
+
+    static var comma: Element { get }
+    static var pipe: Element { get }
 }
 
 extension Substring: StringView {
@@ -430,6 +433,32 @@ extension StringView where SubSequence == Self, Element: Equatable {
         }
 
         return (result.joined(separator: " "), lastWord == "then")
+    }
+
+    mutating func parseFunctionArguments() -> [String] {
+        var args: [String] = []
+        while count > 0 {
+            consumeSpaces()
+            let arg = Self.string(parseMany({ $0.parseQuotedCharacter() }, while: { $0 != Self.comma }))
+            args.append(arg)
+            consume(expecting: Self.comma)
+        }
+        return args
+    }
+
+    mutating func parseExpression(_ knownFunctions: [String]) -> Expression? {
+        let words = Self.string(parseMany(while: { $0 != Self.leftParen }))
+
+        if knownFunctions.contains(words.lowercased()) {
+            consume(expecting: Self.leftParen)
+            let rest = Self.string(parseMany(while: { $0 != Self.rightParen }))
+            consume(expecting: Self.rightParen)
+            return .function(words.lowercased(), rest)
+        }
+
+        let rest = Self.string(parseToEnd())
+
+        return .value(words + rest)
     }
 
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {

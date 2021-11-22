@@ -65,7 +65,8 @@ class FunctionEvaluator {
     }
 
     func executeFunction(_ funcName: String, _ argsFlat: String) -> (String, [String]) {
-        guard let res = parseArgs(argsFlat) else {
+        let res = parseArgs(argsFlat)
+        if res.count == 0 {
             return ("false", [])
         }
 
@@ -87,7 +88,7 @@ class FunctionEvaluator {
         case "tolower":
             guard args.count == 1 else { return (argsFlat, []) }
             return (args[0].lowercased(), [])
-        case "toupper":
+        case "toupper", "tocaps":
             guard args.count == 1 else { return (argsFlat, []) }
             return (args[0].uppercased(), [])
         case "len", "length":
@@ -110,7 +111,8 @@ class FunctionEvaluator {
         }
     }
 
-    func parseArgs(_: String) -> [String]? {
-        []
+    func parseArgs(_ args: String) -> [String] {
+        var res = args[...]
+        return res.parseFunctionArguments()
     }
 }

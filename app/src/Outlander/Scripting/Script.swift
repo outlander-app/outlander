@@ -749,7 +749,7 @@ class Script {
             context.pushLineToIfStack(line)
         }
 
-        if execute && result {
+        if execute, result {
             return executeToken(line, lineToken)
         }
 
@@ -836,7 +836,7 @@ class Script {
         }
 
         line.ifResult = result
-        
+
         if result {
             context.ifStack.pop()
             context.pushLineToIfStack(line)

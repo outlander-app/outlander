@@ -612,29 +612,6 @@ class IfMode: IScriptReaderMode {
         } else {
             context.target.append(.ifNeedsBrace(expression))
         }
-        
-//        let start = String(input.dropFirst(2))
-//        let (expression, maybeThen) = context.text.parseWords(while: { $0 != "then" })
-//
-//        let fullExpression = (start + expression).trimmingCharacters(in: CharacterSet.whitespaces)
-//
-//        guard fullExpression.count > 0 else {
-//            return nil
-//        }
-//
-//        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-//
-//        if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
-//            context.target.append(.ifSingle(.value(fullExpression), token))
-//            return nil
-//        }
-//
-//        if maybeThen == "{" || maybeBrace == "{" || fullExpression.hasSuffix("{") {
-//            context.target.append(.if(.value(fullExpression.trimmingCharacters(in: CharacterSet(["{", " "])))))
-//            return nil
-//        }
-//
-//        context.target.append(.ifNeedsBrace(.value(fullExpression)))
 
         return nil
     }
