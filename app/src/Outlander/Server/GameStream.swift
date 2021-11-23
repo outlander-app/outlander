@@ -440,40 +440,6 @@ extension StringView where SubSequence == Self, Element: Equatable {
         return (result.joined(separator: " "), lastWord == "then")
     }
 
-    mutating func parseFunctionArguments() -> [String] {
-        var args: [String] = []
-        while count > 0 {
-            consumeSpaces()
-            let arg = Self.string(parseMany({ $0.parseQuotedCharacter() }, while: { $0 != Self.comma }))
-            args.append(arg)
-            consume(expecting: Self.comma)
-        }
-        return args
-    }
-
-    mutating func parseExpression(_ knownFunctions: [String]) -> Expression? {
-        consumeSpaces()
-        let words = Self.string(parseMany(while: { $0 != Self.leftParen && $0 != Self.equal && $0 != Self.pipe && $0 != Self.and }))
-
-        if words.count == 0, logicalCharacter {
-            let logic = Self.string(parseMany(while: { $0 == Self.equal || $0 == Self.pipe || $0 == Self.and }))
-            return .value(logic)
-        }
-
-        if knownFunctions.contains(words.lowercased()) {
-            consume(expecting: Self.leftParen)
-            let rest = Self.string(parseMany(while: { $0 != Self.rightParen }))
-            consume(expecting: Self.rightParen)
-            return .function(words.lowercased(), rest)
-        }
-
-        consumeSpaces()
-
-        let rest = Self.string(parseMany(while: { $0 != Self.space }))
-
-        return .value(words + rest)
-    }
-
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {
         let key = Self.string(parseMany(while: { $0 != Self.equal }))
 

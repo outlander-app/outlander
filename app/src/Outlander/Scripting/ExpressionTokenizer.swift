@@ -15,10 +15,10 @@ protocol IExpressionReaderMode: AnyObject {
 class ExpressionTokenizerContext {
     var text: String.SubSequence
     var originalText: String
-    var target: [Expression]
+    var target: [ScriptExpression]
     var hadThen: Bool = false
 
-    init(_ target: [Expression], text: String.SubSequence, originalText: String) {
+    init(_ target: [ScriptExpression], text: String.SubSequence, originalText: String) {
         self.target = target
         self.text = text
         self.originalText = originalText
@@ -26,7 +26,7 @@ class ExpressionTokenizerContext {
 }
 
 struct ExpressionTokenizerResult {
-    var expression: Expression?
+    var expression: ScriptExpression?
     var rest: String
     var hadThen: Bool
 }
@@ -78,7 +78,7 @@ class ExpressionReaderBase<T> {
     }
 }
 
-class ExpressionTokenizer: ExpressionReaderBase<[Expression]> {
+class ExpressionTokenizer: ExpressionReaderBase<[ScriptExpression]> {
     private var initialMode: IExpressionReaderMode
 
     init(_ initialMode: IExpressionReaderMode = ExpressionBodyMode()) {
@@ -92,20 +92,6 @@ class ExpressionTokenizer: ExpressionReaderBase<[Expression]> {
     }
 }
 
-let knownFunctions = [
-    "contains",
-    "count",
-    "countsplit",
-    "tolower",
-    "tocaps",
-    "toupper",
-    "len",
-    "length",
-    "endswith",
-    "startswith",
-    "trim",
-]
-
 class ExpressionBodyMode: IExpressionReaderMode {
     func read(_ context: ExpressionTokenizerContext) -> IExpressionReaderMode? {
         context.text.consumeSpaces()
@@ -115,35 +101,7 @@ class ExpressionBodyMode: IExpressionReaderMode {
 
         context.hadThen = hadThen
 
-        let result = ExpressionTokenizer(ExpressionMode()).read(expression.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
-
-        guard let exp = result.expression else {
-            return nil
-        }
-
-        context.target.append(exp)
-
-        return nil
-    }
-}
-
-class ExpressionMode: IExpressionReaderMode {
-    func read(_ context: ExpressionTokenizerContext) -> IExpressionReaderMode? {
-        context.text.consumeSpaces()
-
-        var list: [Expression] = []
-
-        while context.text.count > 0 {
-            if let exp = context.text.parseExpression(knownFunctions) {
-                list.append(exp)
-            } else {
-                return nil
-            }
-        }
-
-        if let res = Expression.combine(tags: list) {
-            context.target.append(res)
-        }
+        context.target.append(.value(expression.trimmingCharacters(in: CharacterSet.whitespaces)))
 
         return nil
     }

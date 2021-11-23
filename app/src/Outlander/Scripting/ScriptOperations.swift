@@ -146,7 +146,7 @@ class WaitEvalOp: IWantStreamInfo {
             case .prompt:
                 let simplified = context.replaceVars(expression)
                 if evaluator.evaluateLogic(simplified) {
-                    return .match("waiteval = true")
+                    return .match("waiteval \(simplified) = true")
                 }
             default:
                 continue

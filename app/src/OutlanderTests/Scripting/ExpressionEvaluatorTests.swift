@@ -16,6 +16,36 @@ class ExpressionEvaluatorTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    func test_evals_true() {
+        let result = evaluator.evaluateLogic("true")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_false() {
+        let result = evaluator.evaluateLogic("false")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_yes() {
+        let result = evaluator.evaluateLogic("yes")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_no() {
+        let result = evaluator.evaluateLogic("no")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_one() {
+        let result = evaluator.evaluateLogic("1")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_zero() {
+        let result = evaluator.evaluateLogic("0")
+        XCTAssertFalse(result)
+    }
+
     func test_evals_single_value() {
         let result = evaluator.evaluateLogic("3")
         XCTAssertFalse(result)
@@ -46,11 +76,11 @@ class ExpressionEvaluatorTests: XCTestCase {
         result = evaluator.evaluateLogic("\"one\" = \"two\"")
         XCTAssertFalse(result)
 
-        result = evaluator.evaluateLogic("one == two")
+        result = evaluator.evaluateLogic("one == one")
         XCTAssertTrue(result)
 
         result = evaluator.evaluateLogic("one = two")
-        XCTAssertTrue(result)
+        XCTAssertFalse(result)
 
         result = evaluator.evaluateLogic("two == two")
         XCTAssertTrue(result)
@@ -80,27 +110,27 @@ class ExpressionEvaluatorTests: XCTestCase {
     }
 
     func test_can_add_numbers() {
-        let result: Int? = evaluator.evaluateValue("5 + 2")
+        let result: Double? = evaluator.evaluateValue("5 + 2")
         XCTAssertEqual(result, 7)
     }
 
     func test_value_empty() {
-        let result: Int? = evaluator.evaluateValue("")
+        let result: Double? = evaluator.evaluateValue("")
         XCTAssertNil(result)
     }
 
     func test_single_value() {
-        let result: Int? = evaluator.evaluateValue("5")
+        let result: Double? = evaluator.evaluateValue("5")
         XCTAssertEqual(result, 5)
     }
 
     func test_single_string() {
-        let result: Int? = evaluator.evaluateValue("abcd")
+        let result: Double? = evaluator.evaluateValue("abcd")
         XCTAssertNil(result)
     }
 
     func test_bogus_value() {
-        let result: Int? = evaluator.evaluateValue("one + %onetwo")
+        let result: Double? = evaluator.evaluateValue("one + %onetwo")
         XCTAssertNil(result)
     }
 
@@ -112,5 +142,40 @@ class ExpressionEvaluatorTests: XCTestCase {
     func test_double_ints() {
         let result: Double? = evaluator.evaluateValue("3 + 3")
         XCTAssertEqual(result, 6.0)
+    }
+
+    func test_evals_numbers_math() {
+        let result = evaluator.evaluateLogic("1 + 1 == 2")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_numbers_false() {
+        let result = evaluator.evaluateLogic("1 == 2")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_numbers_true() {
+        let result = evaluator.evaluateLogic("2 == 2")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_func() {
+        let result = evaluator.evaluateLogic("tolower(ONE) == one")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_func_2() {
+        let result = evaluator.evaluateLogic("(3 == 4) || 2 ==  1 || tolower(ONE) == one")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_func_3() {
+        let result = evaluator.evaluateLogic("3 == 4 && 2 ==  1 && tolower(ONE) == one")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_func_ignores_case() {
+        let result = evaluator.evaluateLogic("ToLower(ONE) == one")
+        XCTAssertTrue(result)
     }
 }

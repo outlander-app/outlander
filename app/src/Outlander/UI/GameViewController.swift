@@ -109,13 +109,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameServer = GameServer { [weak self] state in
             switch state {
             case .connected:
-                self?.log.info("Connected to game server")
+                self?.log.info("connected to game server")
                 self?.updateWindowTitle()
             case let .data(_, str):
                 self?.handleRawStream(data: str, streamData: true)
             case .closed:
                 self?.gameStream?.reset()
-                self?.logText("\n\(self?.timestamp() ?? "")Disconnected from game server\n", mono: true)
+                self?.logText("\n\(self?.timestamp() ?? "")disconnected from game server\n", mono: true)
                 self?.updateWindowTitle()
                 self?.saveSettings()
             }
@@ -611,7 +611,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let host = gameContext.applicationSettings.authenticationServerAddress
         let port = gameContext.applicationSettings.authenticationServerPort
 
-        logText("Connecting to authentication server at \(host):\(port)\n")
+        logText("connecting to authentication server at \(host):\(port)\n")
 
         authServer?.authenticate(
             AuthInfo(
@@ -629,11 +629,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //                    self?.logText("Connected to authentication server\n")
 
                 case let .success(connection):
-                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
+                    self?.logText("connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                 case .closed:
-                    self?.logText("Disconnected from authentication server\n", mono: true)
+                    self?.logText("disconnected from authentication server\n", mono: true)
 
                 case let .error(error):
                     self?.logError("\(error)\n")

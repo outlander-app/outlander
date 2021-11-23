@@ -292,8 +292,6 @@ class ScriptTokenizerTests: XCTestCase {
                 default:
                     XCTFail("wrong value, found \(String(describing: token.description))")
                 }
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -316,8 +314,6 @@ class ScriptTokenizerTests: XCTestCase {
                 default:
                     XCTFail("wrong value, found \(String(describing: token.description))")
                 }
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -333,8 +329,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -350,8 +344,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -367,8 +359,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "(1==1)")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -384,8 +374,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -401,8 +389,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -425,8 +411,6 @@ class ScriptTokenizerTests: XCTestCase {
                 default:
                     XCTFail("wrong value, found \(String(describing: token.description))")
                 }
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -449,8 +433,6 @@ class ScriptTokenizerTests: XCTestCase {
                 default:
                     XCTFail("wrong value, found \(String(describing: token.description))")
                 }
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -473,8 +455,6 @@ class ScriptTokenizerTests: XCTestCase {
                 default:
                     XCTFail("wrong value, found \(String(describing: token.description))")
                 }
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -490,8 +470,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -507,8 +485,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -524,8 +500,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -541,8 +515,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -558,8 +530,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")
@@ -575,8 +545,6 @@ class ScriptTokenizerTests: XCTestCase {
             switch expression {
             case let .value(text):
                 XCTAssertEqual(text, "1==1")
-            default:
-                XCTFail("wrong expression value, found \(String(describing: expression))")
             }
         default:
             XCTFail("wrong token value, found \(String(describing: token?.description))")

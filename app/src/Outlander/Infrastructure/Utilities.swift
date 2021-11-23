@@ -85,6 +85,14 @@ public class Stack<T> {
     public func clear() {
         stack.removeAll(keepingCapacity: true)
     }
+
+    public func copy() -> Stack<T> {
+        let copy = Stack<T>()
+        for item in stack {
+            copy.push(item)
+        }
+        return copy
+    }
 }
 
 class MemoizeHash<T: Hashable, U> {

@@ -600,7 +600,7 @@ class Script {
         notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber, fileName: currentLine.fileName)
 
         let line = context.lines[target.line]
-        let gosubContext = GosubContext(label: target, line: line, arguments: args, ifStack: context.ifStack, isGosub: isGosub)
+        let gosubContext = GosubContext(label: target, line: line, arguments: args, ifStack: context.ifStack.copy(), isGosub: isGosub)
 
         context.ifStack.clear()
 
@@ -653,20 +653,16 @@ class Script {
         guard case .leftBrace = token else {
             return .next
         }
-
-        // TODO: handle left brace - probably nothing?
-
         return .next
     }
 
-    func handleRightBrace(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+    func handleRightBrace(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case .rightBrace = token else {
             return .next
         }
 
         let (popped, ifLine) = context.popIfStack()
         guard popped else {
-            let line = context.currentLine!
             sendText("End brace encountered without matching beginning block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
@@ -1417,7 +1413,9 @@ class Script {
             return .next
         }
 
-        notify("waiteval \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
+        let vars = context.replaceVars(text)
+
+        notify("waiteval \(vars)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
         reactToStream.append(WaitEvalOp(text))
 

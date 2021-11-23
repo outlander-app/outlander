@@ -103,6 +103,7 @@
 		7BDF5C81272723DA0020A3B0 /* MacroLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDF5C80272723DA0020A3B0 /* MacroLoaderTests.swift */; };
 		7BDF5C842727315A0020A3B0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BDF5C82272731560020A3B0 /* Carbon.framework */; };
 		7BDF5C88272736300020A3B0 /* MacroExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDF5C87272736300020A3B0 /* MacroExtensions.swift */; };
+		7BF17D36274B95A000A2EAB6 /* Expression in Frameworks */ = {isa = PBXBuildFile; productRef = 7BF17D35274B95A000A2EAB6 /* Expression */; };
 		F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA130247A2846004E2C1E /* GagCommandHandler.swift */; };
 		F62EA13C247B6223004E2C1E /* AliasCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */; };
@@ -400,6 +401,7 @@
 				7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */,
 				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				7BDF5C842727315A0020A3B0 /* Carbon.framework in Frameworks */,
+				7BF17D36274B95A000A2EAB6 /* Expression in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,6 +743,7 @@
 				7BCE4A2225C5007A00AF0444 /* Fuzi */,
 				7BAC840825E9B51800A6C7D5 /* KeychainSwift */,
 				7BDF5C7E2723847B0020A3B0 /* MASShortcut */,
+				7BF17D35274B95A000A2EAB6 /* Expression */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -799,6 +802,7 @@
 				7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */,
 				7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				7BDF5C7D2723847B0020A3B0 /* XCRemoteSwiftPackageReference "MASShortcut" */,
+				7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -1379,6 +1383,14 @@
 				kind = branch;
 			};
 		};
+		7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nicklockwood/Expression";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
 		F9B2540A2481B5950097C07F /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/robbiehanson/CocoaAsyncSocket";
@@ -1404,6 +1416,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7BDF5C7D2723847B0020A3B0 /* XCRemoteSwiftPackageReference "MASShortcut" */;
 			productName = MASShortcut;
+		};
+		7BF17D35274B95A000A2EAB6 /* Expression */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */;
+			productName = Expression;
 		};
 		F9B2540B2481B5950097C07F /* CocoaAsyncSocket */ = {
 			isa = XCSwiftPackageProductDependency;
