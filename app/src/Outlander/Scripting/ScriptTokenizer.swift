@@ -36,6 +36,7 @@ enum ScriptTokenValue: Hashable {
     indirect case elseSingle(ScriptTokenValue)
     case elseNeedsBrace
     case eval(String, ScriptExpression)
+    case evalMath(String, ScriptExpression)
     case exit
     indirect case ifArgSingle(Int, ScriptTokenValue)
     case ifArg(Int)
@@ -144,6 +145,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "elseneedsbrace"
         case .eval:
             return "eval"
+        case .evalMath:
+            return "evalmath"
         case .exit:
             return "exit"
         case .ifArgSingle:
@@ -294,6 +297,7 @@ class CommandMode: IScriptReaderMode {
         "debuglevel": DebugMode(),
         "echo": EchoMode(),
         "eval": EvalMode(),
+        "evalmath": EvalMode(),
         "exit": ExitMode(),
         "gosub": GosubMode(),
         "goto": GotoMode(),
@@ -529,6 +533,23 @@ class ElseMode: IScriptReaderMode {
 class EvalMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
+        let variable = String(context.text.parseWord())
+        context.text.consumeSpaces()
+        let expression = String(context.text.parseToEnd())
+
+        context.target.append(.eval(variable, .value(expression)))
+        return nil
+    }
+}
+
+class EvalMathMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let variable = String(context.text.parseWord())
+        context.text.consumeSpaces()
+        let expression = String(context.text.parseToEnd())
+
+        context.target.append(.evalMath(variable, .value(expression)))
         return nil
     }
 }

@@ -32,7 +32,7 @@ class EchoCommandHandler: ICommandHandler {
         var tag = TextTag(text: "\(text)\n", window: window.lowercased())
         tag.color = foregroundColor
         tag.backgroundColor = backgroundColor
-//        tag.mono = true
+        tag.mono = true
         tag.preset = "scriptecho"
 
         with.events.post("ol:echo", data: tag)

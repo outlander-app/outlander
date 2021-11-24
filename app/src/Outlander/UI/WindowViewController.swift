@@ -506,9 +506,9 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
             let smartScroll = percentScroll >= CGFloat(0.95)
 
-            if self.name == "main" {
-                print("** Window rect: \(percentScroll * 100)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
-            }
+//            if self.name == "main" {
+//                print("** Window rect: \(percentScroll * 100)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
+//            }
 
             self.textView.textStorage?.append(text)
 

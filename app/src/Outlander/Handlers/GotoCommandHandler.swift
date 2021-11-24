@@ -44,6 +44,14 @@ class GotoComandHandler: ICommandHandler {
             context.events.echoText(path.joined(separator: ", "))
             context.events.echoText("found path in: \(diff.formatted)")
             context.events.echoText(moves.joined(separator: ", "))
+            
+            let args = moves.map {
+                $0.range(of: " ") != nil
+                ? "\"\($0)\""
+                : $0
+            }.joined(separator: " ")
+
+            context.events.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
         }
     }
 

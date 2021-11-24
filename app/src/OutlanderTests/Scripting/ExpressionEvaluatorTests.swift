@@ -178,4 +178,19 @@ class ExpressionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateLogic("ToLower(ONE) == one")
         XCTAssertTrue(result)
     }
+
+    func test_greater_than_equal() {
+        let result = evaluator.evaluateLogic("3 >= 1")
+        XCTAssertTrue(result)
+    }
+
+    func test_less_than_equal() {
+        let result = evaluator.evaluateLogic("1 <= 3")
+        XCTAssertTrue(result)
+    }
+
+    func test_not_equal() {
+        let result = evaluator.evaluateLogic("3 != 1")
+        XCTAssertTrue(result)
+    }
 }

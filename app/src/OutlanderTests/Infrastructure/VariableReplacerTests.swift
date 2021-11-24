@@ -88,4 +88,11 @@ class VariableReplacerTests: XCTestCase {
         let result = replacer.replace("testing(0]", globalVars: variables)
         XCTAssertEqual("testing(0]", result)
     }
+
+    func test_regex_text() {
+        variables["dir"] = "swim west"
+
+        let result = replacer.replace("matchre(\"$dir\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \")", globalVars: variables)
+        XCTAssertEqual(result, "matchre(\"swim west\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \")")
+    }
 }

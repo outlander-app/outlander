@@ -366,10 +366,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showLogin() {
-        loginWindow?.loadPassword()
+        loginWindow?.account = gameContext.applicationSettings.profile.account
+        loginWindow?.character = gameContext.applicationSettings.profile.character
+        loginWindow?.game = gameContext.applicationSettings.profile.game
+        loginWindow?.setControlValues()
         view.window?.beginSheet(loginWindow!.window!, completionHandler: { result in
             guard result == .OK else {
-                self.loginWindow!.clearPassword()
                 return
             }
             self.credentials = Credentials(
@@ -611,7 +613,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let host = gameContext.applicationSettings.authenticationServerAddress
         let port = gameContext.applicationSettings.authenticationServerPort
 
-        logText("connecting to authentication server at \(host):\(port)\n")
+        logText("Connecting to authentication server at \(host):\(port)\n", mono: true)
 
         authServer?.authenticate(
             AuthInfo(
@@ -629,11 +631,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //                    self?.logText("Connected to authentication server\n")
 
                 case let .success(connection):
-                    self?.logText("connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
+                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                 case .closed:
-                    self?.logText("disconnected from authentication server\n", mono: true)
+                    self?.logText("Disconnected from authentication server\n", mono: true)
 
                 case let .error(error):
                     self?.logError("\(error)\n")

@@ -25,7 +25,24 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        setControlValues()
+    }
 
+    @IBAction func connect(_: Any) {
+        setValues()
+        window!.sheetParent!.endSheet(window!, returnCode: .OK)
+    }
+
+    @IBAction func cancel(_: Any) {
+        clearPassword()
+        window!.sheetParent!.endSheet(window!, returnCode: .cancel)
+    }
+
+    func controlTextDidEndEditing(_: Notification) {
+        game = gameComboBox?.stringValue ?? "DR"
+    }
+
+    func setControlValues() {
         gameComboBox?.removeAllItems()
         gameComboBox?.addItems(withObjectValues: ["DR", "DRX", "DRF", "DRT"])
 
@@ -35,20 +52,6 @@ class LoginWindow: NSWindowController, NSComboBoxDelegate, NSWindowDelegate {
         characterTextField?.stringValue = character
 
         loadPassword()
-    }
-
-    @IBAction func connect(_: Any) {
-        setValues()
-        window!.sheetParent!.endSheet(window!, returnCode: .OK)
-    }
-
-    @IBAction func cancel(_: Any) {
-        setValues()
-        window!.sheetParent!.endSheet(window!, returnCode: .cancel)
-    }
-
-    func controlTextDidEndEditing(_: Notification) {
-        game = gameComboBox?.stringValue ?? "DR"
     }
 
     func loadPassword() {

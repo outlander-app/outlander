@@ -490,40 +490,6 @@ extension StringView where SubSequence == Self, Element: Equatable {
             return c
         }
     }
-
-    mutating func parseIndexedVariables() -> [VariableToken] {
-        var tokens: [VariableToken] = []
-
-        while first != nil {
-            let current = parseMany(while: { $0 != Self.space && $0 != Self.leftParen && $0 != Self.leftBracket })
-            if current.count == 0 {
-                tokens.append(.value(Self.string([popFirst()!])))
-                continue
-            }
-            if let f = first, f == Self.leftParen || f == Self.leftBracket {
-                consume(expecting: f)
-                let expected = f == Self.leftParen ? Self.rightParen : Self.rightBracket
-                let idx = parseMany(while: { $0 != expected && $0 != Self.space && $0 != Self.newline })
-
-                if first == expected {
-                    // found end index delimiter
-                    consume(expecting: expected)
-                    tokens.append(.indexed(Self.string(current), Self.string(idx)))
-                } else {
-                    // didn't find end index delimiter
-                    var str = Self.string(current) + Self.string([f]) + Self.string(idx)
-                    let next = parseMany(while: { $0 == Self.space })
-                    str += Self.string(next)
-                    tokens.append(.value(str))
-                }
-            } else {
-                let next = parseMany(while: { $0 == Self.space })
-                tokens.append(.value(Self.string(current) + Self.string(next)))
-            }
-        }
-
-        return tokens
-    }
 }
 
 struct TextTag {

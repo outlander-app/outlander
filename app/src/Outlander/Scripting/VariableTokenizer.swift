@@ -88,9 +88,39 @@ class VariableTokenizer: VariableReaderBase<[VariableToken]> {
 
 class IndexedVariableMode: IVariableReaderMode {
     func read(_ context: VariableTokenizerContext) -> IVariableReaderMode? {
-        for v in context.text.parseIndexedVariables() {
-            context.target.append(v)
+        var input = String(context.text.parseToEnd())
+        let regex = RegexFactory.get("([%$&][a-zA-Z0-9_\\-$%&]+)[\\[(]([a-zA-Z0-9_\\-$%&]+)[\\])]")!
+        let matches = regex.allMatches(&input)
+
+        guard matches.count > 0 else {
+            context.target.append(.value(input))
+            return nil
         }
+
+        var start = input.startIndex
+
+        for (index, match) in matches.enumerated() {
+            guard let range = match.rangeOf(index: index) else {
+                continue
+            }
+            let newRange = Range(range, in: input)!
+            if newRange.lowerBound != start {
+                let str = String(input[start ..< newRange.lowerBound])
+                context.target.append(.value(str))
+            }
+
+            let variable = match.valueAt(index: 1) ?? ""
+            let idx = match.valueAt(index: 2) ?? ""
+            context.target.append(.indexed(variable, idx))
+
+            start = newRange.upperBound
+        }
+
+        if start != input.endIndex {
+            let str = String(input[start ..< input.endIndex])
+            context.target.append(.value(str))
+        }
+
         return nil
     }
 }

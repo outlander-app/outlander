@@ -10,6 +10,8 @@ import Expression
 import Foundation
 
 class ExpressionEvaluator {
+    var groups: [String] = []
+
     func evaluateLogic(_ input: ScriptExpression) -> Bool {
         switch input {
         case let .value(val):
@@ -52,14 +54,46 @@ class ExpressionEvaluator {
             ).evaluate()
             return result
         } catch {
-            print("error \(error)")
+            print("AnyExpression Error: \(error)")
             return nil
         }
     }
 
     func buildSymbols() -> [Expression.Symbol: (_ args: [Any]) throws -> Any] {
         [
+            .function("contains", arity: 2): { args in String(describing: args[0]).contains(String(describing: args[1])) },
+            .function("count", arity: 2): { args in String(describing: args[0]).components(separatedBy: String(describing: args[1])).count - 1 },
+            .function("countsplit", arity: 2): { args in String(describing: args[0]).components(separatedBy: String(describing: args[1])).count },
+            .function("length", arity: 1): { args in String(describing: args[0]).count },
+            .function("len", arity: 1): { args in String(describing: args[0]).count },
+            .function("matchre", arity: 2): { args in
+                var source = self.trimQuotes(args[0])
+                let pattern = self.trimQuotes(args[1])
+                guard let regex = RegexFactory.get(pattern) else {
+                    return source
+                }
+
+                if let match = regex.firstMatch(&source) {
+                    print(match.values())
+                    self.groups = match.values()
+                    return match.count > 0
+                }
+
+                return false
+            },
             .function("tolower", arity: 1): { args in String(describing: args[0]).lowercased() },
+            .function("toupper", arity: 1): { args in String(describing: args[0]).uppercased() },
+            .function("tocaps", arity: 1): { args in String(describing: args[0]).uppercased() },
+            .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) },
+            .function("replacere", arity: 3): { args in
+                let source = self.trimQuotes(args[0])
+                let pattern = self.trimQuotes(args[1])
+                let replacement = self.trimQuotes(args[2])
+                guard let regex = RegexFactory.get(pattern) else {
+                    return source
+                }
+                return regex.replace(source, with: replacement)
+            },
             .function("startswith", arity: 2): { args in
                 self.trimQuotes(args[0]).hasPrefix(self.trimQuotes(args[1]))
                     ? "true" : "false"
@@ -105,14 +139,14 @@ public extension AnyExpression {
     static func replaceSingleOperators(_ input: String) -> String {
         let operators = [
             "=",
-            "&",
-            "\\|",
+//            "&",
+//            "\\|",
         ]
 
         var result = input
 
         for op in operators {
-            let exp = "((?<![\(op)])\(op)(?!\(op)))"
+            let exp = "((?<![!<>\(op)])\(op)(?!\(op)))"
             guard let regex = RegexFactory.get(exp) else {
                 continue
             }

@@ -195,7 +195,11 @@ class Script {
     var includeRegex: Regex
     var labelRegex: Regex
 
-    var delayedTask: DispatchWorkItem?
+    var delayedTask: DispatchWorkItem? {
+        willSet {
+            delayedTask?.cancel()
+        }
+    }
 
     static var dateFormatter = DateFormatter()
 
@@ -227,6 +231,7 @@ class Script {
         tokenHandlers["debug"] = handleDebug
         tokenHandlers["echo"] = handleEcho
         tokenHandlers["eval"] = handleEval
+        tokenHandlers["evalmath"] = handleEvalMath
         tokenHandlers["exit"] = handleExit
 
         tokenHandlers["ifarg"] = handleIfArg
@@ -320,7 +325,7 @@ class Script {
 
         stackTrace.push(line)
 
-        log.info("passing \(line.lineNumber) - \(line.originalText)")
+//        log.info("passing \(line.lineNumber) - \(line.originalText)")
 
         let result = handleLine(line)
 
@@ -350,13 +355,18 @@ class Script {
     }
 
     func nextAfterRoundtime() {
-        if let roundtime = context.roundtime {
-            if roundtime > 0 {
-                delayedTask = delay(roundtime, queue: lockQueue) {
-                    self.nextAfterRoundtime()
-                }
-                return
+        let ignoreRoundtime = gameContext.globalVars["scriptengine:ignoreroundtime"]?.toBool()
+
+        if ignoreRoundtime == true {
+            next()
+            return
+        }
+
+        if let roundtime = context.roundtime, roundtime > 0 {
+            delayedTask = delay(roundtime, queue: lockQueue) {
+                self.nextAfterRoundtime()
             }
+            return
         }
 
         next()
@@ -585,6 +595,9 @@ class Script {
         }
 
         guard let target = context.labels[result.lowercased()] else {
+            guard result.lowercased() != "return" else {
+                return gotoReturn(currentLine)
+            }
             sendText("label '\(result)' not found", preset: "scripterror", scriptLine: currentLine.lineNumber, fileName: currentLine.fileName)
             return .exit
         }
@@ -695,13 +708,13 @@ class Script {
         return .next
     }
 
-    func handleEcho(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+    func handleEcho(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .echo(text) = token else {
             return .next
         }
 
         let targetText = context.replaceVars(text)
-        notify("echo \(targetText)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+        // notify("echo \(targetText)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
         gameContext.events.echoText(targetText, preset: "scriptecho", mono: true)
         return .next
@@ -933,9 +946,23 @@ class Script {
             return .next
         }
 
-        let result = funcEvaluator.evaluateBool(expression)
+        let result = funcEvaluator.evaluateStrValue(expression)
 
         notify("eval \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        context.variables[variable] = result.result
+
+        return .next
+    }
+
+    func handleEvalMath(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .evalMath(variable, expression) = token else {
+            return .next
+        }
+
+        let result = funcEvaluator.evaluateValue(expression)
+
+        notify("evalmath \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
         context.variables[variable] = result.result
 
@@ -1318,6 +1345,10 @@ class Script {
             return .next
         }
 
+        return gotoReturn(line)
+    }
+
+    func gotoReturn(_ line: ScriptLine) -> ScriptExecuteResult {
         guard let ctx = gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
             notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
             sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)

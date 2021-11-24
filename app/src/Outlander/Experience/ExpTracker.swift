@@ -239,7 +239,7 @@ class ExpTracker {
 
         let diff = Date().timeIntervalSince(startOfTracking!)
         tags.append("\(foreColor)\nTracking for: \(diff.formatted)")
-        tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))")
+        tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))\n")
 
         return tags.map {
             "#echo \($0)"
