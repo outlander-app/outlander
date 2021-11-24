@@ -93,6 +93,10 @@ class ScriptContext {
                     return false
                 }
             default:
+                if lineToken.isTopLevelIf && !lineToken.isSingleToken {
+                    pushCurrentLineToIfStack()
+                }
+
                 continue
             }
         }
@@ -163,8 +167,8 @@ class ScriptContext {
 
     func replaceVars(_ input: String) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: regexVars.keys, values: { key in self.regexVars[key] })
         context.add("$", sortedKeys: labelVars.keys, values: { key in self.labelVars[key] })
+        context.add("$", sortedKeys: regexVars.keys, values: { key in self.regexVars[key] })
         context.add("%", sortedKeys: variables.keys, values: { key in self.variables[key] })
         context.add("%", sortedKeys: argumentVars.keys, values: { key in self.argumentVars[key] })
         context.add("$", sortedKeys: self.context.globalVars.keys, values: { key in self.context.globalVars[key] })

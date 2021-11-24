@@ -13,10 +13,15 @@ class ScriptTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
-    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", expect: [String] = []) throws -> InMemoryEvents {
+    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", variables: [String: String] = [:], expect: [String] = []) throws -> InMemoryEvents {
         let events = InMemoryEvents()
         let context = GameContext(events)
         let loader = InMemoryScriptLoader()
+
+        for v in variables {
+            context.globalVars[v.key] = v.value
+        }
+        
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
         script.run([], runAsync: false)

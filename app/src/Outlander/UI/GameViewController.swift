@@ -239,7 +239,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
-            print("processing command \(command.command)")
+//            print("processing command \(command.command)")
 
             self.commandProcessor?.process(command, with: self.gameContext)
         }
@@ -270,7 +270,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        let indicators = ["bleeding", "stunned", "poisoned", "webbed"]
+        let indicators = ["bleeding", "stunned", "poisoned", "webbed", "burning"]
 
         gameContext.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {

@@ -74,7 +74,7 @@ class ExpressionEvaluator {
                 }
 
                 if let match = regex.firstMatch(&source) {
-                    print(match.values())
+                    print("matchre groups \(match.values())")
                     self.groups = match.values()
                     return match.count > 0
                 }
@@ -92,7 +92,8 @@ class ExpressionEvaluator {
                 guard let regex = RegexFactory.get(pattern) else {
                     return source
                 }
-                return regex.replace(source, with: replacement)
+                let result = regex.replace(source, with: replacement)
+                return result
             },
             .function("startswith", arity: 2): { args in
                 self.trimQuotes(args[0]).hasPrefix(self.trimQuotes(args[1]))

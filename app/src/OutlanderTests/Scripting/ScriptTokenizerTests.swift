@@ -350,6 +350,21 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
+    func test_if_with_brace_and_then_scenario_2() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("if $powerwalk == 1 then {")
+
+        switch token {
+        case let .if(expression):
+            switch expression {
+            case let .value(text):
+                XCTAssertEqual(text, "$powerwalk == 1")
+            }
+        default:
+            XCTFail("wrong token value, found \(String(describing: token?.description))")
+        }
+    }
+
     func test_if_with_brace_parens_no_spaces() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("if(1==1){")

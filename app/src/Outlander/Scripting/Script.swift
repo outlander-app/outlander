@@ -608,9 +608,13 @@ class Script {
 
         context.setLabelVars(args)
 
+        let displayArgs = args
+            .map { $0.range(of: " ") != nil ? "\"\($0)\"" : $0 }
+            .joined(separator: " ")
+
         let command = isGosub ? "gosub" : "goto"
 
-        notify("\(command) '\(result)'", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber, fileName: currentLine.fileName)
+        notify("\(command) '\(result)' \(displayArgs)", debug: ScriptLogLevel.gosubs, scriptLine: currentLine.lineNumber, fileName: currentLine.fileName)
 
         let line = context.lines[target.line]
         let gosubContext = GosubContext(label: target, line: line, arguments: args, ifStack: context.ifStack.copy(), isGosub: isGosub)
@@ -1132,7 +1136,9 @@ class Script {
         }
 
         let replaced = context.replaceVars(args)
-        let arguments = [replaced] + replaced.argumentsSeperated()
+//        let arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
+
+        let arguments = [replaced] + replaced.components(separatedBy: " ")
 
         return gotoLabel(label, arguments, true)
     }
@@ -1361,7 +1367,11 @@ class Script {
             context.setLabelVars([])
         }
 
-        context.ifStack = ctx.ifStack
+        delayedTask?.cancel()
+        matchwait = nil
+        matchStack.removeAll()
+
+        context.ifStack = ctx.ifStack.copy()
 
         notify("returning to line \(returnToLine.lineNumber)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
 

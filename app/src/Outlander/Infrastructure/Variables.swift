@@ -107,7 +107,7 @@ class Variables {
                 self.vars[key] = .value(res)
                 DispatchQueue.main.async {
                     if self.eventKey.count > 0 {
-                        print("var changed: \(key): \(res)")
+//                        print("var changed: \(key): \(res)")
                         self.events.post(self.eventKey, data: [key: res])
                     }
                 }
