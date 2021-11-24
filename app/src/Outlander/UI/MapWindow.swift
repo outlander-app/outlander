@@ -14,6 +14,8 @@ class MapWindow: NSWindowController {
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
+    
+    var loaded: Bool = false
 
     var context: GameContext?
 
@@ -42,7 +44,7 @@ class MapWindow: NSWindowController {
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
                     if key == "zoneid" {
-                        guard self.isWindowLoaded else { return }
+                        guard self.loaded else { return }
                         guard let newMap = context.mapZone else { return }
                         self.renderMap(newMap)
                     }
@@ -57,6 +59,8 @@ class MapWindow: NSWindowController {
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        
+        loaded = true
 
         roomLabel.stringValue = ""
         zoneLabel.stringValue = ""

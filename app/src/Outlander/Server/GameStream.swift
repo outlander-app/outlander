@@ -702,6 +702,10 @@ class GameStream {
         handlers.append(TriggerHandler())
     }
 
+    func addHandler(_ handler: StreamHandler) {
+        handlers.append(handler)
+    }
+
     public func reset(_ isSetup: Bool = false) {
         self.isSetup = isSetup
 
@@ -736,16 +740,15 @@ class GameStream {
 
                 tags.append(tag)
 
+                // TODO: should this be combined text?
+                // if combined, can mess up trigger regex with leading ^
+                // send to handlers immediately
+                sendToHandlers(text: tag.text)
+
                 if !isSetup || isPrompt {
                     let combined = TextTag.combine(tags: tags)
                     streamCommands(.text(combined))
                     tags.removeAll()
-
-                    // TODO: should this be combined text?
-                    // if combined, can mess up trigger regex with leading ^
-                    for tag in combined {
-                        sendToHandlers(text: tag.text)
-                    }
                 }
             }
         }
@@ -951,7 +954,7 @@ class GameStream {
             guard let tokenName = lastToken?.name(), !self.ignoredEot.contains(tokenName) else {
                 break
             }
-            guard !inStream else { break }
+            guard !inStream || self.lastStreamId == "combat" else { break }
             guard tokenName != "prompt" else { break }
 
             guard !ignoreNextEot else {
@@ -959,7 +962,7 @@ class GameStream {
                 break
             }
 
-            tag = TextTag(text: "\n", window: "")
+            tag = TextTag(text: "\n", window: lastStreamId == "combat" ? "combat" : "")
 
         case "prompt":
             tag = createTag(token)

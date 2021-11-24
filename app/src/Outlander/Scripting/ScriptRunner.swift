@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScriptRunner {
+class ScriptRunner: StreamHandler {
     private var context: GameContext
     private var loader: IScriptLoader
 
@@ -60,6 +60,12 @@ class ScriptRunner {
     func stream(_ data: String, _ tokens: [StreamCommand]) {
         for script in scripts {
             script.stream(data, tokens)
+        }
+    }
+
+    func stream(_ data: String, with context: GameContext) {
+        for script in scripts {
+            script.stream(data, [])
         }
     }
 

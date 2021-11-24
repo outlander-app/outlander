@@ -8,7 +8,7 @@
 
 import Foundation
 
-func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.main, _ closure: @escaping () -> Void) -> DispatchWorkItem {
+func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
     // TODO: swap from main queue?
     queue.asyncAfter(deadline: .now() + delay, execute: task)
@@ -294,6 +294,8 @@ class Script {
 
             next()
         }
+
+//        doRun()
 
         if runAsync {
             lockQueue.async {
@@ -1304,7 +1306,7 @@ class Script {
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
         delayedTask = delay(duration, queue: lockQueue) {
-            self.next()
+            self.nextAfterRoundtime()
         }
 
         return .wait

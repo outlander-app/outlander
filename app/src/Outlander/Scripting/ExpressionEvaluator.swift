@@ -43,7 +43,8 @@ class ExpressionEvaluator {
     }
 
     func evaluateValue(_ input: String) -> Double? {
-        evaluate(input)
+        let res: String? = evaluate(input)
+        return Double(res ?? "")
     }
 
     func evaluate<T>(_ input: String) -> T? {

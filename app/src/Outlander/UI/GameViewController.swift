@@ -133,9 +133,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
-                    if tag.window != "raw" {
-                        self?.scriptRunner?.stream(tag.text, [])
-                    }
+//                    if tag.window != "raw" {
+//                        self?.scriptRunner?.stream(tag.text, [])
+//                    }
                 }
 
             case let .vitals(name, value):
@@ -204,6 +204,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.log.warn("Unhandled command \(command)")
             }
         })
+
+        gameStream?.addHandler(scriptRunner!)
 
         commandInput.executeCommand = { command in
             self.commandProcessor!.process(command, with: self.gameContext)
@@ -298,7 +300,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         gameContext.events.handle(self, channel: "ol:mapper:setpath") { result in
             if let path = result as? [String] {
-                self.mapWindow?.setWalkPath(path)
+                DispatchQueue.main.async {
+                    self.mapWindow?.setWalkPath(path)
+                }
             }
         }
 

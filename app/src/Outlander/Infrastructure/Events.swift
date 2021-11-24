@@ -29,7 +29,7 @@ extension Events {
     }
 
     func variableChanged(_ key: String, value: String) {
-        print("var changed: \(key): \(value)")
+        //print("var changed: \(key): \(value)")
         post("ol:variable:changed", data: [key: value])
     }
 }
@@ -64,7 +64,7 @@ class SwiftEventBusEvents: Events {
     }
 
     func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void) {
-        SwiftEventBus.onMainThread(target, name: "\(id)_\(channel)") { notification in
+        SwiftEventBus.onBackgroundThread(target, name: "\(id)_\(channel)") { notification in
             handler(notification?.object)
         }
     }

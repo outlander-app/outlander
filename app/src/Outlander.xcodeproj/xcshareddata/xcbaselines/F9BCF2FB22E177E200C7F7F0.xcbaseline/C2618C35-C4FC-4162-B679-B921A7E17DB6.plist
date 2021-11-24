@@ -4,6 +4,19 @@
 <dict>
 	<key>classNames</key>
 	<dict>
+		<key>GameStreamTokenizerTests</key>
+		<dict>
+			<key>test_combat_measure()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.000154</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Local Baseline</string>
+				</dict>
+			</dict>
+		</dict>
 		<key>SplitToCommandsTests</key>
 		<dict>
 			<key>test_escaped_measure()</key>
@@ -11,7 +24,7 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>3.86e-05</real>
+					<real>0.000039</real>
 					<key>baselineIntegrationDisplayName</key>
 					<string>Local Baseline</string>
 				</dict>

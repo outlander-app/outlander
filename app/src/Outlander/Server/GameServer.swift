@@ -65,7 +65,7 @@ class GameServer {
             default:
                 self?.log.info("game sever: \(state)")
             }
-        }, queue: DispatchQueue(label: "com.outlander:GameServer"))
+        }, queue: DispatchQueue(label: "com.outlander:GameServer\(UUID().uuidString)", qos: .userInteractive))
 
         socket?.connect(host: host, port: port)
     }

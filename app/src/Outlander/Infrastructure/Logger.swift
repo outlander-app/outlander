@@ -63,7 +63,7 @@ class PrintLogger: ILogger {
     }
 
     func rawStream(_ data: String) {
-//        log(data, level: "RAWSTREAM")
+        log(data, level: "RAWSTREAM")
     }
 
     func scriptLog(_ data: String, to: String) {

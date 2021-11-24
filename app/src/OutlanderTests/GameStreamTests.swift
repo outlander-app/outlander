@@ -172,6 +172,25 @@ class GameStreamTests: XCTestCase {
         XCTAssertEqual(context.globalVars["lefthandid"], "21668354")
         XCTAssertEqual(context.globalVars["righthandid"], "22336507")
     }
+
+    func test_combat_stream() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<pushStream id=\"combat\" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>\n",
+            "[You're bruised, winded, nimbly balanced and in very strong position.]\n",
+            "[Roundtime 4 sec.]\n",
+            "<popStream id=\"combat\" /><prompt time=\"1637690082\">R&gt;</prompt>\n",
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 6)
+
+        switch commands[5] {
+        case let .text(tags):
+            XCTAssertEqual(tags[2].text, "\n[You're bruised, winded, nimbly balanced and in very strong position.]\n[Roundtime 4 sec.]\n")
+        default:
+            XCTFail()
+        }
+    }
 }
 
 class GameStreamTokenizerTests: XCTestCase {
@@ -400,5 +419,30 @@ class GameStreamTokenizerTests: XCTestCase {
 
         let token = tokens[0]
         XCTAssertEqual(token.children().count, 1)
+    }
+
+    func test_combat() {
+        let tokens = reader.read("""
+<pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+[You're bruised, winded, nimbly balanced and in very strong position.]
+[Roundtime 4 sec.]
+<popStream id="combat" />
+""")
+        
+        XCTAssertEqual(tokens.count, 7)
+
+        let token = tokens[5]
+        XCTAssertEqual(token.value(), "\n[You're bruised, winded, nimbly balanced and in very strong position.]\n[Roundtime 4 sec.]\n")
+    }
+
+    func test_combat_measure() {
+        measure {
+            _ = reader.read("""
+<pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+[You're bruised, winded, nimbly balanced and in very strong position.]
+[Roundtime 4 sec.]
+<popStream id="combat" />
+""")
+        }
     }
 }
