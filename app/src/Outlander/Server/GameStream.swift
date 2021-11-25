@@ -727,12 +727,12 @@ class GameStream {
     public func stream(_ data: String) {
         let rawTag = TextTag.tagFor(data, window: "raw", mono: true)
         streamCommands(.text([rawTag]))
-        
+
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
 
         for token in tokens {
             processToken(token)
-            
+
             if let tag = tagForToken(token) {
                 let isPrompt = token.name() == "prompt"
 
@@ -955,7 +955,7 @@ class GameStream {
             guard let tokenName = lastToken?.name(), !self.ignoredEot.contains(tokenName) else {
                 break
             }
-            guard !inStream || self.lastStreamId == "combat" else { break }
+            guard !inStream || lastStreamId == "combat" else { break }
             guard tokenName != "prompt" else { break }
 
             guard !ignoreNextEot else {

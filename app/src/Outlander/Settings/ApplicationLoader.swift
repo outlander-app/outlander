@@ -139,7 +139,7 @@ class ProfileLoader {
         AliasLoader(files).save(context.applicationSettings, aliases: context.aliases)
         ClassLoader(files).save(context.applicationSettings, classes: context.classes)
         GagLoader(files).save(context.applicationSettings, gags: context.gags)
-        HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights)
+        HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights.all())
         MacroLoader(files).save(context.applicationSettings, macros: context.macros)
         PresetLoader(files).save(context.applicationSettings, presets: context.presets)
         SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes.all())

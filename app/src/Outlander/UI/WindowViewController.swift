@@ -148,7 +148,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
 
-        //queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
+        // queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
         queue = DispatchQueue.main
 
         if textView.menu?.item(withTitle: "Clear") == nil {
@@ -351,7 +351,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func processHighlights(_ text: NSMutableAttributedString, context: GameContext, highlightMonsters: Bool = false) {
-        var highlights = context.activeHighlights()
+        var highlights = context.highlights.active()
 
         var str = text.string
 
@@ -401,14 +401,14 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func processSubs(_ text: String) -> String {
-        return text
+//        return text
         guard let context = gameContext else {
             return text
         }
 
         var result = text
 
-        for sub in context.substitutes.active(disabled: context.classes.disabled()) {
+        for sub in context.substitutes.active() {
             guard let regex = RegexFactory.get(sub.pattern) else {
                 continue
             }

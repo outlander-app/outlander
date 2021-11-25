@@ -93,7 +93,7 @@ class MatchResult {
 
         return result.range(at: index)
     }
-    
+
     func rangeOf(index: Int) -> Range<String.Index>? {
         guard index < result.numberOfRanges else {
             return nil

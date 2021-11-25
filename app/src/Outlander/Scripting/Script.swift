@@ -153,7 +153,7 @@ struct Atomic<Value> {
 }
 
 class Script {
-    //private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    // private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
     private let lockQueue = DispatchQueue.global(qos: .default)
     private let log = LogManager.getLog("Script")
 
@@ -281,7 +281,7 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_ args: [String], runAsync: Bool = true) {
+    func run(_ args: [String], runAsync _: Bool = true) {
         func doRun() {
             started = Date()
 

@@ -14,7 +14,7 @@ class MapWindow: NSWindowController {
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
-    
+
     var loaded: Bool = false
 
     var context: GameContext?
@@ -59,7 +59,7 @@ class MapWindow: NSWindowController {
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        
+
         loaded = true
 
         roomLabel.stringValue = ""

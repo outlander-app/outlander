@@ -408,10 +408,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showMapWindow() {
-        //DispatchQueue.main.async {
-            self.mapWindow?.showWindow(self)
-            self.mapWindow?.setSelectedZone()
-        //}
+        // DispatchQueue.main.async {
+        mapWindow?.showWindow(self)
+        mapWindow?.setSelectedZone()
+        // }
     }
 
     func loadSettings() {

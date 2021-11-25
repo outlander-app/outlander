@@ -423,12 +423,12 @@ class GameStreamTokenizerTests: XCTestCase {
 
     func test_combat() {
         let tokens = reader.read("""
-<pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
-[You're bruised, winded, nimbly balanced and in very strong position.]
-[Roundtime 4 sec.]
-<popStream id="combat" />
-""")
-        
+        <pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+        [You're bruised, winded, nimbly balanced and in very strong position.]
+        [Roundtime 4 sec.]
+        <popStream id="combat" />
+        """)
+
         XCTAssertEqual(tokens.count, 7)
 
         let token = tokens[5]
@@ -438,11 +438,11 @@ class GameStreamTokenizerTests: XCTestCase {
     func test_combat_measure() {
         measure {
             _ = reader.read("""
-<pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
-[You're bruised, winded, nimbly balanced and in very strong position.]
-[Roundtime 4 sec.]
-<popStream id="combat" />
-""")
+            <pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+            [You're bruised, winded, nimbly balanced and in very strong position.]
+            [Roundtime 4 sec.]
+            <popStream id="combat" />
+            """)
         }
     }
 }

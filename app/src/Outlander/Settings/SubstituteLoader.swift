@@ -16,9 +16,14 @@ struct Substitute {
 
 class Substitutes {
     private var subs: [Substitute]
-    
+    private var cache: [Substitute] = []
+
     init(subs: [Substitute] = []) {
         self.subs = subs
+    }
+
+    var count: Int {
+        subs.count
     }
 
     func replace(with subs: [Substitute]) {
@@ -30,11 +35,15 @@ class Substitutes {
     }
 
     func all() -> [Substitute] {
-        return subs
+        subs
     }
 
-    func active(disabled: [String]) -> [Substitute] {
-        return subs
+    func active() -> [Substitute] {
+        cache
+    }
+
+    func updateActiveCache(with disabled: [String]) {
+        cache = subs
             .filter { h in (h.className == nil || h.className?.count == 0 || !disabled.contains(h.className!)) && h.pattern.count > 0 }
             .sorted { $0.pattern.count > $1.pattern.count }
     }
@@ -86,6 +95,8 @@ class SubstituteLoader {
                 )
             }
         }
+
+        context.substitutes.updateActiveCache(with: context.classes.disabled())
     }
 
     func save(_ settings: ApplicationSettings, subsitutes: [Substitute]) {

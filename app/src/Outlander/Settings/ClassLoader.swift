@@ -143,6 +143,8 @@ class ClassLoader {
                 context.classes.set(key, value: val ?? false)
             }
         }
+
+        context.updateClassFilters()
     }
 
     func save(_ settings: ApplicationSettings, classes: ClassSettings) {

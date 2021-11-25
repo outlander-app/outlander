@@ -16,12 +16,42 @@ struct Highlight {
     var soundFile: String
 }
 
-extension GameContext {
-    func activeHighlights() -> [Highlight] {
-        let disabled = classes.disabled()
-        return highlights
+class Highlights {
+    private var lights: [Highlight]
+    private var cache: [Highlight] = []
+
+    init(subs: [Highlight] = []) {
+        lights = subs
+    }
+
+    var count: Int {
+        lights.count
+    }
+
+    func replace(with subs: [Highlight]) {
+        lights = subs
+    }
+
+    func add(_ sub: Highlight) {
+        lights.append(sub)
+    }
+
+    func all() -> [Highlight] {
+        lights
+    }
+
+    func active() -> [Highlight] {
+        cache
+    }
+
+    func updateActiveCache(with disabled: [String]) {
+        cache = lights
             .filter { h in (h.className.count == 0 || !disabled.contains(h.className)) && h.pattern.count > 0 }
             .sorted { $0.pattern.count > $1.pattern.count }
+    }
+
+    func removeAll() {
+        lights.removeAll()
     }
 }
 
@@ -71,7 +101,7 @@ class HighlightLoader {
                 let className = match.valueAt(index: 3) ?? ""
                 let soundFile = match.valueAt(index: 4) ?? ""
 
-                context.highlights.append(
+                context.highlights.add(
                     Highlight(
                         foreColor: color.lowercased(),
                         backgroundColor: backgroundColor.lowercased(),
@@ -82,6 +112,8 @@ class HighlightLoader {
                 )
             }
         }
+
+        context.highlights.updateActiveCache(with: context.classes.disabled())
     }
 
     func save(_ settings: ApplicationSettings, highlights: [Highlight]) {

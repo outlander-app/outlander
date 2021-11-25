@@ -46,7 +46,7 @@ enum DynamicValue: Hashable {
         case let .dynamic(dynamic): return dynamic()
         }
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(rawValue)
     }
@@ -161,7 +161,7 @@ class Variables {
         lockQueue.sync(flags: .barrier) {
             vars.map { $0.key }.sorted(by: { $0.count > $1.count })
         }
-        //return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
+        // return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
     }
 
     func addDynamic(key: String, value: DynamicValue) {
@@ -291,7 +291,7 @@ class VariableReplacer {
 
                 target = target.replacingOccurrences(of: varName, with: val)
             }
-            
+
             guard let shortRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9]+))") else {
                 return
             }

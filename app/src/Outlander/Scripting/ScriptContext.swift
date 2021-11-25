@@ -93,7 +93,7 @@ class ScriptContext {
                     return false
                 }
             default:
-                if lineToken.isTopLevelIf && !lineToken.isSingleToken {
+                if lineToken.isTopLevelIf, !lineToken.isSingleToken {
                     pushCurrentLineToIfStack()
                 }
 

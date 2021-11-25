@@ -20,11 +20,13 @@ class ClassCommandHandler: ICommandHandler {
             switch commands[0].lowercased() {
             case "clear":
                 context.classes.clear()
+                context.updateClassFilters()
                 context.events.echoText("Classes cleared")
                 return
 
             case "load", "reload":
                 ClassLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
+                context.updateClassFilters()
                 context.events.echoText("Classes reloaded")
                 return
 

@@ -21,7 +21,7 @@ class ScriptTests: XCTestCase {
         for v in variables {
             context.globalVars[v.key] = v.value
         }
-        
+
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
         script.run([], runAsync: false)

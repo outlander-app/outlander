@@ -39,8 +39,8 @@ class GameContext {
     var gags: [Gag] = []
     var macros: [String: Macro] = [:]
     var aliases: [Alias] = []
-    var highlights: [Highlight] = []
-    var substitutes: Substitutes = Substitutes()
+    var highlights = Highlights()
+    var substitutes = Substitutes()
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
     var mapZone: MapZone? {
@@ -52,6 +52,11 @@ class GameContext {
     init(_ events: Events = SwiftEventBusEvents()) {
         self.events = events
         globalVars = GlobalVariables(events: events, settings: applicationSettings)
+    }
+
+    func updateClassFilters() {
+        highlights.updateActiveCache(with: classes.disabled())
+        substitutes.updateActiveCache(with: classes.disabled())
     }
 }
 

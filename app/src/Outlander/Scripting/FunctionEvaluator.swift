@@ -58,7 +58,7 @@ class FunctionEvaluator {
                 res = "\(Int(result))"
             }
 
-            return EvalResult(text: simp, result: res, groups: evaluator.groups )
+            return EvalResult(text: simp, result: res, groups: evaluator.groups)
         }
     }
 }

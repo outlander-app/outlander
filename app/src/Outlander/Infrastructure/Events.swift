@@ -29,7 +29,7 @@ extension Events {
     }
 
     func variableChanged(_ key: String, value: String) {
-        //print("var changed: \(key): \(value)")
+        // print("var changed: \(key): \(value)")
         post("ol:variable:changed", data: [key: value])
     }
 }

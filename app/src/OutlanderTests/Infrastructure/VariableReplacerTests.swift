@@ -108,7 +108,7 @@ class VariableReplacerTests: XCTestCase {
         variables["weapons"] = "one|two|three"
         variables["exits"] = "north|south"
         variables["lefthand"] = "tankard"
-        for v in 0...100000 {
+        for v in 0 ... 100_000 {
             variables["\(v)"] = UUID().uuidString
         }
 

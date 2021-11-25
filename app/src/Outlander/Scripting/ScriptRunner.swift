@@ -63,7 +63,7 @@ class ScriptRunner: StreamHandler {
         }
     }
 
-    func stream(_ data: String, with context: GameContext) {
+    func stream(_ data: String, with _: GameContext) {
         for script in scripts {
             script.stream(data, [])
         }
