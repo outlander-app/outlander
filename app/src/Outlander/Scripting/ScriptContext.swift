@@ -167,20 +167,20 @@ class ScriptContext {
 
     func replaceVars(_ input: String) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: labelVars.keys, values: { key in self.labelVars[key] })
-        context.add("$", sortedKeys: regexVars.keys, values: { key in self.regexVars[key] })
-        context.add("%", sortedKeys: variables.keys, values: { key in self.variables[key] })
-        context.add("%", sortedKeys: argumentVars.keys, values: { key in self.argumentVars[key] })
-        context.add("$", sortedKeys: self.context.globalVars.keys, values: { key in self.context.globalVars[key] })
+        context.add("$", values: { key in self.labelVars[key] })
+        context.add("$", values: { key in self.regexVars[key] })
+        context.add("%", values: { key in self.variables[key] })
+        context.add("%", values: { key in self.argumentVars[key] })
+        context.add("$", values: { key in self.context.globalVars[key] })
         return VariableReplacer().replace(input, context: context)
     }
 
     func replaceActionVars(_ input: String) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: actionVars.keys, values: { key in self.actionVars[key] })
-        context.add("%", sortedKeys: variables.keys, values: { key in self.variables[key] })
-        context.add("%", sortedKeys: argumentVars.keys, values: { key in self.argumentVars[key] })
-        context.add("$", sortedKeys: self.context.globalVars.keys, values: { key in self.context.globalVars[key] })
+        context.add("$", values: { key in self.actionVars[key] })
+        context.add("%", values: { key in self.variables[key] })
+        context.add("%", values: { key in self.argumentVars[key] })
+        context.add("$", values: { key in self.context.globalVars[key] })
         return VariableReplacer().replace(input, context: context)
     }
 

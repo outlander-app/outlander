@@ -89,10 +89,31 @@ class VariableReplacerTests: XCTestCase {
         XCTAssertEqual("testing(0]", result)
     }
 
+    func test_multiple_variables() {
+        variables["skill"] = "Stealth"
+        variables["Stealth.LearningRate"] = "34"
+
+        let result = replacer.replace("$$skill.LearningRate", globalVars: variables)
+        XCTAssertEqual("34", result)
+    }
+
     func test_regex_text() {
         variables["dir"] = "swim west"
 
         let result = replacer.replace("matchre(\"$dir\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \")", globalVars: variables)
         XCTAssertEqual(result, "matchre(\"swim west\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \")")
+    }
+
+    func test_performance() {
+        variables["weapons"] = "one|two|three"
+        variables["exits"] = "north|south"
+        variables["lefthand"] = "tankard"
+        for v in 0...100000 {
+            variables["\(v)"] = UUID().uuidString
+        }
+
+        measure {
+            _ = replacer.replace("$weapons(0  $exits[1]  $lefthand ", globalVars: variables)
+        }
     }
 }

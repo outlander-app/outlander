@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import OrderedCollections
+import SortedCollections
 
 protocol IClock {
     var now: Date { get }
@@ -30,7 +32,11 @@ class Clock: IClock {
 
 public typealias VariableValueFunction = () -> String?
 
-enum DynamicValue {
+enum DynamicValue: Hashable {
+    static func == (lhs: DynamicValue, rhs: DynamicValue) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
+
     case value(String?)
     case dynamic(VariableValueFunction)
 
@@ -39,6 +45,10 @@ enum DynamicValue {
         case let .value(val): return val
         case let .dynamic(dynamic): return dynamic()
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }
 
@@ -75,6 +85,7 @@ class GlobalVariables: Variables {
 class Variables {
     private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)", attributes: .concurrent)
     private var vars: [String: DynamicValue] = [:]
+//    private var vars: SortedDictionary<String, DynamicValue> = [:]
     private var events: Events
 
     private var eventKey: String
@@ -150,6 +161,7 @@ class Variables {
         lockQueue.sync(flags: .barrier) {
             vars.map { $0.key }.sorted(by: { $0.count > $1.count })
         }
+        //return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
     }
 
     func addDynamic(key: String, value: DynamicValue) {
@@ -162,7 +174,6 @@ class Variables {
 
 struct VariableSetting {
     var token: String
-    var sortedKeys: [String]
     var values: (String) -> String?
 }
 
@@ -173,28 +184,28 @@ class VariableContext {
         Array(Set(settings.map { $0.token }))
     }
 
-    func add(_ token: String, sortedKeys: [String], values: @escaping ((String) -> String?)) {
-        settings.append(VariableSetting(token: token, sortedKeys: sortedKeys, values: values))
+    func add(_ token: String, values: @escaping ((String) -> String?)) {
+        settings.append(VariableSetting(token: token, values: values))
     }
 }
 
 class VariableReplacer {
     func replace(_ input: String, globalVars: Variables) -> String {
         let context = VariableContext()
-        context.add("$", sortedKeys: globalVars.keys, values: { key in globalVars[key] })
+        context.add("$", values: { key in globalVars[key] })
         return replace(input, context: context)
     }
 
     func replace(_ input: String, context: VariableContext) -> String {
-        var result = replaceIndexedVars(input, context: context)
-
         guard hasPotentialVars(input, context: context) else {
             return input
         }
 
+        var result = replaceIndexedVars(input, context: context)
+
         func doReplace() {
             for setting in context.settings {
-                simplify(prefix: setting.token, target: &result, sortedKeys: setting.sortedKeys, value: setting.values)
+                simplify(prefix: setting.token, target: &result, value: setting.values)
             }
         }
 
@@ -259,15 +270,42 @@ class VariableReplacer {
         return false
     }
 
-    private func simplify(prefix: String, target: inout String, sortedKeys: [String], value: (String) -> String?) {
+    private func simplify(prefix: String, target: inout String, value: (String) -> String?) {
         guard target.contains(prefix) else {
             return
         }
 
         func doReplace() {
-            for key in sortedKeys {
-                let replaceCandidate = "\(prefix)\(key)"
-                target = target.replacingOccurrences(of: replaceCandidate, with: value(key) ?? "")
+            guard let longRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9_\\-.]+))") else {
+                return
+            }
+            let matches = longRegex.allMatches(&target)
+            for match in matches {
+                guard let varName = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
+                    continue
+                }
+
+                guard let val = value(key) else {
+                    continue
+                }
+
+                target = target.replacingOccurrences(of: varName, with: val)
+            }
+            
+            guard let shortRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9]+))") else {
+                return
+            }
+            let matches2 = shortRegex.allMatches(&target)
+            for match in matches2 {
+                guard let varName = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
+                    continue
+                }
+
+                guard let val = value(key) else {
+                    continue
+                }
+
+                target = target.replacingOccurrences(of: varName, with: val)
             }
         }
 

@@ -64,7 +64,7 @@ class SwiftEventBusEvents: Events {
     }
 
     func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void) {
-        SwiftEventBus.onBackgroundThread(target, name: "\(id)_\(channel)") { notification in
+        SwiftEventBus.onMainThread(target, name: "\(id)_\(channel)") { notification in
             handler(notification?.object)
         }
     }

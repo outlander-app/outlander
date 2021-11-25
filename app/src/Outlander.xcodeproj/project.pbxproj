@@ -44,6 +44,8 @@
 		7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */; };
 		7B27C5B0274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
 		7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
+		7B903450274F0A3C0072E824 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B90344F274F0A3C0072E824 /* OrderedCollections */; };
+		7B903452274F0A3C0072E824 /* SortedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B903451274F0A3C0072E824 /* SortedCollections */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -398,10 +400,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7BDF5C7F2723847B0020A3B0 /* MASShortcut in Frameworks */,
+				7B903452274F0A3C0072E824 /* SortedCollections in Frameworks */,
 				7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */,
 				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				7BDF5C842727315A0020A3B0 /* Carbon.framework in Frameworks */,
 				7BF17D36274B95A000A2EAB6 /* Expression in Frameworks */,
+				7B903450274F0A3C0072E824 /* OrderedCollections in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -744,6 +748,8 @@
 				7BAC840825E9B51800A6C7D5 /* KeychainSwift */,
 				7BDF5C7E2723847B0020A3B0 /* MASShortcut */,
 				7BF17D35274B95A000A2EAB6 /* Expression */,
+				7B90344F274F0A3C0072E824 /* OrderedCollections */,
+				7B903451274F0A3C0072E824 /* SortedCollections */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -803,6 +809,7 @@
 				7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				7BDF5C7D2723847B0020A3B0 /* XCRemoteSwiftPackageReference "MASShortcut" */,
 				7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */,
+				7B90344E274F0A3C0072E824 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -1359,6 +1366,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7B90344E274F0A3C0072E824 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				branch = feature/SortedCollections;
+				kind = branch;
+			};
+		};
 		7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
@@ -1402,6 +1417,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7B90344F274F0A3C0072E824 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B90344E274F0A3C0072E824 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		7B903451274F0A3C0072E824 /* SortedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B90344E274F0A3C0072E824 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = SortedCollections;
+		};
 		7BAC840825E9B51800A6C7D5 /* KeychainSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */;

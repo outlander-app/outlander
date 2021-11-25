@@ -45,6 +45,15 @@
           "revision": "57ccb018863b328a22298a275593a1d87ab4db24",
           "version": null
         }
+      },
+      {
+        "package": "swift-collections",
+        "repositoryURL": "https://github.com/apple/swift-collections.git",
+        "state": {
+          "branch": "feature/SortedCollections",
+          "revision": "8b1436f9283c299d060fe6e07b781a431c09846f",
+          "version": null
+        }
       }
     ]
   },

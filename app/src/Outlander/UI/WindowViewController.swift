@@ -148,7 +148,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
 
-        queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
+        //queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
+        queue = DispatchQueue.main
 
         if textView.menu?.item(withTitle: "Clear") == nil {
             textView.menu?.insertItem(NSMenuItem.separator(), at: 0)
@@ -370,7 +371,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
             let matches = regex.allMatches(&str)
             for match in matches {
-                guard let range = match.rangeOf(index: 0), range.length > 0 else {
+                guard let range = match.rangeOfNS(index: 0), range.length > 0 else {
                     continue
                 }
 
@@ -400,13 +401,14 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func processSubs(_ text: String) -> String {
+        return text
         guard let context = gameContext else {
             return text
         }
 
         var result = text
 
-        for sub in context.activeSubs() {
+        for sub in context.substitutes.active(disabled: context.classes.disabled()) {
             guard let regex = RegexFactory.get(sub.pattern) else {
                 continue
             }

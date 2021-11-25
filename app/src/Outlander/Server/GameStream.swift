@@ -727,12 +727,12 @@ class GameStream {
     public func stream(_ data: String) {
         let rawTag = TextTag.tagFor(data, window: "raw", mono: true)
         streamCommands(.text([rawTag]))
-
+        
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
 
         for token in tokens {
             processToken(token)
-
+            
             if let tag = tagForToken(token) {
                 let isPrompt = token.name() == "prompt"
 
@@ -740,15 +740,16 @@ class GameStream {
 
                 tags.append(tag)
 
-                // TODO: should this be combined text?
-                // if combined, can mess up trigger regex with leading ^
-                // send to handlers immediately
-                sendToHandlers(text: tag.text)
-
                 if !isSetup || isPrompt {
                     let combined = TextTag.combine(tags: tags)
                     streamCommands(.text(combined))
                     tags.removeAll()
+
+                    // TODO: should this be combined text?
+                    // TODO: verify if combined, can mess up trigger regex with leading ^
+                    for t in combined {
+                        sendToHandlers(text: t.text)
+                    }
                 }
             }
         }

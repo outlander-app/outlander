@@ -40,7 +40,7 @@ class GameContext {
     var macros: [String: Macro] = [:]
     var aliases: [Alias] = []
     var highlights: [Highlight] = []
-    var substitutes: [Substitute] = []
+    var substitutes: Substitutes = Substitutes()
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
     var mapZone: MapZone? {

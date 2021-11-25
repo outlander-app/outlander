@@ -103,9 +103,9 @@ class IndexedVariableMode: IVariableReaderMode {
             guard let range = match.rangeOf(index: index) else {
                 continue
             }
-            let newRange = Range(range, in: input)!
-            if newRange.lowerBound != start {
-                let str = String(input[start ..< newRange.lowerBound])
+            //let newRange = Range(range, in: input)!
+            if range.lowerBound != start {
+                let str = String(input[start ..< range.lowerBound])
                 context.target.append(.value(str))
             }
 
@@ -113,7 +113,7 @@ class IndexedVariableMode: IVariableReaderMode {
             let idx = match.valueAt(index: 2) ?? ""
             context.target.append(.indexed(variable, idx))
 
-            start = newRange.upperBound
+            start = range.upperBound
         }
 
         if start != input.endIndex {

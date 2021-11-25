@@ -86,12 +86,21 @@ class MatchResult {
         result.numberOfRanges
     }
 
-    func rangeOf(index: Int) -> NSRange? {
+    func rangeOfNS(index: Int) -> NSRange? {
         guard index < result.numberOfRanges else {
             return nil
         }
 
         return result.range(at: index)
+    }
+    
+    func rangeOf(index: Int) -> Range<String.Index>? {
+        guard index < result.numberOfRanges else {
+            return nil
+        }
+
+        let nsRange = result.range(at: index)
+        return Range(nsRange, in: input)
     }
 
     func valueAt(index: Int) -> String? {

@@ -142,7 +142,7 @@ class ProfileLoader {
         HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights)
         MacroLoader(files).save(context.applicationSettings, macros: context.macros)
         PresetLoader(files).save(context.applicationSettings, presets: context.presets)
-        SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes)
+        SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes.all())
         TriggerLoader(files).save(context.applicationSettings, triggers: context.triggers)
         VariablesLoader(files).save(context.applicationSettings, variables: context.globalVars)
     }

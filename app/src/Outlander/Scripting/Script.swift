@@ -153,7 +153,8 @@ struct Atomic<Value> {
 }
 
 class Script {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    //private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    private let lockQueue = DispatchQueue.global(qos: .default)
     private let log = LogManager.getLog("Script")
 
     var started: Date?
@@ -295,15 +296,15 @@ class Script {
             next()
         }
 
-//        doRun()
+        doRun()
 
-        if runAsync {
-            lockQueue.async {
-                doRun()
-            }
-        } else {
-            doRun()
-        }
+//        if runAsync {
+//            lockQueue.async {
+//                doRun()
+//            }
+//        } else {
+//            doRun()
+//        }
     }
 
     func next() {
@@ -398,7 +399,7 @@ class Script {
     }
 
     private func stop() {
-        delayedTask?.cancel()
+        delayedTask = nil
 
         if stopped { return }
 
@@ -1369,7 +1370,7 @@ class Script {
             context.setLabelVars([])
         }
 
-        delayedTask?.cancel()
+        delayedTask = nil
         matchwait = nil
         matchStack.removeAll()
 
