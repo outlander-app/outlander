@@ -59,3 +59,25 @@ class InMemoryEvents: Events {
 
     func unregister(_: AnyObject) {}
 }
+
+class InMemoryPluginManager: OPlugin {
+    var name: String {
+        "Test Plugin Manager"
+    }
+
+    func initialize(host _: IHost) {}
+
+    func variableChanged(variable _: String, value _: String) {}
+
+    func parse(input: String) -> String {
+        input
+    }
+
+    func parse(xml: String) -> String {
+        xml
+    }
+
+    func parse(text: String) -> String {
+        text
+    }
+}

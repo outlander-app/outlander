@@ -23,7 +23,7 @@ struct Command2 {
 }
 
 class CommandProcesssor {
-    var handlers: [ICommandHandler] = [
+    private var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
         ClassCommandHandler(),
@@ -38,7 +38,7 @@ class CommandProcesssor {
         ScriptRunnerCommandHandler(),
     ]
 
-    var pluginManager: OPlugin
+    private var pluginManager: OPlugin
 
     init(_ files: FileSystem, pluginManager: OPlugin) {
         handlers.append(WindowCommandHandler(files))
@@ -62,13 +62,14 @@ class CommandProcesssor {
             context.globalVars["lastcommand"] = command.command
         }
 
-        var maybeCommand = pluginManager.parse(input: command.command)
+        var maybeCommand = VariableReplacer().replace(command.command, globalVars: context.globalVars)
+        maybeCommand = processAliases(maybeCommand, with: context)
+
+        maybeCommand = pluginManager.parse(input: maybeCommand)
 
         guard maybeCommand.count > 0 else {
             return
         }
-
-        maybeCommand = VariableReplacer().replace(maybeCommand, globalVars: context.globalVars)
 
         let cmds = maybeCommand.commandsSeperated()
 
@@ -85,6 +86,42 @@ class CommandProcesssor {
                 context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
             }
         }
+    }
+
+    func processAliases(_ input: String, with context: GameContext) -> String {
+        guard context.aliases.count > 0 else {
+            return input
+        }
+
+        var arguments: [String] = []
+        var maybeAlias = input
+
+        if let idx = input.index(of: " ") {
+            maybeAlias = String(input[..<idx])
+            let offset = input.index(idx, offsetBy: 1)
+            let allArgs = String(input[offset...])
+            arguments.append(allArgs)
+            arguments = arguments + allArgs.argumentsSeperated()
+        }
+
+        guard let match = context.aliases.first(where: { $0.pattern == maybeAlias }) else {
+            return input
+        }
+
+        var res = match.replace
+
+        for (index, arg) in arguments.enumerated() {
+            res = res.replacingOccurrences(of: "$\(index)", with: arg)
+        }
+
+        // replace any left over args in replacement pattern with empty strings
+        guard let regex = RegexFactory.get("\\$\\d+") else {
+            return res
+        }
+
+        res = regex.replace(res, with: "")
+
+        return res
     }
 }
 

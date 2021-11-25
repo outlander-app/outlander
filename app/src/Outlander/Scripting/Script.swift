@@ -641,7 +641,7 @@ class Script {
         }
 
         let nameText = name.count > 0 ? " (\(name))" : ""
-        let resolvedPattern = context.replaceVars(pattern)
+        let resolvedPattern = context.replaceVars(pattern).trimmingCharacters(in: CharacterSet(["\""]))
 
         let message = "action\(nameText) \(action) \(resolvedPattern)"
         notify(message, debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)

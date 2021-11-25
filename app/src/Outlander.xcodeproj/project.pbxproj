@@ -46,6 +46,7 @@
 		7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
 		7B903450274F0A3C0072E824 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B90344F274F0A3C0072E824 /* OrderedCollections */; };
 		7B903452274F0A3C0072E824 /* SortedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B903451274F0A3C0072E824 /* SortedCollections */; };
+		7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B40274F8AD900346019 /* CommandProcessorTests.swift */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -274,6 +275,7 @@
 		7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizer.swift; sourceTree = "<group>"; };
 		7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizerTests.swift; sourceTree = "<group>"; };
 		7B27C5AF274B23760095B9BF /* ScriptContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptContext.swift; sourceTree = "<group>"; };
+		7B956B40274F8AD900346019 /* CommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandProcessorTests.swift; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
@@ -687,11 +689,12 @@
 		F9CA20512466057000A92736 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
-				F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */,
+				F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */,
+				7B956B40274F8AD900346019 /* CommandProcessorTests.swift */,
 				F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */,
+				F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */,
 				F9CA205D24664A4500A92736 /* VarCommandHandlerTests.swift */,
 				F9CA206C2466765D00A92736 /* WindowCommandHandlerTests.swift */,
-				F62EA13A247B601E004E2C1E /* AliasCommandHandlerTests.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -973,6 +976,7 @@
 				7B228B102734FDCE0052610B /* SkillExpTests.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				7B228B2A273B09D70052610B /* NSViewExtensions.swift in Sources */,
+				7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */,
 				7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
