@@ -134,5 +134,11 @@ class PresetLoader {
         context.addPreset("thought", color: "#66ffff")
         context.addPreset("whisper", color: "#66ffff")
         context.addPreset("exptracker", color: "#66ffff")
+
+        context.addPreset("health", color: "#f5f5f5", backgroundColor: "#cc0000")
+        context.addPreset("mana", color: "#f5f5f5", backgroundColor: "#00004B")
+        context.addPreset("stamina", color: "#f5f5f5", backgroundColor: "#004000")
+        context.addPreset("concentration", color: "#f5f5f5", backgroundColor: "#009999")
+        context.addPreset("spirit", color: "#f5f5f5", backgroundColor: "#400040")
     }
 }

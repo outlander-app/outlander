@@ -12,6 +12,36 @@ import Foundation
 class VitalsBar: NSView {
     var vitals: [String: ProgressBar] = [:]
 
+    var enabled: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateColors()
+            }
+        }
+    }
+
+    @IBInspectable
+    public var disabledBackgroundColor = NSColor.lightGray {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateColors()
+            }
+        }
+    }
+
+    @IBInspectable
+    public var disabledForegroundColor = NSColor.darkGray {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateColors()
+            }
+        }
+    }
+
+    var presetFor: (String) -> (NSColor, NSColor) = {color in
+        (NSColor.white, NSColor.blue)
+    }
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
 
@@ -19,6 +49,27 @@ class VitalsBar: NSView {
         postsFrameChangedNotifications = true
 
         NotificationCenter.default.addObserver(self, selector: #selector(onFrameChanged(_:)), name: NSView.frameDidChangeNotification, object: nil)
+        
+        presetFor = {color in
+            if !self.enabled {
+                return (self.disabledForegroundColor, self.disabledBackgroundColor)
+            }
+
+            switch color {
+            case "health":
+                return (NSColor.white, NSColor(hex: "#cc0000")!)
+            case "mana":
+                return (NSColor.white, NSColor(hex: "#00004B")!)
+            case "stamina":
+                return (NSColor.white, NSColor(hex: "#004000")!)
+            case "concentration":
+                return (NSColor.white, NSColor(hex: "#009999")!)
+            case "spirit":
+                return (NSColor.white, NSColor(hex: "#400040")!)
+            default:
+                return (NSColor.white, NSColor.blue)
+            }
+        }
     }
 
     override var isFlipped: Bool { true }
@@ -28,25 +79,29 @@ class VitalsBar: NSView {
         let width = frame.size.width / 5.0
         var viewX: Float = 0.0
 
-        addVital(name: "health", text: "Health 100%", color: NSColor(hex: "#cc0000")!, frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
+        addVital(name: "health", text: "Health 100%", frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
         viewX += Float(width)
 
-        addVital(name: "mana", text: "Mana 100%", color: NSColor(hex: "#00004B")!, frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
+        addVital(name: "mana", text: "Mana 100%", frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
         viewX += Float(width)
 
-        addVital(name: "stamina", text: "Stamina 100%", color: NSColor(hex: "#004000")!, frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
+        addVital(name: "stamina", text: "Stamina 100%", frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
         viewX += Float(width)
 
-        addVital(name: "concentration", text: "Concentration 100%", color: NSColor(hex: "#009999")!, frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
+        addVital(name: "concentration", text: "Concentration 100%", frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
         viewX += Float(width)
 
-        addVital(name: "spirit", text: "Spirit 100%", color: NSColor(hex: "#400040")!, frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
+        addVital(name: "spirit", text: "Spirit 100%", frame: NSRect(x: CGFloat(viewX), y: 0, width: width, height: height))
     }
 
-    func addVital(name: String, text: String, color: NSColor, frame: NSRect) {
+    func addVital(name: String, text: String, frame: NSRect) {
         let bar = ProgressBar(frame: frame)
         bar.text = text
-        bar.backgroundColor = color
+
+        let (fore, back) = presetFor(name)
+
+        bar.foregroundColor = fore
+        bar.backgroundColor = back
 
         vitals[name] = bar
         addSubview(bar)
@@ -57,6 +112,16 @@ class VitalsBar: NSView {
             DispatchQueue.main.async {
                 bar.text = text
                 bar.value = Float(value)
+            }
+        }
+    }
+
+    func updateColors() {
+        for vital in vitals {
+            DispatchQueue.main.async {
+                let (fore, back) = self.presetFor(vital.key)
+                vital.value.foregroundColor = fore
+                vital.value.backgroundColor = back
             }
         }
     }

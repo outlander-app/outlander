@@ -111,12 +111,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case .connected:
                 self?.log.info("connected to game server")
                 self?.updateWindowTitle()
+                self?.vitalsBar.enabled = true
             case let .data(_, str):
                 self?.handleRawStream(data: str, streamData: true)
             case .closed:
                 self?.gameStream?.reset()
                 self?.logText("\n\(self?.timestamp() ?? "")disconnected from game server\n", mono: true)
                 self?.updateWindowTitle()
+                self?.vitalsBar.enabled = false
                 self?.saveSettings()
             }
         }
@@ -306,6 +308,17 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
+        vitalsBar.presetFor = {name in
+            guard self.vitalsBar.enabled == true else {
+                return (self.vitalsBar.disabledForegroundColor, self.vitalsBar.disabledBackgroundColor)
+            }
+
+            let preset = self.gameContext.presets[name]
+            let fore = preset?.color.asColor() ?? NSColor.white
+            let back = preset?.backgroundColor?.asColor() ?? NSColor.blue
+            return (fore, back)
+        }
+
         loginWindow = LoginWindow()
         profileWindow = ProfileWindow()
         profileWindow?.context = gameContext
@@ -438,7 +451,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
         logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: false, playerCommand: false)
     }
 
-    func reloadTheme() {}
+    func reloadTheme() {
+        vitalsBar.updateColors()
+    }
 
     public func command(_ command: String) {
         if command == "layout:LoadDefault" {

@@ -612,7 +612,7 @@ class Script {
         let message = "action\(nameText) \(action) \(resolvedPattern)"
         notify(message, debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        let actionOp = ActionOp(name: name, command: action, pattern: pattern, line: line)
+        let actionOp = ActionOp(name: name, command: action, pattern: pattern.trimmingCharacters(in: CharacterSet(["\""])), line: line)
         actions.append(actionOp)
 
         return .next
