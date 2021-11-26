@@ -53,6 +53,7 @@ class ApplicationLoader {
             return
         }
         context.applicationSettings.update(settings)
+        context.globalVars["profilename"] = settings.defaultProfile
     }
 
     func save(_ paths: ApplicationPaths, context: GameContext) {

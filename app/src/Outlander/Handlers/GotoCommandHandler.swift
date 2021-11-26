@@ -36,7 +36,7 @@ class GotoComandHandler: ICommandHandler {
 
                 context.events.post("ol:mapper:setpath", data: path)
 
-                //context.events.echoText(path.joined(separator: ", "))
+                // context.events.echoText(path.joined(separator: ", "))
                 context.events.echoText("found path in: \(diff.formatted)")
                 context.events.echoText(moves.joined(separator: ", "))
 

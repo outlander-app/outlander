@@ -102,7 +102,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         fileSystem = LocalFileSystem(gameContext.applicationSettings)
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
         commandProcessor = CommandProcesssor(fileSystem!, pluginManager: pluginManager)
-        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, settings: gameContext.applicationSettings))
+        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, context: gameContext))
 
         authServer = AuthenticationServer()
 

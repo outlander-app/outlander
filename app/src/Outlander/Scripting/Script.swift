@@ -64,52 +64,6 @@ class ScriptLine {
     }
 }
 
-protocol IScriptLoader {
-    func exists(_ file: String) -> Bool
-    func load(_ fileName: String) -> [String]
-}
-
-class InMemoryScriptLoader: IScriptLoader {
-    var lines: [String: [String]] = [:]
-
-    func exists(_: String) -> Bool {
-        lines.count > 0
-    }
-
-    func load(_ fileName: String) -> [String] {
-        lines[fileName]!
-    }
-}
-
-class ScriptLoader: IScriptLoader {
-    private var files: FileSystem
-    private var settings: ApplicationSettings
-
-    init(_ files: FileSystem, settings: ApplicationSettings) {
-        self.files = files
-        self.settings = settings
-    }
-
-    func exists(_ file: String) -> Bool {
-        let fileUrl = settings.paths.scripts.appendingPathComponent("\(file).cmd")
-        return files.fileExists(fileUrl)
-    }
-
-    func load(_ file: String) -> [String] {
-        let fileUrl = settings.paths.scripts.appendingPathComponent("\(file).cmd")
-
-        guard let data = files.load(fileUrl) else {
-            return []
-        }
-
-        guard let fileString = String(data: data, encoding: .utf8) else {
-            return []
-        }
-
-        return fileString.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: .newlines)
-    }
-}
-
 enum ScriptExecuteResult {
     case next
     case wait
@@ -285,13 +239,9 @@ class Script {
         func doRun() {
             started = Date()
 
-            let formattedDate = Script.dateFormatter.string(from: started!)
-
-            sendText("[Starting '\(fileName)' at \(formattedDate)]")
-
             context.setArgumentVars(args)
 
-            initialize(fileName)
+            initialize(fileName, isInclude: false)
 
             next()
         }
@@ -522,17 +472,32 @@ class Script {
         gameContext.events.echoText(display, preset: preset)
     }
 
-    private func initialize(_ fileName: String) {
-        let lines = loader.load(fileName)
+    private func initialize(_ fileName: String, isInclude: Bool) {
+        let scriptFile = loader.load(fileName, echo: true)
 
-        if lines.count == 0 {
+        guard let scriptFileName = scriptFile.file, scriptFile.lines.count > 0 else {
             sendText("Script '\(fileName)' is empty or does not exist", preset: "scripterror")
             return
         }
 
+        let scriptName = scriptFileName.absoluteString.contains("file:///")
+            ? scriptFileName
+                .absoluteString[7...]
+                .replacingOccurrences(of: gameContext.applicationSettings.paths.scripts.absoluteString[7...], with: "")
+                .replacingOccurrences(of: ".cmd", with: "")
+            : scriptFileName.absoluteString
+
+        if !isInclude {
+            let formattedDate = Script.dateFormatter.string(from: started!)
+            sendText("[Starting '\(scriptName)' at \(formattedDate)]")
+
+            self.fileName = scriptName
+            gameContext.globalVars["scriptname"] = scriptName
+        }
+
         var index = 0
 
-        for var line in lines {
+        for var line in scriptFile.lines {
             index += 1
 
             if line == "" {
@@ -542,16 +507,17 @@ class Script {
             if let includeMatch = includeRegex.firstMatch(&line) {
                 guard let include = includeMatch.valueAt(index: 1) else { continue }
                 let includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
-                guard includeName != fileName else {
-                    sendText("script '\(fileName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: fileName)
+                guard includeName != scriptName && includeName != self.fileName else {
+                    sendText("script '\(scriptName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: scriptName)
                     continue
                 }
-                notify("including '\(includeName)'", debug: ScriptLogLevel.gosubs, scriptLine: index)
-                initialize(includeName)
+                sendText("including '\(includeName)'", preset: "scriptecho", scriptLine: index, fileName: scriptName)
+//                notify("including '\(includeName)'", debug: ScriptLogLevel.gosubs, scriptLine: index)
+                initialize(includeName, isInclude: true)
             } else {
                 let scriptLine = ScriptLine(
                     line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),
-                    fileName: fileName,
+                    fileName: scriptName,
                     lineNumber: index
                 )
 
@@ -560,9 +526,9 @@ class Script {
 
             if let labelMatch = labelRegex.firstMatch(&line) {
                 guard let label = labelMatch.valueAt(index: 1) else { return }
-                let newLabel = Label(name: label.lowercased(), line: context.lines.count - 1, scriptLine: index, fileName: fileName)
+                let newLabel = Label(name: label.lowercased(), line: context.lines.count - 1, scriptLine: index, fileName: scriptName)
                 if let existing = context.labels[label] {
-                    sendText("replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(existing.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: fileName)
+                    sendText("replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(existing.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: scriptName)
                 }
                 context.labels[label.lowercased()] = newLabel
             }

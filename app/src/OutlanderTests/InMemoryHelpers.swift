@@ -32,6 +32,10 @@ class InMemoryFileSystem: FileSystem {
         savedContent = String(decoding: data, as: UTF8.self)
     }
 
+    func foldersIn(directory _: URL) -> [URL] {
+        []
+    }
+
     func access(_ handler: @escaping () -> Void) {
         handler()
     }

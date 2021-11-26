@@ -104,20 +104,6 @@ class ApplicationPaths {
 
 extension GameContext {
     func allProfiles() -> [String] {
-        var profiles: [String] = []
-        applicationSettings.paths.rootUrl.access {
-            let dir = self.applicationSettings.paths.profiles
-            guard let items = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles]) else {
-                return
-            }
-
-            for item in items {
-                if item.hasDirectoryPath {
-                    profiles.append(item.lastPathComponent)
-                }
-            }
-        }
-
-        return profiles.sorted()
+        LocalFileSystem(applicationSettings).foldersIn(directory: applicationSettings.paths.profiles).map { $0.lastPathComponent }.sorted()
     }
 }

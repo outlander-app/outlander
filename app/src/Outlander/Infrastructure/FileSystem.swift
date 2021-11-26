@@ -14,6 +14,7 @@ protocol FileSystem {
     func load(_ file: URL) -> Data?
     func write(_ content: String, to fileUrl: URL)
     func write(_ data: Data, to fileUrl: URL) throws
+    func foldersIn(directory: URL) -> [URL]
     func access(_ handler: @escaping () -> Void)
 }
 
@@ -31,7 +32,7 @@ class LocalFileSystem: FileSystem {
             do {
                 result = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
             } catch {
-                print(error)
+                print("File load error: \(error)")
             }
         }
 
@@ -64,6 +65,23 @@ class LocalFileSystem: FileSystem {
         access {
             try? data.write(to: fileUrl)
         }
+    }
+
+    func foldersIn(directory: URL) -> [URL] {
+        var directories: [URL] = []
+        access {
+            guard let items = try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles, .skipsPackageDescendants]) else {
+                return
+            }
+
+            for item in items {
+                if item.hasDirectoryPath {
+                    directories.append(item)
+                }
+            }
+        }
+
+        return directories.sorted(by: { $0.absoluteString < $1.absoluteString })
     }
 
     func access(_ handler: @escaping () -> Void) {
