@@ -482,9 +482,9 @@ class Script {
 
         let scriptName = scriptFileName.absoluteString.contains("file:///")
             ? scriptFileName
-                .absoluteString[7...]
-                .replacingOccurrences(of: gameContext.applicationSettings.paths.scripts.absoluteString[7...], with: "")
-                .replacingOccurrences(of: ".cmd", with: "")
+            .absoluteString[7...]
+            .replacingOccurrences(of: gameContext.applicationSettings.paths.scripts.absoluteString[7...], with: "")
+            .replacingOccurrences(of: ".cmd", with: "")
             : scriptFileName.absoluteString
 
         if !isInclude {
@@ -507,7 +507,7 @@ class Script {
             if let includeMatch = includeRegex.firstMatch(&line) {
                 guard let include = includeMatch.valueAt(index: 1) else { continue }
                 let includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
-                guard includeName != scriptName && includeName != self.fileName else {
+                guard includeName != scriptName, includeName != self.fileName else {
                     sendText("script '\(scriptName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: scriptName)
                     continue
                 }

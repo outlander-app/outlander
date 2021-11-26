@@ -308,7 +308,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        vitalsBar.presetFor = {name in
+        vitalsBar.presetFor = { name in
             guard self.vitalsBar.enabled == true else {
                 return (self.vitalsBar.disabledForegroundColor, self.vitalsBar.disabledBackgroundColor)
             }
