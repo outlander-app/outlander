@@ -431,7 +431,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["one\n", "two\n", "another\n", "trippple threat\n", "not those things\n", "after threat\n", "after\n", "end\n", "yarg\n"])
     }
-    
+
     func test_skipping_big_blocks() throws {
         try scenario([
             "if 1 > 2",
@@ -489,7 +489,6 @@ class ScriptTests: XCTestCase {
     }
 
     func test_else_scenario_2() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if_1 { echo yep one! }",
             "else {",
@@ -501,7 +500,6 @@ class ScriptTests: XCTestCase {
     }
 
     func test_else_scenario_3() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if_0 { echo yep one! }",
             "else {",
@@ -512,7 +510,6 @@ class ScriptTests: XCTestCase {
     }
 
     func test_matchre() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "var exp_threshold 10",
             "if matchre(\"%2\", \"^\\d+$\") then {",
@@ -522,5 +519,71 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["25\n"],
         args: ["exp", "25"])
+    }
+
+    func test_matchre_with_and_expression() throws {
+        try scenario([
+            "var exp_threshold 10",
+            "if matchre(\"%2\", \"^\\d+$\") && 2==2 then {",
+            "  var exp_threshold %2",
+            "}",
+            "echo %exp_threshold",
+        ],
+        expect: ["25\n"],
+        args: ["exp", "25"])
+    }
+
+    func test_matchre_with_or_expression() throws {
+        try scenario([
+            "var exp_threshold 10",
+            "if matchre(\"%2\", \"^\\d+$\") || 2==2 then {",
+            "  var exp_threshold %2",
+            "}",
+            "echo %exp_threshold",
+        ],
+        expect: ["abcd\n"],
+        args: ["exp", "abcd"])
+    }
+
+    func test_matchre_with_or_expression_different_order() throws {
+        try scenario([
+            "var exp_threshold 10",
+            "if 2==2 || matchre(\"%2\", \"^\\d+$\") then {",
+            "  var exp_threshold %2",
+            "}",
+            "echo %exp_threshold",
+        ],
+        expect: ["abcd\n"],
+        args: ["exp", "abcd"])
+    }
+
+    func test_matchre_with_tripple_or_expression() throws {
+        try scenario([
+            "var exp_threshold 10",
+            "if matchre(\"%2\", \"^\\d+$\") || 1 == 2 || 2==2 then {",
+            "  var exp_threshold %2",
+            "}",
+            "echo %exp_threshold",
+        ],
+        expect: ["abcd\n"],
+        args: ["exp", "abcd"])
+    }
+
+    func test_eval_replacere() throws {
+        try scenario([
+            "var dir swim southwest",
+            "eval dir replacere(\"%dir\", \"^(script |search|swim|web|muck|rt|wait|slow|script|room|ice) \", \"\")",
+            "echo %dir",
+        ],
+        expect: ["southwest\n"])
+    }
+
+    func test_if_true_string() throws {
+        try scenario([
+            "var temp True",
+            "if (%temp) then { echo var is true }",
+            "else echo nope!",
+        ],
+        expect: ["var is true\n"])
     }
 }

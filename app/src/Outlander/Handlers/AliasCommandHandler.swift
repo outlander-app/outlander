@@ -15,7 +15,7 @@ class AliasCommandHandler: ICommandHandler {
     let validCommands = ["add", "load", "reload", "list", "save", "clear"]
 
     func handle(_ command: String, with context: GameContext) {
-        let commandStripped = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+        let commandStripped = command[6...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let commandTokens = commandStripped.components(separatedBy: " ")
 
         if commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) {

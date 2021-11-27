@@ -64,7 +64,7 @@ extension String {
     private static let falseValues = ["false", "no", "0", "off", "-"]
 
     func toBool() -> Bool? {
-        let lowerSelf = trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).lowercased()
+        let lowerSelf = trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
 
         if String.trueValues.contains(lowerSelf) {
             return true

@@ -73,7 +73,7 @@ public class Stack<T> {
     public var count: Int {
         stack.count
     }
-    
+
     public var all: [T] {
         stack
     }

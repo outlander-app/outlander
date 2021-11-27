@@ -93,8 +93,8 @@ class HighlightLoader {
                 let colors = color.components(separatedBy: ",")
 
                 if colors.count > 1 {
-                    color = colors[0].trimmingCharacters(in: NSCharacterSet.whitespaces)
-                    backgroundColor = colors[1].trimmingCharacters(in: NSCharacterSet.whitespaces)
+                    color = colors[0].trimmingCharacters(in: CharacterSet.whitespaces)
+                    backgroundColor = colors[1].trimmingCharacters(in: CharacterSet.whitespaces)
                 }
 
                 let pattern = match.valueAt(index: 2) ?? ""

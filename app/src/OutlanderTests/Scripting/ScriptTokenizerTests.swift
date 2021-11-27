@@ -366,7 +366,7 @@ class ScriptTokenizerTests: XCTestCase {
         case let .if(expression):
             switch expression {
             case let .value(text):
-                XCTAssertEqual(text, "$powerwalk==1")
+                XCTAssertEqual(text, "$powerwalk == 1")
             default:
                 XCTFail("wrong expression value, found \(String(describing: expression.description))")
             }

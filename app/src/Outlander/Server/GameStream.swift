@@ -498,7 +498,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
         if current.count > 0 {
             results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
         }
-        
+
         return results
     }
 

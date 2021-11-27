@@ -10,7 +10,13 @@ import Expression
 import Foundation
 
 class ExpressionEvaluator {
+    let log: ILogger
+
     var groups: [String] = []
+
+    init() {
+        log = LogManager.getLog(String(describing: type(of: self)))
+    }
 
     func evaluateLogic(_ input: ScriptExpression) -> Bool {
         switch input {
@@ -45,7 +51,7 @@ class ExpressionEvaluator {
         }
 
         let result: String? = evaluate(input)
-        return result == "true"
+        return result?.lowercased() == "true"
     }
 
     func evaluateValue(_ input: String) -> Double? {
@@ -56,80 +62,13 @@ class ExpressionEvaluator {
     func evaluate<T>(_ input: String) -> T? {
         do {
             let result: T? = try AnyExpression(
-                input: input,
-                symbols: buildSymbols()
+                input: input
             ).evaluate()
             return result
         } catch {
-            print("AnyExpression Error: \(error) for input \(input)")
+            log.error("AnyExpression Error: \(error) for input \(input)")
             return nil
         }
-    }
-
-    func buildSymbols() -> [Expression.Symbol: (_ args: [Any]) throws -> Any] {
-        [
-            .function("contains", arity: 2): { args in
-                let res = self.trimQuotes(args[0]).contains(self.trimQuotes(args[1]))
-                return res ? "true" : "false"
-            },
-            .function("count", arity: 2): { args in
-                let res = self.trimQuotes(args[0]).components(separatedBy: self.trimQuotes(args[1])).count - 1
-                return "\(res)"
-            },
-            .function("countsplit", arity: 2): { args in
-                let res = self.trimQuotes(args[0]).components(separatedBy: self.trimQuotes(args[1])).count
-                return "\(res)"
-            },
-            .function("length", arity: 1): { args in
-                "\(self.trimQuotes(args[0]).count)"
-            },
-            .function("len", arity: 1): { args in "\(self.trimQuotes(args[0]).count)" },
-            .function("matchre", arity: 2): { args in
-                var source = self.trimQuotes(args[0])
-                let pattern = self.trimQuotes(args[1])
-                guard let regex = RegexFactory.get(pattern) else {
-                    return source
-                }
-
-                if let match = regex.firstMatch(&source) {
-                    print("matchre groups \(match.values())")
-                    self.groups = match.values()
-                    return match.count > 0 ? "true" : "false"
-                }
-
-                return "false"
-            },
-            .function("tolower", arity: 1): { args in self.trimQuotes(args[0]).lowercased() },
-            .function("toupper", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
-            .function("tocaps", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
-            .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) },
-            .function("replace", arity: 3): { args in
-                let source = self.trimQuotes(args[0])
-                let pattern = self.trimQuotes(args[1])
-                let replacement = self.trimQuotes(args[2])
-                let result = source.replacingOccurrences(of: pattern, with: replacement)
-                return result
-            },
-            .function("replacere", arity: 3): { args in
-                let source = self.trimQuotes(args[0])
-                let pattern = self.trimQuotes(args[1])
-                let replacement = self.trimQuotes(args[2])
-                guard let regex = RegexFactory.get(pattern) else {
-                    return source
-                }
-                let result = regex.replace(source, with: replacement)
-                return result
-            },
-            .function("startswith", arity: 2): { args in
-                self.trimQuotes(args[0]).hasPrefix(self.trimQuotes(args[1]))
-                    ? "true" : "false"
-            },
-            .function("endswith", arity: 2): { args in self.trimQuotes(args[0]).hasSuffix(self.trimQuotes(args[1])) ? "true" : "false" },
-        ]
-    }
-
-    func trimQuotes(_ input: Any) -> String {
-        String(describing: input).trimmingCharacters(in: CharacterSet(["\""]))
     }
 }
 
@@ -141,15 +80,77 @@ public extension AnyExpression {
         let replaced = AnyExpression.replaceSingleOperators(input)
 //        print("AnyExpression input: \(input)")
 //        print("AnyExpression replaced: \(replaced)")
-        let exp = Expression.parse(replaced, usingCache: false)
+        let exp = Expression.parse(replaced, usingCache: true)
         self.init(
             exp,
             impureSymbols: { symbol in
                 switch symbol {
-//                case .infix("="):
-//                    return {args in
-//                        false
-//                    }
+                case .infix("="):
+                    return { args in
+                        switch (args[0], args[1]) {
+                        case let (lhs as Bool, rhs as Bool):
+                            return lhs == rhs
+                        case let (lhs as Double, rhs as Double):
+                            return lhs == rhs
+                        case let (lhs as Double, rhs as Bool):
+                            return lhs != 0 && rhs
+                        case let (lhs as Bool, rhs as Double):
+                            return lhs && rhs != 0
+                        case let (lhs as String, rhs as Bool):
+                            return lhs.toBool() == true && rhs
+                        case let (lhs as Bool, rhs as String):
+                            return lhs && rhs.toBool() == true
+                        case let (lhs as String, rhs as String):
+                            return lhs == rhs
+                        default:
+                            let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
+                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                        }
+                    }
+                case .infix("&&"):
+                    return { args in
+                        switch (args[0], args[1]) {
+                        case let (lhs as Bool, rhs as Bool):
+                            return lhs && rhs
+                        case let (lhs as Double, rhs as Double):
+                            return lhs != 0 && rhs != 0
+                        case let (lhs as Double, rhs as Bool):
+                            return lhs != 0 && rhs
+                        case let (lhs as Bool, rhs as Double):
+                            return lhs && rhs != 0
+                        case let (lhs as String, rhs as Bool):
+                            return lhs.toBool() == true && rhs
+                        case let (lhs as Bool, rhs as String):
+                            return lhs && rhs.toBool() == true
+                        case let (lhs as String, rhs as String):
+                            return lhs.toBool() == true && rhs.toBool() == true
+                        default:
+                            let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
+                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                        }
+                    }
+                case .infix("||"):
+                    return { args in
+                        switch (args[0], args[1]) {
+                        case let (lhs as Bool, rhs as Bool):
+                            return lhs || rhs
+                        case let (lhs as Double, rhs as Double):
+                            return lhs != 0 || rhs != 0
+                        case let (lhs as Double, rhs as Bool):
+                            return lhs != 0 || rhs
+                        case let (lhs as Bool, rhs as Double):
+                            return lhs || rhs != 0
+                        case let (lhs as String, rhs as Bool):
+                            return lhs.toBool() == true || rhs
+                        case let (lhs as Bool, rhs as String):
+                            return lhs || rhs.toBool() == true
+                        case let (lhs as String, rhs as String):
+                            return lhs.toBool() == true || rhs.toBool() == true
+                        default:
+                            let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
+                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                        }
+                    }
                 case let .variable(name):
                     return { _ in name }
                 case let .function(name, arity: arity):
@@ -172,6 +173,7 @@ public extension AnyExpression {
     static func replaceSingleOperators(_ input: String) -> String {
         let operators = [
             "=",
+            // trying to replace these cause problems
 //            "&",
 //            "\\|",
         ]

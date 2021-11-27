@@ -32,7 +32,7 @@ class ScriptContext {
 
         return lines[currentLineNumber]
     }
-    
+
     var nextLine: ScriptLine? {
         if currentLineNumber < 0 || currentLineNumber + 1 >= lines.count {
             return nil
@@ -95,7 +95,7 @@ class ScriptContext {
                 if currentIf.lineNumber == target.lineNumber {
                     return true
                 }
-                
+
                 skipSingleLineIfElseElses()
 
                 if let next = nextLine {
@@ -103,7 +103,7 @@ class ScriptContext {
                         next.token = tokenizer.read(next.originalText)
                     }
 
-                    guard next.token?.isElseIfToken == false && next.token?.isElseToken == false else {
+                    guard next.token?.isElseIfToken == false, next.token?.isElseToken == false else {
                         continue
                     }
                     let (popped, _) = popIfStack()
@@ -116,7 +116,7 @@ class ScriptContext {
                         return false
                     }
                 }
-                
+
             case .elseIf, .elseIfSingle, .elseIfNeedsBrace, .else, .elseSingle, .elseNeedsBrace:
                 if currentIf.lineNumber == target.lineNumber {
                     retreat()
@@ -128,7 +128,7 @@ class ScriptContext {
 //                    return false
 //                }
             default:
-                if lineToken.isTopLevelIf, !lineToken.isSingleToken && !lineToken.isElseToken {
+                if lineToken.isTopLevelIf, !lineToken.isSingleToken, !lineToken.isElseToken {
                     pushCurrentLineToIfStack()
                 }
 

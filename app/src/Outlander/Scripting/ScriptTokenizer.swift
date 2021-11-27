@@ -18,7 +18,7 @@ enum ScriptExpression: Hashable {
         case let .value(txt):
             switch other {
             case let .value(otherTxt):
-                return [.value(txt + otherTxt)]
+                return [.value(txt == "(" ? txt + otherTxt : "\(txt) \(otherTxt)")]
             default:
                 return [self, other]
             }
@@ -126,7 +126,7 @@ enum ScriptTokenValue: Hashable {
         default: return false
         }
     }
-    
+
     var isElseIfToken: Bool {
         switch self {
         case .elseIfSingle: return true
@@ -506,8 +506,7 @@ class EchoMode: IScriptReaderMode {
 
 class ElseIfMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
-        let tokenizer = ExpressionTokenizer()
-        let result = tokenizer.read(String(context.text.parseToEnd()))
+        let result = ExpressionTokenizer().read(String(context.text.parseToEnd()))
 
         guard let expression = result.expression else {
             return nil
@@ -585,9 +584,15 @@ class EvalMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let variable = String(context.text.parseWord())
         context.text.consumeSpaces()
-        let expression = String(context.text.parseToEnd())
+        let expressionBody = String(context.text.parseToEnd())
 
-        context.target.append(.eval(variable, .value(expression)))
+        let result = ExpressionTokenizer().read(expressionBody)
+
+        guard let expression = result.expression else {
+            return nil
+        }
+
+        context.target.append(.eval(variable, expression))
         return nil
     }
 }
@@ -597,9 +602,15 @@ class EvalMathMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let variable = String(context.text.parseWord())
         context.text.consumeSpaces()
-        let expression = String(context.text.parseToEnd())
+        let expressionBody = String(context.text.parseToEnd())
 
-        context.target.append(.evalMath(variable, .value(expression)))
+        let result = ExpressionTokenizer().read(expressionBody)
+
+        guard let expression = result.expression else {
+            return nil
+        }
+
+        context.target.append(.evalMath(variable, expression))
         return nil
     }
 }

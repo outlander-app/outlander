@@ -14,7 +14,7 @@ class ClassCommandHandler: ICommandHandler {
     let validCommands = ["clear", "load", "reload", "list", "save"]
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[6...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
+        let commands = command[6...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
 
         if commands.count == 1, validCommands.contains(commands[0].lowercased()) {
             switch commands[0].lowercased() {

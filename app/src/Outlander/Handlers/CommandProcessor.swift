@@ -36,7 +36,7 @@ class CommandProcesssor {
         SendCommandHandler(),
         ScriptCommandHandler(),
         ScriptRunnerCommandHandler(),
-        AliasCommandHandler()
+        AliasCommandHandler(),
     ]
 
     private var pluginManager: OPlugin

@@ -26,7 +26,7 @@ class FunctionEvaluatorTests: XCTestCase {
         XCTAssertEqual(result.result, "true")
     }
 
-    // TODO: not sure if I want to try to support this - messes with regexes
+    // TODO: not sure if I want to try to support this - messes with regexes - can fix it now with parsing
 //    func test_evals_logic_single_or() {
 //        let result = evaluator.evaluateBool(.value("BARD = BARD | YES = NO"))
 //        XCTAssertEqual(result.result, "true")
@@ -38,22 +38,22 @@ class FunctionEvaluatorTests: XCTestCase {
 //    }
 
     func test_evals_tolower_function() {
-        let result = evaluator.evaluateStrValue(.value("tolower(ABCD)"))
+        let result = evaluator.evaluateStrValue(.function("tolower", ["ABCD"]))
         XCTAssertEqual(result.result, "abcd")
     }
 
     func test_evals_tolower_function_ignores_case() {
-        let result = evaluator.evaluateStrValue(.value("ToLower(ABCD)"))
+        let result = evaluator.evaluateStrValue(.function("ToLower", ["ABCD"]))
         XCTAssertEqual(result.result, "abcd")
     }
 
     func test_evals_startswith_function_success() {
-        let result = evaluator.evaluateStrValue(.value("startswith(\"one two\", one)"))
+        let result = evaluator.evaluateStrValue(.function("startswith", ["\"one two\"", "one"]))
         XCTAssertEqual(result.result, "true")
     }
 
     func test_evals_startswith_function_fail() {
-        let result = evaluator.evaluateStrValue(.value("startswith(\"one two\", three)"))
+        let result = evaluator.evaluateStrValue(.function("startswith", ["\"one two\"", "three"]))
         XCTAssertEqual(result.result, "false")
     }
 
@@ -61,5 +61,20 @@ class FunctionEvaluatorTests: XCTestCase {
         let expr: ScriptExpression = .value("")
         let result = evaluator.evaluateBool(expr)
         XCTAssertEqual(result.result, "false")
+    }
+
+    func test_evals_func() {
+        let result = evaluator.evaluateStrValue(.values([.function("tolower", ["ONE"]), .value("== one")]))
+        XCTAssertTrue(result.result.toBool() == true)
+    }
+
+    func test_evals_func_2() {
+        let result = evaluator.evaluateBool(.values([.value("(3 == 4) || 2 ==  1 ||"), .function("tolower", ["ONE"]), .value("== one")]))
+        XCTAssertTrue(result.result.toBool() == true)
+    }
+
+    func test_evals_func_ignores_case() {
+        let result = evaluator.evaluateBool(.values([.function("ToLower", ["ONE"]), .value("== one")]))
+        XCTAssertTrue(result.result.toBool() == true)
     }
 }

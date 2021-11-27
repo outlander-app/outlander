@@ -92,13 +92,13 @@ class ProfileConfigLoader {
         let profile = context.applicationSettings.profile
 
         let account = RegexFactory.get("Account: (.+)")?.firstMatch(&content)
-        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let game = RegexFactory.get("Game: (.+)")?.firstMatch(&content)
-        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let character = RegexFactory.get("Character: (.+)")?.firstMatch(&content)
-        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let logging = RegexFactory.get("Logging: (.+)")?.firstMatch(&content)
         profile.logging = logging?.valueAt(index: 1)?.toBool() ?? false
@@ -107,7 +107,7 @@ class ProfileConfigLoader {
         profile.rawLogging = rawlogging?.valueAt(index: 1)?.toBool() ?? false
 
         let layout = RegexFactory.get("Layout: (.+)")?.firstMatch(&content)
-        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? "default.cfg"
+        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "default.cfg"
     }
 }
 

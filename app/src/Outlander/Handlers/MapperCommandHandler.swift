@@ -19,7 +19,7 @@ class MapperComandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let command = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+        let command = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         guard command.count > 0 else {
             return
         }

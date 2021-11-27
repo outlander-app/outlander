@@ -61,7 +61,7 @@ class ExpPlugin: OPlugin {
 
     private var parsing = false
     private var updateWindow = false
-    private var displayLearnedAfterPrompt = true
+    private var displayLearnedWithPrompt = false
 
     static let start_check = "Circle: "
     static let end_check = "EXP HELP for more information"
@@ -109,8 +109,8 @@ class ExpPlugin: OPlugin {
         case "/tracker update":
             updateExpWindow()
         case "/tracker display learned":
-            displayLearnedAfterPrompt = !displayLearnedAfterPrompt
-            let onOff = displayLearnedAfterPrompt ? "on" : "off"
+            displayLearnedWithPrompt = !displayLearnedWithPrompt
+            let onOff = displayLearnedWithPrompt ? "on" : "off"
             host?.send(text: "#echo \(foreColor) \n\(name) - setting display learned to: \(onOff)\n")
         case "/tracker orderby name":
             tracker.sortingBy = .name
@@ -147,14 +147,14 @@ class ExpPlugin: OPlugin {
         case "/tracker help":
             fallthrough
         default:
-            let displayLearnedOnOff = displayLearnedAfterPrompt ? "on" : "off"
+            let displayLearnedOnOff = displayLearnedWithPrompt ? "on" : "off"
             host?.send(text: "#echo \(foreColor) \n\(name)")
             host?.send(text: "#echo \(foreColor) Available commands:")
             host?.send(text: "#echo \(foreColor)  orderby: order skills by skillset, name, name desc, rank, rank desc, gains, gains desc. (\(tracker.sortingBy.description))")
             host?.send(text: "#echo \(foreColor)  report [orderby]:  display a report of skills with field experience or earned ranks.")
             host?.send(text: "#echo \(foreColor)  reset:   resets the tracking data.")
             host?.send(text: "#echo \(foreColor)  update:  refreshes the experience window.")
-            host?.send(text: "#echo \(foreColor)  display learned: toggle display learning gains after the command prompt. (\(displayLearnedOnOff))")
+            host?.send(text: "#echo \(foreColor)  display learned: toggle display learning gains. (\(displayLearnedOnOff))")
             host?.send(text: "#echo \(foreColor)  ex:")
             host?.send(text: "#echo \(foreColor)    /tracker report rank desc")
             host?.send(text: "#echo \(foreColor)    /tracker orderby name\n")
@@ -259,7 +259,7 @@ class ExpPlugin: OPlugin {
     }
 
     private func displayLearned() -> String {
-        guard displayLearnedAfterPrompt else {
+        guard displayLearnedWithPrompt else {
             return ""
         }
         let report = tracker.buildLearnedReport()

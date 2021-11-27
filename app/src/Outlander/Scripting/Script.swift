@@ -249,7 +249,7 @@ class Script {
             next()
         }
 
-        //doRun()
+        // doRun()
 
         if runAsync {
             lockQueue.async {
@@ -945,7 +945,7 @@ class Script {
         guard case let .eval(variable, expression) = token else {
             return .next
         }
-        
+
         let targetVar = context.replaceVars(variable)
 
         let result = funcEvaluator.evaluateStrValue(expression)

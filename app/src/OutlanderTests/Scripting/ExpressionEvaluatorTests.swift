@@ -46,6 +46,36 @@ class ExpressionEvaluatorTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    func test_evals_true_equals_true() {
+        let result = evaluator.evaluateLogic("true == true")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_1_and_1_to_true() {
+        let result = evaluator.evaluateLogic("1 && 1")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_zero_and_1_to_false() {
+        let result = evaluator.evaluateLogic("0 && 1")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_zero_and_zero_to_false() {
+        let result = evaluator.evaluateLogic("0 && 0")
+        XCTAssertFalse(result)
+    }
+
+    func test_evals_1_and_expression_to_true() {
+        let result = evaluator.evaluateLogic("1 && 2==2")
+        XCTAssertTrue(result)
+    }
+
+    func test_evals_1_or_expression_to_true() {
+        let result = evaluator.evaluateLogic("1 || 3==2")
+        XCTAssertTrue(result)
+    }
+
     func test_evals_single_value() {
         let result = evaluator.evaluateLogic("3")
         XCTAssertFalse(result)
@@ -159,24 +189,9 @@ class ExpressionEvaluatorTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
-    func test_evals_func() {
-        let result = evaluator.evaluateLogic("tolower(ONE) == one")
-        XCTAssertTrue(result)
-    }
-
-    func test_evals_func_2() {
-        let result = evaluator.evaluateLogic("(3 == 4) || 2 ==  1 || tolower(ONE) == one")
-        XCTAssertTrue(result)
-    }
-
     func test_evals_func_3() {
         let result = evaluator.evaluateLogic("3 == 4 && 2 ==  1 && tolower(ONE) == one")
         XCTAssertFalse(result)
-    }
-
-    func test_evals_func_ignores_case() {
-        let result = evaluator.evaluateLogic("ToLower(ONE) == one")
-        XCTAssertTrue(result)
     }
 
     func test_greater_than_equal() {
@@ -197,5 +212,10 @@ class ExpressionEvaluatorTests: XCTestCase {
     func test_str_equal() {
         let result = evaluator.evaluateStrValue(.value("YES == YES && \"steel mace\" != Empty"))
         XCTAssertEqual(result, "true")
+    }
+
+    func test_str_ternary() {
+        let result = evaluator.evaluateStrValue(.value("YES == YES ? \"steel mace\" : Empty"))
+        XCTAssertEqual(result, "\"steel mace\"")
     }
 }
