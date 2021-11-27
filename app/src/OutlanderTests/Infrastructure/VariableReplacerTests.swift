@@ -30,6 +30,15 @@ class VariableReplacerTests: XCTestCase {
         XCTAssertEqual("one|two|three", result)
     }
 
+    func test_replaces_long_variables_first_scenario2() {
+        variables["pouch"] = "gem pouch"
+        variables["pouch.container"] = "rucksack"
+
+        let result = replacer.replace("get my $pouch in my $pouch.container", globalVars: variables)
+
+        XCTAssertEqual("get my gem pouch in my rucksack", result)
+    }
+
     func test_iteration_tests() {
         variables["testing"] = "one"
         let result = replacer.replace("$brawling_moves", globalVars: variables)

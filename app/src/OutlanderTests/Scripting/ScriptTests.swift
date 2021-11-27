@@ -13,7 +13,7 @@ class ScriptTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
-    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", variables: [String: String] = [:], expect: [String] = []) throws -> InMemoryEvents {
+    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", variables: [String: String] = [:], expect: [String] = [], args: [String] = []) throws -> InMemoryEvents {
         let events = InMemoryEvents()
         let context = GameContext(events)
         let loader = InMemoryScriptLoader()
@@ -24,7 +24,7 @@ class ScriptTests: XCTestCase {
 
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run(args, runAsync: false)
 
         for (index, message) in expect.enumerated() {
             XCTAssertEqual(message, events.history.dropFirst(index + 1).first?.text?.text)
@@ -360,7 +360,6 @@ class ScriptTests: XCTestCase {
     }
 
     func test_multi_line_if_else_nested_mixed_braces() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if 1 < 2",
             "{",
@@ -392,7 +391,6 @@ class ScriptTests: XCTestCase {
     }
 
     func test_multi_line_if_else_tripple_nested_mixed_braces() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if 1 < 2",
             "{",
@@ -435,10 +433,32 @@ class ScriptTests: XCTestCase {
     }
 
     func test_single_line_no_then_with_braces() throws {
-        LogManager.getLog = { name in PrintLogger(name) }
         try scenario([
             "if 3 == 3 { echo yarg }",
         ],
         expect: ["yarg\n"])
+    }
+
+    func test_else() throws {
+        try scenario([
+            "if_2 { echo yep one! }",
+            "else {",
+            "  echo else!",
+            "}",
+        ],
+        expect: ["else!\n"],
+        args: ["one"])
+    }
+
+    func test_else_scenario_2() throws {
+        LogManager.getLog = { name in PrintLogger(name) }
+        try scenario([
+            "if_1 { echo yep one! }",
+            "else {",
+            "  echo else!",
+            "}",
+        ],
+        expect: ["yep one!\n"],
+        args: ["one"])
     }
 }

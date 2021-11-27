@@ -92,8 +92,18 @@ class ScriptContext {
                 if !popped {
                     return false
                 }
+            case .elseIf, .elseIfSingle, .elseIfNeedsBrace, .else, .elseSingle, .elseNeedsBrace:
+                if currentIf.lineNumber == target.lineNumber {
+                    retreat()
+                    return true
+                }
+
+//                let (popped, _) = popIfStack()
+//                if !popped {
+//                    return false
+//                }
             default:
-                if lineToken.isTopLevelIf, !lineToken.isSingleToken {
+                if lineToken.isTopLevelIf, !lineToken.isSingleToken && !lineToken.isElseToken {
                     pushCurrentLineToIfStack()
                 }
 

@@ -156,6 +156,9 @@ class Script {
         }
     }
 
+    var lastNext = Date()
+    var lastNextCount: Int = 0
+
     static var dateFormatter = DateFormatter()
 
     init(_ fileName: String, loader: IScriptLoader, gameContext: GameContext) throws {
@@ -165,7 +168,7 @@ class Script {
 
         tokenizer = ScriptTokenizer()
 
-        stackTrace = Stack<ScriptLine>(30)
+        stackTrace = Stack<ScriptLine>(100)
         gosubStack = Stack<GosubContext>(101)
 
         includeRegex = RegexFactory.get("^\\s*include (.+)$")!
@@ -235,7 +238,7 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_ args: [String], runAsync _: Bool = true) {
+    func run(_ args: [String], runAsync: Bool = true) {
         func doRun() {
             started = Date()
 
@@ -246,15 +249,15 @@ class Script {
             next()
         }
 
-        doRun()
+        //doRun()
 
-//        if runAsync {
-//            lockQueue.async {
-//                doRun()
-//            }
-//        } else {
-//            doRun()
-//        }
+        if runAsync {
+            lockQueue.async {
+                doRun()
+            }
+        } else {
+            doRun()
+        }
     }
 
     func next() {
@@ -264,6 +267,23 @@ class Script {
             nextAfterUnpause = true
             return
         }
+
+        let interval = Date().timeIntervalSince(lastNext)
+
+        if interval < 0.1 {
+            lastNextCount += 1
+        } else {
+            lastNextCount = 0
+        }
+
+        guard lastNextCount <= 250 else {
+            printStacktrace()
+            sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
+            cancel()
+            return
+        }
+
+        lastNext = Date()
 
         context.advance()
 
@@ -361,6 +381,13 @@ class Script {
 
         gameContext.events.unregister(self)
         gameContext.events.post("ol:script:complete", data: fileName)
+    }
+
+    func printStacktrace() {
+        sendText("Stack trace of last \(stackTrace.count) commands for \(fileName):", preset: "scriptinfo")
+        for line in stackTrace.all {
+            sendText("[\(line.fileName)(\(line.lineNumber)]: \(line.originalText)", preset: "scriptinfo")
+        }
     }
 
     func stream(_ text: String, _ tokens: [StreamCommand]) {
@@ -918,12 +945,14 @@ class Script {
         guard case let .eval(variable, expression) = token else {
             return .next
         }
+        
+        let targetVar = context.replaceVars(variable)
 
         let result = funcEvaluator.evaluateStrValue(expression)
 
-        notify("eval \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
+        notify("eval \(targetVar) \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        context.variables[variable] = result.result
+        context.variables[targetVar] = result.result
 
         return .next
     }
@@ -933,11 +962,12 @@ class Script {
             return .next
         }
 
+        let targetVar = context.replaceVars(variable)
         let result = funcEvaluator.evaluateValue(expression)
 
-        notify("evalmath \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
+        notify("evalmath \(targetVar) \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        context.variables[variable] = result.result
+        context.variables[targetVar] = result.result
 
         return .next
     }

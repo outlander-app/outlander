@@ -55,18 +55,29 @@ class ExpressionEvaluator {
             ).evaluate()
             return result
         } catch {
-            print("AnyExpression Error: \(error)")
+            print("AnyExpression Error: \(error) for input \(input)")
             return nil
         }
     }
 
     func buildSymbols() -> [Expression.Symbol: (_ args: [Any]) throws -> Any] {
         [
-            .function("contains", arity: 2): { args in String(describing: args[0]).contains(String(describing: args[1])) },
-            .function("count", arity: 2): { args in String(describing: args[0]).components(separatedBy: String(describing: args[1])).count - 1 },
-            .function("countsplit", arity: 2): { args in String(describing: args[0]).components(separatedBy: String(describing: args[1])).count },
-            .function("length", arity: 1): { args in String(describing: args[0]).count },
-            .function("len", arity: 1): { args in String(describing: args[0]).count },
+            .function("contains", arity: 2): { args in
+                let res = String(describing: args[0]).contains(String(describing: args[1]))
+                return res ? "true" : "false"
+            },
+            .function("count", arity: 2): { args in
+                let res = String(describing: args[0]).components(separatedBy: String(describing: args[1])).count - 1
+                return "\(res)"
+            },
+            .function("countsplit", arity: 2): { args in
+                let res = String(describing: args[0]).components(separatedBy: String(describing: args[1])).count
+                return "\(res)"
+            },
+            .function("length", arity: 1): { args in
+                "\(String(describing: args[0]).count)"
+            },
+            .function("len", arity: 1): { args in "\(String(describing: args[0]).count)" },
             .function("matchre", arity: 2): { args in
                 var source = self.trimQuotes(args[0])
                 let pattern = self.trimQuotes(args[1])
@@ -77,15 +88,22 @@ class ExpressionEvaluator {
                 if let match = regex.firstMatch(&source) {
                     print("matchre groups \(match.values())")
                     self.groups = match.values()
-                    return match.count > 0
+                    return match.count > 0 ? "true" : "false"
                 }
 
-                return false
+                return "false"
             },
             .function("tolower", arity: 1): { args in String(describing: args[0]).lowercased() },
             .function("toupper", arity: 1): { args in String(describing: args[0]).uppercased() },
             .function("tocaps", arity: 1): { args in String(describing: args[0]).uppercased() },
             .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) },
+            .function("replace", arity: 3): { args in
+                let source = self.trimQuotes(args[0])
+                let pattern = self.trimQuotes(args[1])
+                let replacement = self.trimQuotes(args[2])
+                let result = source.replacingOccurrences(of: pattern, with: replacement)
+                return result
+            },
             .function("replacere", arity: 3): { args in
                 let source = self.trimQuotes(args[0])
                 let pattern = self.trimQuotes(args[1])
@@ -115,6 +133,8 @@ public extension AnyExpression {
         symbols: [Symbol: SymbolEvaluator] = [:]
     ) {
         let replaced = AnyExpression.replaceSingleOperators(input)
+        //print("AnyExpression input: \(input)")
+        //print("AnyExpression replaced: \(replaced)")
         self.init(
             Expression.parse(replaced),
             impureSymbols: { symbol in

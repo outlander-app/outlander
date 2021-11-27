@@ -33,6 +33,10 @@ public class Queue<T> {
     public var count: Int {
         queue.count
     }
+
+    public var all: [T] {
+        queue
+    }
 }
 
 public class Stack<T> {
@@ -68,6 +72,10 @@ public class Stack<T> {
 
     public var count: Int {
         stack.count
+    }
+    
+    public var all: [T] {
+        stack
     }
 
     var last: T? {

@@ -280,8 +280,8 @@ class VariableReplacer {
                 return
             }
             let matches = longRegex.allMatches(&target)
-            for match in matches {
-                guard let varName = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
+            for match in matches.reversed() {
+                guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
                     continue
                 }
 
@@ -289,15 +289,19 @@ class VariableReplacer {
                     continue
                 }
 
-                target = target.replacingOccurrences(of: varName, with: val)
+                guard let range = match.rangeOf(index: 0) else {
+                    continue
+                }
+
+                target.replaceSubrange(range, with: val)
             }
 
             guard let shortRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9]+))") else {
                 return
             }
             let matches2 = shortRegex.allMatches(&target)
-            for match in matches2 {
-                guard let varName = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
+            for match in matches2.reversed() {
+                guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
                     continue
                 }
 
@@ -305,7 +309,11 @@ class VariableReplacer {
                     continue
                 }
 
-                target = target.replacingOccurrences(of: varName, with: val)
+                guard let range = match.rangeOf(index: 0) else {
+                    continue
+                }
+
+                target.replaceSubrange(range, with: val)
             }
         }
 
