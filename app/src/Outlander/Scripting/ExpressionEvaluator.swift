@@ -16,6 +16,8 @@ class ExpressionEvaluator {
         switch input {
         case let .value(val):
             return evaluateLogic(val)
+        default:
+            return false
         }
     }
 
@@ -23,6 +25,8 @@ class ExpressionEvaluator {
         switch input {
         case let .value(val):
             return evaluateValue(val)
+        default:
+            return nil
         }
     }
 
@@ -30,6 +34,8 @@ class ExpressionEvaluator {
         switch input {
         case let .value(val):
             return evaluate(val)
+        default:
+            return nil
         }
     }
 

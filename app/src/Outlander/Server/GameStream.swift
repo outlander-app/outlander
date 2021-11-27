@@ -440,6 +440,68 @@ extension StringView where SubSequence == Self, Element: Equatable {
         return (result.joined(separator: " "), lastWord == "then")
     }
 
+    mutating func parseExpression() -> ScriptExpression? {
+        var results: [ScriptExpression] = []
+        while let _ = first {
+            consumeSpaces()
+            let identifier = parseMany(while: { $0 != Self.leftParen && $0 != Self.space })
+
+            if identifier.count == 0 {
+                consume(expecting: Self.leftParen)
+                results.append(.value("("))
+                continue
+            }
+
+            if first == Self.leftParen {
+                // parse args
+                consume(expecting: Self.leftParen)
+                let args = parseFunctionArguments()
+                consume(expecting: Self.rightParen)
+                results.append(.function(Self.string(identifier), args))
+            } else {
+                consume(expecting: Self.space)
+                results.append(.value(Self.string(identifier)))
+            }
+        }
+
+        let combined = ScriptExpression.combine(expressions: results)
+
+        if combined.count == 1 {
+            return combined[0]
+        }
+
+        return combined.count > 0 ? .values(combined) : nil
+    }
+
+    mutating func parseFunctionArguments() -> [String] {
+        var results: [String] = []
+        var current: [Element] = []
+
+        while let c = first, c != Self.rightParen {
+            switch c {
+            case Self.comma:
+                results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+                current = []
+                _ = popFirst()
+            case Self.quote:
+                current.append(c)
+                _ = popFirst()
+                current = current + parseMany({ $0.parseQuotedCharacter(dropslash: false) }, while: { $0 != Self.quote })
+                current.append(Self.quote)
+                _ = popFirst()
+            default:
+                current.append(c)
+                _ = popFirst()
+            }
+        }
+
+        if current.count > 0 {
+            results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+        }
+        
+        return results
+    }
+
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {
         let key = Self.string(parseMany(while: { $0 != Self.equal }))
 
@@ -478,11 +540,14 @@ extension StringView where SubSequence == Self, Element: Equatable {
         return attributes
     }
 
-    mutating func parseQuotedCharacter() -> Element? {
+    mutating func parseQuotedCharacter(dropslash: Bool = true) -> Element? {
         guard let c = popFirst() else { return nil }
 
         switch c {
         case Self.backslash:
+            guard dropslash else {
+                return c
+            }
             return popFirst()
         case Self.carriageReturn:
             return popFirst()

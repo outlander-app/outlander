@@ -10,6 +10,35 @@ import Foundation
 
 enum ScriptExpression: Hashable {
     case value(String)
+    case function(String, [String])
+    case values([ScriptExpression])
+
+    func combine(with other: ScriptExpression) -> [ScriptExpression] {
+        switch self {
+        case let .value(txt):
+            switch other {
+            case let .value(otherTxt):
+                return [.value(txt + otherTxt)]
+            default:
+                return [self, other]
+            }
+        default:
+            return [self, other]
+        }
+    }
+
+    static func combine(expressions: [ScriptExpression]) -> [ScriptExpression] {
+        let combined = expressions.reduce([ScriptExpression]()) { list, next in
+
+            if let last = list.last {
+                return list.dropLast() + last.combine(with: next)
+            }
+
+            return [next]
+        }
+
+        return combined
+    }
 }
 
 extension ScriptExpression: CustomStringConvertible {
@@ -17,6 +46,10 @@ extension ScriptExpression: CustomStringConvertible {
         switch self {
         case let .value(str):
             return str
+        case let .function(name, _):
+            return "\(name)()"
+        case let .values(values):
+            return values.map { $0.description }.joined(separator: " ")
         }
     }
 }

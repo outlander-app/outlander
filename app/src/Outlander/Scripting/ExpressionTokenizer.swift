@@ -98,10 +98,27 @@ class ExpressionBodyMode: IExpressionReaderMode {
 
         let (expression, hadThen) = context.text.parseToComponents()
         context.text.consumeSpaces()
-
         context.hadThen = hadThen
 
-        context.target.append(.value(expression.trimmingCharacters(in: CharacterSet.whitespaces)))
+        let result = ExpressionTokenizer(ExpressionMode()).read(expression.trimmingCharacters(in: CharacterSet.whitespaces))
+
+        guard let exp = result.expression else {
+            return nil
+        }
+
+        context.target.append(exp)
+
+        return nil
+    }
+}
+
+class ExpressionMode: IExpressionReaderMode {
+    func read(_ context: ExpressionTokenizerContext) -> IExpressionReaderMode? {
+        context.text.consumeSpaces()
+
+        if let res = context.text.parseExpression() {
+            context.target.append(res)
+        }
 
         return nil
     }

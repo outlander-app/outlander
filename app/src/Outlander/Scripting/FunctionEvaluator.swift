@@ -29,6 +29,8 @@ class FunctionEvaluator {
             let simp = simplify(val)
             let result = evaluator.evaluateLogic(simp)
             return EvalResult(text: simp, result: "\(result)", groups: evaluator.groups)
+        default:
+            return EvalResult(text: "", result: "", groups: [])
         }
     }
 
@@ -41,6 +43,8 @@ class FunctionEvaluator {
             }
 
             return EvalResult(text: simp, result: result ?? "", groups: [])
+        default:
+            return EvalResult(text: "", result: "", groups: [])
         }
     }
 
@@ -59,6 +63,8 @@ class FunctionEvaluator {
             }
 
             return EvalResult(text: simp, result: res, groups: evaluator.groups)
+        default:
+            return EvalResult(text: "", result: "", groups: [])
         }
     }
 }

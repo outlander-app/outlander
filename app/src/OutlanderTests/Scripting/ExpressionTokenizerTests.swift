@@ -40,7 +40,7 @@ class ExpressionTokenizerTests: XCTestCase {
 
         switch result.expression {
         case let .value(txt):
-            XCTAssertEqual(txt, "3 == 3")
+            XCTAssertEqual(txt, "3==3")
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -124,7 +124,7 @@ class ExpressionTokenizerTests: XCTestCase {
 
         switch result.expression {
         case let .value(txt):
-            XCTAssertEqual(txt, "(\"%one\" == \"%two\")")
+            XCTAssertEqual(txt, "(\"%one\"==\"%two\")")
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -135,8 +135,9 @@ class ExpressionTokenizerTests: XCTestCase {
         let result = tokenizer.read("tolower(ABCD){")
 
         switch result.expression {
-        case let .value(txt):
-            XCTAssertEqual(txt, "tolower(ABCD)")
+        case let .function(name, args):
+            XCTAssertEqual(name, "tolower")
+            XCTAssertEqual(args, ["ABCD"])
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -147,8 +148,9 @@ class ExpressionTokenizerTests: XCTestCase {
         let result = tokenizer.read("tolower(one, two, three){")
 
         switch result.expression {
-        case let .value(txt):
-            XCTAssertEqual(txt, "tolower(one, two, three)")
+        case let .function(name, args):
+            XCTAssertEqual(name, "tolower")
+            XCTAssertEqual(args, ["one", "two", "three"])
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -159,8 +161,9 @@ class ExpressionTokenizerTests: XCTestCase {
         let result = tokenizer.read("tolower(\"one\", two, \"three\"){")
 
         switch result.expression {
-        case let .value(txt):
-            XCTAssertEqual(txt, "tolower(\"one\", two, \"three\")")
+        case let .function(name, args):
+            XCTAssertEqual(name, "tolower")
+            XCTAssertEqual(args, ["\"one\"", "two", "\"three\""])
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -171,8 +174,29 @@ class ExpressionTokenizerTests: XCTestCase {
         let result = tokenizer.read("tolower(ONE) || tocaps(TWO) {")
 
         switch result.expression {
-        case let .value(txt):
-            XCTAssertEqual(txt, "tolower(ONE) || tocaps(TWO)")
+        case let .values(exp):
+            switch exp[0] {
+            case let .function(name, args):
+                XCTAssertEqual(name, "tolower")
+                XCTAssertEqual(args, ["ONE"])
+            default:
+                XCTFail("wrong expression value, found \(String(describing: exp[0]))")
+            }
+
+            switch exp[1] {
+            case let .value(txt):
+                XCTAssertEqual(txt, "||")
+            default:
+                XCTFail("wrong expression value, found \(String(describing: exp[0]))")
+            }
+            
+            switch exp[2] {
+            case let .function(name, args):
+                XCTAssertEqual(name, "tocaps")
+                XCTAssertEqual(args, ["TWO"])
+            default:
+                XCTFail("wrong expression value, found \(String(describing: exp[0]))")
+            }
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
@@ -183,8 +207,21 @@ class ExpressionTokenizerTests: XCTestCase {
         let result = tokenizer.read("tolower(ONE) || tocaps(TWO) || contains(a, b) {")
 
         switch result.expression {
-        case let .value(txt):
-            XCTAssertEqual(txt, "tolower(ONE) || tocaps(TWO) || contains(a, b)")
+        case let .values(exp):
+            XCTAssertEqual(exp.count, 5)
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_regex_parameters() {
+        let result = tokenizer.read("matchre(\"%2\", \"^\\d+$\") then {")
+
+        switch result.expression {
+        case let .function(name, args):
+            XCTAssertEqual(name, "matchre")
+            XCTAssertEqual(args, ["\"%2\"", "\"^\\d+$\""])
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }

@@ -510,4 +510,17 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["yep one!\n"])
     }
+
+    func test_matchre() throws {
+        LogManager.getLog = { name in PrintLogger(name) }
+        try scenario([
+            "var exp_threshold 10",
+            "if matchre(\"%2\", \"^\\d+$\") then {",
+            "  var exp_threshold %2",
+            "}",
+            "echo %exp_threshold",
+        ],
+        expect: ["25\n"],
+        args: ["exp", "25"])
+    }
 }
