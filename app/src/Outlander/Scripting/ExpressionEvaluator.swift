@@ -63,21 +63,21 @@ class ExpressionEvaluator {
     func buildSymbols() -> [Expression.Symbol: (_ args: [Any]) throws -> Any] {
         [
             .function("contains", arity: 2): { args in
-                let res = String(describing: args[0]).contains(String(describing: args[1]))
+                let res = self.trimQuotes(args[0]).contains(self.trimQuotes(args[1]))
                 return res ? "true" : "false"
             },
             .function("count", arity: 2): { args in
-                let res = String(describing: args[0]).components(separatedBy: String(describing: args[1])).count - 1
+                let res = self.trimQuotes(args[0]).components(separatedBy: self.trimQuotes(args[1])).count - 1
                 return "\(res)"
             },
             .function("countsplit", arity: 2): { args in
-                let res = String(describing: args[0]).components(separatedBy: String(describing: args[1])).count
+                let res = self.trimQuotes(args[0]).components(separatedBy: self.trimQuotes(args[1])).count
                 return "\(res)"
             },
             .function("length", arity: 1): { args in
-                "\(String(describing: args[0]).count)"
+                "\(self.trimQuotes(args[0]).count)"
             },
-            .function("len", arity: 1): { args in "\(String(describing: args[0]).count)" },
+            .function("len", arity: 1): { args in "\(self.trimQuotes(args[0]).count)" },
             .function("matchre", arity: 2): { args in
                 var source = self.trimQuotes(args[0])
                 let pattern = self.trimQuotes(args[1])
@@ -93,9 +93,9 @@ class ExpressionEvaluator {
 
                 return "false"
             },
-            .function("tolower", arity: 1): { args in String(describing: args[0]).lowercased() },
-            .function("toupper", arity: 1): { args in String(describing: args[0]).uppercased() },
-            .function("tocaps", arity: 1): { args in String(describing: args[0]).uppercased() },
+            .function("tolower", arity: 1): { args in self.trimQuotes(args[0]).lowercased() },
+            .function("toupper", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
+            .function("tocaps", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
             .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) },
             .function("replace", arity: 3): { args in
                 let source = self.trimQuotes(args[0])
@@ -133,12 +133,17 @@ public extension AnyExpression {
         symbols: [Symbol: SymbolEvaluator] = [:]
     ) {
         let replaced = AnyExpression.replaceSingleOperators(input)
-        //print("AnyExpression input: \(input)")
-        //print("AnyExpression replaced: \(replaced)")
+//        print("AnyExpression input: \(input)")
+//        print("AnyExpression replaced: \(replaced)")
+        let exp = Expression.parse(replaced, usingCache: false)
         self.init(
-            Expression.parse(replaced),
+            exp,
             impureSymbols: { symbol in
                 switch symbol {
+//                case .infix("="):
+//                    return {args in
+//                        false
+//                    }
                 case let .variable(name):
                     return { _ in name }
                 case let .function(name, arity: arity):

@@ -278,7 +278,7 @@ class ScriptTests: XCTestCase {
         loader.lines["if.cmd"] = [
             "if 1 < 2 then echo one",
             "else if 2 == 2 then echo two",
-            "esel echo three",
+            "else echo three",
         ]
         let script = try Script("if.cmd", loader: loader, gameContext: context)
         script.run([], runAsync: false)
@@ -431,6 +431,44 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["one\n", "two\n", "another\n", "trippple threat\n", "not those things\n", "after threat\n", "after\n", "end\n", "yarg\n"])
     }
+    
+    func test_skipping_big_blocks() throws {
+        try scenario([
+            "if 1 > 2",
+            "{",
+            "  echo one",
+            "  echo two",
+            "  if 1 == 2",
+            "  {",
+            "    echo middle",
+            "  }",
+            "  else if 2 > 1 {",
+            "    echo another",
+            "    if 2 == 2 then",
+            "    {",
+            "      echo trippple threat",
+            "      if 3 < 1 then {",
+            "        echo do some things",
+            "        echo and more things",
+            "      }",
+            "      else { echo not those things }",
+            "    }",
+            "    echo after threat",
+            "  }",
+            "  else echo or else",
+            "  echo after",
+            "}",
+            "else if 3 == 2 {",
+            "  echo three",
+            "}",
+            "else if 3 == 2 {",
+            "  echo six",
+            "}",
+            "echo end",
+            "if 3 == 3 then { echo yarg }",
+        ],
+        expect: ["end\n", "yarg\n"])
+    }
 
     func test_single_line_no_then_with_braces() throws {
         try scenario([
@@ -460,5 +498,16 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["yep one!\n"],
         args: ["one"])
+    }
+
+    func test_else_scenario_3() throws {
+        LogManager.getLog = { name in PrintLogger(name) }
+        try scenario([
+            "if_0 { echo yep one! }",
+            "else {",
+            "  echo else!",
+            "}",
+        ],
+        expect: ["yep one!\n"])
     }
 }

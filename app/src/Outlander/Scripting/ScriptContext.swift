@@ -32,6 +32,14 @@ class ScriptContext {
 
         return lines[currentLineNumber]
     }
+    
+    var nextLine: ScriptLine? {
+        if currentLineNumber < 0 || currentLineNumber + 1 >= lines.count {
+            return nil
+        }
+
+        return lines[currentLineNumber + 1]
+    }
 
     var previousLine: ScriptLine? {
         if currentLineNumber - 1 < 0 {
@@ -87,11 +95,28 @@ class ScriptContext {
                 if currentIf.lineNumber == target.lineNumber {
                     return true
                 }
+                
+                skipSingleLineIfElseElses()
 
-                let (popped, _) = popIfStack()
-                if !popped {
-                    return false
+                if let next = nextLine {
+                    if next.token == nil {
+                        next.token = tokenizer.read(next.originalText)
+                    }
+
+                    guard next.token?.isElseIfToken == false && next.token?.isElseToken == false else {
+                        continue
+                    }
+                    let (popped, _) = popIfStack()
+                    if !popped {
+                        return false
+                    }
+                } else {
+                    let (popped, _) = popIfStack()
+                    if !popped {
+                        return false
+                    }
                 }
+                
             case .elseIf, .elseIfSingle, .elseIfNeedsBrace, .else, .elseSingle, .elseNeedsBrace:
                 if currentIf.lineNumber == target.lineNumber {
                     retreat()
@@ -112,6 +137,23 @@ class ScriptContext {
         }
 
         return false
+    }
+
+    func skipSingleLineIfElseElses() {
+        while currentLineNumber < lines.count {
+            if let next = nextLine {
+                if next.token == nil {
+                    next.token = tokenizer.read(next.originalText)
+                }
+
+                if next.token?.isSingleElseIfOrElseToken == true {
+                    advance()
+                    continue
+                }
+                break
+            }
+            break
+        }
     }
 
     func advanceToEndOfBlock() -> Bool {
@@ -139,7 +181,7 @@ class ScriptContext {
                 continue
             }
 
-            if lineToken.isIfToken || lineToken.isElseToken {
+            if lineToken.isElseIfToken || lineToken.isElseToken {
                 pushCurrentLineToIfStack()
                 if !advanceToNextBlock() {
                     return false

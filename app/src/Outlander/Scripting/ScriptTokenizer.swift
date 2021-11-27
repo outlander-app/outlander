@@ -93,6 +93,15 @@ enum ScriptTokenValue: Hashable {
         default: return false
         }
     }
+    
+    var isElseIfToken: Bool {
+        switch self {
+        case .elseIfSingle: return true
+        case .elseIf: return true
+        case .elseIfNeedsBrace: return true
+        default: return false
+        }
+    }
 
     var isElseToken: Bool {
         switch self {
@@ -107,6 +116,14 @@ enum ScriptTokenValue: Hashable {
         switch self {
         case .ifArgSingle: return true
         case .ifSingle: return true
+        case .elseIfSingle: return true
+        case .elseSingle: return true
+        default: return false
+        }
+    }
+
+    var isSingleElseIfOrElseToken: Bool {
+        switch self {
         case .elseIfSingle: return true
         case .elseSingle: return true
         default: return false
@@ -576,6 +593,16 @@ class IfArgMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let maybeThen = String(context.text.parseWord())
         let rest = String(context.text.parseToEnd())
+
+        let surrounded = maybeThen == "{" && rest.hasSuffix("}")
+
+        if surrounded {
+            let txt = (maybeThen + rest).trimmingCharacters(in: CharacterSet([" ", "{", "}"]))
+            if let token = ScriptTokenizer().read(txt) {
+                context.target.append(.ifArgSingle(number, token))
+                return nil
+            }
+        }
 
         if maybeThen == "{" || (maybeThen == "then" && rest.trimmingCharacters(in: CharacterSet.whitespaces) == "{") {
             context.target.append(.ifArg(number))

@@ -470,7 +470,7 @@ class Script {
 
         switch result {
         case .exit: cancel()
-        case .next: nextAfterRoundtime()
+        case .next: next()
         default: return
         }
     }

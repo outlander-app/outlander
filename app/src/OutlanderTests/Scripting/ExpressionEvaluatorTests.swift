@@ -193,4 +193,9 @@ class ExpressionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateLogic("3 != 1")
         XCTAssertTrue(result)
     }
+
+    func test_str_equal() {
+        let result = evaluator.evaluateStrValue(.value("YES == YES && \"steel mace\" != Empty"))
+        XCTAssertEqual(result, "true")
+    }
 }
