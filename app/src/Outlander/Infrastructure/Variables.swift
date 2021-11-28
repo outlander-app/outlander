@@ -32,7 +32,8 @@ class Clock: IClock {
 
 public typealias VariableValueFunction = () -> String?
 
-enum DynamicValue: Hashable {
+enum DynamicValue: CustomStringConvertible, CustomDebugStringConvertible, Hashable {
+
     static func == (lhs: DynamicValue, rhs: DynamicValue) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
@@ -45,6 +46,14 @@ enum DynamicValue: Hashable {
         case let .value(val): return val
         case let .dynamic(dynamic): return dynamic()
         }
+    }
+
+    var description: String {
+        return "\(String(describing: rawValue))"
+    }
+
+    var debugDescription: String {
+        return "[DynamicValue: \(String(describing: rawValue))]"
     }
 
     func hash(into hasher: inout Hasher) {
@@ -274,46 +283,34 @@ class VariableReplacer {
         guard target.contains(prefix) else {
             return
         }
+        
+        let regexChecks = [
+            "([\(prefix)]([a-zA-Z0-9_\\-.]+))",
+            "([\(prefix)]([a-zA-Z0-9_\\-]+))",
+            "([\(prefix)]([a-zA-Z0-9]+))",
+        ]
 
         func doReplace() {
-            guard let longRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9_\\-.]+))") else {
-                return
-            }
-            let matches = longRegex.allMatches(&target)
-            for match in matches.reversed() {
-                guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
-                    continue
+            for pattern in regexChecks {
+                guard let regex = RegexFactory.get(pattern) else {
+                    return
                 }
+                let matches = regex.allMatches(&target)
+                for match in matches.reversed() {
+                    guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
+                        continue
+                    }
 
-                guard let val = value(key) else {
-                    continue
+                    guard let val = value(key) else {
+                        continue
+                    }
+
+                    guard let range = match.rangeOf(index: 0) else {
+                        continue
+                    }
+
+                    target.replaceSubrange(range, with: val)
                 }
-
-                guard let range = match.rangeOf(index: 0) else {
-                    continue
-                }
-
-                target.replaceSubrange(range, with: val)
-            }
-
-            guard let shortRegex = RegexFactory.get("([\(prefix)]([a-zA-Z0-9]+))") else {
-                return
-            }
-            let matches2 = shortRegex.allMatches(&target)
-            for match in matches2.reversed() {
-                guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
-                    continue
-                }
-
-                guard let val = value(key) else {
-                    continue
-                }
-
-                guard let range = match.rangeOf(index: 0) else {
-                    continue
-                }
-
-                target.replaceSubrange(range, with: val)
             }
         }
 

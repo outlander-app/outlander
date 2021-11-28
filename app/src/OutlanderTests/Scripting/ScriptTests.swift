@@ -13,17 +13,22 @@ class ScriptTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
-    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", variables: [String: String] = [:], expect: [String] = [], args: [String] = []) throws -> InMemoryEvents {
+    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", globalVars: [String: String] = [:], variables: [String: String] = [:], expect: [String] = [], args: [String] = []) throws -> InMemoryEvents {
         let events = InMemoryEvents()
         let context = GameContext(events)
         let loader = InMemoryScriptLoader()
 
-        for v in variables {
+        for v in globalVars {
             context.globalVars[v.key] = v.value
         }
 
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
+        
+        for v in variables {
+            script.context.variables[v.key] = v.value
+        }
+
         script.run(args, runAsync: false)
 
         for (index, message) in expect.enumerated() {
@@ -585,5 +590,32 @@ class ScriptTests: XCTestCase {
             "else echo nope!",
         ],
         expect: ["var is true\n"])
+    }
+
+    func test_variables() throws {
+        try scenario([
+            "var next_weapon Offhand_Weapon",
+            "var temp_weapon Large_Edged",
+            "if $%next_weapon.LearningRate < $%temp_weapon.LearningRate then { echo var is true }",
+            "else echo nope!",
+        ],
+        globalVars: [
+            "Offhand_Weapon.LearningRate": "5",
+            "Large_Edged.LearningRate": "7"
+        ],
+        expect: ["var is true\n"])
+    }
+
+    func test_math_add_time() throws {
+        try scenario([
+            "var hunt_timer 32",
+            "var temp $gametime",
+            "math temp add %hunt_timer",
+            "echo %temp"
+        ],
+        globalVars: [
+            "gametime": "1638082872",
+        ],
+        expect: ["1638082904\n"])
     }
 }

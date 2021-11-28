@@ -519,7 +519,11 @@ class Script {
             sendText("[Starting '\(scriptName)' at \(formattedDate)]")
 
             self.fileName = scriptName
-            gameContext.globalVars["scriptname"] = scriptName
+            context.variables["scriptname"] = scriptName
+            context.variables["scriptfilepath"] =
+                scriptFileName.absoluteString.contains("file:///")
+                    ? scriptFileName.absoluteString[7...]
+                    : scriptFileName.absoluteString
         }
 
         var index = 0
@@ -1071,7 +1075,7 @@ class Script {
         }
 
         context.pushCurrentLineToIfStack()
-
+        
         let execute = funcEvaluator.evaluateBool(expression)
         line.ifResult = execute.result.toBool() == true
 
@@ -1210,15 +1214,17 @@ class Script {
             return .next
         }
 
-        let existingVariable = context.replaceVars(context.variables[variable] ?? "0")
+        let val = context.variables[variable] ?? "0"
+        let existingVariable = context.replaceVars(val)
 
         guard let existingValue = Double(existingVariable) else {
             sendText("unable to convert '\(existingVariable)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .next
         }
 
-        guard let numberValue = Double(number) else {
-            sendText("unable to convert '\(number)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        let replacedNumber = context.replaceVars(number)
+        guard let numberValue = Double(replacedNumber) else {
+            sendText("unable to convert '\(replacedNumber)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .next
         }
 
