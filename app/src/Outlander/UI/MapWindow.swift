@@ -150,11 +150,16 @@ class MapWindow: NSWindowController {
 
         mapView?.setFrameSize(rect.size)
         mapView?.setZone(zone, rect: rect)
+        clearWalkPath()
 
         zoneLabel.stringValue = "Map \(zone.id). \(zone.name), \(zone.rooms.count) rooms"
     }
 
     func setWalkPath(_ path: [String]) {
-        mapView?.setWalkPath(path)
+        mapView?.walkPath = path
+    }
+
+    func clearWalkPath() {
+        mapView?.walkPath = []
     }
 }

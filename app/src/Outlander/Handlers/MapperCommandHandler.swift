@@ -28,6 +28,8 @@ class MapperComandHandler: ICommandHandler {
         case "reload":
             reload(with: context)
         case "reset":
+            // clear map path
+            context.events.post("ol:mapper:setpath", data: [])
             context.resetMap()
         default:
             context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper", mono: true)

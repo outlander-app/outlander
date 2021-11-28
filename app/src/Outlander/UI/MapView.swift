@@ -106,7 +106,11 @@ class MapView: NSView {
     var theme: MapTheme = .dark
 
     var mapZone: MapZone?
-    var walkPath: [String] = []
+    var walkPath: [String] = [] {
+        didSet {
+            needsDisplay = true
+        }
+    }
 
     var mapLevel: Int = 0 {
         didSet {
@@ -134,12 +138,6 @@ class MapView: NSView {
         updateTrackingAreas()
         needsDisplay = true
     }
-
-    func setWalkPath(_ path: [String]) {
-        walkPath = path
-        needsDisplay = true
-    }
-
     var debounceTimer: Timer?
 
     func debouceLookupRoom() {
