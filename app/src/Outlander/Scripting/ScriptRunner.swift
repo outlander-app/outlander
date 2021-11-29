@@ -83,6 +83,7 @@ class ScriptRunner: StreamHandler {
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
             script.run(arguments)
+            updateActiveScriptVars()
         } catch {
             context.events.echoError("An error occurred running script '\(scriptName)'.")
         }
@@ -101,16 +102,21 @@ class ScriptRunner: StreamHandler {
 
         let command = commands[0]
         let scriptName = commands[1]
-//        let param1 = commands.count > 2 ? commands[2] : ""
-//        let param2 = commands.count > 3 ? commands[3] : ""
+        let param1 = commands.count > 2 ? commands[2] : ""
 
         switch command {
-        case "abort":
+        case "abort", "stop":
             abort(scriptName)
         case "pause":
             pause(scriptName)
         case "resume":
             resume(scriptName)
+        case "debug":
+            debug(scriptName, level: param1)
+        case "trace", "stacktrace":
+            stacktrace(scriptName)
+        case "vars":
+            vars(scriptName)
         default:
             context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
         }
@@ -123,6 +129,8 @@ class ScriptRunner: StreamHandler {
             script.cancel()
             remove([script.fileName])
         }
+
+        updateActiveScriptVars()
     }
 
     private func pause(_ scriptName: String) {
@@ -132,6 +140,8 @@ class ScriptRunner: StreamHandler {
             script.pause()
             context.events.post("ol:script:pause", data: script.fileName)
         }
+
+        updateActiveScriptVars()
     }
 
     private func resume(_ scriptName: String) {
@@ -141,6 +151,8 @@ class ScriptRunner: StreamHandler {
             script.resume()
             context.events.post("ol:script:resume", data: script.fileName)
         }
+
+        updateActiveScriptVars()
     }
 
     private func remove(_ scriptNames: [String]) {
@@ -150,8 +162,46 @@ class ScriptRunner: StreamHandler {
             }
 
             scripts.remove(at: idx)
-            
+
             context.events.post("ol:script:remove", data: name)
+            updateActiveScriptVars()
         }
+    }
+
+    private func debug(_ scriptName: String, level: String) {
+        guard let number = Int(level), let scriptLevel = ScriptLogLevel(rawValue: number) else {
+            return
+        }
+
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.setLogLevel(scriptLevel)
+        }
+    }
+
+    private func stacktrace(_ scriptName: String) {
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.printStacktrace()
+        }
+    }
+
+    private func vars(_ scriptName: String) {
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.printVars()
+        }
+    }
+
+    private func updateActiveScriptVars() {
+        let active = scripts.filter { !$0.paused }.map { $0.fileName }
+        let paused = scripts.filter { $0.paused }.map { $0.fileName }
+
+        context.globalVars["scriptlist"] = (active + paused).joined(separator: "|")
+        context.globalVars["activescriptlist"] = active.joined(separator: "|")
+        context.globalVars["pausedscriptlist"] = paused.joined(separator: "|")
     }
 }

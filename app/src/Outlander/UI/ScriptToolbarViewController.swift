@@ -16,14 +16,6 @@ class ScriptToolbarViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        addScript("idle")
-//        addScript("hunt")
-//        addScript("longer/one")
-//        addScript("a long script name")
-//        addScript("hunt 2")
-//        addScript("hunt 3")
-//        addScript("hunt 4")
     }
 
     func setContext(_ context: GameContext) {
@@ -33,7 +25,7 @@ class ScriptToolbarViewController: NSViewController {
             guard let name = result as? String else {
                 return
             }
-            
+
             DispatchQueue.main.async {
                 self.addScript(name)
             }
@@ -43,7 +35,7 @@ class ScriptToolbarViewController: NSViewController {
             guard let name = result as? String else {
                 return
             }
-            
+
             DispatchQueue.main.async {
                 self.pauseScript(name)
             }
@@ -53,7 +45,7 @@ class ScriptToolbarViewController: NSViewController {
             guard let name = result as? String else {
                 return
             }
-            
+
             DispatchQueue.main.async {
                 self.resumeScript(name)
             }
@@ -63,7 +55,7 @@ class ScriptToolbarViewController: NSViewController {
             guard let name = result as? String else {
                 return
             }
-            
+
             DispatchQueue.main.async {
                 self.removeScript(name)
             }
@@ -76,8 +68,8 @@ class ScriptToolbarViewController: NSViewController {
         }
     }
 
-    func resumeScript(_ scriptName:String) {
-        for view in self.view.subviews {
+    func resumeScript(_ scriptName: String) {
+        for view in view.subviews {
             if let button = view as? NSPopUpButton {
                 if button.menu?.title == scriptName || scriptName == "all" {
                     button.menu?.item(at: 0)?.image = NSImage(named: "NSStatusAvailable")
@@ -85,9 +77,9 @@ class ScriptToolbarViewController: NSViewController {
             }
         }
     }
-    
-    func pauseScript(_ scriptName:String) {
-        for view in self.view.subviews {
+
+    func pauseScript(_ scriptName: String) {
+        for view in view.subviews {
             if let button = view as? NSPopUpButton {
                 if button.menu?.title == scriptName || scriptName == "all" {
                     button.menu?.item(at: 0)?.image = NSImage(named: "NSStatusPartiallyAvailable")
@@ -97,30 +89,30 @@ class ScriptToolbarViewController: NSViewController {
     }
 
     func removeAll() {
-        for view in self.view.subviews {
+        for view in view.subviews {
             if let button = view as? NSPopUpButton {
                 button.removeFromSuperview()
             }
         }
     }
 
-    func removeScript(_ scriptName:String) {
-        let startCount = self.view.subviews.count
-        
-        for view in self.view.subviews {
+    func removeScript(_ scriptName: String) {
+        let startCount = view.subviews.count
+
+        for view in view.subviews {
             if let button = view as? NSPopUpButton {
                 if button.menu?.title == scriptName {
                     button.removeFromSuperview()
                 }
             }
         }
-        
-        if self.view.subviews.count != startCount {
+
+        if view.subviews.count != startCount {
             updateButtonFrames()
         }
     }
 
-    @objc func popUpSelectionChanged(_ notification:Notification) {
+    @objc func popUpSelectionChanged(_ notification: Notification) {
         if let menuItem = notification.userInfo?["MenuItem"] as? NSMenuItem {
             if menuItem.tag == -1 {
                 return
@@ -131,26 +123,26 @@ class ScriptToolbarViewController: NSViewController {
                 return
             }
             let scriptName = menuItem.menu!.title
-            self.context?.events.sendCommand(Command2(command: "#script \(action) \(scriptName)", isSystemCommand: true))
+            context?.events.sendCommand(Command2(command: "#script \(action) \(scriptName)", isSystemCommand: true))
         }
     }
 
-    @objc func debugMenuItemSelection(_ target:NSMenuItem) {
+    @objc func debugMenuItemSelection(_ target: NSMenuItem) {
         let level = ScriptLogLevel(rawValue: target.tag) ?? ScriptLogLevel.none
         let scriptName = target.menu!.title
-        self.context?.events.sendCommand(Command2(command: "#script debug \(scriptName) \(level.rawValue)", isSystemCommand: true))
+        context?.events.sendCommand(Command2(command: "#script debug \(scriptName) \(level.rawValue)", isSystemCommand: true))
     }
 
     func updateButtonFrames() {
         var width: CGFloat = 125
         var offset: CGFloat = 0
-        let count = self.view.subviews.count
+        let count = view.subviews.count
         let max = 5
-        for view in self.view.subviews {
+        for view in view.subviews {
             if let button = view as? NSPopUpButton {
                 if let title = button.menu?.title {
                     if count <= max {
-                        width = NSString(string: title).size(withAttributes: [.font: NSFont(name: self.font, size: self.fontSize)!]).width
+                        width = NSString(string: title).size(withAttributes: [.font: NSFont(name: font, size: fontSize)!]).width
                         width += 40
                     } else {
                         width = 75
@@ -163,7 +155,7 @@ class ScriptToolbarViewController: NSViewController {
     }
 
     func addScript(_ scriptName: String) {
-        let buttonFont = NSFont(name: self.font, size: self.fontSize)!
+        let buttonFont = NSFont(name: font, size: fontSize)!
 
         let frame = NSRect(x: 0, y: 0, width: 75, height: 25)
 
@@ -183,7 +175,7 @@ class ScriptToolbarViewController: NSViewController {
         btn.menu?.item(at: 3)?.image = NSImage(named: "NSStatusPartiallyAvailable")
         btn.menu?.addItem(createMenuItem("Abort", textColor: NSColor.black))
         btn.menu?.item(at: 4)?.image = NSImage(named: "NSStatusUnavailable")
-        
+
         btn.menu?.insertItem(NSMenuItem.separator(), at: 5)
 
         let debugMenu = createMenuItem("Debug", textColor: NSColor.black)
@@ -196,7 +188,7 @@ class ScriptToolbarViewController: NSViewController {
         debugMenu.submenu?.addItem(createSubMenuItem("5. Actions", textColor: NSColor.black, tag: ScriptLogLevel.actions))
         btn.menu?.addItem(debugMenu)
         btn.menu?.item(at: 6)?.image = NSImage(named: "NSStatusNone")
-        
+
         btn.menu?.addItem(createMenuItem("Trace", textColor: NSColor.black))
         btn.menu?.item(at: 7)?.image = NSImage(named: "NSStatusNone")
 
@@ -210,14 +202,14 @@ class ScriptToolbarViewController: NSViewController {
         updateButtonFrames()
     }
 
-    func createMenuItem(_ title:String, textColor:NSColor) -> NSMenuItem {
+    func createMenuItem(_ title: String, textColor: NSColor) -> NSMenuItem {
         let item = NSMenuItem()
         let titleString = createTitleString(title, textColor: textColor)
         item.attributedTitle = titleString
         return item
     }
 
-    func createSubMenuItem(_ title:String, textColor:NSColor, tag: ScriptLogLevel) -> NSMenuItem {
+    func createSubMenuItem(_ title: String, textColor: NSColor, tag: ScriptLogLevel) -> NSMenuItem {
         let item = NSMenuItem(title: "", action: #selector(ScriptToolbarViewController.debugMenuItemSelection(_:)), keyEquivalent: "")
         item.target = self
         let titleString = createTitleString(title, textColor: textColor)
@@ -226,16 +218,16 @@ class ScriptToolbarViewController: NSViewController {
         return item
     }
 
-    func createTitleString(_ title:String, textColor:NSColor) -> NSAttributedString {
+    func createTitleString(_ title: String, textColor: NSColor) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: textColor,
-            .font: NSFont(name: self.font, size: self.fontSize)!,
+            .font: NSFont(name: font, size: fontSize)!,
         ]
 
         let style = NSMutableParagraphStyle()
         style.lineBreakMode = NSLineBreakMode.byTruncatingTail
         attributes[.paragraphStyle] = style
-        
+
         return NSAttributedString(string: title, attributes: attributes)
     }
 }

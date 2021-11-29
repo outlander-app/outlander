@@ -383,11 +383,40 @@ class Script {
         gameContext.events.post("ol:script:complete", data: fileName)
     }
 
+    func setLogLevel(_ level: ScriptLogLevel) {
+        debugLevel = level
+        sendText("[Script '\(fileName)' - setting debug level to \(level.rawValue)]")
+    }
+
     func printStacktrace() {
-        sendText("Stack trace of last \(stackTrace.count) commands for \(fileName):", preset: "scriptinfo")
+        sendText("+----- Tracing last \(stackTrace.count) commands for'\(fileName)' ----------+", preset: "scriptinfo")
         for line in stackTrace.all {
             sendText("[\(line.fileName)(\(line.lineNumber)]: \(line.originalText)", preset: "scriptinfo")
         }
+        sendText("+---------------------------------------------------------+", preset: "scriptinfo")
+    }
+
+    func printVars() {
+        let diff = Date().timeIntervalSince(started!)
+        sendText("+----- '\(fileName)' variables (running for \(diff.formatted) -----+", preset: "scriptinfo")
+        for v in varsForDisplay() {
+            sendText("|  \(v)", preset: "scriptinfo")
+        }
+        sendText("+---------------------------------------------------------+", preset: "scriptinfo")
+    }
+
+    func varsForDisplay() -> [String] {
+        var vars: [String] = []
+
+        for key in context.argumentVars.keys {
+            vars.append("\(key): \(context.argumentVars[key] ?? "")")
+        }
+
+        for key in context.variables.keys {
+            vars.append("\(key): \(context.variables[key] ?? "")")
+        }
+
+        return vars.sorted { $0 < $1 }
     }
 
     func stream(_ text: String, _ tokens: [StreamCommand]) {

@@ -124,7 +124,7 @@ class ScriptTests: XCTestCase {
     func test_simple_echo() throws {
         try scenario([
             "mylabel:",
-            "  echo hello"
+            "  echo hello",
         ],
         expect: ["hello\n"])
     }

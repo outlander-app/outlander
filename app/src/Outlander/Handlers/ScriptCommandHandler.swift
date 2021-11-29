@@ -28,7 +28,7 @@ class ScriptRunnerCommandHandler: ICommandHandler {
 class ScriptCommandHandler: ICommandHandler {
     var command = "#script"
 
-    let validCommands = ["abort", "pause", "resume", "stop"]
+    let validCommands = ["abort", "pause", "resume", "stop", "debug", "trace", "stacktrace", "vars"]
 
     func handle(_ command: String, with context: GameContext) {
         let commands = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
