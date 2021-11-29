@@ -530,6 +530,8 @@ class Script {
                 scriptFileName.absoluteString.contains("file:///")
                     ? scriptFileName.absoluteString[7...]
                     : scriptFileName.absoluteString
+
+            gameContext.events.post("ol:script:add", data: self.fileName)
         }
 
         var index = 0

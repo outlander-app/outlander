@@ -130,6 +130,7 @@ class ScriptRunner: StreamHandler {
 
         for script in pausing {
             script.pause()
+            context.events.post("ol:script:pause", data: script.fileName)
         }
     }
 
@@ -138,6 +139,7 @@ class ScriptRunner: StreamHandler {
 
         for script in target {
             script.resume()
+            context.events.post("ol:script:resume", data: script.fileName)
         }
     }
 
@@ -148,6 +150,8 @@ class ScriptRunner: StreamHandler {
             }
 
             scripts.remove(at: idx)
+            
+            context.events.post("ol:script:remove", data: name)
         }
     }
 }

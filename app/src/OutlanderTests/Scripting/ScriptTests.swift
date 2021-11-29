@@ -32,7 +32,7 @@ class ScriptTests: XCTestCase {
         script.run(args, runAsync: false)
 
         for (index, message) in expect.enumerated() {
-            XCTAssertEqual(message, events.history.dropFirst(index + 1).first?.text?.text)
+            XCTAssertEqual(message, events.history.dropFirst(index + 2).first?.text?.text)
         }
         return events
     }
@@ -122,53 +122,32 @@ class ScriptTests: XCTestCase {
     }
 
     func test_simple_echo() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["mylabel:", "  echo hello"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        let target = events.history.dropFirst().first?.text?.text
-
-        XCTAssertEqual(target, "hello\n")
+        try scenario([
+            "mylabel:",
+            "  echo hello"
+        ],
+        expect: ["hello\n"])
     }
 
     func test_if_else_block() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 == 2 then echo one",
             "else echo two",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "two\n")
+        ],
+        expect: ["two\n"])
     }
 
     func test_if_else_block_after() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 2 == 2 then echo one",
             "else echo two",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "one\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+        ],
+        expect: ["one\n", "after\n"])
     }
 
     func test_if_else_multiline_blocks() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 == 2 then {",
             "  echo one",
             "  echo two",
@@ -177,19 +156,12 @@ class ScriptTests: XCTestCase {
             "  echo three",
             "}",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "three\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+        ],
+        expect: ["three\n", "after\n"])
     }
 
     func test_if_else_multiline_blocks_2() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 2 == 2 then {",
             "  echo one",
             "  echo two",
@@ -198,20 +170,12 @@ class ScriptTests: XCTestCase {
             "  echo three",
             "}",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "one\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "two\n")
-        XCTAssertEqual(events.history.dropFirst(3).first?.text?.text, "after\n")
+        ],
+        expect: ["one\n", "two\n", "after\n"])
     }
 
     func test_if_elseif_multiline_blocks_2() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 == 2 then {",
             "  echo one",
             "  echo two",
@@ -223,19 +187,12 @@ class ScriptTests: XCTestCase {
             "  echo four",
             "}",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "three\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+        ],
+        expect: ["three\n", "after\n"])
     }
 
     func test_if_elseif_singleline_blocks_2() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 == 2 then {",
             "  echo one",
             "  echo two",
@@ -245,19 +202,12 @@ class ScriptTests: XCTestCase {
             "  echo four",
             "}",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "three\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+        ],
+        expect: ["three\n", "after\n"])
     }
 
     func test_if_blocks() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 == 2",
             "{",
             "  echo one",
@@ -268,27 +218,17 @@ class ScriptTests: XCTestCase {
             "  echo four",
             "}",
             "echo after",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "four\n")
-        XCTAssertEqual(events.history.dropFirst(2).first?.text?.text, "after\n")
+        ],
+        expect: ["four\n", "after\n"])
     }
 
     func test_if_single_line_blocks() throws {
-        let events = InMemoryEvents()
-        let context = GameContext(events)
-        let loader = InMemoryScriptLoader()
-        loader.lines["if.cmd"] = [
+        try scenario([
             "if 1 < 2 then echo one",
             "else if 2 == 2 then echo two",
             "else echo three",
-        ]
-        let script = try Script("if.cmd", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
-
-        XCTAssertEqual(events.history.dropFirst().first?.text?.text, "one\n")
+        ],
+        expect: ["one\n"])
     }
 
     func test_multi_line_if_else_scenario_1() throws {

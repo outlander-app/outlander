@@ -19,6 +19,7 @@ struct Credentials {
 class GameViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
+    @IBOutlet var scriptBar: OView!
     @IBOutlet var vitalsBar: VitalsBar!
     @IBOutlet var statusBar: OView!
 
@@ -53,6 +54,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     var roundtime: RoundtimeTimer?
     var spelltime: SpellTimer?
+
+    var scriptToolbarController: ScriptToolbarViewController?
     var statusBarController: StatusBarViewController?
 
     var game: String = "DR"
@@ -63,6 +66,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     private var apperanceObserver: NSKeyValueObservation?
 
     override func viewDidLoad() {
+        createScriptToolbarView()
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
         pluginManager.plugins.append(AutoMapperPlugin(context: gameContext))
@@ -671,6 +675,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
             let tags = gameContext.buildRoomTags()
             window.clearAndAppend(tags, highlightMonsters: true)
         }
+    }
+
+    func createScriptToolbarView() {
+        let storyboard = NSStoryboard(name: "ScriptToolbar", bundle: Bundle.main)
+        scriptToolbarController = storyboard.instantiateInitialController() as? ScriptToolbarViewController
+        scriptBar.subviews.append(scriptToolbarController!.view)
+
+        scriptToolbarController?.setContext(gameContext)
     }
 
     func createStatusBarView() {

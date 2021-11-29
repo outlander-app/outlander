@@ -51,6 +51,10 @@
 		7B956B442750557000346019 /* ScriptLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B422750557000346019 /* ScriptLoader.swift */; };
 		7B956B4627517B0700346019 /* VitalsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B4527517B0700346019 /* VitalsBar.swift */; };
 		7B956B4727517B0700346019 /* VitalsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B4527517B0700346019 /* VitalsBar.swift */; };
+		7B956B492754534600346019 /* ScriptToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B482754534600346019 /* ScriptToolbarViewController.swift */; };
+		7B956B4A2754534600346019 /* ScriptToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B482754534600346019 /* ScriptToolbarViewController.swift */; };
+		7B956B4C2754536100346019 /* ScriptToolbar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B956B4B2754536000346019 /* ScriptToolbar.storyboard */; };
+		7B956B4D2754536100346019 /* ScriptToolbar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B956B4B2754536000346019 /* ScriptToolbar.storyboard */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -282,6 +286,8 @@
 		7B956B40274F8AD900346019 /* CommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandProcessorTests.swift; sourceTree = "<group>"; };
 		7B956B422750557000346019 /* ScriptLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptLoader.swift; sourceTree = "<group>"; };
 		7B956B4527517B0700346019 /* VitalsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsBar.swift; sourceTree = "<group>"; };
+		7B956B482754534600346019 /* ScriptToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptToolbarViewController.swift; sourceTree = "<group>"; };
+		7B956B4B2754536000346019 /* ScriptToolbar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ScriptToolbar.storyboard; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
@@ -572,6 +578,8 @@
 				F9B254042478996D0097C07F /* ProfileWindow.swift */,
 				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
+				7B956B482754534600346019 /* ScriptToolbarViewController.swift */,
+				7B956B4B2754536000346019 /* ScriptToolbar.storyboard */,
 				7B228B002728C1670052610B /* StatusBar.storyboard */,
 				7B228AFB2728BBB30052610B /* StatusBarViewController.swift */,
 				7B956B4527517B0700346019 /* VitalsBar.swift */,
@@ -842,6 +850,7 @@
 				7B228B012728C1670052610B /* StatusBar.storyboard in Resources */,
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
+				7B956B4C2754536100346019 /* ScriptToolbar.storyboard in Resources */,
 				7BD0FD4725C7559900ED030E /* MapWindow.xib in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
 				F9B254082478996D0097C07F /* ProfileWindow.xib in Resources */,
@@ -856,6 +865,7 @@
 				F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */,
 				F9B25403247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
+				7B956B4D2754536100346019 /* ScriptToolbar.storyboard in Resources */,
 				F9B254092478996D0097C07F /* ProfileWindow.xib in Resources */,
 				7BD0FD4825C7559900ED030E /* MapWindow.xib in Resources */,
 				F969A0F823A45B0200408CE5 /* MainMenu.xib in Resources */,
@@ -886,6 +896,7 @@
 				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
 				7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */,
+				7B956B492754534600346019 /* ScriptToolbarViewController.swift in Sources */,
 				7BAC840D25E9CB7200A6C7D5 /* Keychain.swift in Sources */,
 				F9BCF31A22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,
 				7B956B432750557000346019 /* ScriptLoader.swift in Sources */,
@@ -1064,6 +1075,7 @@
 				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
+				7B956B4A2754534600346019 /* ScriptToolbarViewController.swift in Sources */,
 				7BDF5C79271A53E10020A3B0 /* MacroLoader.swift in Sources */,
 				7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,

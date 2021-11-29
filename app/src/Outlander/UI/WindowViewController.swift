@@ -331,20 +331,20 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         var attributes: [NSAttributedString.Key: Any] = [
-            NSAttributedString.Key.foregroundColor: foregroundColorToUse,
-            NSAttributedString.Key.font: font,
+            .foregroundColor: foregroundColorToUse,
+            .font: font,
         ]
 
         if let bgColor = backgroundHex {
-            attributes[NSAttributedString.Key.backgroundColor] = NSColor(hex: bgColor) ?? nil
+            attributes[.backgroundColor] = NSColor(hex: bgColor) ?? nil
         }
 
         if let href = tag.href {
-            attributes[NSAttributedString.Key.link] = href
+            attributes[.link] = href
         }
 
         if let command = tag.command {
-            attributes[NSAttributedString.Key.link] = "command:\(command)"
+            attributes[.link] = "command:\(command)"
         }
 
         return NSMutableAttributedString(string: text, attributes: attributes)
