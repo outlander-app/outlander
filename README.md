@@ -1,18 +1,18 @@
 
 # Commands
 
-- [ ] #alias
-- [ ] #goto
+- [x] #alias
+- [x] #goto
 - [ ] #highlight
-- [ ] #log
-- [ ] #mapper
-- [ ] #parse
+- [x] #log
+- [x] #mapper
+- [x] #parse
 - [ ] #preset
-- [ ] #script
-- [ ] #send
+- [x] #script
+- [x] #send
 - [ ] #gag
-- [ ] #window (partially complete)
-- [ ] /tracker (first plugin?)
+- [x] #window (partially complete)
+- [x] /tracker (first plugin?)
 - [x] #beep
 - [x] #bug
 - [x] #class
@@ -23,17 +23,17 @@
 
 # Features
 
-- [ ] Login sheet
-- [ ] Profile selector sheet
-- [ ] Dynamic global variables (time / date)
-- [ ] Global variable + alias replacement from command prompt
-- [ ] Macros
-- [ ] Map Window
+- [x] Login sheet
+- [x] Profile selector sheet
+- [x] Dynamic global variables (time / date)
+- [x] Global variable + alias replacement from command prompt
+- [x] Macros
+- [x] Map Window
 - [ ] Preferences Window
-- [ ] Window context menus + commands (display name, clear, toggle border, toggle timestamp, close)
-- [ ] Window timestamps
-- [ ] Direction pinwheel
-- [ ] Hands, RT, status (bleeding, poisoned, etc.) display
-- [ ] Script Bar
-- [ ] Script Engine
+- [x] Window context menus + commands (display name, clear, toggle border, toggle timestamp, close)
+- [x] Window timestamps
+- [x] Direction pinwheel
+- [x] Hands, RT, status (bleeding, poisoned, etc.) display
+- [x] Script Bar
+- [x] Script Engine
 - [ ] Drag / re-arrange windows (or some other way to configure window settings)
