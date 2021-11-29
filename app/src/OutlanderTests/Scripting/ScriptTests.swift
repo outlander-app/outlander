@@ -13,7 +13,7 @@ class ScriptTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
-    @discardableResult func scenario(_ lines: [String], fileName: String = "if.cmd", globalVars: [String: String] = [:], variables: [String: String] = [:], expect: [String] = [], args: [String] = []) throws -> InMemoryEvents {
+    @discardableResult func scenario(_ lines: [String], fileName: String = "if", globalVars: [String: String] = [:], variables: [String: String] = [:], expect: [String] = [], args: [String] = []) throws -> InMemoryEvents {
         let events = InMemoryEvents()
         let context = GameContext(events)
         let loader = InMemoryScriptLoader()
@@ -40,8 +40,8 @@ class ScriptTests: XCTestCase {
     func testCanReadBasicScript() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["mylabel:", "  echo hello"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["mylabel:", "  echo hello"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run([], runAsync: false)
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -50,9 +50,9 @@ class ScriptTests: XCTestCase {
     func testCanIncludeOtherScripts() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["include util.cmd", "mylabel:", "  echo hello"]
-        loader.lines["util.cmd"] = ["something:", "  echo something"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["include util", "mylabel:", "  echo hello"]
+        loader.lines["util"] = ["something:", "  echo something"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run([], runAsync: false)
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 2)
@@ -61,8 +61,8 @@ class ScriptTests: XCTestCase {
     func testCannotIncludeItself() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["include forage.cmd", "mylabel:", "  echo hello"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["include forage", "mylabel:", "  echo hello"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run([], runAsync: false)
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -71,9 +71,9 @@ class ScriptTests: XCTestCase {
     func testReplacesExistingLabelsWhenIncludingOtherScripts() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["include util.cmd", "alabel:", "  echo hello"]
-        loader.lines["util.cmd"] = ["alabel:", "  echo something"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["include util", "alabel:", "  echo hello"]
+        loader.lines["util"] = ["alabel:", "  echo something"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run([], runAsync: false)
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -82,16 +82,16 @@ class ScriptTests: XCTestCase {
     func testStuff() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["mylabel:", "  echo hello"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["mylabel:", "  echo hello"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run([], runAsync: false)
     }
 
     func test_argument_shift() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
-        loader.lines["forage.cmd"] = ["mylabel:", "  echo hello"]
-        let script = try Script("forage.cmd", loader: loader, gameContext: context)
+        loader.lines["forage"] = ["mylabel:", "  echo hello"]
+        let script = try Script("forage", loader: loader, gameContext: context)
         script.run(["one", "two"], runAsync: false)
         XCTAssertEqual(script.context.args, ["one", "two"])
         XCTAssertEqual(
