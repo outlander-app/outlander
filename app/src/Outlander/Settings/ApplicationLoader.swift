@@ -53,13 +53,32 @@ class ApplicationLoader {
             return
         }
         context.applicationSettings.update(settings)
+        context.globalVars["profilename"] = settings.defaultProfile
+
+        let folders = [
+            paths.config,
+            paths.profiles,
+            paths.layout,
+            paths.maps,
+            paths.logs,
+            paths.sounds,
+            paths.scripts,
+        ]
+
+        for folder in folders {
+            do {
+                try files.ensure(folder: folder)
+            } catch {
+                context.events.echoError("Error creating to create folder \(folder.path)")
+            }
+        }
     }
 
     func save(_ paths: ApplicationPaths, context: GameContext) {
         let appSettings = context.applicationSettings.toDto()
 
         let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
         guard let data = try? encoder.encode(appSettings) else {
             return
@@ -91,13 +110,13 @@ class ProfileConfigLoader {
         let profile = context.applicationSettings.profile
 
         let account = RegexFactory.get("Account: (.+)")?.firstMatch(&content)
-        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let game = RegexFactory.get("Game: (.+)")?.firstMatch(&content)
-        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let character = RegexFactory.get("Character: (.+)")?.firstMatch(&content)
-        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? ""
+        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
 
         let logging = RegexFactory.get("Logging: (.+)")?.firstMatch(&content)
         profile.logging = logging?.valueAt(index: 1)?.toBool() ?? false
@@ -106,7 +125,7 @@ class ProfileConfigLoader {
         profile.rawLogging = rawlogging?.valueAt(index: 1)?.toBool() ?? false
 
         let layout = RegexFactory.get("Layout: (.+)")?.firstMatch(&content)
-        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines) ?? "default.cfg"
+        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "default.cfg"
     }
 }
 
@@ -139,10 +158,10 @@ class ProfileLoader {
         AliasLoader(files).save(context.applicationSettings, aliases: context.aliases)
         ClassLoader(files).save(context.applicationSettings, classes: context.classes)
         GagLoader(files).save(context.applicationSettings, gags: context.gags)
-        HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights)
+        HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights.all())
         MacroLoader(files).save(context.applicationSettings, macros: context.macros)
         PresetLoader(files).save(context.applicationSettings, presets: context.presets)
-        SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes)
+        SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes.all())
         TriggerLoader(files).save(context.applicationSettings, triggers: context.triggers)
         VariablesLoader(files).save(context.applicationSettings, variables: context.globalVars)
     }

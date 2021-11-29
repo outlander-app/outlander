@@ -86,12 +86,21 @@ class MatchResult {
         result.numberOfRanges
     }
 
-    func rangeOf(index: Int) -> NSRange? {
+    func rangeOfNS(index: Int) -> NSRange? {
         guard index < result.numberOfRanges else {
             return nil
         }
 
         return result.range(at: index)
+    }
+
+    func rangeOf(index: Int) -> Range<String.Index>? {
+        guard index < result.numberOfRanges else {
+            return nil
+        }
+
+        let nsRange = result.range(at: index)
+        return Range(nsRange, in: input)
     }
 
     func valueAt(index: Int) -> String? {
@@ -109,5 +118,13 @@ class MatchResult {
 
     func values() -> [String] {
         (0 ... result.numberOfRanges).compactMap { valueAt(index: $0) }
+    }
+
+    func replace(target: String, prefix: String = "$") -> String {
+        var result = target
+        for (index, value) in values().enumerated() {
+            result = result.replacingOccurrences(of: "\(prefix)\(index)", with: value)
+        }
+        return result
     }
 }

@@ -19,15 +19,25 @@ class MapperComandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
+        let command = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        guard command.count > 0 else {
+            return
+        }
 
-        log.info("mapper commands \(commands)")
+        switch command {
+        case "reload":
+            reload(with: context)
+        case "reset":
+            // clear map path
+            context.events.post("ol:mapper:setpath", data: [])
+            context.resetMap()
+        default:
+            context.events.echoText("[AutoMapper]: unknown command '\(command)'", preset: "automapper", mono: true)
+        }
+    }
 
-//        guard commands.count > 0 else {
-//            return
-//        }
-
-        context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper")
+    func reload(with context: GameContext) {
+        context.events.echoText("[AutoMapper]: loading all maps...", preset: "automapper", mono: true)
 
         DispatchQueue.global(qos: .utility).async {
             let startTime = Date()
@@ -57,7 +67,8 @@ class MapperComandHandler: ICommandHandler {
             }
 
             let timeElapsed = Date() - startTime
-            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.stringTime)", preset: "automapper")
+            context.events.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper", mono: true)
+            context.resetMap()
         }
     }
 }

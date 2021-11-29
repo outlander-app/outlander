@@ -14,7 +14,7 @@ protocol IMatch {
     var lineNumber: Int { get }
     var groups: [String] { get }
 
-    func isMatch(_ text: String) -> Bool
+    func isMatch(_ text: String, _ context: ScriptContext) -> Bool
 }
 
 class Matchwait {
@@ -38,9 +38,9 @@ class MatchMessage: IMatch {
         groups = []
     }
 
-    func isMatch(_ text: String) -> Bool {
-        // TODO: resolve variables in value
-        text.range(of: value) != nil
+    func isMatch(_ text: String, _ context: ScriptContext) -> Bool {
+        let val = context.replaceVars(value)
+        return text.range(of: val) != nil
     }
 }
 
@@ -57,9 +57,8 @@ class MatchreMessage: IMatch {
         groups = []
     }
 
-    func isMatch(_ text: String) -> Bool {
-        // TODO: resolve variables in value
-        let val = value
+    func isMatch(_ text: String, _ context: ScriptContext) -> Bool {
+        let val = context.replaceVars(value)
         var txt = text
         let regex = RegexFactory.get(val)
         guard let match = regex?.firstMatch(&txt) else {

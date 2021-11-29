@@ -15,8 +15,8 @@ protocol Events {
 }
 
 extension Events {
-    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono _: Bool = false) {
-        let data = TextData(text: "\(text)\n", preset: preset, color: color)
+    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
+        let data = TextData(text: "\(text)\n", preset: preset, color: color, mono: mono)
         post("ol:text", data: data)
     }
 
@@ -29,7 +29,7 @@ extension Events {
     }
 
     func variableChanged(_ key: String, value: String) {
-        print("var changed: \(key): \(value)")
+        // print("var changed: \(key): \(value)")
         post("ol:variable:changed", data: [key: value])
     }
 }
@@ -39,6 +39,14 @@ struct TextData {
     var preset: String?
     var color: String?
     var mono: Bool = false
+}
+
+class NulloEvents: Events {
+    func post(_: String, data _: Any?) {}
+
+    func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
+
+    func unregister(_: AnyObject) {}
 }
 
 class SwiftEventBusEvents: Events {

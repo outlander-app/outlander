@@ -28,8 +28,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_: Notification) {
-        NSApp.appearance = NSAppearance(named: .darkAqua)
-        LogManager.getLog = { name in PrintLogger(name) }
+        LogManager.getLog = { name in
+            PrintLogger(name)
+        }
 
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 

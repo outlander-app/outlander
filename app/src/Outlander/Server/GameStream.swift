@@ -60,6 +60,14 @@ extension StreamToken {
         }
     }
 
+    func hasChildTag(_ tagName: String) -> Bool {
+        switch self {
+        case .text: return false
+        case let .tag(_, _, children):
+            return children.first(where: { s in s.name() == tagName }) != nil
+        }
+    }
+
     func monsters(_ ignore: Regex? = nil) -> [StreamToken] {
         switch self {
         case .text: return []
@@ -269,20 +277,32 @@ class TagMode: IReaderMode {
     }
 }
 
-protocol StringView: Collection {
+protocol StringView: Collection, Equatable {
     static func string(_ elements: [Element]) -> String
+    static func isSpace(_ element: Element) -> Bool
 
     static var newline: Element { get }
     static var carriageReturn: Element { get }
     static var space: Element { get }
+    static var tab: Element { get }
     static var quote: Element { get }
     static var tick: Element { get }
     static var backslash: Element { get }
     static var forwardslash: Element { get }
     static var equal: Element { get }
     static var rightBracket: Element { get }
+    static var leftBracket: Element { get }
+    static var rightBrace: Element { get }
+    static var leftBrace: Element { get }
     static var greaterThan: Element { get }
     static var lessThan: Element { get }
+    static var leftParen: Element { get }
+    static var rightParen: Element { get }
+
+    static var exclamation: Element { get }
+    static var and: Element { get }
+    static var comma: Element { get }
+    static var pipe: Element { get }
 }
 
 extension Substring: StringView {
@@ -290,34 +310,49 @@ extension Substring: StringView {
         String(elements)
     }
 
+    static func isSpace(_ element: Character) -> Bool {
+        element == space || element == tab
+    }
+
     static let newline: Character = "\n"
     static let carriageReturn: Character = "\r"
     static let space: Character = " "
+    static let tab: Character = "\t"
     static let quote: Character = "\""
     static let tick: Character = "'"
     static let backslash: Character = "\\"
     static let forwardslash: Character = "/"
     static let equal: Character = "="
     static let rightBracket: Character = "]"
+    static let leftBracket: Character = "["
+    static let rightBrace: Character = "}"
+    static let leftBrace: Character = "{"
     static let greaterThan: Character = ">"
     static let lessThan: Character = "<"
 
     static let leftParen: Character = "("
     static let rightParen: Character = ")"
+    static let exclamation: Character = "!"
     static let and: Character = "&"
     static let pipe: Character = "|"
     static let comma: Character = ","
 }
 
 extension StringView where SubSequence == Self, Element: Equatable {
+    var logicalCharacter: Bool {
+        first == Self.pipe || first == Self.equal || first == Self.and
+    }
+
     var second: Element? {
-        let idx = self.index(after: self.startIndex)
+        let idx = index(after: startIndex)
         return self[idx]
     }
 
-    mutating func consume(expecting char: Element) {
-        guard let f = first, f == char else { return }
+    @discardableResult
+    mutating func consume(expecting char: Element) -> Bool {
+        guard let f = first, f == char else { return false }
         removeFirst()
+        return true
     }
 
     mutating func consume(while cond: (Element) -> Bool) {
@@ -327,11 +362,11 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func consumeWhitespace() {
-        consume(while: { $0 == Self.space || $0 == Self.newline })
+        consume(while: { Self.isSpace($0) || $0 == Self.newline })
     }
 
     mutating func consumeSpaces() {
-        consume(while: { $0 == Self.space })
+        consume(while: { Self.isSpace($0) })
     }
 
     mutating func parseToEnd() -> [Element] {
@@ -339,7 +374,29 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func parseWord() -> [Element] {
-        parseMany(while: { $0 != Self.space })
+        parseMany(while: { !Self.isSpace($0) })
+    }
+
+    mutating func parseWords(while cond: (String) -> Bool) -> (String, String) {
+        var results: [String] = []
+
+        var word: String = ""
+
+        while let _ = first {
+            consumeSpaces()
+            word = Self.string(parseWord())
+            guard cond(word) else {
+                break
+            }
+            results.append(word)
+        }
+
+        return (results.joined(separator: " "), word)
+    }
+
+    mutating func parseInt() -> Int? {
+        let maybeNumber = parseMany(while: { !Self.isSpace($0) })
+        return Int(Self.string(maybeNumber))
     }
 
     mutating func parseMany(while cond: (Element) -> Bool) -> [Element] {
@@ -357,6 +414,105 @@ extension StringView where SubSequence == Self, Element: Equatable {
             result.append(next)
         }
         return result
+    }
+
+    mutating func parseToComponents() -> (String, Bool) {
+        var result: [String] = []
+        var current: [Element] = []
+        var lastWord: String = ""
+        while let c = first {
+            if c == Self.leftBrace {
+                break
+            }
+
+            if Self.isSpace(c) {
+                lastWord = Self.string(current)
+                if lastWord == "then" {
+                    current = []
+                    break
+                }
+                result.append(lastWord)
+                current = []
+            } else {
+                current.append(c)
+            }
+            removeFirst()
+        }
+
+        if current.count > 0 {
+            lastWord = Self.string(current)
+            if lastWord != "then" {
+                result.append(Self.string(current))
+            }
+        }
+
+        return (result.joined(separator: " "), lastWord == "then")
+    }
+
+    mutating func parseExpression() -> ScriptExpression? {
+        var results: [ScriptExpression] = []
+        while let _ = first {
+            consumeSpaces()
+            let identifier = parseMany(while: { $0 != Self.leftParen && !Self.isSpace($0) && $0 != Self.exclamation })
+
+            if identifier.count == 0 {
+                if consume(expecting: Self.leftParen) {
+                    results.append(.value("("))
+                }
+                if consume(expecting: Self.exclamation) {
+                    results.append(.value("!"))
+                }
+                continue
+            }
+
+            if first == Self.leftParen {
+                // parse args
+                consume(expecting: Self.leftParen)
+                let args = parseFunctionArguments()
+                consume(expecting: Self.rightParen)
+                results.append(.function(Self.string(identifier), args))
+            } else {
+                // spaces should be consumed on next pass...
+                results.append(.value(Self.string(identifier)))
+            }
+        }
+
+        let combined = ScriptExpression.combine(expressions: results)
+
+        if combined.count == 1 {
+            return combined[0]
+        }
+
+        return combined.count > 0 ? .values(combined) : nil
+    }
+
+    mutating func parseFunctionArguments() -> [String] {
+        var results: [String] = []
+        var current: [Element] = []
+
+        while let c = first, c != Self.rightParen {
+            switch c {
+            case Self.comma:
+                results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+                current = []
+                _ = popFirst()
+            case Self.quote:
+                current.append(c)
+                _ = popFirst()
+                current = current + parseMany({ $0.parseQuotedCharacter(dropslash: false) }, while: { $0 != Self.quote })
+                current.append(Self.quote)
+                _ = popFirst()
+            default:
+                current.append(c)
+                _ = popFirst()
+            }
+        }
+
+        if current.count > 0 {
+            results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+        }
+
+        return results
     }
 
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {
@@ -385,23 +541,26 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseAttributes(_ tagName: String? = nil) -> [Attribute] {
         var attributes: [Attribute] = []
 
-        consume(while: { $0 == Self.space })
+        consumeSpaces()
 
         while let f = first, f != Self.greaterThan, f != Self.forwardslash {
             if let attr = parseAttribute(tagName) {
                 attributes.append(attr)
             }
-            consume(while: { $0 == Self.space })
+            consumeSpaces()
         }
 
         return attributes
     }
 
-    mutating func parseQuotedCharacter() -> Element? {
+    mutating func parseQuotedCharacter(dropslash: Bool = true) -> Element? {
         guard let c = popFirst() else { return nil }
 
         switch c {
         case Self.backslash:
+            guard dropslash else {
+                return c
+            }
             return popFirst()
         case Self.carriageReturn:
             return popFirst()
@@ -424,7 +583,7 @@ struct TextTag {
     var preset: String?
     var playerCommand: Bool = false
 
-    func canCombineWith(_ tag: TextTag) -> Bool {
+    func canCombine(with tag: TextTag) -> Bool {
         guard window == tag.window else { return false }
         guard isPrompt == tag.isPrompt else { return false }
         guard mono == tag.mono else { return false }
@@ -440,7 +599,7 @@ struct TextTag {
     }
 
     func combine(_ tag: TextTag) -> [TextTag] {
-        guard canCombineWith(tag) else { return [self, tag] }
+        guard canCombine(with: tag) else { return [self, tag] }
 
         return [TextTag(
             text: text + tag.text,
@@ -460,9 +619,7 @@ struct TextTag {
     }
 
     static func combine(tags: [TextTag]) -> [TextTag] {
-        let start: [TextTag] = []
-
-        let combined = tags.reduce(start) { list, next in
+        let combined = tags.reduce([TextTag]()) { list, next in
 
             if let last = list.last {
                 return list.dropLast() + last.combine(next)
@@ -478,7 +635,7 @@ struct TextTag {
 enum StreamCommand: CustomStringConvertible {
     case text([TextTag])
     case clearStream(String)
-    case createWindow(name: String, title: String, ifClosed: String)
+    case createWindow(name: String, title: String, closedTarget: String?)
     case vitals(name: String, value: Int)
     case launchUrl(String)
     case spell(String)
@@ -488,15 +645,53 @@ enum StreamCommand: CustomStringConvertible {
     case hands(String, String)
     case character(String, String)
     case indicator(String, Bool)
+    case prompt(String)
 
     var description: String {
         switch self {
         case .text:
             return "text"
-        default:
-            return "other stream command"
+        case .clearStream:
+            return "clearStream"
+        case .createWindow:
+            return "createWindow"
+        case .vitals:
+            return "vitals"
+        case .launchUrl:
+            return "launchUrl"
+        case .spell:
+            return "spell"
+        case .roundtime:
+            return "roundtime"
+        case .room:
+            return "room"
+        case .compass:
+            return "compass"
+        case .hands:
+            return "hands"
+        case .character:
+            return "character"
+        case .indicator:
+            return "indicator"
+        case .prompt:
+            return "prompt"
         }
     }
+}
+
+protocol IHost {
+    func send(text: String)
+    func get(variable: String) -> String
+    func set(variable: String, value: String)
+}
+
+protocol OPlugin {
+    var name: String { get }
+    func initialize(host: IHost)
+    func variableChanged(variable: String, value: String)
+    func parse(input: String) -> String
+    func parse(xml: String) -> String
+    func parse(text: String) -> String
 }
 
 class GameStream {
@@ -516,6 +711,8 @@ class GameStream {
     private var streamCommands: (StreamCommand) -> Void
 
     private var tags: [TextTag] = []
+
+    private var handlers: [StreamHandler] = []
 
     private let ignoredEot = [
         "app",
@@ -579,10 +776,26 @@ class GameStream {
         self.context = context
         self.streamCommands = streamCommands
         tokenizer = GameStreamTokenizer()
+
+        handlers.append(TriggerHandler())
     }
 
-    public func resetSetup(_ isSetup: Bool = false) {
+    func addHandler(_ handler: StreamHandler) {
+        handlers.append(handler)
+    }
+
+    public func reset(_ isSetup: Bool = false) {
         self.isSetup = isSetup
+
+        inStream = false
+        lastStreamId = ""
+        ignoreNextEot = false
+
+        mono = false
+        bold = false
+
+        lastToken = nil
+        tags = []
     }
 
     public func stream(_ data: Data) {
@@ -590,6 +803,9 @@ class GameStream {
     }
 
     public func stream(_ data: String) {
+        let rawTag = TextTag.tagFor(data, window: "raw", mono: true)
+        streamCommands(.text([rawTag]))
+
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
 
         for token in tokens {
@@ -603,10 +819,23 @@ class GameStream {
                 tags.append(tag)
 
                 if !isSetup || isPrompt {
-                    streamCommands(.text(TextTag.combine(tags: tags)))
+                    let combined = TextTag.combine(tags: tags)
+                    streamCommands(.text(combined))
                     tags.removeAll()
+
+                    // TODO: should this be combined text?
+                    // TODO: verify if combined, can mess up trigger regex with leading ^
+                    for t in combined {
+                        sendToHandlers(text: t.text)
+                    }
                 }
             }
+        }
+    }
+
+    public func sendToHandlers(text: String) {
+        for handler in handlers {
+            handler.stream(text, with: context)
         }
     }
 
@@ -615,11 +844,14 @@ class GameStream {
 
         switch tagName {
         case "prompt":
-            context.globalVars["prompt"] = token.value()?.replacingOccurrences(of: "&gt;", with: ">") ?? ""
+            let promptValue = token.value()?.replacingOccurrences(of: "&gt;", with: ">") ?? ""
+
+            context.globalVars["prompt"] = promptValue
             context.globalVars["gametime"] = token.attr("time") ?? ""
 
             let today = Date().timeIntervalSince1970
             context.globalVars["gametimeupdate"] = "\(today)"
+            streamCommands(.prompt(promptValue))
 
         case "roundtime":
             if let num = Int(token.attr("value") ?? "") {
@@ -684,7 +916,8 @@ class GameStream {
             }
 
             if !isSetup, let win = id {
-                streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", ifClosed: token.attr("ifClosed") ?? ""))
+                let closedTarget = token.attr("ifClosed")?.count == 0 ? nil : token.attr("ifClosed")
+                streamCommands(.createWindow(name: win, title: token.attr("title") ?? "", closedTarget: closedTarget))
             }
 
         case "component":
@@ -800,7 +1033,7 @@ class GameStream {
             guard let tokenName = lastToken?.name(), !self.ignoredEot.contains(tokenName) else {
                 break
             }
-            guard !inStream else { break }
+            guard !inStream || lastStreamId == "combat" else { break }
             guard tokenName != "prompt" else { break }
 
             guard !ignoreNextEot else {
@@ -808,7 +1041,7 @@ class GameStream {
                 break
             }
 
-            tag = TextTag(text: "\n", window: "")
+            tag = TextTag(text: "\n", window: lastStreamId == "combat" ? "combat" : "")
 
         case "prompt":
             tag = createTag(token)

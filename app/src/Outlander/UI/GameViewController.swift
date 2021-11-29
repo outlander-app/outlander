@@ -19,6 +19,7 @@ struct Credentials {
 class GameViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
+    @IBOutlet var scriptBar: OView!
     @IBOutlet var vitalsBar: VitalsBar!
     @IBOutlet var statusBar: OView!
 
@@ -27,7 +28,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var mapWindow: MapWindow?
     var scriptRunner: ScriptRunner?
 
+    var pluginManager = PluginManager()
+
     var log = LogManager.getLog(String(describing: GameViewController.self))
+    var gameLog: ILogger?
 
     var applicationSettings: ApplicationSettings? {
         didSet {
@@ -51,10 +55,40 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     var roundtime: RoundtimeTimer?
     var spelltime: SpellTimer?
+
+    var scriptToolbarController: ScriptToolbarViewController?
     var statusBarController: StatusBarViewController?
 
+    var game: String = "DR"
+    var character: String = ""
+
+    var shouldUpdateRoom: Bool = false
+
+    private var apperanceObserver: NSKeyValueObservation?
+
+    func setGameLogger() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = gameContext.applicationSettings.variableDateFormat
+        let date = formatter.string(from: Date())
+        let logFileName = "\(gameContext.applicationSettings.profile.name)-\(gameContext.applicationSettings.profile.game)-\(date).txt"
+        gameLog = FileLogger(logFileName, root: gameContext.applicationSettings.paths.logs, files: fileSystem!)
+    }
+
     override func viewDidLoad() {
+        fileSystem = LocalFileSystem(gameContext.applicationSettings)
+        setGameLogger()
+
+        createScriptToolbarView()
         createStatusBarView()
+        pluginManager.plugins.append(ExpPlugin())
+        pluginManager.plugins.append(AutoMapperPlugin(context: gameContext))
+
+//        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
+
+//        apperanceObserver = view.observe(\.effectiveAppearance) { [weak self] _, change in
+//            print("Appearance changed \(change.oldValue?.name) \(change.newValue?.name)")
+//            print("Main app: \(self?.view.isDarkMode), \(self?.view.effectiveAppearance.name)")
+//        }
 
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
@@ -81,23 +115,26 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        fileSystem = LocalFileSystem(gameContext.applicationSettings)
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
-        commandProcessor = CommandProcesssor(fileSystem!)
-        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, settings: gameContext.applicationSettings))
+        commandProcessor = CommandProcesssor(fileSystem!, pluginManager: pluginManager)
+        scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, context: gameContext))
 
         authServer = AuthenticationServer()
 
         gameServer = GameServer { [weak self] state in
             switch state {
+            case .connected:
+                self?.log.info("connected to game server")
+                self?.updateWindowTitle()
+                self?.vitalsBar.enabled = true
             case let .data(_, str):
-                self?.log.rawStream(str)
-                self?.gameStream?.stream(str)
+                self?.handleRawStream(data: str, streamData: true)
             case .closed:
-                self?.gameStream?.resetSetup()
-                self?.logText("\nDisconnected from game server\n\n")
-            default:
-                self?.log.info("\(state)")
+                self?.gameStream?.reset()
+                self?.logText("\n\(self?.timestamp() ?? "")disconnected from game server\n", mono: true)
+                self?.updateWindowTitle()
+                self?.vitalsBar.enabled = false
+                self?.saveSettings()
             }
         }
 
@@ -113,7 +150,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
-                    self?.scriptRunner?.stream(tag.text, [])
+//                    if tag.window != "raw" {
+//                        self?.scriptRunner?.stream(tag.text, [])
+//                    }
                 }
 
             case let .vitals(name, value):
@@ -143,20 +182,23 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 }
 
             case let .clearStream(name):
-                self?.clearWindow(name)
+                DispatchQueue.main.sync {
+                    self?.clearWindow(name)
+                }
 
-            case let .createWindow(name, _, _):
-                self?.maybeCreateWindow(name)
+            case let .createWindow(name, title, closedTarget):
+                DispatchQueue.main.sync {
+                    self?.maybeCreateWindow(name, title: title, closedTarget: closedTarget)
+                }
 
             case .room:
-                self?.updateRoom()
+                self?.shouldUpdateRoom = true
 
             case let .character(game, character):
-                DispatchQueue.main.async {
-                    if let win = self?.view.window {
-                        win.title = "\(game): \(character) - Outlander 2"
-                    }
-                }
+                self?.game = game
+                self?.character = character
+                self?.updateWindowTitle()
+
             case let .spell(spell):
                 DispatchQueue.main.async {
                     self?.spelltime?.set(spell)
@@ -167,10 +209,20 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     self?.statusBarController?.avaialbleDirections = self?.gameContext.availableExits() ?? []
                 }
 
+            case .prompt:
+                DispatchQueue.main.async {
+                    if self?.shouldUpdateRoom == true {
+                        self?.shouldUpdateRoom = false
+                        self?.updateRoom()
+                    }
+                }
+
             default:
                 self?.log.warn("Unhandled command \(command)")
             }
         })
+
+        gameStream?.addHandler(scriptRunner!)
 
         commandInput.executeCommand = { command in
             self.commandProcessor!.process(command, with: self.gameContext)
@@ -188,7 +240,16 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
-            self.logText("\(command.command)\n", playerCommand: !command.isSystemCommand)
+            let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
+            let mono = command.fileName.count > 0 ? true : false
+
+            var preset = command.fileName.count > 0 ? "scriptinput" : nil
+
+            if command.preset.count > 0 {
+                preset = command.preset
+            }
+
+            self.logText(text, preset: preset, mono: mono, playerCommand: !command.isSystemCommand)
             self.gameServer?.sendCommand(command.command)
         }
 
@@ -196,6 +257,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
             guard let command = result as? Command2 else {
                 return
             }
+
+//            print("processing command \(command.command)")
 
             self.commandProcessor?.process(command, with: self.gameContext)
         }
@@ -226,11 +289,56 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
+        let indicators = ["bleeding", "stunned", "poisoned", "webbed", "burning"]
+
+        gameContext.events.handle(self, channel: "ol:variable:changed") { result in
+            if let dict = result as? [String: String] {
+                for (key, value) in dict {
+                    self.pluginManager.variableChanged(variable: key, value: value)
+
+                    if key == "zoneid" || key == "roomid" {
+                        self.shouldUpdateRoom = true
+                    }
+
+                    if indicators.contains(key) {
+                        self.statusBarController?.setIndicator(name: key, enabled: value == "1")
+                    }
+                }
+            }
+        }
+
+        gameContext.events.handle(self, channel: "ol:game:parse") { result in
+            guard let data = result as? String else {
+                return
+            }
+
+            self.handleRawStream(data: data, streamData: false)
+        }
+
+        gameContext.events.handle(self, channel: "ol:mapper:setpath") { result in
+            if let path = result as? [String] {
+                DispatchQueue.main.async {
+                    self.mapWindow?.setWalkPath(path)
+                }
+            }
+        }
+
+        vitalsBar.presetFor = { name in
+            guard self.vitalsBar.enabled == true else {
+                return (self.vitalsBar.disabledForegroundColor, self.vitalsBar.disabledBackgroundColor)
+            }
+
+            let preset = self.gameContext.presets[name]
+            let fore = preset?.color.asColor() ?? NSColor.white
+            let back = preset?.backgroundColor?.asColor() ?? NSColor.blue
+            return (fore, back)
+        }
+
         loginWindow = LoginWindow()
         profileWindow = ProfileWindow()
         profileWindow?.context = gameContext
         mapWindow = MapWindow()
-        mapWindow?.context = gameContext
+        mapWindow?.initialize(context: gameContext)
 
         loadSettings()
 
@@ -258,11 +366,46 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //        print("un-registering macros")
     }
 
+    func updateWindowTitle() {
+        DispatchQueue.main.async {
+            if let win = self.view.window {
+                let version = "2"
+                let gameInfo = self.game.count > 0 ? "\(self.game)" : ""
+                let charInfo = self.character.count > 0 ? "\(self.character) - " : ""
+                let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
+
+                win.title = "\(gameInfo): \(charInfo)Outlander \(version)\(connection)"
+            }
+        }
+    }
+
+    func handleRawStream(data: String, streamData: Bool = false) {
+        var result = data
+
+        if data.hasPrefix("<") {
+            result = pluginManager.parse(xml: data)
+        } else {
+            result = pluginManager.parse(text: result)
+        }
+
+        if gameContext.applicationSettings.profile.rawLogging {
+            gameLog?.rawStream(result)
+        }
+
+        if streamData {
+            gameStream?.stream(result)
+        } else {
+            gameStream?.sendToHandlers(text: result)
+        }
+    }
+
     func showLogin() {
-        loginWindow?.loadPassword()
+        loginWindow?.account = gameContext.applicationSettings.profile.account
+        loginWindow?.character = gameContext.applicationSettings.profile.character
+        loginWindow?.game = gameContext.applicationSettings.profile.game
+        loginWindow?.setControlValues()
         view.window?.beginSheet(loginWindow!.window!, completionHandler: { result in
             guard result == .OK else {
-                self.loginWindow!.clearPassword()
                 return
             }
             self.credentials = Credentials(
@@ -295,35 +438,40 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showMapWindow() {
-        gameContext.mapZone = gameContext.maps["2a"]
+        // DispatchQueue.main.async {
         mapWindow?.showWindow(self)
         mapWindow?.setSelectedZone()
+        // }
     }
 
     func loadSettings() {
         ProfileLoader(fileSystem!).load(gameContext)
+        setGameLogger()
         reloadWindows(gameContext.applicationSettings.profile.layout) {
             self.reloadTheme()
             self.printSettingsLocations()
-            self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: true, playerCommand: false)
+            self.logText("Loaded profile \(self.gameContext.applicationSettings.profile.name)\n", mono: false, playerCommand: false)
 
             self.loginWindow?.account = self.gameContext.applicationSettings.profile.account
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-            self.gameContext.events.sendCommand(Command2(command: "#mapper reload", isSystemCommand: true))
+            self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
+            self.updateWindowTitle()
         }
     }
 
     func printSettingsLocations() {
-        logText("Config: \(gameContext.applicationSettings.paths.config.path)\n", mono: true, playerCommand: false)
-        logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: true, playerCommand: false)
-        logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: true, playerCommand: false)
-        logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: true, playerCommand: false)
-        logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: true, playerCommand: false)
+        logText("Config: \(gameContext.applicationSettings.paths.config.path)\n", mono: false, playerCommand: false)
+        logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: false, playerCommand: false)
+        logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: false, playerCommand: false)
+        logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: false, playerCommand: false)
+        logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: false, playerCommand: false)
     }
 
-    func reloadTheme() {}
+    func reloadTheme() {
+        vitalsBar.updateColors()
+    }
 
     public func command(_ command: String) {
         if command == "layout:LoadDefault" {
@@ -370,19 +518,21 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if command == "layout:SaveAs" {
-            let openPanel = NSOpenPanel()
-            openPanel.message = "Choose your Outlander layout file"
-            openPanel.prompt = "Choose"
-            openPanel.allowedFileTypes = ["cfg"]
-            openPanel.allowsMultipleSelection = false
-            openPanel.allowsOtherFileTypes = false
-            openPanel.canChooseFiles = true
-            openPanel.canChooseDirectories = false
+            let savePanel = NSSavePanel()
+            savePanel.message = "Choose your Outlander layout file"
+            savePanel.prompt = "Choose"
+            savePanel.allowedFileTypes = ["cfg"]
+            savePanel.allowsOtherFileTypes = false
+            savePanel.nameFieldStringValue = gameContext.applicationSettings.profile.layout
+            savePanel.directoryURL = gameContext.applicationSettings.paths.layout
 
-            if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
+            if let url = savePanel.runModal() == .OK ? savePanel.url : nil {
                 gameContext.applicationSettings.profile.layout = url.lastPathComponent
 
                 let layout = buildWindowsLayout()
+                for l in layout.windows {
+                    print("\(l.name) \(l.order)")
+                }
                 windowLayoutLoader?.save(
                     applicationSettings!,
                     file: url.lastPathComponent,
@@ -400,25 +550,41 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if command == "profile:save" {
-            ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
-            logText("settings saved\n", mono: true, playerCommand: false)
-
+            saveSettings()
             return
         }
 
         log.warn("Unhandled event command \(command)")
     }
 
+    func timestamp() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+
+        return "[\(formatter.string(from: Date()))]: "
+    }
+
+    func saveSettings() {
+        ApplicationLoader(fileSystem!).save(gameContext.applicationSettings.paths, context: gameContext)
+        ProfileLoader(fileSystem!).save(gameContext)
+        logText("\(timestamp())settings saved\n", mono: true, playerCommand: false)
+    }
+
     func buildWindowsLayout() -> WindowLayout {
         let mainWindow = view.window!
 
         let primary = WindowData()
+        primary.name = "primary"
         primary.x = Double(mainWindow.frame.maxX)
         primary.y = Double(mainWindow.frame.maxY)
         primary.height = Double(mainWindow.frame.height)
         primary.width = Double(mainWindow.frame.width)
 
-        let windows = [WindowData()]
+        var windows = gameWindows.map {
+            $0.value.toWindowData(order: gameWindowContainer.index(of: $0.key))
+        }
+
+        windows.sort { $0.order > $1.order }
 
         return WindowLayout(primary: primary, windows: windows)
     }
@@ -432,7 +598,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
             clearWindow(window)
         }
 
-        if action == "add" {}
+        if action == "add" {
+            maybeCreateWindow(window, title: nil)
+            showWindow(window)
+        }
 
         if action == "reload" {
             reloadWindows(gameContext.applicationSettings.profile.layout) {
@@ -440,7 +609,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        if action == "hide" {
+        if action == "hide" || action == "remove" {
             guard !window.isEmpty else {
                 return
             }
@@ -481,7 +650,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let host = gameContext.applicationSettings.authenticationServerAddress
         let port = gameContext.applicationSettings.authenticationServerPort
 
-        logText("Connecting to authentication server at \(host):\(port)\n")
+        logText("Connecting to authentication server at \(host):\(port)\n", mono: true)
 
         authServer?.authenticate(
             AuthInfo(
@@ -499,11 +668,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //                    self?.logText("Connected to authentication server\n")
 
                 case let .success(connection):
-                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n")
+                    self?.logText("Connecting to game server at \(connection.host):\(connection.port)\n", mono: true)
                     self?.gameServer?.connect(host: connection.host, port: connection.port, key: connection.key)
 
                 case .closed:
-                    self?.logText("Disconnected from authentication server\n")
+                    self?.logText("Disconnected from authentication server\n", mono: true)
 
                 case let .error(error):
                     self?.logError("\(error)\n")
@@ -520,6 +689,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
             let tags = gameContext.buildRoomTags()
             window.clearAndAppend(tags, highlightMonsters: true)
         }
+    }
+
+    func createScriptToolbarView() {
+        let storyboard = NSStoryboard(name: "ScriptToolbar", bundle: Bundle.main)
+        scriptToolbarController = storyboard.instantiateInitialController() as? ScriptToolbarViewController
+        scriptBar.subviews.append(scriptToolbarController!.view)
+
+        scriptToolbarController?.setContext(gameContext)
     }
 
     func createStatusBarView() {
@@ -568,11 +745,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func windowFor(name: String) -> String? {
-        if let window = gameWindows[name] {
-            if window.visible { return name }
+        if let window = gameWindows[name.lowercased()] {
+            if window.visible { return name.lowercased() }
 
             if let closedTarget = window.closedTarget, closedTarget.count > 0 {
-                return windowFor(name: closedTarget)
+                return windowFor(name: closedTarget.lowercased())
             }
 
             return nil
@@ -581,18 +758,21 @@ class GameViewController: NSViewController, NSWindowDelegate {
         return "main"
     }
 
-    func maybeCreateWindow(_ name: String) {
+    func maybeCreateWindow(_ name: String, title: String?, closedTarget: String? = nil) {
         guard gameWindows[name] == nil else {
+            gameWindows[name]?.windowTitle = title
             return
         }
 
         let settings = WindowData()
         settings.name = name
+        settings.title = title
+        settings.closedTarget = closedTarget
         settings.visible = 0
         settings.x = 0
         settings.y = 0
         settings.height = 200
-        settings.width = 200
+        settings.width = 300
 
         addWindow(settings)
     }
@@ -604,13 +784,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func addWindow(_ settings: WindowData) {
-        DispatchQueue.main.async {
-            if let window = self.createWindow(settings) {
-                if window.visible {
-                    self.gameWindowContainer.addSubview(window.view)
-                }
-                self.gameWindows[settings.name] = window
+        if let window = createWindow(settings) {
+            if window.visible {
+                gameWindowContainer.addSubview(window.view)
             }
+            gameWindows[settings.name] = window
         }
     }
 
@@ -623,33 +801,38 @@ class GameViewController: NSViewController, NSWindowDelegate {
         controller?.name = settings.name
         controller?.visible = settings.visible == 1
         controller?.closedTarget = settings.closedTarget
+        controller?.fontName = settings.fontName
+        controller?.fontSize = settings.fontSize
+        controller?.monoFontName = settings.monoFontName
+        controller?.monoFontSize = settings.monoFontSize
         controller?.foregroundColor = settings.fontColor
         controller?.backgroundColor = settings.backgroundColor
         controller?.borderColor = settings.borderColor
-
-        controller?.view.setFrameSize(NSSize(width: settings.width, height: settings.height))
-        controller?.view.setFrameOrigin(NSPoint(x: settings.x, y: settings.y))
+        controller?.displayBorder = settings.showBorder == 1
+        controller?.displayTimestamp = settings.timestamp == 1
+        controller?.bufferSize = settings.bufferSize
+        controller?.bufferClearSize = settings.bufferClearSize
+        controller?.location = NSRect(x: settings.x, y: settings.y, width: settings.width, height: settings.height)
 
         return controller
     }
 
     func showWindow(_ name: String) {
-        DispatchQueue.main.async {
-            if let window = self.gameWindows[name] {
-                if !window.view.isDescendant(of: self.gameWindowContainer) {
-                    self.gameWindowContainer.addSubview(window.view)
-                }
-
-                window.visible = true
-                // TODO: bring window to front
+        if let window = gameWindows[name] {
+            if !window.view.isDescendant(of: gameWindowContainer) {
+                gameWindowContainer.addSubview(window.view)
             }
+
+            window.visible = true
+            // TODO: bring window to front
+
+            logText("\(name) window opened\n")
         }
     }
 
     func hideWindow(_ name: String, withNotification: Bool = true) {
         if let win = gameWindows[name] {
-            win.view.removeFromSuperview()
-            win.visible = false
+            win.hide()
         }
 
         if withNotification {
@@ -667,6 +850,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func logTag(_ tag: TextTag) {
         if let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] {
+            let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
+            if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
+                gameLog?.stream(tag.text)
+            }
             window.append(tag)
         }
     }

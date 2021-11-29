@@ -19,7 +19,7 @@ class GameStreamTests: XCTestCase {
         }
         stream.monsterCountIgnoreList = monsterIgnoreList
 
-        stream.resetSetup(true)
+        stream.reset(true)
 
         for line in lines {
             stream.stream(line)
@@ -40,9 +40,9 @@ class GameStreamTests: XCTestCase {
             "<prompt time=\"1576081991\">&gt;</prompt>\r\n",
         ])
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 4)
 
-        switch commands[0] {
+        switch commands[3] {
         case let .text(tags):
             XCTAssertEqual(tags.count, 2)
         default:
@@ -56,9 +56,9 @@ class GameStreamTests: XCTestCase {
             "<component id='room objs'>You also see a stick.</component>\r\n",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands[0] {
+        switch commands[1] {
         case .room:
             XCTAssertEqual(context.globalVars["roomobjs"], "You also see a stick.")
         default:
@@ -72,9 +72,9 @@ class GameStreamTests: XCTestCase {
             "<component id='room exits'>Obvious paths: <d>north</d>, <d>south</d>.<compass></compass></component>\r\n",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands[0] {
+        switch commands[1] {
         case .room:
             XCTAssertEqual(context.globalVars["roomexits"], "Obvious paths: north, south.")
         default:
@@ -88,9 +88,9 @@ class GameStreamTests: XCTestCase {
             "<component id='room desc'>The stone road, once the pinnacle of craftsmanship, is cracked and worn.</component>\r\n",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands[0] {
+        switch commands[1] {
         case .room:
             XCTAssertEqual(context.globalVars["roomdesc"], "The stone road, once the pinnacle of craftsmanship, is cracked and worn.")
         default:
@@ -104,9 +104,9 @@ class GameStreamTests: XCTestCase {
             "<compass><dir value=\"sw\"/><dir value=\"nw\"/></compass>",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands.first {
+        switch commands[1] {
         case .compass:
             XCTAssertEqual(context.globalVars["north"], "0")
             XCTAssertEqual(context.globalVars["south"], "0")
@@ -129,9 +129,9 @@ class GameStreamTests: XCTestCase {
             "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and some junk.</component>\n",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands[0] {
+        switch commands[1] {
         case .room:
             XCTAssertEqual(context.globalVars["roomobjs"], "You also see a juvenile wyvern, a juvenile wyvern, a rocky path, a juvenile wyvern and some junk.")
         default:
@@ -148,9 +148,9 @@ class GameStreamTests: XCTestCase {
             "<component id='room objs'>You also see <pushBold/>a juvenile wyvern<popBold/>, <pushBold/>a juvenile wyvern<popBold/>, a rocky path, <pushBold/>a juvenile wyvern<popBold/> and <pushBold/>a great horned owl<popBold/>.</component>\n",
         ], context: context, monsterIgnoreList: "great horned owl")
 
-        XCTAssertEqual(commands.count, 1)
+        XCTAssertEqual(commands.count, 2)
 
-        switch commands[0] {
+        switch commands[1] {
         case .room:
             XCTAssertEqual(context.globalVars["roomobjs"], "You also see a juvenile wyvern, a juvenile wyvern, a rocky path, a juvenile wyvern and a great horned owl.")
         default:
@@ -167,10 +167,29 @@ class GameStreamTests: XCTestCase {
             "<left exist=\"21668354\" noun=\"scissors\">serrated scissors</left><right exist=\"22336507\" noun=\"belt\">survival belt</right>",
         ], context: context)
 
-        XCTAssertEqual(commands.count, 2)
+        XCTAssertEqual(commands.count, 3)
 
         XCTAssertEqual(context.globalVars["lefthandid"], "21668354")
         XCTAssertEqual(context.globalVars["righthandid"], "22336507")
+    }
+
+    func test_combat_stream() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<pushStream id=\"combat\" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>\n",
+            "[You're bruised, winded, nimbly balanced and in very strong position.]\n",
+            "[Roundtime 4 sec.]\n",
+            "<popStream id=\"combat\" /><prompt time=\"1637690082\">R&gt;</prompt>\n",
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 6)
+
+        switch commands[5] {
+        case let .text(tags):
+            XCTAssertEqual(tags[2].text, "\n[You're bruised, winded, nimbly balanced and in very strong position.]\n[Roundtime 4 sec.]\n")
+        default:
+            XCTFail()
+        }
     }
 }
 
@@ -391,5 +410,39 @@ class GameStreamTokenizerTests: XCTestCase {
         let token = tokens[0]
         XCTAssertEqual(token.name(), "component")
         XCTAssertEqual(token.children().count, 13)
+    }
+
+    func test_experience() {
+        let tokens = reader.read("<component id='exp First Aid'><preset id='whisper'>       First Aid:  565 87% cogitating   </preset></component>")
+
+        XCTAssertEqual(tokens.count, 1)
+
+        let token = tokens[0]
+        XCTAssertEqual(token.children().count, 1)
+    }
+
+    func test_combat() {
+        let tokens = reader.read("""
+        <pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+        [You're bruised, winded, nimbly balanced and in very strong position.]
+        [Roundtime 4 sec.]
+        <popStream id="combat" />
+        """)
+
+        XCTAssertEqual(tokens.count, 7)
+
+        let token = tokens[5]
+        XCTAssertEqual(token.value(), "\n[You're bruised, winded, nimbly balanced and in very strong position.]\n[Roundtime 4 sec.]\n")
+    }
+
+    func test_combat_measure() {
+        measure {
+            _ = reader.read("""
+            <pushStream id="combat" />&lt; Moving like a striking snake, you slice a damascened haralun sterak axe with a dragonwood haft bound in Imperial weave at a juvenile wyvern.  A juvenile wyvern attempts to dodge, mainly avoiding the blow.  <pushBold/>The axe lands a heavy strike to the wyvern's right arm.<popBold/>
+            [You're bruised, winded, nimbly balanced and in very strong position.]
+            [Roundtime 4 sec.]
+            <popStream id="combat" />
+            """)
+        }
     }
 }

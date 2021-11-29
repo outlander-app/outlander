@@ -18,10 +18,12 @@ protocol ICommandHandler {
 struct Command2 {
     var command: String
     var isSystemCommand: Bool = false
+    var fileName: String = ""
+    var preset: String = ""
 }
 
 class CommandProcesssor {
-    var handlers: [ICommandHandler] = [
+    private var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
         ClassCommandHandler(),
@@ -29,16 +31,23 @@ class CommandProcesssor {
         BeepCommandHandler(),
         BugCommandHandler(),
         GagCommandHandler(),
+        GotoComandHandler(),
         ParseCommandHandler(),
         SendCommandHandler(),
         ScriptCommandHandler(),
         ScriptRunnerCommandHandler(),
+        AliasCommandHandler(),
     ]
 
-    init(_ files: FileSystem) {
+    private var pluginManager: OPlugin
+
+    init(_ files: FileSystem, pluginManager: OPlugin) {
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
         handlers.append(MapperComandHandler(files))
+        handlers.append(LogCommandHandler(files))
+
+        self.pluginManager = pluginManager
     }
 
     func insertHandler(_ handler: ICommandHandler) {
@@ -55,14 +64,66 @@ class CommandProcesssor {
             context.globalVars["lastcommand"] = command.command
         }
 
-        for handler in handlers {
-            if handler.canHandle(command.command) {
-                handler.handle(command.command, with: context)
-                return
-            }
+        var maybeCommand = VariableReplacer().replace(command.command, globalVars: context.globalVars)
+        maybeCommand = processAliases(maybeCommand, with: context)
+
+        maybeCommand = pluginManager.parse(input: maybeCommand)
+
+        guard maybeCommand.count > 0 else {
+            return
         }
 
-        context.events.post("ol:gamecommand", data: command)
+        let cmds = maybeCommand.commandsSeperated()
+
+        for cmd in cmds {
+            var handled = false
+            for handler in handlers {
+                if handler.canHandle(cmd) {
+                    handler.handle(cmd, with: context)
+                    handled = true
+                    break
+                }
+            }
+            if !handled {
+                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
+            }
+        }
+    }
+
+    func processAliases(_ input: String, with context: GameContext) -> String {
+        guard context.aliases.count > 0 else {
+            return input
+        }
+
+        var arguments: [String] = []
+        var maybeAlias = input
+
+        if let idx = input.index(of: " ") {
+            maybeAlias = String(input[..<idx])
+            let offset = input.index(idx, offsetBy: 1)
+            let allArgs = String(input[offset...])
+            arguments.append(allArgs)
+            arguments = arguments + allArgs.argumentsSeperated()
+        }
+
+        guard let match = context.aliases.first(where: { $0.pattern == maybeAlias }) else {
+            return input
+        }
+
+        var res = match.replace
+
+        for (index, arg) in arguments.enumerated() {
+            res = res.replacingOccurrences(of: "$\(index)", with: arg)
+        }
+
+        // replace any left over args in replacement pattern with empty strings
+        guard let regex = RegexFactory.get("\\$\\d+") else {
+            return res
+        }
+
+        res = regex.replace(res, with: "")
+
+        return res
     }
 }
 

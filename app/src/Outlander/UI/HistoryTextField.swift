@@ -48,7 +48,7 @@ public class HistoryTextField: NSTextField {
     }
 
     override public func performKeyEquivalent(with event: NSEvent) -> Bool {
-        let s = event.charactersIgnoringModifiers!
+        let s = event.charactersIgnoringModifiers ?? ""
         let s1 = s.unicodeScalars
         let s2 = s1[s1.startIndex].value
         let s3 = Int(s2)
@@ -106,7 +106,7 @@ public class HistoryTextField: NSTextField {
         stringValue = value
 
         DispatchQueue.main.async {
-            self.currentEditor()!.moveToEndOfDocument(nil)
+            self.currentEditor()?.moveToEndOfDocument(nil)
         }
     }
 
@@ -131,7 +131,7 @@ public class HistoryTextField: NSTextField {
         stringValue = value
 
         DispatchQueue.main.async {
-            self.currentEditor()!.moveToEndOfDocument(nil)
+            self.currentEditor()?.moveToEndOfDocument(nil)
         }
     }
 }

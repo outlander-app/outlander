@@ -8,6 +8,37 @@
 
 import Foundation
 
+public class Queue<T> {
+    private var queue: [T] = []
+
+    public func queue(_ item: T) {
+        queue.append(item)
+    }
+
+    public func dequeue() -> T? {
+        guard queue.count > 0 else {
+            return nil
+        }
+        return queue.remove(at: 0)
+    }
+
+    public func peek() -> T? {
+        queue.first
+    }
+
+    public func hasItems() -> Bool {
+        queue.count > 0
+    }
+
+    public var count: Int {
+        queue.count
+    }
+
+    public var all: [T] {
+        queue
+    }
+}
+
 public class Stack<T> {
     private var stack: [T] = []
     private var maxCapacity = 0
@@ -24,8 +55,11 @@ public class Stack<T> {
         }
     }
 
-    public func pop() -> T {
-        stack.remove(at: stack.count - 1)
+    @discardableResult public func pop() -> T? {
+        guard stack.count > 0 else {
+            return nil
+        }
+        return stack.remove(at: stack.count - 1)
     }
 
     public func peek() -> T? {
@@ -38,6 +72,10 @@ public class Stack<T> {
 
     public var count: Int {
         stack.count
+    }
+
+    public var all: [T] {
+        stack
     }
 
     var last: T? {
@@ -54,6 +92,14 @@ public class Stack<T> {
 
     public func clear() {
         stack.removeAll(keepingCapacity: true)
+    }
+
+    public func copy() -> Stack<T> {
+        let copy = Stack<T>()
+        for item in stack {
+            copy.push(item)
+        }
+        return copy
     }
 }
 
@@ -80,7 +126,7 @@ class MemoizeHash<T: Hashable, U> {
 }
 
 enum RegexFactory {
-    static let created = MemoizeHash<String, Regex>({ pattern in try? Regex(pattern, options: [.caseInsensitive]) })
+    static let created = MemoizeHash<String, Regex>({ pattern in try? Regex(pattern, options: [.caseInsensitive, .anchorsMatchLines]) })
     static let get: (String) -> (Regex?) = { (pattern: String) in
         created[pattern]
     }

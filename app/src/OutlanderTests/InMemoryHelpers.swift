@@ -24,6 +24,10 @@ class InMemoryFileSystem: FileSystem {
         contentToLoad?.data(using: .utf8)
     }
 
+    func append(_ data: String, to _: URL) throws {
+        savedContent = data
+    }
+
     func write(_ content: String, to _: URL) {
         savedContent = content
     }
@@ -32,19 +36,58 @@ class InMemoryFileSystem: FileSystem {
         savedContent = String(decoding: data, as: UTF8.self)
     }
 
+    func foldersIn(directory _: URL) -> [URL] {
+        []
+    }
+
     func access(_ handler: @escaping () -> Void) {
         handler()
+    }
+
+    func ensure(folder _: URL) throws {}
+}
+
+struct TestEvent {
+    var channel: String
+    var data: Any?
+    var text: TextData? {
+        data as? TextData
     }
 }
 
 class InMemoryEvents: Events {
-    public var lastData: Any?
+    public var history: [TestEvent] = []
+    public var lastData: Any? {
+        history.last?.data
+    }
 
-    func post(_: String, data: Any?) {
-        lastData = data
+    func post(_ channel: String, data: Any?) {
+        history.append(TestEvent(channel: channel, data: data))
     }
 
     func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
 
     func unregister(_: AnyObject) {}
+}
+
+class InMemoryPluginManager: OPlugin {
+    var name: String {
+        "Test Plugin Manager"
+    }
+
+    func initialize(host _: IHost) {}
+
+    func variableChanged(variable _: String, value _: String) {}
+
+    func parse(input: String) -> String {
+        input
+    }
+
+    func parse(xml: String) -> String {
+        xml
+    }
+
+    func parse(text: String) -> String {
+        text
+    }
 }

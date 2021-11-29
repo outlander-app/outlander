@@ -9,17 +9,19 @@
 import Cocoa
 
 class MapWindow: NSWindowController {
-    @IBOutlet var mapView: MapView!
+    @IBOutlet var mapView: MapView?
     @IBOutlet var scrollView: NSScrollView!
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
 
+    var loaded: Bool = false
+
     var context: GameContext?
 
     var mapLevel: Int = 0 {
         didSet {
-            mapView.mapLevel = mapLevel
+            mapView?.mapLevel = mapLevel
             mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
         }
     }
@@ -36,18 +38,39 @@ class MapWindow: NSWindowController {
         "MapWindow"
     }
 
+    func initialize(context: GameContext) {
+        self.context = context
+        self.context?.events.handle(self, channel: "ol:variable:changed") { result in
+            if let dict = result as? [String: String] {
+                for (key, value) in dict {
+                    if key == "zoneid" {
+                        guard self.loaded else { return }
+                        guard let newMap = context.mapZone else { return }
+                        self.renderMap(newMap)
+                    }
+
+                    if key == "roomid" {
+                        self.mapView?.currentRoomId = value
+                    }
+                }
+            }
+        }
+    }
+
     override func windowDidLoad() {
         super.windowDidLoad()
+
+        loaded = true
 
         roomLabel.stringValue = ""
         zoneLabel.stringValue = ""
 
-        mapView.nodeTravelTo = { node in
+        mapView?.nodeTravelTo = { node in
             self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "scriptinput")
-            self.context?.events.sendCommand(Command2(command: "#goto \(node.id)"))
+            self.context?.events.sendCommand(Command2(command: "#goto \(node.id)", isSystemCommand: true))
         }
 
-        mapView.nodeClicked = { node in
+        mapView?.nodeClicked = { node in
             if node.isTransfer() {
                 self.context?.events.echoText("switch map \(node.id) (\(node.name))", preset: "scriptinput")
 //                self.context?.globalVars["roomid"] = node.id
@@ -60,11 +83,10 @@ class MapWindow: NSWindowController {
                 }
 
                 self.context?.mapZone = newMap
-                self.renderMap(newMap)
             }
         }
 
-        mapView.nodeHover = { node in
+        mapView?.nodeHover = { node in
             guard let room = node else {
                 self.roomLabel.stringValue = ""
                 return
@@ -112,8 +134,7 @@ class MapWindow: NSWindowController {
     }
 
     func setSelectedZone() {
-        guard let context = context else { return }
-        guard let zone = context.mapZone else { return }
+        guard let zone = context?.mapZone else { return }
 
         renderMap(zone)
     }
@@ -124,12 +145,21 @@ class MapWindow: NSWindowController {
         if let context = context {
             let room = context.findCurrentRoom(zone)
             mapLevel = room?.position.z ?? 0
-            mapView.currentRoomId = room?.id ?? ""
+            mapView?.currentRoomId = room?.id ?? ""
         }
 
-        mapView.setFrameSize(rect.size)
-        mapView.setZone(zone, rect: rect)
+        mapView?.setFrameSize(rect.size)
+        mapView?.setZone(zone, rect: rect)
+        clearWalkPath()
 
         zoneLabel.stringValue = "Map \(zone.id). \(zone.name), \(zone.rooms.count) rooms"
+    }
+
+    func setWalkPath(_ path: [String]) {
+        mapView?.walkPath = path
+    }
+
+    func clearWalkPath() {
+        mapView?.walkPath = []
     }
 }

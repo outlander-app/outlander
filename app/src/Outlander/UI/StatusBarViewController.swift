@@ -83,9 +83,9 @@ class StatusBarViewController: NSViewController {
         DispatchQueue.main.async { [self] in
             switch name {
             case "bleeding":
-                self.bleeding = enabled
+                bleeding = enabled
             case "stunned":
-                self.stunned = enabled
+                stunned = enabled
             case "poisoned":
                 poisoned = enabled
             case "webbed":
@@ -112,6 +112,6 @@ class StatusBarViewController: NSViewController {
         bleedingIcon?.toggle = bleeding
         poisonedIcon?.toggle = poisoned
         stunnedIcon?.toggle = stunned
-        webbedIcon?.toggle = stunned
+        webbedIcon?.toggle = webbed
     }
 }

@@ -9,6 +9,8 @@
 import Cocoa
 
 class OView: NSView {
+    var name: String = ""
+
     @IBInspectable var backgroundColor: NSColor? {
         didSet {
             needsDisplay = true
@@ -30,7 +32,13 @@ class OView: NSView {
 
     @IBInspectable dynamic var cornerRadius: CGFloat = 0 {
         didSet {
-            self.needsDisplay = true
+            needsDisplay = true
+        }
+    }
+
+    @IBInspectable var displayBorder: Bool = true {
+        didSet {
+            needsDisplay = true
         }
     }
 
@@ -55,6 +63,18 @@ class OView: NSView {
         true
     }
 
+    func reOrderView() {}
+
+    func index(of key: String) -> Int {
+        guard let idx = subviews.firstIndex(where: { view in
+            (view as? OView)?.name == key
+        }) else {
+            return 0
+        }
+
+        return idx + 1
+    }
+
     override func animation(forKey key: NSAnimatablePropertyKey) -> Any? {
         switch key {
         case "borderWidth":
@@ -68,9 +88,14 @@ class OView: NSView {
         guard let layer = layer else { return }
 
         layer.backgroundColor = backgroundColor?.cgColor
-        layer.borderColor = borderColor?.cgColor
         layer.cornerRadius = cornerRadius
-        layer.borderWidth = borderWidth
+
+        if displayBorder {
+            layer.borderColor = borderColor?.cgColor
+            layer.borderWidth = borderWidth
+        } else {
+            layer.borderWidth = CGFloat.zero
+        }
     }
 }
 

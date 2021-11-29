@@ -8,8 +8,28 @@
 
 import Foundation
 
+class LocalHost: IHost {
+    var context: GameContext
+
+    init(context: GameContext) {
+        self.context = context
+    }
+
+    func send(text: String) {
+        context.events.sendCommand(Command2(command: text, isSystemCommand: true))
+    }
+
+    func get(variable: String) -> String {
+        context.globalVars[variable] ?? ""
+    }
+
+    func set(variable: String, value: String) {
+        context.globalVars[variable] = value
+    }
+}
+
 class GameContext {
-    var events: Events = SwiftEventBusEvents()
+    var events: Events
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
@@ -19,57 +39,24 @@ class GameContext {
     var gags: [Gag] = []
     var macros: [String: Macro] = [:]
     var aliases: [Alias] = []
-    var highlights: [Highlight] = []
-    var substitutes: [Substitute] = []
+    var highlights = Highlights()
+    var substitutes = Substitutes()
     var triggers: [Trigger] = []
     var maps: [String: MapZone] = [:]
-    var mapZone: MapZone?
-
-    init() {
-        globalVars = Variables(events: events)
+    var mapZone: MapZone? {
+        didSet {
+            globalVars["zoneid"] = mapZone?.id ?? ""
+        }
     }
-}
 
-class Variables {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)")
-    private var vars: [String: String] = [:]
-    private var events: Events
-
-    init(events: Events) {
+    init(_ events: Events = SwiftEventBusEvents()) {
         self.events = events
+        globalVars = GlobalVariables(events: events, settings: applicationSettings)
     }
 
-    subscript(key: String) -> String? {
-        get {
-            lockQueue.sync {
-                vars[key]
-            }
-        }
-        set(newValue) {
-            lockQueue.sync(flags: .barrier) {
-                let res = newValue ?? ""
-                vars[key] = res
-                events.variableChanged(key, value: res)
-            }
-        }
-    }
-
-    var count: Int {
-        lockQueue.sync {
-            vars.count
-        }
-    }
-
-    func removeAll() {
-        lockQueue.sync(flags: .barrier) {
-            vars.removeAll()
-        }
-    }
-
-    func sorted() -> [(String, String)] {
-        lockQueue.sync(flags: .barrier) {
-            vars.sorted(by: { $0.key < $1.key })
-        }
+    func updateClassFilters() {
+        highlights.updateActiveCache(with: classes.disabled())
+        substitutes.updateActiveCache(with: classes.disabled())
     }
 }
 
@@ -109,6 +96,13 @@ extension GameContext {
         }
 
         tags.append(TextTag.tagFor(room))
+
+        if let zone = mapZone, let currentRoom = findCurrentRoom(zone) {
+            let mappedExits = currentRoom.nonCardinalExists().map { $0.move }.joined(separator: ", ")
+            if mappedExits.count > 0 {
+                tags.append(TextTag.tagFor("Mapped exits: \(mappedExits)", preset: "automapper"))
+            }
+        }
 
         return tags
     }

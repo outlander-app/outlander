@@ -28,12 +28,14 @@ class HighlightLoaderTests: XCTestCase {
 
         loader!.load(context.applicationSettings, context: context)
 
-        XCTAssertEqual(context.highlights.count, 4)
-        XCTAssertEqual(context.highlights[1].foreColor, "#33ff08")
-        XCTAssertEqual(context.highlights[1].pattern, "\\bcard\\b")
-        XCTAssertEqual(context.highlights[1].className, "some class")
+        let hl = context.highlights.all().dropFirst(1).first!
 
-        let legend = context.highlights[3]
+        XCTAssertEqual(context.highlights.count, 4)
+        XCTAssertEqual(hl.foreColor, "#33ff08")
+        XCTAssertEqual(hl.pattern, "\\bcard\\b")
+        XCTAssertEqual(hl.className, "some class")
+
+        let legend = context.highlights.all().dropFirst(3).first!
         XCTAssertEqual(legend.foreColor, "#296b00")
         XCTAssertEqual(legend.backgroundColor, "#efefef")
         XCTAssertEqual(legend.pattern, "Legend")
@@ -51,7 +53,7 @@ class HighlightLoaderTests: XCTestCase {
         """
 
         loader!.load(context.applicationSettings, context: context)
-        loader!.save(context.applicationSettings, highlights: context.highlights)
+        loader!.save(context.applicationSettings, highlights: context.highlights.all())
 
         XCTAssertEqual(fileSystem.savedContent ?? "",
                        """

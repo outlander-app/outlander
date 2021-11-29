@@ -80,8 +80,8 @@ class PresetLoader {
                 let colors = color.components(separatedBy: ",")
 
                 if colors.count > 1 {
-                    color = colors[0].trimmingCharacters(in: NSCharacterSet.whitespaces)
-                    backgroundColor = colors[1].trimmingCharacters(in: NSCharacterSet.whitespaces)
+                    color = colors[0].trimmingCharacters(in: CharacterSet.whitespaces)
+                    backgroundColor = colors[1].trimmingCharacters(in: CharacterSet.whitespaces)
                 }
 
                 let preset = ColorPreset(name: name.lowercased(), color: color.lowercased(), backgroundColor: backgroundColor.lowercased(), presetClass: className?.lowercased())
@@ -134,5 +134,11 @@ class PresetLoader {
         context.addPreset("thought", color: "#66ffff")
         context.addPreset("whisper", color: "#66ffff")
         context.addPreset("exptracker", color: "#66ffff")
+
+        context.addPreset("health", color: "#f5f5f5", backgroundColor: "#cc0000")
+        context.addPreset("mana", color: "#f5f5f5", backgroundColor: "#00004B")
+        context.addPreset("stamina", color: "#f5f5f5", backgroundColor: "#004000")
+        context.addPreset("concentration", color: "#f5f5f5", backgroundColor: "#009999")
+        context.addPreset("spirit", color: "#f5f5f5", backgroundColor: "#400040")
     }
 }

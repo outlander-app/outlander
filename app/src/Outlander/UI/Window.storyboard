@@ -28,6 +28,9 @@
                                             <size key="minSize" width="557" height="397"/>
                                             <size key="maxSize" width="557" height="10000000"/>
                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="bhD-Jz-R1g" id="jyk-HL-u79"/>
+                                            </connections>
                                         </textView>
                                     </subviews>
                                 </clipView>

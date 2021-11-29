@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScriptRunner {
+class ScriptRunner: StreamHandler {
     private var context: GameContext
     private var loader: IScriptLoader
 
@@ -19,11 +19,17 @@ class ScriptRunner {
         self.loader = loader
 
         self.context.events.handle(self, channel: "ol:script:run") { result in
-            guard let scriptName = result as? String else {
+            guard let arguments = result as? [String: String] else {
                 return
             }
 
-            self.run(scriptName)
+            guard let scriptName = arguments["name"] else {
+                return
+            }
+
+            let scriptArgs = arguments["arguments"] ?? ""
+
+            self.run(scriptName, arguments: scriptArgs.argumentsSeperated())
         }
 
         self.context.events.handle(self, channel: "ol:script") { result in
@@ -42,12 +48,13 @@ class ScriptRunner {
             self.remove([scriptName])
         }
 
-        self.context.events.handle(self, channel: "ol:game:parse", handler: { result in
+        self.context.events.handle(self, channel: "ol:game:parse") { result in
             guard let data = result as? String else {
                 return
             }
-            self.parse(data)
-        })
+
+            self.stream(data, [])
+        }
     }
 
     func stream(_ data: String, _ tokens: [StreamCommand]) {
@@ -56,17 +63,29 @@ class ScriptRunner {
         }
     }
 
-    private func run(_ scriptName: String) {
+    func stream(_ data: String, with _: GameContext) {
+        for script in scripts {
+            script.stream(data, [])
+        }
+    }
+
+    private func run(_ scriptName: String, arguments: [String]) {
         do {
+            guard loader.exists(scriptName) else {
+                context.events.echoError("Script '\(scriptName)' does not exist.")
+                return
+            }
+
             if let previous = scripts.first(where: { $0.fileName == scriptName }) {
                 previous.cancel()
             }
 
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
-            script.run([])
+            script.run(arguments)
+            updateActiveScriptVars()
         } catch {
-            context.events.echoError("Error occurred running script \(scriptName)")
+            context.events.echoError("An error occurred running script '\(scriptName)'.")
         }
     }
 
@@ -83,48 +102,57 @@ class ScriptRunner {
 
         let command = commands[0]
         let scriptName = commands[1]
-//        let param1 = commands.count > 2 ? commands[2] : ""
-//        let param2 = commands.count > 3 ? commands[3] : ""
+        let param1 = commands.count > 2 ? commands[2] : ""
 
         switch command {
-        case "abort":
+        case "abort", "stop":
             abort(scriptName)
         case "pause":
             pause(scriptName)
         case "resume":
             resume(scriptName)
+        case "debug":
+            debug(scriptName, level: param1)
+        case "trace", "stacktrace":
+            stacktrace(scriptName)
+        case "vars":
+            vars(scriptName)
         default:
             context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
         }
     }
 
     private func abort(_ scriptName: String) {
-        var names: [String] = []
+        let aborting = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
 
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.cancel()
-                names.append(script.fileName)
-            }
+        for script in aborting {
+            script.cancel()
+            remove([script.fileName])
         }
 
-        remove(names)
+        updateActiveScriptVars()
     }
 
     private func pause(_ scriptName: String) {
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.pause()
-            }
+        let pausing = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in pausing {
+            script.pause()
+            context.events.post("ol:script:pause", data: script.fileName)
         }
+
+        updateActiveScriptVars()
     }
 
     private func resume(_ scriptName: String) {
-        for script in scripts {
-            if script.fileName.lowercased() == scriptName.lowercased() {
-                script.resume()
-            }
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.resume()
+            context.events.post("ol:script:resume", data: script.fileName)
         }
+
+        updateActiveScriptVars()
     }
 
     private func remove(_ scriptNames: [String]) {
@@ -134,6 +162,46 @@ class ScriptRunner {
             }
 
             scripts.remove(at: idx)
+
+            context.events.post("ol:script:remove", data: name)
+            updateActiveScriptVars()
         }
+    }
+
+    private func debug(_ scriptName: String, level: String) {
+        guard let number = Int(level), let scriptLevel = ScriptLogLevel(rawValue: number) else {
+            return
+        }
+
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.setLogLevel(scriptLevel)
+        }
+    }
+
+    private func stacktrace(_ scriptName: String) {
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.printStacktrace()
+        }
+    }
+
+    private func vars(_ scriptName: String) {
+        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+
+        for script in target {
+            script.printVars()
+        }
+    }
+
+    private func updateActiveScriptVars() {
+        let active = scripts.filter { !$0.paused }.map { $0.fileName }
+        let paused = scripts.filter { $0.paused }.map { $0.fileName }
+
+        context.globalVars["scriptlist"] = (active + paused).joined(separator: "|")
+        context.globalVars["activescriptlist"] = active.joined(separator: "|")
+        context.globalVars["pausedscriptlist"] = paused.joined(separator: "|")
     }
 }

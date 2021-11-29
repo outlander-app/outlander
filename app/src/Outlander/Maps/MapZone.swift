@@ -100,4 +100,35 @@ final class MapZone {
             return false
         }
     }
+
+    func getMoves(ids: [String]) -> [String] {
+        var moves: [String] = []
+        var last: MapNode?
+
+        for id in ids {
+            if let to = last {
+                if let arc = to.arc(with: id) {
+                    moves.append(arc.move)
+                }
+            }
+
+            last = room(id: id)
+        }
+
+        return moves
+    }
+
+    func moveCostForNode(node: MapNode, toNode: MapNode, arc: MapArc) -> Int {
+        let index = node.position
+        let toIndex = toNode.position
+
+        return ((abs(index.x - toIndex.x) > 0 && abs(index.y - toIndex.y) > 0) ? 10 : 14) + arc.moveCost
+    }
+
+    func heuristic(node: MapNode, endNode: MapNode) -> Int {
+        let coord1 = node.position
+        let coord2 = endNode.position
+
+        return (abs(coord1.x - coord2.x) + abs(coord1.y - coord2.y))
+    }
 }

@@ -64,7 +64,7 @@ extension String {
     private static let falseValues = ["false", "no", "0", "off", "-"]
 
     func toBool() -> Bool? {
-        let lowerSelf = trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).lowercased()
+        let lowerSelf = trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
 
         if String.trueValues.contains(lowerSelf) {
             return true
@@ -75,5 +75,93 @@ extension String {
         }
 
         return nil
+    }
+
+    func commandsSeperated(by delimiter: String = ";") -> [String] {
+        if !contains(delimiter) {
+            return [self]
+        }
+
+        var result = [String]()
+        var current = ""
+        var previous = ""
+        for c in self {
+            if String(c) == delimiter, previous != "\\" {
+                result.append(current.replacingOccurrences(of: "\\\(delimiter)", with: delimiter))
+                current = ""
+                continue
+            }
+            current += String(c)
+            previous = String(c)
+        }
+        if current.count > 0 {
+            result.append(current.replacingOccurrences(of: "\\\(delimiter)", with: delimiter))
+        }
+        return result
+    }
+
+    func argumentsSeperated() -> [String] {
+        guard count > 0 else {
+            return []
+        }
+
+        let delimiter = "\""
+        guard contains(delimiter) else {
+            return components(separatedBy: " ")
+        }
+
+        var result: [String] = []
+        var current = ""
+        var previous = ""
+        var inArg = false
+        for c in self {
+            if String(c) == " ", inArg == false {
+                if current.count > 0 {
+                    result.append(current)
+                }
+                current = ""
+                continue
+            }
+
+            if String(c) == delimiter, inArg == false, previous != "\\" {
+                inArg = true
+                continue
+            }
+
+            if String(c) == delimiter, inArg == true, previous != "\\" {
+                inArg = false
+                result.append("\"\(current)\"")
+                current = ""
+                continue
+            }
+
+            current += String(c)
+            previous = String(c)
+        }
+        if inArg {
+            current = "\"\(current)"
+        }
+        if current.count > 0 {
+            result.append(current)
+        }
+        return result
+    }
+
+    func hasAnyPrefix(_ prefixes: [String]) -> Bool {
+        for prefix in prefixes {
+            if hasPrefix(prefix) {
+                return true
+            }
+        }
+        return false
+    }
+
+    func hasAnySuffix(_ suffixes: [String]) -> Bool {
+        for suffix in suffixes {
+            if hasSuffix(suffix) {
+                return true
+            }
+        }
+        return false
     }
 }

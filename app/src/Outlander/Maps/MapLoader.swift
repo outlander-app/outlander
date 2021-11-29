@@ -147,7 +147,7 @@ final class MapLoader {
                 exit: $0["exit"] ?? "",
                 move: $0["move"] ?? "",
                 destination: $0["destination"] ?? "",
-                hidden: $0["hidden"] == "True"
+                hidden: $0["hidden"]?.lowercased() == "true"
             )
         }
     }
