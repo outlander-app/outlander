@@ -54,6 +54,24 @@ class ApplicationLoader {
         }
         context.applicationSettings.update(settings)
         context.globalVars["profilename"] = settings.defaultProfile
+
+        let folders = [
+            paths.config,
+            paths.profiles,
+            paths.layout,
+            paths.maps,
+            paths.logs,
+            paths.sounds,
+            paths.scripts,
+        ]
+
+        for folder in folders {
+            do {
+                try files.ensure(folder: folder)
+            } catch {
+                context.events.echoError("Error creating to create folder \(folder.path)")
+            }
+        }
     }
 
     func save(_ paths: ApplicationPaths, context: GameContext) {

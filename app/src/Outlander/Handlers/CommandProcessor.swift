@@ -45,6 +45,7 @@ class CommandProcesssor {
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
         handlers.append(MapperComandHandler(files))
+        handlers.append(LogCommandHandler(files))
 
         self.pluginManager = pluginManager
     }

@@ -31,6 +31,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var pluginManager = PluginManager()
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
+    var gameLog: ILogger?
 
     var applicationSettings: ApplicationSettings? {
         didSet {
@@ -65,7 +66,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     private var apperanceObserver: NSKeyValueObservation?
 
+    func setGameLogger() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = gameContext.applicationSettings.variableDateFormat
+        let date = formatter.string(from: Date())
+        let logFileName = "\(gameContext.applicationSettings.profile.name)-\(gameContext.applicationSettings.profile.game)-\(date).txt"
+        gameLog = FileLogger(logFileName, root: gameContext.applicationSettings.paths.logs, files: fileSystem!)
+    }
+
     override func viewDidLoad() {
+        fileSystem = LocalFileSystem(gameContext.applicationSettings)
+        setGameLogger()
+
         createScriptToolbarView()
         createStatusBarView()
         pluginManager.plugins.append(ExpPlugin())
@@ -103,7 +115,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        fileSystem = LocalFileSystem(gameContext.applicationSettings)
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
         commandProcessor = CommandProcesssor(fileSystem!, pluginManager: pluginManager)
         scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, context: gameContext))
@@ -377,7 +388,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             result = pluginManager.parse(text: result)
         }
 
-        log.rawStream(result)
+        if gameContext.applicationSettings.profile.rawLogging {
+            gameLog?.rawStream(result)
+        }
 
         if streamData {
             gameStream?.stream(result)
@@ -433,6 +446,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func loadSettings() {
         ProfileLoader(fileSystem!).load(gameContext)
+        setGameLogger()
         reloadWindows(gameContext.applicationSettings.profile.layout) {
             self.reloadTheme()
             self.printSettingsLocations()
@@ -595,7 +609,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        if action == "hide" {
+        if action == "hide" || action == "remove" {
             guard !window.isEmpty else {
                 return
             }
@@ -836,6 +850,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func logTag(_ tag: TextTag) {
         if let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] {
+            let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
+            if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
+                gameLog?.stream(tag.text)
+            }
             window.append(tag)
         }
     }

@@ -24,6 +24,10 @@ class InMemoryFileSystem: FileSystem {
         contentToLoad?.data(using: .utf8)
     }
 
+    func append(_ data: String, to _: URL) throws {
+        savedContent = data
+    }
+
     func write(_ content: String, to _: URL) {
         savedContent = content
     }
@@ -39,6 +43,8 @@ class InMemoryFileSystem: FileSystem {
     func access(_ handler: @escaping () -> Void) {
         handler()
     }
+
+    func ensure(folder _: URL) throws {}
 }
 
 struct TestEvent {

@@ -55,6 +55,8 @@
 		7B956B4A2754534600346019 /* ScriptToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B482754534600346019 /* ScriptToolbarViewController.swift */; };
 		7B956B4C2754536100346019 /* ScriptToolbar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B956B4B2754536000346019 /* ScriptToolbar.storyboard */; };
 		7B956B4D2754536100346019 /* ScriptToolbar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B956B4B2754536000346019 /* ScriptToolbar.storyboard */; };
+		7B956B4F2754A55D00346019 /* LogCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B4E2754A55D00346019 /* LogCommandHandler.swift */; };
+		7B956B502754A55D00346019 /* LogCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B4E2754A55D00346019 /* LogCommandHandler.swift */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
@@ -288,6 +290,7 @@
 		7B956B4527517B0700346019 /* VitalsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsBar.swift; sourceTree = "<group>"; };
 		7B956B482754534600346019 /* ScriptToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptToolbarViewController.swift; sourceTree = "<group>"; };
 		7B956B4B2754536000346019 /* ScriptToolbar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ScriptToolbar.storyboard; sourceTree = "<group>"; };
+		7B956B4E2754A55D00346019 /* LogCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogCommandHandler.swift; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
@@ -689,15 +692,16 @@
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				7B228B22273880320052610B /* GotoCommandHandler.swift */,
+				7B956B4E2754A55D00346019 /* LogCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
 				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
 				7B228AF827277BBA0052610B /* SendCommandHandler.swift */,
 				7B228B112735D3B20052610B /* StreamHandler.swift */,
+				7B228B2B273B76B20052610B /* TriggerHandler.swift */,
 				F9CA205A2466322B00A92736 /* VarCommandHandler.swift */,
 				F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */,
-				7B228B2B273B76B20052610B /* TriggerHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -967,6 +971,7 @@
 				7B956B4627517B0700346019 /* VitalsBar.swift in Sources */,
 				F9CA204F245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
+				7B956B4F2754A55D00346019 /* LogCommandHandler.swift in Sources */,
 				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
 				7B228B23273880320052610B /* GotoCommandHandler.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
@@ -987,6 +992,7 @@
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				7B228B272738BA080052610B /* SwiftPriorityQueue.swift in Sources */,
+				7B956B502754A55D00346019 /* LogCommandHandler.swift in Sources */,
 				F98B490C246F967B000E2D92 /* HighlightLoaderTests.swift in Sources */,
 				7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */,
 				7BD0FD4625C7559900ED030E /* MapWindow.swift in Sources */,

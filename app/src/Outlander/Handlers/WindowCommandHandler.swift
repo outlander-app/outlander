@@ -11,7 +11,7 @@ import Foundation
 class WindowCommandHandler: ICommandHandler {
     let command = "#window"
 
-    let validCommands = ["add", "clear", "hide", "list", "reload", "load", "show"]
+    let validCommands = ["add", "clear", "hide", "list", "reload", "remove", "load", "show"]
     let regex = try? Regex("^(\\w+)(\\s(\\w+))?$")
     let files: FileSystem
 

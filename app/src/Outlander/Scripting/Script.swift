@@ -574,13 +574,15 @@ class Script {
 
             if let includeMatch = includeRegex.firstMatch(&line) {
                 guard let include = includeMatch.valueAt(index: 1) else { continue }
-                let includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
+                var includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
+                if includeName.hasSuffix(".cmd") {
+                    includeName = String(includeName.dropLast(4)).trimmingCharacters(in: CharacterSet.whitespaces)
+                }
                 guard includeName != scriptName, includeName != self.fileName else {
                     sendText("script '\(scriptName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: scriptName)
                     continue
                 }
                 sendText("including '\(includeName)'", preset: "scriptecho", scriptLine: index, fileName: scriptName)
-//                notify("including '\(includeName)'", debug: ScriptLogLevel.gosubs, scriptLine: index)
                 initialize(includeName, isInclude: true)
             } else {
                 let scriptLine = ScriptLine(
@@ -596,7 +598,7 @@ class Script {
                 guard let label = labelMatch.valueAt(index: 1) else { return }
                 let newLabel = Label(name: label.lowercased(), line: context.lines.count - 1, scriptLine: index, fileName: scriptName)
                 if let existing = context.labels[label] {
-                    sendText("replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(existing.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: scriptName)
+                    sendText("replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(newLabel.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: scriptName)
                 }
                 context.labels[label.lowercased()] = newLabel
             }

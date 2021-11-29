@@ -12,10 +12,12 @@ protocol FileSystem {
     func contentsOf(_ directory: URL) -> [URL]
     func fileExists(_ file: URL) -> Bool
     func load(_ file: URL) -> Data?
+    func append(_ data: String, to fileUrl: URL) throws
     func write(_ content: String, to fileUrl: URL)
     func write(_ data: Data, to fileUrl: URL) throws
     func foldersIn(directory: URL) -> [URL]
     func access(_ handler: @escaping () -> Void)
+    func ensure(folder url: URL) throws
 }
 
 class LocalFileSystem: FileSystem {
@@ -53,6 +55,20 @@ class LocalFileSystem: FileSystem {
         return data
     }
 
+    func append(_ data: String, to fileUrl: URL) throws {
+        try ensure(folder: fileUrl.deletingLastPathComponent())
+        try access {
+            try data.append(to: fileUrl)
+        }
+    }
+
+    func append(_ data: Data, to fileUrl: URL) throws {
+        try ensure(folder: fileUrl.deletingLastPathComponent())
+        access {
+            try? data.write(to: fileUrl)
+        }
+    }
+
     func write(_ content: String, to fileUrl: URL) {
         access {
             do {
@@ -62,8 +78,8 @@ class LocalFileSystem: FileSystem {
     }
 
     func write(_ data: Data, to fileUrl: URL) throws {
-        access {
-            try? data.write(to: fileUrl)
+        try access {
+            try data.write(to: fileUrl)
         }
     }
 
@@ -87,6 +103,16 @@ class LocalFileSystem: FileSystem {
     func access(_ handler: @escaping () -> Void) {
         settings.paths.rootUrl.access(handler)
     }
+
+    func access(_ handler: @escaping () throws -> Void) throws {
+        try settings.paths.rootUrl.accessThrow(handler)
+    }
+
+    func ensure(folder url: URL) throws {
+        try access {
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        }
+    }
 }
 
 extension URL {
@@ -96,6 +122,16 @@ extension URL {
         }
 
         handler()
+
+        stopAccessingSecurityScopedResource()
+    }
+
+    func accessThrow(_ handler: @escaping () throws -> Void) throws {
+        if !startAccessingSecurityScopedResource() {
+            print("startAccessingSecurityScopedResource returned false. This directory might not need it, or this URL might not be a security scoped URL, or maybe something's wrong?")
+        }
+
+        try handler()
 
         stopAccessingSecurityScopedResource()
     }
