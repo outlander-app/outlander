@@ -66,6 +66,7 @@ class ExpressionEvaluator {
             ).evaluate()
             return result
         } catch {
+            print("AnyExpression Error: \(error) for input \(input)")
             log.error("AnyExpression Error: \(error) for input \(input)")
             return nil
         }
@@ -85,6 +86,34 @@ public extension AnyExpression {
             exp,
             impureSymbols: { symbol in
                 switch symbol {
+                case .prefix("!"):
+                    return { args in
+                        switch args[0] {
+                        case let lhs as Bool:
+                            return !lhs
+                        case let lhs as String:
+                            return !(lhs.toBool() == true)
+                        case let lhs as Double:
+                            return lhs == 0 ? true : false
+                        default:
+                            let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
+                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                        }
+                    }
+                case .prefix("!!"):
+                    return { args in
+                        switch args[0] {
+                        case let lhs as Bool:
+                            return lhs
+                        case let lhs as String:
+                            return lhs.toBool() == true
+                        case let lhs as Double:
+                            return lhs == 0 ? false : true
+                        default:
+                            let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
+                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                        }
+                    }
                 case .infix("="):
                     return { args in
                         switch (args[0], args[1]) {

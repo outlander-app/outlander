@@ -18,7 +18,15 @@ enum ScriptExpression: Hashable {
         case let .value(txt):
             switch other {
             case let .value(otherTxt):
-                return [.value(txt == "(" ? txt + otherTxt : "\(txt) \(otherTxt)")]
+                if txt == "(" {
+                    return [.value(txt + otherTxt)]
+                }
+
+                if otherTxt.hasAnyPrefix(["!", "="]) {
+                    return [.value(txt.hasAnySuffix(["!", "="]) ? txt + otherTxt : "\(txt) \(otherTxt)")]
+                }
+
+                return [.value("\(txt) \(otherTxt)")]
             default:
                 return [self, other]
             }
@@ -46,8 +54,8 @@ extension ScriptExpression: CustomStringConvertible {
         switch self {
         case let .value(str):
             return str
-        case let .function(name, _):
-            return "\(name)()"
+        case let .function(name, args):
+            return "\(name)(\(args.joined(separator: ", "))"
         case let .values(values):
             return values.map { $0.description }.joined(separator: " ")
         }
@@ -106,6 +114,16 @@ enum ScriptTokenValue: Hashable {
         case .ifArgSingle: return true
         case .ifArgNeedsBrace: return true
         case .ifSingle: return true
+        case .if: return true
+        case .ifNeedsBrace: return true
+        default: return false
+        }
+    }
+
+    var ifHasBody: Bool {
+        switch self {
+        case .ifArg: return true
+        case .ifArgNeedsBrace: return true
         case .if: return true
         case .ifNeedsBrace: return true
         default: return false

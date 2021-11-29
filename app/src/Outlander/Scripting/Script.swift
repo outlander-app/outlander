@@ -443,9 +443,15 @@ class Script {
     }
 
     private func checkMatches(_ text: String) {
+        guard !text.isEmpty else {
+            return
+        }
+
         guard let _ = matchwait else {
             return
         }
+
+        // print("Checking \(matchStack.count) matches against \(text)")
 
         var foundMatch: IMatch?
 
@@ -531,7 +537,7 @@ class Script {
         for var line in scriptFile.lines {
             index += 1
 
-            if line == "" {
+            if line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) == "" {
                 continue
             }
 
@@ -1075,7 +1081,7 @@ class Script {
         }
 
         context.pushCurrentLineToIfStack()
-        
+
         let execute = funcEvaluator.evaluateBool(expression)
         line.ifResult = execute.result.toBool() == true
 

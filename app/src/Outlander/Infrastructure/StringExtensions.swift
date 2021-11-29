@@ -146,4 +146,22 @@ extension String {
         }
         return result
     }
+
+    func hasAnyPrefix(_ prefixes: [String]) -> Bool {
+        for prefix in prefixes {
+            if hasPrefix(prefix) {
+                return true
+            }
+        }
+        return false
+    }
+
+    func hasAnySuffix(_ suffixes: [String]) -> Bool {
+        for suffix in suffixes {
+            if hasSuffix(suffix) {
+                return true
+            }
+        }
+        return false
+    }
 }

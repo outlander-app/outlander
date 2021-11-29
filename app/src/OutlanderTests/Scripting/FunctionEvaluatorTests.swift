@@ -73,8 +73,23 @@ class FunctionEvaluatorTests: XCTestCase {
         XCTAssertTrue(result.result.toBool() == true)
     }
 
-    func test_evals_func_ignores_case() {
+    func test_evals_func_name_ignores_case() {
         let result = evaluator.evaluateBool(.values([.function("ToLower", ["ONE"]), .value("== one")]))
+        XCTAssertTrue(result.result.toBool() == true)
+    }
+
+    func test_contains_ignores_casing() {
+        let result = evaluator.evaluateBool(.values([.function("contains", ["have ONE", "one"])]))
+        XCTAssertTrue(result.result.toBool() == true)
+    }
+
+    func test_evals_func_with_leading_not() {
+        let result = evaluator.evaluateBool(.values([.value("!"), .function("contains", ["have one", "one"])]))
+        XCTAssertTrue(result.result.toBool() == false)
+    }
+
+    func test_evals_func_with_leading_double_not() {
+        let result = evaluator.evaluateBool(.values([.value("!!"), .function("contains", ["have one", "one"])]))
         XCTAssertTrue(result.result.toBool() == true)
     }
 }

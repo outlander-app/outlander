@@ -33,7 +33,6 @@ class Clock: IClock {
 public typealias VariableValueFunction = () -> String?
 
 enum DynamicValue: CustomStringConvertible, CustomDebugStringConvertible, Hashable {
-
     static func == (lhs: DynamicValue, rhs: DynamicValue) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
@@ -49,11 +48,11 @@ enum DynamicValue: CustomStringConvertible, CustomDebugStringConvertible, Hashab
     }
 
     var description: String {
-        return "\(String(describing: rawValue))"
+        "\(String(describing: rawValue))"
     }
 
     var debugDescription: String {
-        return "[DynamicValue: \(String(describing: rawValue))]"
+        "[DynamicValue: \(String(describing: rawValue))]"
     }
 
     func hash(into hasher: inout Hasher) {
@@ -283,7 +282,7 @@ class VariableReplacer {
         guard target.contains(prefix) else {
             return
         }
-        
+
         let regexChecks = [
             "([\(prefix)]([a-zA-Z0-9_\\-.]+))",
             "([\(prefix)]([a-zA-Z0-9_\\-]+))",

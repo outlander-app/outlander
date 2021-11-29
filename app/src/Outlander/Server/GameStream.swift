@@ -277,12 +277,14 @@ class TagMode: IReaderMode {
     }
 }
 
-protocol StringView: Collection {
+protocol StringView: Collection, Equatable {
     static func string(_ elements: [Element]) -> String
+    static func isSpace(_ element: Element) -> Bool
 
     static var newline: Element { get }
     static var carriageReturn: Element { get }
     static var space: Element { get }
+    static var tab: Element { get }
     static var quote: Element { get }
     static var tick: Element { get }
     static var backslash: Element { get }
@@ -297,6 +299,7 @@ protocol StringView: Collection {
     static var leftParen: Element { get }
     static var rightParen: Element { get }
 
+    static var exclamation: Element { get }
     static var and: Element { get }
     static var comma: Element { get }
     static var pipe: Element { get }
@@ -307,9 +310,14 @@ extension Substring: StringView {
         String(elements)
     }
 
+    static func isSpace(_ element: Character) -> Bool {
+        element == space || element == tab
+    }
+
     static let newline: Character = "\n"
     static let carriageReturn: Character = "\r"
     static let space: Character = " "
+    static let tab: Character = "\t"
     static let quote: Character = "\""
     static let tick: Character = "'"
     static let backslash: Character = "\\"
@@ -324,6 +332,7 @@ extension Substring: StringView {
 
     static let leftParen: Character = "("
     static let rightParen: Character = ")"
+    static let exclamation: Character = "!"
     static let and: Character = "&"
     static let pipe: Character = "|"
     static let comma: Character = ","
@@ -353,11 +362,11 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func consumeWhitespace() {
-        consume(while: { $0 == Self.space || $0 == Self.newline })
+        consume(while: { Self.isSpace($0) || $0 == Self.newline })
     }
 
     mutating func consumeSpaces() {
-        consume(while: { $0 == Self.space })
+        consume(while: { Self.isSpace($0) })
     }
 
     mutating func parseToEnd() -> [Element] {
@@ -365,7 +374,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func parseWord() -> [Element] {
-        parseMany(while: { $0 != Self.space })
+        parseMany(while: { !Self.isSpace($0) })
     }
 
     mutating func parseWords(while cond: (String) -> Bool) -> (String, String) {
@@ -386,7 +395,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
     }
 
     mutating func parseInt() -> Int? {
-        let maybeNumber = parseMany(while: { $0 != Self.space })
+        let maybeNumber = parseMany(while: { !Self.isSpace($0) })
         return Int(Self.string(maybeNumber))
     }
 
@@ -416,7 +425,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
                 break
             }
 
-            if c == Self.space {
+            if Self.isSpace(c) {
                 lastWord = Self.string(current)
                 if lastWord == "then" {
                     current = []
@@ -444,11 +453,15 @@ extension StringView where SubSequence == Self, Element: Equatable {
         var results: [ScriptExpression] = []
         while let _ = first {
             consumeSpaces()
-            let identifier = parseMany(while: { $0 != Self.leftParen && $0 != Self.space })
+            let identifier = parseMany(while: { $0 != Self.leftParen && !Self.isSpace($0) && $0 != Self.exclamation })
 
             if identifier.count == 0 {
-                consume(expecting: Self.leftParen)
-                results.append(.value("("))
+                if consume(expecting: Self.leftParen) {
+                    results.append(.value("("))
+                }
+                if consume(expecting: Self.exclamation) {
+                    results.append(.value("!"))
+                }
                 continue
             }
 
@@ -459,7 +472,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
                 consume(expecting: Self.rightParen)
                 results.append(.function(Self.string(identifier), args))
             } else {
-                consume(expecting: Self.space)
+                // spaces should be consumed on next pass...
                 results.append(.value(Self.string(identifier)))
             }
         }
@@ -528,13 +541,13 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseAttributes(_ tagName: String? = nil) -> [Attribute] {
         var attributes: [Attribute] = []
 
-        consume(while: { $0 == Self.space })
+        consumeSpaces()
 
         while let f = first, f != Self.greaterThan, f != Self.forwardslash {
             if let attr = parseAttribute(tagName) {
                 attributes.append(attr)
             }
-            consume(while: { $0 == Self.space })
+            consumeSpaces()
         }
 
         return attributes

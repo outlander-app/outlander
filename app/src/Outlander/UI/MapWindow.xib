@@ -26,26 +26,25 @@
                 <rect key="frame" x="0.0" y="0.0" width="934" height="545"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S5h-GQ-ava">
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S5h-GQ-ava">
                         <rect key="frame" x="12" y="33" width="909" height="466"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" copiesOnScroll="NO" id="BC0-HL-lI5">
                             <rect key="frame" x="0.0" y="0.0" width="909" height="466"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ED8-n4-Ak2" customClass="MapView" customModule="Outlander" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="909" height="466"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="907" height="464"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                 </customView>
                             </subviews>
                             <color key="backgroundColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Pcj-7p-tjr">
-                            <rect key="frame" x="0.0" y="450" width="909" height="16"/>
+                            <rect key="frame" x="1" y="449" width="907" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="qV5-Pr-hzD">
-                            <rect key="frame" x="893" y="0.0" width="16" height="466"/>
+                            <rect key="frame" x="892" y="1" width="16" height="464"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -98,6 +97,12 @@
                         </textFieldCell>
                     </textField>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="S5h-GQ-ava" secondAttribute="bottom" constant="33" id="8Uc-r9-Fym"/>
+                    <constraint firstItem="S5h-GQ-ava" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="12" id="Vbs-N8-hT9"/>
+                    <constraint firstItem="S5h-GQ-ava" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="46" id="gsa-Hc-oMT"/>
+                    <constraint firstAttribute="trailing" secondItem="S5h-GQ-ava" secondAttribute="trailing" constant="13" id="sNt-ra-eUa"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>

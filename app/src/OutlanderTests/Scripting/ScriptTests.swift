@@ -24,7 +24,7 @@ class ScriptTests: XCTestCase {
 
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
-        
+
         for v in variables {
             script.context.variables[v.key] = v.value
         }
@@ -601,7 +601,7 @@ class ScriptTests: XCTestCase {
         ],
         globalVars: [
             "Offhand_Weapon.LearningRate": "5",
-            "Large_Edged.LearningRate": "7"
+            "Large_Edged.LearningRate": "7",
         ],
         expect: ["var is true\n"])
     }
@@ -611,11 +611,62 @@ class ScriptTests: XCTestCase {
             "var hunt_timer 32",
             "var temp $gametime",
             "math temp add %hunt_timer",
-            "echo %temp"
+            "echo %temp",
         ],
         globalVars: [
             "gametime": "1638082872",
         ],
         expect: ["1638082904\n"])
+    }
+
+    func test_skips_multi_singleline_if_blocks() throws {
+        try scenario([
+            "if false then {",
+            "  if true then echo one",
+            "  else if true then echo two",
+            "  else echo three",
+            "  echo after",
+            "}",
+            "echo end",
+        ],
+        expect: ["end\n"])
+    }
+
+    func test_skips_multi_singleline_if_blocks_elseif_with_body() throws {
+        try scenario([
+            "if false then {",
+            "  if true then echo one",
+            "  else if {",
+            "    echo else if",
+            "  }",
+            "  else echo else",
+            "  echo after",
+            "}",
+            "echo end",
+        ],
+        expect: ["end\n"])
+    }
+
+    func test_skips_multi_singleline_if_blocks_else_with_body() throws {
+        try scenario([
+            "if false then {",
+            "  if true then echo one",
+            "  else if true then echo two",
+            "  else {",
+            "    echo else",
+            "  }",
+            "  echo after",
+            "}",
+            "echo end",
+        ],
+        expect: ["end\n"])
+    }
+
+    func test_not_equal_strings() throws {
+        try scenario([
+            "if (\"$lefthand\" != \"Empty\") then { echo not equal }",
+            "echo end",
+        ],
+        expect: ["not equal\n", "end\n"])
     }
 }

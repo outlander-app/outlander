@@ -138,6 +138,7 @@ class MapView: NSView {
         updateTrackingAreas()
         needsDisplay = true
     }
+
     var debounceTimer: Timer?
 
     func debouceLookupRoom() {

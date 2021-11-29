@@ -33,12 +33,12 @@ class FunctionEvaluator {
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
             let result = FunctionExecutor().execute(name: name, args: simpArgs)
-            return EvalResult(text: simpName, result: result ?? "", groups: [])
+            return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: [])
         case let .values(expressions):
             let res: [String] = expressions.map {
                 switch $0 {
                 case let .value(txt):
-                    return txt
+                    return simplify(txt)
                 case .values:
                     // TODO: yeah don't do this
                     return ""
@@ -46,8 +46,9 @@ class FunctionEvaluator {
                     return self.evaluateStrValue($0).result
                 }
             }
-            let evaled = evaluateStrValue(.value(res.joined(separator: " ")))
-            return EvalResult(text: evaled.text, result: evaled.result, groups: evaled.groups)
+            let pretty = res.joined(separator: " ")
+            let evaled = evaluateStrValue(.value(res.joined(separator: "")))
+            return EvalResult(text: pretty, result: evaled.result, groups: evaled.groups)
         }
     }
 
@@ -63,7 +64,7 @@ class FunctionEvaluator {
                 return EvalResult(text: simp, result: result?.trimmingCharacters(in: CharacterSet(["\""])) ?? "", groups: evaluator.groups)
             }
 
-            return EvalResult(text: simp, result: "", groups: [])
+            return EvalResult(text: simp, result: "error", groups: [])
         case let .function(name, args):
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
@@ -140,7 +141,7 @@ class FunctionExecutor {
     init() {
         functions = [
             .function("contains", arity: 2): { args in
-                let res = self.trimQuotes(args[0]).contains(self.trimQuotes(args[1]))
+                let res = self.trimQuotes(args[0]).lowercased().contains(self.trimQuotes(args[1]).lowercased())
                 return res ? "true" : "false"
             },
             .function("count", arity: 2): { args in
@@ -201,6 +202,7 @@ class FunctionExecutor {
     func execute(name: String, args: [String]) -> String? {
         let symbol: Symbol = .function(name.lowercased(), arity: args.count)
         guard let function = functions[symbol] else {
+            print("No function registered as \(symbol)")
             return nil
         }
         return function(args)

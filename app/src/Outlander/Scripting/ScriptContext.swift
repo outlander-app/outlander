@@ -122,14 +122,29 @@ class ScriptContext {
                     retreat()
                     return true
                 }
-
-//                let (popped, _) = popIfStack()
-//                if !popped {
-//                    return false
-//                }
             default:
-                if lineToken.isTopLevelIf, !lineToken.isSingleToken, !lineToken.isElseToken {
+                if lineToken.isTopLevelIf {
+                    // fake a true result
+                    line.ifResult = true
                     pushCurrentLineToIfStack()
+
+                    if lineToken.ifHasBody {
+                        continue
+                    }
+
+                    skipSingleLineIfElseElses()
+
+                    if let next = nextLine {
+                        if next.token == nil {
+                            next.token = tokenizer.read(next.originalText)
+                        }
+
+                        guard next.token?.isIfToken == false, next.token?.isElseToken == false else {
+                            continue
+                        }
+
+                        popIfStack()
+                    }
                 }
 
                 continue

@@ -131,6 +131,42 @@ class ExpressionTokenizerTests: XCTestCase {
         XCTAssertEqual(result.rest, "{")
     }
 
+    func test_reads_not_equal_expression_with_quotes() {
+        let result = tokenizer.read("(\"%one\" != \"%two\"){")
+
+        switch result.expression {
+        case let .value(txt):
+            XCTAssertEqual(txt, "(\"%one\" != \"%two\")")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_not_equal_equal_expression_with_quotes() {
+        let result = tokenizer.read("(\"%one\" !== \"%two\"){")
+
+        switch result.expression {
+        case let .value(txt):
+            XCTAssertEqual(txt, "(\"%one\" !== \"%two\")")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_tripple_equal_equal_expression_with_quotes() {
+        let result = tokenizer.read("(\"%one\" === \"%two\"){")
+
+        switch result.expression {
+        case let .value(txt):
+            XCTAssertEqual(txt, "(\"%one\" === \"%two\")")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
     func test_reads_function() {
         let result = tokenizer.read("tolower(ABCD){")
 
@@ -235,6 +271,31 @@ class ExpressionTokenizerTests: XCTestCase {
         case let .function(name, args):
             XCTAssertEqual(name, "matchre")
             XCTAssertEqual(args, ["\"%2\"", "\"^\\d+$\""])
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
+    func test_reads_leading_not() {
+        let result = tokenizer.read("!contains(target, test) {")
+
+        switch result.expression {
+        case let .values(exp):
+            switch exp[0] {
+            case let .value(txt):
+                XCTAssertEqual(txt, "!")
+            default:
+                XCTFail("wrong expression value, found \(String(describing: exp[0]))")
+            }
+
+            switch exp[1] {
+            case let .function(name, args):
+                XCTAssertEqual(name, "contains")
+                XCTAssertEqual(args, ["target", "test"])
+            default:
+                XCTFail("wrong expression value, found \(String(describing: exp[0]))")
+            }
         default:
             XCTFail("wrong expression value, found \(String(describing: result.expression))")
         }
