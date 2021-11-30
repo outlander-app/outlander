@@ -103,21 +103,23 @@ class ExpPlugin: OPlugin {
         }
 
         if inputCheck.hasPrefix("/tracker lowest") {
-            guard let lowest = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+            guard let (idx, lowest) = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+                host?.send(text: "#parse EXPTRACKER NONE -1")
                 return ""
             }
 
-            host?.send(text: "#parse EXPTRACKER \(lowest.name)")
+            host?.send(text: "#parse EXPTRACKER \(lowest.name) \(idx)")
 
             return ""
         }
 
         if inputCheck.hasPrefix("/tracker highest") {
-            guard let highest = getHighestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+            guard let (idx, highest) = getHighestSkill(String(inputCheck.dropFirst(16)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+                host?.send(text: "#parse EXPTRACKER NONE -1")
                 return ""
             }
 
-            host?.send(text: "#parse EXPTRACKER \(highest.name)")
+            host?.send(text: "#parse EXPTRACKER \(highest.name) \(idx)")
             return ""
         }
 
@@ -307,12 +309,13 @@ class ExpPlugin: OPlugin {
         return report
     }
 
-    func getLowestSkill(_ maybeSkills: String) -> SkillExp? {
+    func getLowestSkill(_ maybeSkills: String) -> (Int, SkillExp)? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
 
         var found: SkillExp?
+        var foundIdx = -1
 
-        for skill in skills {
+        for (index, skill) in skills.enumerated() {
             guard let exp = tracker.find(skill) else {
                 continue
             }
@@ -320,21 +323,28 @@ class ExpPlugin: OPlugin {
             // choose if lower mindstate
             if found == nil || exp.mindState < found!.mindState {
                 found = exp
+                foundIdx = index
                 // choose if mindstate equal and lower ranks
             } else if found != nil, exp.mindState == found!.mindState, exp.ranks < found!.ranks {
                 found = exp
+                foundIdx = index
             }
         }
 
-        return found
+        guard foundIdx > -1 && found != nil else {
+            return nil
+        }
+
+        return (foundIdx, found!)
     }
 
-    func getHighestSkill(_ maybeSkills: String) -> SkillExp? {
+    func getHighestSkill(_ maybeSkills: String) -> (Int, SkillExp)? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
 
         var found: SkillExp?
+        var foundIdx = -1
 
-        for skill in skills {
+        for (index, skill) in skills.enumerated() {
             guard let exp = tracker.find(skill) else {
                 continue
             }
@@ -342,12 +352,18 @@ class ExpPlugin: OPlugin {
             // choose if higher mindstate
             if found == nil || exp.mindState > found!.mindState {
                 found = exp
+                foundIdx = index
                 // choose if mindstate equal and higher ranks
             } else if found != nil, exp.mindState == found!.mindState, exp.ranks > found!.ranks {
                 found = exp
+                foundIdx = index
             }
         }
 
-        return found
+        guard foundIdx > -1 && found != nil else {
+            return nil
+        }
+
+        return (foundIdx, found!)
     }
 }
