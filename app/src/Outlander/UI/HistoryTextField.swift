@@ -37,6 +37,13 @@ public class HistoryTextField: NSTextField {
         focusRingType = .none
     }
 
+    func hasFocus() -> Bool {
+        let res = self.window?.firstResponder?.isKind(of: NSTextView.self) == true
+        && self.window?.fieldEditor(false, for: nil) != nil
+        && (self.window?.firstResponder == self)
+        return res == true
+    }
+
     override public func draw(_ dirtyRect: NSRect) {
         var progressRect = bounds
         progressRect.size.width *= CGFloat(progress)

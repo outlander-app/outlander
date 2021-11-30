@@ -24,6 +24,9 @@ class ApplicationSettingsDto: Codable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         defaultProfile = try container.decodeIfPresent(String.self, forKey: .defaultProfile) ?? "Default"
+        if defaultProfile.isEmpty {
+            defaultProfile = "Default"
+        }
         downloadPreReleaseVersions = try container.decodeIfPresent(String.self, forKey: .downloadPreReleaseVersions) ?? "no"
         checkForApplicationUpdates = try container.decodeIfPresent(String.self, forKey: .checkForApplicationUpdates) ?? "no"
         variableTimeFormat = try container.decodeIfPresent(String.self, forKey: .variableTimeFormat) ?? "hh:mm:ss a"
@@ -42,6 +45,8 @@ class ApplicationLoader {
     }
 
     func load(_ paths: ApplicationPaths, context: GameContext) {
+        ensureFolders(paths: paths, context: context)
+
         let fileUrl = paths.config.appendingPathComponent("app.cfg")
 
         guard let data = files.load(fileUrl) else {
@@ -54,24 +59,6 @@ class ApplicationLoader {
         }
         context.applicationSettings.update(settings)
         context.globalVars["profilename"] = settings.defaultProfile
-
-        let folders = [
-            paths.config,
-            paths.profiles,
-            paths.layout,
-            paths.maps,
-            paths.logs,
-            paths.sounds,
-            paths.scripts,
-        ]
-
-        for folder in folders {
-            do {
-                try files.ensure(folder: folder)
-            } catch {
-                context.events.echoError("Error creating to create folder \(folder.path)")
-            }
-        }
     }
 
     func save(_ paths: ApplicationPaths, context: GameContext) {
@@ -86,6 +73,27 @@ class ApplicationLoader {
 
         let fileUrl = paths.config.appendingPathComponent("app.cfg")
         try? files.write(data, to: fileUrl)
+    }
+
+    private func ensureFolders(paths: ApplicationPaths, context: GameContext) {
+        let folders = [
+            paths.config,
+            paths.profiles,
+            paths.layout,
+            paths.maps,
+            paths.logs,
+            paths.sounds,
+            paths.scripts,
+            context.applicationSettings.currentProfilePath,
+        ]
+
+        for folder in folders {
+            do {
+                try files.ensure(folder: folder)
+            } catch {
+                context.events.echoError("Error creating to create folder \(folder.path)")
+            }
+        }
     }
 }
 

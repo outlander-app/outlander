@@ -79,6 +79,8 @@ class ExpTracker {
 
     var skillSets: [String]
 
+    var tdps = 0
+
     static var dateFormatter = DateFormatter()
 
     enum OrderBy: CustomStringConvertible {
@@ -216,7 +218,8 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
-        tags.append("\(foreColor)\nTracking for: \(diff.formatted)")
+        tags.append("\(foreColor)\nTDPs: \(tdps)")
+        tags.append("\(foreColor)Tracking for: \(diff.formatted)")
         tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))")
 
         return ["#echo >experience @suspend@"] + tags.map {
@@ -238,7 +241,8 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
-        tags.append("\(foreColor)\nTracking for: \(diff.formatted)")
+        tags.append("\(foreColor)\nTDPs: \(tdps)")
+        tags.append("\(foreColor)Tracking for: \(diff.formatted)")
         tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))\n")
 
         return tags.map {

@@ -28,11 +28,21 @@ class OLScrollView: NSScrollView {
     override var isFlipped: Bool { true }
 }
 
+class OLTextView: NSTextView {
+    var onKeyDown: ((NSEvent)->Void) = {_ in }
+
+    override func keyDown(with event: NSEvent) {
+        onKeyDown(event)
+    }
+}
+
 class WindowViewController: NSViewController, NSUserInterfaceValidations, NSTextViewDelegate {
     static var dateFormatter = DateFormatter()
 
     @IBOutlet var mainView: OView!
-    @IBOutlet var textView: NSTextView!
+    @IBOutlet var textView: OLTextView!
+    
+    public var onKeyDown: ((NSEvent)->Void) = {_ in }
 
     public var gameContext: GameContext?
     public var name: String = "" {
@@ -139,6 +149,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         super.viewDidLoad()
 
         WindowViewController.dateFormatter.dateFormat = "HH:mm"
+
+        self.textView.onKeyDown = { event in
+            self.onKeyDown(event)
+        }
 
         updateTheme()
 

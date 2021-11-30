@@ -222,6 +222,24 @@ class ExpPlugin: OPlugin {
     }
 
     func parse(text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+
+        if text.hasPrefix("Time Development Points:") {
+            let start = text.index(text.startIndex, offsetBy: 24)
+            if let favorsIdx = text.index(of: "Favors") {
+                let number = String(text[start ..< favorsIdx]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                tracker.tdps = Int(number) ?? 0
+                self.host?.send(text: "#var tdp \(tracker.tdps)")
+            }
+        }
+
+        if trimmed.hasPrefix("TDPs :") {
+            let start = text.index(text.startIndex, offsetBy: 6)
+            let number = String(text[start...]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            tracker.tdps = Int(number) ?? 0
+            self.host?.send(text: "#var tdp \(tracker.tdps)")
+        }
+
         if !parsing, text.hasPrefix(ExpPlugin.start_check) {
             parsing = true
             return text

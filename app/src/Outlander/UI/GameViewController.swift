@@ -369,14 +369,25 @@ class GameViewController: NSViewController, NSWindowDelegate {
     func updateWindowTitle() {
         DispatchQueue.main.async {
             if let win = self.view.window {
-                let version = "2"
+                let version = self.appVersion()
                 let gameInfo = self.game.count > 0 ? "\(self.game)" : ""
                 let charInfo = self.character.count > 0 ? "\(self.character) - " : ""
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
 
-                win.title = "\(gameInfo): \(charInfo)Outlander \(version)\(connection)"
+                win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
             }
         }
+    }
+
+    func appVersion() -> String {
+        let dictionary = Bundle.main.infoDictionary!
+        let version = dictionary["CFBundleShortVersionString"] as! String
+        let buildStr = dictionary["CFBundleVersion"] as! String
+        var build = ""
+        if !buildStr.isEmpty, buildStr != "0" {
+            build = ".\(buildStr)"
+        }
+        return "\(version)\(build)"
     }
 
     func handleRawStream(data: String, streamData: Bool = false) {
@@ -791,10 +802,38 @@ class GameViewController: NSViewController, NSWindowDelegate {
             gameWindows[settings.name] = window
         }
     }
+    
+    var recongizedKeyCodes = [
+        51 /*DELETE*/
+    ]
 
     func createWindow(_ settings: WindowData) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
         let controller = storyboard.instantiateInitialController() as? WindowViewController
+
+        controller?.onKeyDown = { event in
+            guard var val = event.charactersIgnoringModifiers, let regex = RegexFactory.get("[a-zA-Z0-9\\!\\\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\\\\\-\\./:;<=>\\?@\\[\\]\\^_`{|}~]") else {
+                return
+            }
+
+            let matches = regex.allMatches(&val)
+
+            guard !self.commandInput.hasFocus() && matches.count > 0 || self.recongizedKeyCodes.contains(Int(event.keyCode)) else {
+                return
+            }
+
+            var newVal = self.commandInput.stringValue
+            
+            if Int(event.keyCode) == 51 /*DELETE*/ {
+                newVal = String(newVal.dropLast(1))
+            } else {
+                newVal = newVal + val
+            }
+
+            self.commandInput.stringValue = newVal
+            self.commandInput.selectText(self)
+            self.commandInput.currentEditor()?.selectedRange = NSMakeRange(newVal.count, 0)
+        }
 
         controller?.gameContext = gameContext
 

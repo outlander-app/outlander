@@ -51,9 +51,9 @@ class ApplicationSettings {
 }
 
 class ProfileSettings {
-    var name = ""
+    var name = "Default"
     var account = ""
-    var game = ""
+    var game = "DR"
     var character = ""
     var logging = false
     var rawLogging = false

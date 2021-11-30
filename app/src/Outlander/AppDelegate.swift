@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 
-//        Preferences.workingDirectoryBookmark = nil
+        Preferences.workingDirectoryBookmark = nil
 
         if let rootUrl = BookmarkHelper().promptOrRestore() {
             self.rootUrl = rootUrl
