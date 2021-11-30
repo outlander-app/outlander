@@ -29,10 +29,10 @@ class OLScrollView: NSScrollView {
 }
 
 class OLTextView: NSTextView {
-    var onKeyDown: ((NSEvent) -> Void) = { _ in }
+    var onKeyUp: ((NSEvent) -> Void) = { _ in }
 
-    override func keyDown(with event: NSEvent) {
-        onKeyDown(event)
+    override func keyUp(with event: NSEvent) {
+        onKeyUp(event)
     }
 }
 
@@ -42,7 +42,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     @IBOutlet var mainView: OView!
     @IBOutlet var textView: OLTextView!
 
-    public var onKeyDown: ((NSEvent) -> Void) = { _ in }
+    public var onKeyUp: ((NSEvent) -> Void) = { _ in }
 
     public var gameContext: GameContext?
     public var name: String = "" {
@@ -150,8 +150,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         WindowViewController.dateFormatter.dateFormat = "HH:mm"
 
-        textView.onKeyDown = { event in
-            self.onKeyDown(event)
+        textView.onKeyUp = { event in
+            self.onKeyUp(event)
         }
 
         updateTheme()

@@ -776,13 +776,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func maybeCreateWindow(_ name: String, title: String?, closedTarget: String? = nil) {
-        guard gameWindows[name] == nil else {
-            gameWindows[name]?.windowTitle = title
+        let lower = name.lowercased()
+        guard gameWindows[lower] == nil else {
+            gameWindows[lower]?.windowTitle = title
             return
         }
 
         let settings = WindowData()
-        settings.name = name
+        settings.name = lower
         settings.title = title
         settings.closedTarget = closedTarget
         settings.visible = 0
@@ -817,7 +818,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
         let controller = storyboard.instantiateInitialController() as? WindowViewController
 
-        controller?.onKeyDown = { event in
+        controller?.onKeyUp = { event in
             guard var val = event.charactersIgnoringModifiers, let regex = RegexFactory.get("[a-zA-Z0-9\\!\\\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\\\\\-\\./:;<=>\\?@\\[\\]\\^_`{|}~]") else {
                 return
             }

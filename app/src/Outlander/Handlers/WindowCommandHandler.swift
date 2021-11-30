@@ -39,7 +39,7 @@ class WindowCommandHandler: ICommandHandler {
         let window = matches.valueAt(index: 3) ?? ""
 
         if validCommands.contains(action) {
-            context.events.post("ol:window", data: ["action": action, "window": window])
+            context.events.post("ol:window", data: ["action": action, "window": window.lowercased()])
         }
     }
 }

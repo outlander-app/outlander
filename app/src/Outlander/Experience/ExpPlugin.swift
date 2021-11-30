@@ -102,6 +102,25 @@ class ExpPlugin: OPlugin {
             return ""
         }
 
+        if inputCheck.hasPrefix("/tracker lowest") {
+            guard let lowest = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+                return ""
+            }
+
+            host?.send(text: "#parse EXPTRACKER \(lowest.name)")
+
+            return ""
+        }
+
+        if inputCheck.hasPrefix("/tracker highest") {
+            guard let highest = getHighestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+                return ""
+            }
+
+            host?.send(text: "#parse EXPTRACKER \(highest.name)")
+            return ""
+        }
+
         switch inputCheck {
         case "/tracker reset":
             tracker.reset()
@@ -155,6 +174,8 @@ class ExpPlugin: OPlugin {
             host?.send(text: "#echo \(foreColor)  reset:   resets the tracking data.")
             host?.send(text: "#echo \(foreColor)  update:  refreshes the experience window.")
             host?.send(text: "#echo \(foreColor)  display learned: toggle display learning gains. (\(displayLearnedOnOff))")
+            host?.send(text: "#echo \(foreColor)  lowest: calculate the lowest mindstate or rank for a list of skills. (Athletics|Thievery)")
+            host?.send(text: "#echo \(foreColor)  highest: calculate the highest mindstate or rank for a list of skills. (Bow|Locksmithing)")
             host?.send(text: "#echo \(foreColor)  ex:")
             host?.send(text: "#echo \(foreColor)    /tracker report rank desc")
             host?.send(text: "#echo \(foreColor)    /tracker orderby name\n")
@@ -283,5 +304,49 @@ class ExpPlugin: OPlugin {
         let report = tracker.buildLearnedReport()
         tracker.resetLearnedQueue()
         return report
+    }
+
+    private func getLowestSkill(_ maybeSkills: String) -> SkillExp? {
+        let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
+
+        var found: SkillExp?
+
+        for skill in skills {
+            guard let exp = tracker.find(skill) else {
+                continue
+            }
+
+            // choose if lower mindstate
+            if found == nil || exp.mindState > found!.mindState {
+                found = exp
+                // choose if mindstate equal and lower ranks
+            } else if found != nil, exp.mindState == found!.mindState, exp.ranks < found!.ranks {
+                found = exp
+            }
+        }
+
+        return found
+    }
+
+    private func getHighestSkill(_ maybeSkills: String) -> SkillExp? {
+        let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
+
+        var found: SkillExp?
+
+        for skill in skills {
+            guard let exp = tracker.find(skill) else {
+                continue
+            }
+
+            // choose if higher mindstate
+            if found == nil || exp.mindState < found!.mindState {
+                found = exp
+                // choose if mindstate equal and higher ranks
+            } else if found != nil, exp.mindState == found!.mindState, exp.ranks > found!.ranks {
+                found = exp
+            }
+        }
+
+        return found
     }
 }

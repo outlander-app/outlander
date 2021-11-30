@@ -118,6 +118,10 @@ class ExpTracker {
         skillSets = ["Shield_Usage", "Light_Armor", "Chain_Armor", "Brigandine", "Plate_Armor", "Defending", "Parry_Ability", "Small_Edged", "Large_Edged", "Twohanded_Edged", "Small_Blunt", "Large_Blunt", "Twohanded_Blunt", "Slings", "Bow", "Crossbow", "Staves", "Polearms", "Light_Thrown", "Heavy_Thrown", "Brawling", "Offhand_Weapon", "Melee_Mastery", "Missile_Mastery", "Expertise", "Elemental_Magic", "Holy_Magic", "Inner_Fire", "Inner_Magic", "Life_Magic", "Arcane_Magic", "Attunement", "Arcana", "Targeted_Magic", "Augmentation", "Debilitation", "Utility", "Warding", "Sorcery", "Theurgy", "Astrology", "Summoning", "Conviction", "Evasion", "Athletics", "Perception", "Stealth", "Locksmithing", "Thievery", "First_Aid", "Outdoorsmanship", "Skinning", "Scouting", "Backstab", "Thanatology", "Forging", "Engineering", "Outfitting", "Alchemy", "Enchanting", "Scholarship", "Mechanical_Lore", "Appraisal", "Performance", "Tactics", "Bardic_Lore", "Empathy", "Trading"]
     }
 
+    func find(_ skillName: String) -> SkillExp? {
+        skills.values.first(where: { $0.name.lowercased() == skillName.lowercased() })
+    }
+
     func resetLearnedQueue() {
         learnedQueue = []
     }

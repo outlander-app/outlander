@@ -46,6 +46,12 @@ enum LearningRate: Int {
     case mindLock = 34
 }
 
+extension LearningRate: Comparable {
+    static func < (lhs: LearningRate, rhs: LearningRate) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}
+
 let learningRateLookup: [String: LearningRate] = [
     "clear": .clear,
     "dabbling": .dabbling,
