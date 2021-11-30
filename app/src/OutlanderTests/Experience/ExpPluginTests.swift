@@ -105,4 +105,52 @@ class ExpPluginTests: XCTestCase {
         name = " name ".toOrderBy()
         XCTAssertEqual(name, .name)
     }
+
+    func test_lowest_skill_mindstate() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  700 00% perusing    </preset></component>")
+
+        let skill = plugin.getLowestSkill("Sorcery|First_Aid")?.name
+        XCTAssertEqual(skill, "Sorcery")
+    }
+
+    func test_lowest_skill_ranks() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  701 00% dabbling    </preset></component>")
+
+        let skill = plugin.getLowestSkill("Sorcery|First_Aid")?.name
+        XCTAssertEqual(skill, "Sorcery")
+    }
+
+    func test_highest_skill_mindstate() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  700 00% perusing    </preset></component>")
+
+        let skill = plugin.getHighestSkill("Sorcery|First_Aid")?.name
+        XCTAssertEqual(skill, "First_Aid")
+    }
+
+    func test_highest_skill_ranks() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  701 00% dabbling    </preset></component>")
+
+        let skill = plugin.getHighestSkill("Sorcery|First_Aid")?.name
+        XCTAssertEqual(skill, "First_Aid")
+    }
 }

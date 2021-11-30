@@ -178,7 +178,8 @@ class ExpPlugin: OPlugin {
             host?.send(text: "#echo \(foreColor)  highest: calculate the highest mindstate or rank for a list of skills. (Bow|Locksmithing)")
             host?.send(text: "#echo \(foreColor)  ex:")
             host?.send(text: "#echo \(foreColor)    /tracker report rank desc")
-            host?.send(text: "#echo \(foreColor)    /tracker orderby name\n")
+            host?.send(text: "#echo \(foreColor)    /tracker orderby name")
+            host?.send(text: "#echo \(foreColor)    /tracker lowest Athletics|Locksmithing\n")
         }
 
         return ""
@@ -306,7 +307,7 @@ class ExpPlugin: OPlugin {
         return report
     }
 
-    private func getLowestSkill(_ maybeSkills: String) -> SkillExp? {
+    func getLowestSkill(_ maybeSkills: String) -> SkillExp? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
 
         var found: SkillExp?
@@ -317,7 +318,7 @@ class ExpPlugin: OPlugin {
             }
 
             // choose if lower mindstate
-            if found == nil || exp.mindState > found!.mindState {
+            if found == nil || exp.mindState < found!.mindState {
                 found = exp
                 // choose if mindstate equal and lower ranks
             } else if found != nil, exp.mindState == found!.mindState, exp.ranks < found!.ranks {
@@ -328,7 +329,7 @@ class ExpPlugin: OPlugin {
         return found
     }
 
-    private func getHighestSkill(_ maybeSkills: String) -> SkillExp? {
+    func getHighestSkill(_ maybeSkills: String) -> SkillExp? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
 
         var found: SkillExp?
@@ -339,7 +340,7 @@ class ExpPlugin: OPlugin {
             }
 
             // choose if higher mindstate
-            if found == nil || exp.mindState < found!.mindState {
+            if found == nil || exp.mindState > found!.mindState {
                 found = exp
                 // choose if mindstate equal and higher ranks
             } else if found != nil, exp.mindState == found!.mindState, exp.ranks > found!.ranks {

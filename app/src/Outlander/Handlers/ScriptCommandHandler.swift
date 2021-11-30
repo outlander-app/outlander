@@ -18,8 +18,8 @@ class ScriptRunnerCommandHandler: ICommandHandler {
     func handle(_ command: String, with context: GameContext) {
         let input = command.dropFirst().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let split = input.components(separatedBy: " ")
-        let name = split.first ?? ""
-        let maybeArguments = split.dropFirst().joined(separator: " ")
+        let name = (split.first ?? "").lowercased().trimmingCharacters(in: CharacterSet.whitespaces)
+        let maybeArguments = split.dropFirst().joined(separator: " ").trimmingCharacters(in: CharacterSet.whitespaces)
 
         context.events.post("ol:script:run", data: ["name": name, "arguments": maybeArguments])
     }
