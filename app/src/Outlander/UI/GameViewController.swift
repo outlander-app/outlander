@@ -283,6 +283,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
+        gameContext.events.handle(self, channel: "ol:texttag") { result in
+            if let data = result as? TextTag {
+                self.logTag(data)
+            }
+        }
+
         gameContext.events.handle(self, channel: "ol:error") { result in
             if let text = result as? String {
                 self.logError(text)
@@ -802,9 +808,9 @@ class GameViewController: NSViewController, NSWindowDelegate {
             gameWindows[settings.name] = window
         }
     }
-    
+
     var recongizedKeyCodes = [
-        51 /*DELETE*/
+        51, /* DELETE */
     ]
 
     func createWindow(_ settings: WindowData) -> WindowViewController? {
@@ -823,8 +829,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
 
             var newVal = self.commandInput.stringValue
-            
-            if Int(event.keyCode) == 51 /*DELETE*/ {
+
+            if Int(event.keyCode) == 51 /* DELETE */ {
                 newVal = String(newVal.dropLast(1))
             } else {
                 newVal = newVal + val

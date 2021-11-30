@@ -80,6 +80,8 @@
 		7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */; };
 		7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
 		7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
+		7BC74D1B2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
+		7BC74D1C2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BCBBD0D273F499D00219CA0 /* VariableReplacerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */; };
 		7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
 		7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
@@ -303,6 +305,7 @@
 		7BAC841525EA064400A6C7D5 /* ScriptOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptOperations.swift; sourceTree = "<group>"; };
 		7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseCommandHandler.swift; sourceTree = "<group>"; };
 		7BAC842C25ECA23C00A6C7D5 /* Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matches.swift; sourceTree = "<group>"; };
+		7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCommandHandler.swift; sourceTree = "<group>"; };
 		7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableReplacerTests.swift; sourceTree = "<group>"; };
 		7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableTokenizer.swift; sourceTree = "<group>"; };
 		7BCBBD112746C03E00219CA0 /* FunctionEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionEvaluator.swift; sourceTree = "<group>"; };
@@ -692,6 +695,7 @@
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				7B228B22273880320052610B /* GotoCommandHandler.swift */,
+				7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */,
 				7B956B4E2754A55D00346019 /* LogCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
@@ -919,6 +923,7 @@
 				7BCE4A3A25C5281D00AF0444 /* DateTimeExtensions.swift in Sources */,
 				F9CA2049245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
 				7BAC842D25ECA23C00A6C7D5 /* Matches.swift in Sources */,
+				7BC74D1B2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */,
 				F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				7B228B262738BA080052610B /* SwiftPriorityQueue.swift in Sources */,
@@ -1003,6 +1008,7 @@
 				7B228B102734FDCE0052610B /* SkillExpTests.swift in Sources */,
 				F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */,
 				7B228B2A273B09D70052610B /* NSViewExtensions.swift in Sources */,
+				7BC74D1C2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */,
 				7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */,
 				7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */,
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,

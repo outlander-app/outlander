@@ -24,7 +24,12 @@ class Regex {
 
     init(_ pattern: String, options: NSRegularExpression.Options = []) throws {
         self.pattern = pattern
-        expression = try NSRegularExpression(pattern: pattern, options: options)
+        do {
+            expression = try NSRegularExpression(pattern: pattern, options: options)
+        } catch {
+            print(error)
+            throw error
+        }
     }
 
     public func replace(_ input: String, with template: String) -> String {

@@ -38,9 +38,9 @@ public class HistoryTextField: NSTextField {
     }
 
     func hasFocus() -> Bool {
-        let res = self.window?.firstResponder?.isKind(of: NSTextView.self) == true
-        && self.window?.fieldEditor(false, for: nil) != nil
-        && (self.window?.firstResponder == self)
+        let res = window?.firstResponder?.isKind(of: NSTextView.self) == true
+            && window?.fieldEditor(false, for: nil) != nil
+            && (window?.firstResponder == self)
         return res == true
     }
 

@@ -20,6 +20,10 @@ extension Events {
         post("ol:text", data: data)
     }
 
+    func echoTag(_ tag: TextTag) {
+        post("ol:texttag", data: tag)
+    }
+
     func echoError(_ text: String) {
         post("ol:error", data: "\(text)\n")
     }
@@ -29,7 +33,6 @@ extension Events {
     }
 
     func variableChanged(_ key: String, value: String) {
-        // print("var changed: \(key): \(value)")
         post("ol:variable:changed", data: [key: value])
     }
 }
