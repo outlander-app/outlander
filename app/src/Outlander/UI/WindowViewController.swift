@@ -414,7 +414,6 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func processSubs(_ text: String) -> String {
-        return text
         guard let context = gameContext else {
             return text
         }

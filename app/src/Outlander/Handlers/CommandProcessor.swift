@@ -65,8 +65,10 @@ class CommandProcesssor {
             context.globalVars["lastcommand"] = command.command
         }
 
-        var maybeCommand = VariableReplacer().replace(command.command, globalVars: context.globalVars)
+        let replacer = VariableReplacer()
+        var maybeCommand = replacer.replace(command.command, globalVars: context.globalVars)
         maybeCommand = processAliases(maybeCommand, with: context)
+        maybeCommand = replacer.replace(maybeCommand, globalVars: context.globalVars)
 
         maybeCommand = pluginManager.parse(input: maybeCommand)
 
