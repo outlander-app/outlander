@@ -100,6 +100,8 @@ struct WindowLayout: Codable {
 }
 
 class WindowLayoutLoader {
+    let log = LogManager.getLog(String(describing: WindowLayoutLoader.self))
+
     let files: FileSystem
 
     init(_ files: FileSystem) {
@@ -114,15 +116,19 @@ class WindowLayoutLoader {
         }
 
         let decoder = JSONDecoder()
-        guard var jsonData = try? decoder.decode(WindowLayout.self, from: data) else {
+        do {
+            var jsonData = try decoder.decode(WindowLayout.self, from: data)
+            jsonData.windows = jsonData.windows.sorted(by: { a, b -> Bool in
+                a.order < b.order
+            })
+
+            return jsonData
+        }
+        catch {
+            print("Error loading Window Layout:\n  \(error)")
+            log.error("Error loading Window Layout:\n  \(error)")
             return WindowLayout.defaults
         }
-
-        jsonData.windows = jsonData.windows.sorted(by: { a, b -> Bool in
-            a.order < b.order
-        })
-
-        return jsonData
     }
 
     func save(_ settings: ApplicationSettings, file: String, windows: WindowLayout) {
@@ -130,7 +136,7 @@ class WindowLayoutLoader {
 
         files.access {
             let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            encoder.outputFormatting = [.prettyPrinted]
             if let encodedData = try? encoder.encode(windows) {
                 try? encodedData.write(to: fileUrl, options: .atomicWrite)
             }

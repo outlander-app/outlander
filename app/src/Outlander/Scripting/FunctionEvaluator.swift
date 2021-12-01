@@ -40,6 +40,7 @@ class FunctionEvaluator {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }
         case let .values(expressions):
+            var groups: [String] = []
             let res: [String] = expressions.map {
                 switch $0 {
                 case let .value(txt):
@@ -48,12 +49,15 @@ class FunctionEvaluator {
                     // TODO: yeah don't do this
                     return ""
                 default:
-                    return self.evaluateStrValue($0).result
+                    let strRes = self.evaluateStrValue($0)
+                    groups.append(contentsOf: strRes.groups)
+                    return strRes.result
                 }
             }
             let pretty = res.joined(separator: " ")
             let evaled = evaluateStrValue(.value(res.joined(separator: "")))
-            return EvalResult(text: pretty, result: evaled.result, groups: evaled.groups)
+            groups.append(contentsOf: evaled.groups)
+            return EvalResult(text: pretty, result: evaled.result, groups: groups)
         }
     }
 
@@ -81,6 +85,7 @@ class FunctionEvaluator {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }
         case let .values(expressions):
+            var groups: [String] = []
             let res: [String] = expressions.map {
                 switch $0 {
                 case let .value(txt):
@@ -89,11 +94,14 @@ class FunctionEvaluator {
                     // TODO: yeah don't do this
                     return ""
                 default:
-                    return self.evaluateStrValue($0).result
+                    let strRes = self.evaluateStrValue($0)
+                    groups.append(contentsOf: strRes.groups)
+                    return strRes.result
                 }
             }
             let evaled = evaluateStrValue(.value(res.joined(separator: " ")))
-            return EvalResult(text: evaled.text, result: evaled.result, groups: evaled.groups)
+            groups.append(contentsOf: evaled.groups)
+            return EvalResult(text: evaled.text, result: evaled.result, groups: groups)
         }
     }
 
@@ -124,6 +132,7 @@ class FunctionEvaluator {
             }
 
         case let .values(expressions):
+            var groups: [String] = []
             let res: [String] = expressions.map {
                 switch $0 {
                 case let .value(txt):
@@ -132,11 +141,14 @@ class FunctionEvaluator {
                     // TODO: yeah don't do this
                     return ""
                 default:
-                    return self.evaluateValue($0).result
+                    let strRes = self.evaluateStrValue($0)
+                    groups.append(contentsOf: strRes.groups)
+                    return strRes.result
                 }
             }
             let evaled = evaluateValue(.value(res.joined(separator: " ")))
-            return EvalResult(text: evaled.text, result: evaled.result, groups: evaled.groups)
+            groups.append(contentsOf: evaled.groups)
+            return EvalResult(text: evaled.text, result: evaled.result, groups: groups)
         }
     }
 }

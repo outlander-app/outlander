@@ -367,6 +367,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func windowDidBecomeKey(_: Notification) {
         registerMacros()
+        
     }
 
     func windowDidResignKey(_: Notification) {
@@ -390,6 +391,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
 
                 win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
+                if let m = win as? MyWindow {
+                    let font = NSFont(name: self.gameContext.layout?.primary.fontName ?? "Helvetica", size: CGFloat(Double(self.gameContext.layout?.primary.fontSize ?? 14) ))!
+                    m.titleFont = font
+                    m.titleColor = self.gameContext.layout?.primary.fontColor.asColor() ?? NSColor(hex: "#d4d4d4")!
+                    m.titleBackgroundColor = self.gameContext.layout?.primary.backgroundColor.asColor()
+                }
             }
         }
     }
@@ -498,7 +505,15 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func reloadTheme() {
+        commandInput.progress = 0.25
+        statusBarController?.roundtime = 5
+        commandInput.textColor = gameContext.presetFor("commandinput")?.color.asColor() ?? NSColor(hex: "#f5f5f5")!
+        commandInput.promptBackgroundColor = gameContext.presetFor("commandinput")?.backgroundColor?.asColor() ?? NSColor(hex: "#1e1e1e")!
+        statusBarController?.rtTextColor = gameContext.presetFor("roundtime")?.color.asColor() ?? NSColor(hex: "#f5f5f5")!
+        statusBarController?.textColor = gameContext.presetFor("statusbartext")?.color.asColor() ?? NSColor(hex: "#f5f5f5")!
         vitalsBar.updateColors()
+        commandInput.progressColor = gameContext.presetFor("roundtime")?.backgroundColor?.asColor() ?? NSColor(hex: "#003366")!
+        updateWindowTitle()
     }
 
     public func command(_ command: String) {
@@ -605,10 +620,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         let primary = WindowData()
         primary.name = "primary"
-        primary.x = Double(mainWindow.frame.maxX)
-        primary.y = Double(mainWindow.frame.maxY)
-        primary.height = Double(mainWindow.frame.height)
-        primary.width = Double(mainWindow.frame.width)
+        primary.x = Double(mainWindow.frame.origin.x)
+        primary.y = Double(mainWindow.frame.origin.y)
+        primary.height = Double(mainWindow.frame.size.height)
+        primary.width = Double(mainWindow.frame.size.width)
 
         var windows = gameWindows.map {
             $0.value.toWindowData(order: gameWindowContainer.index(of: $0.key))

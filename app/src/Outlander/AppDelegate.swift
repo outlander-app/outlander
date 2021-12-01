@@ -136,6 +136,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 class MyWindow: NSWindow {
+    @IBInspectable
+    public var titleColor = NSColor(hex: "#f5f5f5")! {
+        didSet {
+            updateTitle()
+        }
+    }
+
+    @IBInspectable
+    public var titleBackgroundColor: NSColor? {
+        didSet {
+            updateTitle()
+        }
+    }
+
+    @IBInspectable
+    public var titleFont: NSFont = NSFont(name: "Helvetica", size: 14)! {
+        didSet {
+            updateTitle()
+        }
+    }
+    
     var gameContext: GameContext?
 
     func registerKeyHandlers(_ gameContext: GameContext) {
@@ -157,6 +178,46 @@ class MyWindow: NSWindow {
 
         gameContext?.events.sendCommand(Command2(command: found.action))
         return true
+    }
+
+    func updateTitle() {
+        guard let windowContentView = self.contentView else {
+            return
+        }
+        guard let contentSuperView = windowContentView.superview else {
+            return
+        }
+
+        let titleView = findViewInSubview(contentSuperView.subviews, ignoreView: windowContentView, test: { view in
+            view is NSTextField
+        })
+        
+        guard let titleText = titleView as? NSTextField else {
+            return
+        }
+
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: titleColor
+        ]
+
+        if let bg = titleBackgroundColor {
+            attributes[.backgroundColor] = bg
+        }
+
+        titleText.attributedStringValue = NSAttributedString(string: self.title, attributes: attributes)
+    }
+
+    func findViewInSubview(_ subviews: [NSView], ignoreView: NSView, test: (NSView) -> Bool) -> NSView? {
+        for v in subviews {
+            if test(v) {
+                return v
+            } else if v != ignoreView {
+                if let found = findViewInSubview(v.subviews as [NSView], ignoreView: ignoreView, test: test) {
+                    return found
+                }
+            }
+        }
+        return nil
     }
 }
 

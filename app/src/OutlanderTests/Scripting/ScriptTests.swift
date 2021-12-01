@@ -635,9 +635,20 @@ class ScriptTests: XCTestCase {
             "        echo monsterlist = $monsterlist",
             "        echo $1",
             "    }",
-            "}"
+            "}",
         ],
-        globalVars: ["monsterlist":"a kobold|a kobold|a golden jackal", "monstercount":"3"],
+        globalVars: ["monsterlist": "a kobold|a kobold|a golden jackal", "monstercount": "3"],
         expect: ["monsterlist = a kobold|a kobold|a golden jackal\n", "jackal\n"])
+    }
+
+    func test_matchre_replacement_scenario2() throws {
+        try scenario([
+            "var test You glance down to see an unfinished red-leucro headband in your right hand and some razor sharp scissors crafted from animite in your left hand.",
+            "if (matchre(\"%test\", \"^You glance down to see (.+) in your right hand and (.+) in your left hand\\.$\")) {",
+            "  echo $1",
+            "  echo $2",
+            "}",
+        ],
+        expect: ["an unfinished red-leucro headband\n", "some razor sharp scissors crafted from animite\n"])
     }
 }

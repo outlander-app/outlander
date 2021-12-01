@@ -32,6 +32,13 @@ public class HistoryTextField: NSTextField {
         }
     }
 
+    @IBInspectable
+    public var promptBackgroundColor = NSColor(hex: "#003366")! {
+        didSet {
+            needsDisplay = true
+        }
+    }
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         focusRingType = .none
@@ -45,6 +52,10 @@ public class HistoryTextField: NSTextField {
     }
 
     override public func draw(_ dirtyRect: NSRect) {
+        let fullRect = bounds
+        promptBackgroundColor.setFill()
+        fullRect.fill(using: .sourceOver)
+
         var progressRect = bounds
         progressRect.size.width *= CGFloat(progress)
 

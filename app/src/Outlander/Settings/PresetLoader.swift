@@ -135,8 +135,12 @@ class PresetLoader {
         context.addPreset("whisper", color: "#66ffff")
         context.addPreset("exptracker", color: "#66ffff")
 
+        context.addPreset("roundtime", color: "#f5f5f5", backgroundColor: "#003366")
+        context.addPreset("commandinput", color: "#f5f5f5", backgroundColor: "#1e1e1e")
+        context.addPreset("statusbartext", color: "#f5f5f5")
+
         context.addPreset("health", color: "#f5f5f5", backgroundColor: "#cc0000")
-        context.addPreset("mana", color: "#f5f5f5", backgroundColor: "#00004B")
+        context.addPreset("mana", color: "#f5f5f5", backgroundColor: "#00004b")
         context.addPreset("stamina", color: "#f5f5f5", backgroundColor: "#004000")
         context.addPreset("concentration", color: "#f5f5f5", backgroundColor: "#009999")
         context.addPreset("spirit", color: "#f5f5f5", backgroundColor: "#400040")

@@ -19,6 +19,20 @@ class StatusBarViewController: NSViewController {
     @IBOutlet var webbedIcon: IndicatorView!
     @IBOutlet var poisonedIcon: IndicatorView!
 
+    @IBInspectable
+    public var rtTextColor = NSColor(hex: "#f5f5f5")! {
+        didSet {
+            setValues()
+        }
+    }
+
+    @IBInspectable
+    public var textColor = NSColor(hex: "#f5f5f5")! {
+        didSet {
+            setValues()
+        }
+    }
+
     var roundtime: Int = 0 {
         didSet {
             setValues()
@@ -97,6 +111,11 @@ class StatusBarViewController: NSViewController {
     }
 
     func setValues() {
+        roundtimeLabel.textColor = rtTextColor
+        leftHandLabel.textColor = textColor
+        rightHandLabel.textColor = textColor
+        spellLabel.textColor = textColor
+
         if roundtime > 0 {
             roundtimeLabel.stringValue = "\(roundtime)"
         } else {

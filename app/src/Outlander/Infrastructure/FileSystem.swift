@@ -58,7 +58,7 @@ class LocalFileSystem: FileSystem {
     func append(_ data: String, to fileUrl: URL) throws {
         try ensure(folder: fileUrl.deletingLastPathComponent())
         try access {
-            try data.append(to: fileUrl)
+            try data.appendLine(to: fileUrl)
         }
     }
 
