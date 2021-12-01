@@ -33,8 +33,9 @@ class FunctionEvaluator {
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
             do {
-                let result = try FunctionExecutor().execute(name: name, args: simpArgs)
-                return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: [])
+                let eval = FunctionExecutor()
+                let result = try eval.execute(name: name, args: simpArgs)
+                return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: eval.groups)
             } catch {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }

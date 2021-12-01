@@ -627,4 +627,17 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["a juvenile wyvern,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern\n"])
     }
+
+    func test_matchre_replacement() throws {
+        try scenario([
+            "if ($monstercount > 0) then {",
+            "    if matchre(\"$monsterlist\",\"(\\w+)$\") then {",
+            "        echo monsterlist = $monsterlist",
+            "        echo $1",
+            "    }",
+            "}"
+        ],
+        globalVars: ["monsterlist":"a kobold|a kobold|a golden jackal", "monstercount":"3"],
+        expect: ["monsterlist = a kobold|a kobold|a golden jackal\n", "jackal\n"])
+    }
 }
