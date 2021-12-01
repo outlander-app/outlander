@@ -107,7 +107,7 @@ class PresetLoader {
                 color = "\(color),\(backgroundColor)"
             }
 
-            content += "#preset {\(preset.name)} {\(color)}"
+            content += "#preset {\(preset.name)} {\(color.lowercased())}"
 
             if className.count > 0 {
                 content += " {\(className)}"

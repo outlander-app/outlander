@@ -82,6 +82,7 @@
 		7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAC842C25ECA23C00A6C7D5 /* Matches.swift */; };
 		7BC74D1B2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BC74D1C2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
+		7BC74D1D27575B4300B6DF62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
 		7BCBBD0D273F499D00219CA0 /* VariableReplacerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */; };
 		7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
 		7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */; };
@@ -1055,6 +1056,7 @@
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
 				7BCBBD132746C03E00219CA0 /* FunctionEvaluator.swift in Sources */,
+				7BC74D1D27575B4300B6DF62 /* AppDelegate.swift in Sources */,
 				7B228B0D2734F8E80052610B /* ExpTracker.swift in Sources */,
 				7BDF5C81272723DA0020A3B0 /* MacroLoaderTests.swift in Sources */,
 				7BA27B5125DF93C500A88B80 /* Combinators.swift in Sources */,
@@ -1267,7 +1269,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1299,7 +1301,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
