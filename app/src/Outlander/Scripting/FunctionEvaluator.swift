@@ -72,6 +72,15 @@ class FunctionEvaluator {
             if let result: String? = evaluator.evaluate(simp) {
                 return EvalResult(text: simp, result: result?.trimmingCharacters(in: CharacterSet(["\""])) ?? "", groups: evaluator.groups)
             }
+            
+            if let result: Double? = evaluator.evaluate(simp) {
+                var res = "\(result ?? -1)"
+
+                if result == rint(result ?? -1) {
+                    res = "\(Int(result ?? -1))"
+                }
+                return EvalResult(text: simp, result: res, groups: evaluator.groups)
+            }
 
             return EvalResult(text: simp, result: "error", groups: [])
         case let .function(name, args):

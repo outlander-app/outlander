@@ -367,7 +367,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func windowDidBecomeKey(_: Notification) {
         registerMacros()
-        
     }
 
     func windowDidResignKey(_: Notification) {
@@ -392,7 +391,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
                 win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
                 if let m = win as? MyWindow {
-                    let font = NSFont(name: self.gameContext.layout?.primary.fontName ?? "Helvetica", size: CGFloat(Double(self.gameContext.layout?.primary.fontSize ?? 14) ))!
+                    let font = NSFont(name: self.gameContext.layout?.primary.fontName ?? "Helvetica", size: CGFloat(Double(self.gameContext.layout?.primary.fontSize ?? 14)))!
                     m.titleFont = font
                     m.titleColor = self.gameContext.layout?.primary.fontColor.asColor() ?? NSColor(hex: "#d4d4d4")!
                     m.titleBackgroundColor = self.gameContext.layout?.primary.backgroundColor.asColor()
@@ -927,12 +926,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func logTag(_ tag: TextTag) {
-        if let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] {
-            let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
-            if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
-                gameLog?.stream(tag.text)
-            }
-            window.append(tag)
+        guard let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] else {
+            return
         }
+
+        let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
+        if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
+            gameLog?.stream(tag.text)
+        }
+        window.append(tag)
     }
 }

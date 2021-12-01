@@ -151,12 +151,12 @@ class MyWindow: NSWindow {
     }
 
     @IBInspectable
-    public var titleFont: NSFont = NSFont(name: "Helvetica", size: 14)! {
+    public var titleFont = NSFont(name: "Helvetica", size: 14)! {
         didSet {
             updateTitle()
         }
     }
-    
+
     var gameContext: GameContext?
 
     func registerKeyHandlers(_ gameContext: GameContext) {
@@ -181,7 +181,7 @@ class MyWindow: NSWindow {
     }
 
     func updateTitle() {
-        guard let windowContentView = self.contentView else {
+        guard let windowContentView = contentView else {
             return
         }
         guard let contentSuperView = windowContentView.superview else {
@@ -191,20 +191,20 @@ class MyWindow: NSWindow {
         let titleView = findViewInSubview(contentSuperView.subviews, ignoreView: windowContentView, test: { view in
             view is NSTextField
         })
-        
+
         guard let titleText = titleView as? NSTextField else {
             return
         }
 
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: titleColor
+            .foregroundColor: titleColor,
         ]
 
         if let bg = titleBackgroundColor {
             attributes[.backgroundColor] = bg
         }
 
-        titleText.attributedStringValue = NSAttributedString(string: self.title, attributes: attributes)
+        titleText.attributedStringValue = NSAttributedString(string: title, attributes: attributes)
     }
 
     func findViewInSubview(_ subviews: [NSView], ignoreView: NSView, test: (NSView) -> Bool) -> NSView? {

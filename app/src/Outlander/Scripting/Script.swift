@@ -1286,6 +1286,9 @@ class Script {
         case "multiply":
             result = existingValue * numberValue
 
+        case "modulus":
+            result = existingValue.truncatingRemainder(dividingBy: numberValue)
+
         case "divide":
             guard numberValue != 0 else {
                 sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)

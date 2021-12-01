@@ -123,8 +123,7 @@ class WindowLayoutLoader {
             })
 
             return jsonData
-        }
-        catch {
+        } catch {
             print("Error loading Window Layout:\n  \(error)")
             log.error("Error loading Window Layout:\n  \(error)")
             return WindowLayout.defaults

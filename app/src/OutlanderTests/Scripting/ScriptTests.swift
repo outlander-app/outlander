@@ -651,4 +651,30 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["an unfinished red-leucro headband\n", "some razor sharp scissors crafted from animite\n"])
     }
+
+//    func test_replacere_scenario2() throws {
+//        try scenario([
+//            "var SkillSetArray Armor|Magic|Lore|Weapon",
+//            "var tarantulaSkillSet Magic",
+//            "eval SkillSetArray replacere(\"%SkillSetArray\", \"(?i)%tarantulaSkillSets?\", \"\")",
+//            "echo %SkillSetArray",
+//        ],
+//        expect: ["a juvenile wyvern,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern\n"])
+//    }
+    
+    func test_eval_numbers() throws {
+        try scenario([
+            "eval temp 1+1",
+            "echo %temp",
+        ],
+        expect: ["2\n"])
+    }
+
+    func test_eval_numbers_senario_2() throws {
+        try scenario([
+            "eval temp 1.6+1.5",
+            "echo %temp",
+        ],
+        expect: ["3.1\n"])
+    }
 }
