@@ -505,8 +505,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func reloadTheme() {
-        commandInput.progress = 0.25
-        statusBarController?.roundtime = 5
+//        commandInput.progress = 0.25
+//        statusBarController?.roundtime = 5
         commandInput.textColor = gameContext.presetFor("commandinput")?.color.asColor() ?? NSColor(hex: "#f5f5f5")!
         commandInput.promptBackgroundColor = gameContext.presetFor("commandinput")?.backgroundColor?.asColor() ?? NSColor(hex: "#1e1e1e")!
         statusBarController?.rtTextColor = gameContext.presetFor("roundtime")?.color.asColor() ?? NSColor(hex: "#f5f5f5")!

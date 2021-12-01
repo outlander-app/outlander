@@ -532,7 +532,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
             let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
-            let smartScroll = percentScroll >= CGFloat(0.99)
+            let smartScroll = percentScroll >= CGFloat(0.99999999)
 
 //            if self.name == "main" {
 //                print("** Window rect: \(percentScroll * 100)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
@@ -550,7 +550,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
             let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
-            let smartScroll = percentScroll >= CGFloat(0.99)
+            let smartScroll = percentScroll >= CGFloat(0.99999999)
 
             self.textView.textStorage?.setAttributedString(text)
 

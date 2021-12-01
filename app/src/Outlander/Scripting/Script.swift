@@ -550,9 +550,13 @@ class Script {
         if !isInclude {
             let formattedDate = Script.dateFormatter.string(from: started!)
 
-            let scriptFilePath = scriptFileName.absoluteString.contains("file:///")
+            var scriptFilePath = scriptFileName.absoluteString.contains("file:///")
                 ? scriptFileName.absoluteString[7...]
                 : scriptFileName.absoluteString
+
+            let homeDir = gameContext.applicationSettings.paths.rootUrl.absoluteString[7...]
+
+            scriptFilePath = scriptFilePath.replacingOccurrences(of: homeDir, with: "~/")
 
             sendText("[Starting '\(scriptFilePath)' at \(formattedDate)]")
 
