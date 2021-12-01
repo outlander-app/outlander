@@ -104,6 +104,7 @@ class ExpPlugin: OPlugin {
 
         if inputCheck.hasPrefix("/tracker lowest") {
             guard let (idx, lowest) = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+                host?.send(text: "#echo sending NONE")
                 host?.send(text: "#parse EXPTRACKER NONE -1")
                 return ""
             }
@@ -331,7 +332,7 @@ class ExpPlugin: OPlugin {
             }
         }
 
-        guard foundIdx > -1 && found != nil else {
+        guard foundIdx > -1, found != nil else {
             return nil
         }
 
@@ -360,7 +361,7 @@ class ExpPlugin: OPlugin {
             }
         }
 
-        guard foundIdx > -1 && found != nil else {
+        guard foundIdx > -1, found != nil else {
             return nil
         }
 

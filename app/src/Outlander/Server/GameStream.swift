@@ -420,12 +420,19 @@ extension StringView where SubSequence == Self, Element: Equatable {
         var result: [String] = []
         var current: [Element] = []
         var lastWord: String = ""
+        var inQuote = false
+        var previous: Element?
+
         while let c = first {
-            if c == Self.leftBrace {
+            if c == Self.leftBrace, !inQuote {
                 break
             }
 
-            if Self.isSpace(c) {
+            if c == Self.quote, previous != Self.backslash {
+                inQuote = !inQuote
+            }
+
+            if Self.isSpace(c), !inQuote {
                 lastWord = Self.string(current)
                 if lastWord == "then" {
                     current = []
@@ -436,6 +443,8 @@ extension StringView where SubSequence == Self, Element: Equatable {
             } else {
                 current.append(c)
             }
+
+            previous = c
             removeFirst()
         }
 

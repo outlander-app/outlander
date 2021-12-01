@@ -609,4 +609,22 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["not equal\n", "end\n"])
     }
+
+    func test_if_arg_single_line() throws {
+        try scenario([
+            "if_1 then {echo yep}",
+            "echo end",
+        ],
+        expect: ["yep\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_replacere() throws {
+        try scenario([
+            "var replacedList a juvenile wyvern,,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern",
+            "eval replacedList replacere(\"%replacedList\", \",{2,}\", \",\")",
+            "echo %replacedList",
+        ],
+        expect: ["a juvenile wyvern,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern\n"])
+    }
 }

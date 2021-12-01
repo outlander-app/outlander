@@ -58,6 +58,7 @@ class ProfileSettings {
     var logging = false
     var rawLogging = false
     var layout = "default.cfg"
+    var monsterIgnore = ""
 
     func update(with credentials: Credentials) {
         account = credentials.account

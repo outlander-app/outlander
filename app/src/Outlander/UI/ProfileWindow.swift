@@ -17,7 +17,7 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
         }
     }
 
-    @IBOutlet var tableView: NSTableView!
+    @IBOutlet var tableView: NSTableView?
 
     override var windowNibName: String! {
         "ProfileWindow"
@@ -25,8 +25,12 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        loadProfiles()
+    }
 
+    func loadProfiles() {
         profiles = context?.allProfiles() ?? []
+        tableView?.reloadData()
     }
 
     @IBAction func ok(_: Any) {
@@ -50,7 +54,9 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
     }
 
     func tableViewSelectionDidChange(_: Notification) {
-        let selectedRow = tableView.selectedRow
+        guard let selectedRow = tableView?.selectedRow else {
+            return
+        }
 
         if selectedRow > -1, selectedRow < profiles.count {
             selected = profiles[selectedRow]

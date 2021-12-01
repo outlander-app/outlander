@@ -32,8 +32,12 @@ class FunctionEvaluator {
         case let .function(name, args):
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
-            let result = FunctionExecutor().execute(name: name, args: simpArgs)
-            return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: [])
+            do {
+                let result = try FunctionExecutor().execute(name: name, args: simpArgs)
+                return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: [])
+            } catch {
+                return EvalResult(text: simpName, result: "\(error)", groups: [])
+            }
         case let .values(expressions):
             let res: [String] = expressions.map {
                 switch $0 {
@@ -69,8 +73,12 @@ class FunctionEvaluator {
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
             let eval = FunctionExecutor()
-            let result = eval.execute(name: name, args: simpArgs)
-            return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+            do {
+                let result = try eval.execute(name: name, args: simpArgs)
+                return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+            } catch {
+                return EvalResult(text: simpName, result: "\(error)", groups: [])
+            }
         case let .values(expressions):
             let res: [String] = expressions.map {
                 switch $0 {
@@ -107,8 +115,13 @@ class FunctionEvaluator {
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0) }
             let eval = FunctionExecutor()
-            let result = eval.execute(name: name, args: simpArgs)
-            return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+            do {
+                let result = try eval.execute(name: name, args: simpArgs)
+                return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+            } catch {
+                return EvalResult(text: simpName, result: "\(error)", groups: [])
+            }
+
         case let .values(expressions):
             let res: [String] = expressions.map {
                 switch $0 {
@@ -130,6 +143,17 @@ class FunctionEvaluator {
 class FunctionExecutor {
     enum Symbol: Hashable {
         case function(String, arity: Int)
+    }
+
+    enum FunctionError: Error, CustomStringConvertible {
+        case missing(String)
+
+        var description: String {
+            switch self {
+            case let .missing(message):
+                return message
+            }
+        }
     }
 
     public typealias SymbolEvaluator = (_ args: [String]) -> String
@@ -199,11 +223,10 @@ class FunctionExecutor {
         ]
     }
 
-    func execute(name: String, args: [String]) -> String? {
+    func execute(name: String, args: [String]) throws -> String? {
         let symbol: Symbol = .function(name.lowercased(), arity: args.count)
         guard let function = functions[symbol] else {
-            print("No function registered as \(symbol)")
-            return nil
+            throw FunctionError.missing("No function registered as \(symbol)")
         }
         return function(args)
     }

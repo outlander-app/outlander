@@ -134,6 +134,26 @@ class ProfileConfigLoader {
 
         let layout = RegexFactory.get("Layout: (.+)")?.firstMatch(&content)
         profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "default.cfg"
+
+        let ignore = RegexFactory.get("MonsterIgnore: (.+)")?.firstMatch(&content)
+        profile.monsterIgnore = ignore?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
+    }
+
+    func save(_ context: GameContext) {
+        let fileUrl = context.applicationSettings.currentProfilePath.appendingPathComponent("config.cfg")
+
+        var lines: [String] = []
+
+        lines.append("Account: \(context.applicationSettings.profile.account)")
+        lines.append("Game: \(context.applicationSettings.profile.game)")
+        lines.append("Character: \(context.applicationSettings.profile.character)")
+        lines.append("Logging: \(context.applicationSettings.profile.logging ? "yes" : "no")")
+        lines.append("RawLogging: \(context.applicationSettings.profile.rawLogging ? "yes" : "no")")
+        lines.append("Layout: \(context.applicationSettings.profile.layout)")
+        lines.append("MonsterIgnore: \(context.applicationSettings.profile.monsterIgnore)")
+
+        let content = lines.joined(separator: "\n")
+        files.write(content, to: fileUrl)
     }
 }
 
@@ -163,6 +183,7 @@ class ProfileLoader {
     }
 
     func save(_ context: GameContext) {
+        ProfileConfigLoader(files).save(context)
         AliasLoader(files).save(context.applicationSettings, aliases: context.aliases)
         ClassLoader(files).save(context.applicationSettings, classes: context.classes)
         GagLoader(files).save(context.applicationSettings, gags: context.gags)

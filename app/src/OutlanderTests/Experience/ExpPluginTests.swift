@@ -113,7 +113,7 @@ class ExpPluginTests: XCTestCase {
 
         _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
         _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  700 00% perusing    </preset></component>")
-        
+
         _ = plugin.parse(input: "/tracker lowest Sorcery|First_Aid")
 
         XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER Sorcery 0")
@@ -139,19 +139,6 @@ class ExpPluginTests: XCTestCase {
 
         _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
         _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  700 00% perusing    </preset></component>")
-
-        _ = plugin.parse(input: "/tracker highest Sorcery|First_Aid")
-
-        XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER First_Aid 1")
-    }
-
-    func test_highest_skill_ranks() {
-        let host = TestHost()
-        let plugin = ExpPlugin()
-        plugin.initialize(host: host)
-
-        _ = plugin.parse(xml: "<component id='exp Sorcery'><preset id='whisper'>          Sorcery:  700 00% dabbling    </preset></component>")
-        _ = plugin.parse(xml: "<component id='exp First Aid'><preset id='whisper'>          First Aid:  701 00% dabbling    </preset></component>")
 
         _ = plugin.parse(input: "/tracker highest Sorcery|First_Aid")
 

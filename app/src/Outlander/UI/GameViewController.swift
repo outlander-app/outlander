@@ -70,7 +70,15 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let formatter = DateFormatter()
         formatter.dateFormat = gameContext.applicationSettings.variableDateFormat
         let date = formatter.string(from: Date())
-        let logFileName = "\(gameContext.applicationSettings.profile.name)-\(gameContext.applicationSettings.profile.game)-\(date).txt"
+        var name = gameContext.globalVars["charactername"] ?? ""
+        if name.isEmpty {
+            name = gameContext.applicationSettings.profile.name
+        }
+        var game = gameContext.globalVars["game"] ?? ""
+        if game.isEmpty {
+            game = gameContext.applicationSettings.profile.game
+        }
+        let logFileName = "\(name)-\(game)-\(date).txt"
         gameLog = FileLogger(logFileName, root: gameContext.applicationSettings.paths.logs, files: fileSystem!)
     }
 
@@ -198,6 +206,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.game = game
                 self?.character = character
                 self?.updateWindowTitle()
+                self?.setGameLogger()
 
             case let .spell(spell):
                 DispatchQueue.main.async {
@@ -440,6 +449,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showProfileSelection() {
+        profileWindow!.loadProfiles()
         view.window?.beginSheet(profileWindow!.window!, completionHandler: { result in
             guard result == .OK else {
                 return
@@ -463,6 +473,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func loadSettings() {
         ProfileLoader(fileSystem!).load(gameContext)
+        gameStream?.monsterCountIgnoreList = gameContext.applicationSettings.profile.monsterIgnore
         setGameLogger()
         reloadWindows(gameContext.applicationSettings.profile.layout) {
             self.reloadTheme()
@@ -522,6 +533,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
             openPanel.allowsOtherFileTypes = false
             openPanel.canChooseFiles = true
             openPanel.canChooseDirectories = false
+            openPanel.directoryURL = gameContext.applicationSettings.paths.layout
+            openPanel.nameFieldStringValue = gameContext.applicationSettings.profile.layout
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
                 gameContext.applicationSettings.profile.layout = url.lastPathComponent
@@ -769,6 +782,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return windowFor(name: closedTarget.lowercased())
             }
 
+            return nil
+        }
+
+        if name.lowercased() == "raw" {
             return nil
         }
 

@@ -655,28 +655,30 @@ class IfArgMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let maybeThen = String(context.text.parseWord())
         let rest = String(context.text.parseToEnd())
+        let restTrimmed = rest.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 
-        let surrounded = maybeThen == "{" && rest.hasSuffix("}")
+        let surrounded = (maybeThen == "{" && rest.hasSuffix("}")) || (restTrimmed.hasPrefix("{") && rest.hasSuffix("}"))
 
         if surrounded {
-            let txt = (maybeThen + rest).trimmingCharacters(in: CharacterSet([" ", "{", "}"]))
+            let start = maybeThen == "then" ? "" : maybeThen
+            let txt = (start + rest).trimmingCharacters(in: CharacterSet([" ", "{", "}"]))
             if let token = ScriptTokenizer().read(txt) {
                 context.target.append(.ifArgSingle(number, token))
                 return nil
             }
         }
 
-        if maybeThen == "{" || (maybeThen == "then" && rest.trimmingCharacters(in: CharacterSet.whitespaces) == "{") {
+        if maybeThen == "{" || (maybeThen == "then" && restTrimmed == "{") {
             context.target.append(.ifArg(number))
             return nil
         }
 
-        if maybeThen == "then", let token = ScriptTokenizer().read(rest.trimmingCharacters(in: CharacterSet.whitespaces)) {
+        if maybeThen == "then", let token = ScriptTokenizer().read(restTrimmed) {
             context.target.append(.ifArgSingle(number, token))
             return nil
         }
 
-        if maybeThen == "then", rest.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).count == 0 {
+        if maybeThen == "then", restTrimmed.count == 0 {
             context.target.append(.ifArgNeedsBrace(number))
             return nil
         }

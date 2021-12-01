@@ -46,6 +46,7 @@ class BookmarkHelper {
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
+        openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents").appendingPathComponent("Outlander2")
 
         _ = openPanel.runModal()
         print(openPanel.urls) // this contains the chosen folder

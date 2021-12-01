@@ -53,6 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false
         )
+        window.setFrameAutosaveName("")
 
         window.title = "Outlander 2"
         window.center()

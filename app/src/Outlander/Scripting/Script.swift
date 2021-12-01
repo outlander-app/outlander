@@ -150,7 +150,7 @@ class Script {
     var includeRegex: Regex
     var labelRegex: Regex
 
-    var delayedTask: DispatchWorkItem? {
+    @Atomic var delayedTask: DispatchWorkItem? {
         willSet {
             delayedTask?.cancel()
         }
@@ -178,8 +178,6 @@ class Script {
         context.variables["scriptname"] = fileName
         funcEvaluator = FunctionEvaluator(context.replaceVars)
 
-        // eval
-        // eval math
         tokenHandlers = [:]
         tokenHandlers["action"] = handleAction
         tokenHandlers["actiontoggle"] = handleActionToggle
@@ -535,7 +533,7 @@ class Script {
     }
 
     private func initialize(_ fileName: String, isInclude: Bool) {
-        let scriptFile = loader.load(fileName, echo: true)
+        let scriptFile = loader.load(fileName, echo: false)
 
         guard let scriptFileName = scriptFile.file, scriptFile.lines.count > 0 else {
             sendText("Script '\(fileName)' is empty or does not exist", preset: "scripterror")
@@ -551,14 +549,16 @@ class Script {
 
         if !isInclude {
             let formattedDate = Script.dateFormatter.string(from: started!)
-            sendText("[Starting '\(scriptName)' at \(formattedDate)]")
+
+            let scriptFilePath = scriptFileName.absoluteString.contains("file:///")
+                ? scriptFileName.absoluteString[7...]
+                : scriptFileName.absoluteString
+
+            sendText("[Starting '\(scriptFilePath)' at \(formattedDate)]")
 
             self.fileName = scriptName
             context.variables["scriptname"] = scriptName
-            context.variables["scriptfilepath"] =
-                scriptFileName.absoluteString.contains("file:///")
-                    ? scriptFileName.absoluteString[7...]
-                    : scriptFileName.absoluteString
+            context.variables["scriptfilepath"] = scriptFilePath
 
             gameContext.events.post("ol:script:add", data: self.fileName)
         }
@@ -598,7 +598,7 @@ class Script {
                 guard let label = labelMatch.valueAt(index: 1) else { return }
                 let newLabel = Label(name: label.lowercased(), line: context.lines.count - 1, scriptLine: index, fileName: scriptName)
                 if let existing = context.labels[label] {
-                    sendText("replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(newLabel.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: scriptName)
+                    sendText("**duplicate label found** replacing label '\(existing.name)' at line \(existing.scriptLine) of '\(existing.fileName)' with '\(newLabel.name)' at line \(newLabel.scriptLine) of '\(newLabel.fileName)'", preset: "scripterror", fileName: scriptName)
                 }
                 context.labels[label.lowercased()] = newLabel
             }

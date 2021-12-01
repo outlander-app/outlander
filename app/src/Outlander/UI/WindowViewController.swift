@@ -414,7 +414,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func processSubs(_ text: String) -> String {
-//        return text
+        return text
         guard let context = gameContext else {
             return text
         }
@@ -432,22 +432,34 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         return result
     }
 
-    func processGags(_ text: String) -> Bool {
+    func processGags(_ text: String) -> String {
         guard let context = gameContext else {
-            return false
+            return text
         }
 
-        for gag in context.gags {
-            guard let regex = RegexFactory.get(gag.pattern) else {
-                continue
+        var keep: [String] = []
+
+        let lines = text.components(separatedBy: CharacterSet.newlines)
+
+        for line in lines {
+            var gagged = false
+            for gag in context.gags {
+                guard let regex = RegexFactory.get(gag.pattern) else {
+                    continue
+                }
+
+                if regex.hasMatches(line) {
+                    gagged = true
+                    break
+                }
             }
 
-            if regex.hasMatches(text) {
-                return true
+            if !gagged {
+                keep.append(line)
             }
         }
 
-        return false
+        return keep.joined(separator: "\n")
     }
 
     func append(_ tag: TextTag) {
@@ -490,13 +502,15 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             self.lastTag = tag
 
             // Check if the text should be gagged or not
-            if self.processGags(tag.text) {
+            var text = self.processGags(tag.text)
+
+            if text.isEmpty {
                 return
             }
 
             let displayTimestamp = self.displayTimestamp && previousEndendWithNewline && !tag.playerCommand
 
-            let text = self.processSubs(tag.text)
+            text = self.processSubs(text)
             guard let str = self.stringFromTag(tag, text: text) else { return }
             self.processHighlights(str, context: context)
 
