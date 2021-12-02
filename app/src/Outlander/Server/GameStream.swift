@@ -692,6 +692,7 @@ protocol IHost {
     func send(text: String)
     func get(variable: String) -> String
     func set(variable: String, value: String)
+    func get(preset: String) -> String?
 }
 
 protocol OPlugin {
@@ -775,7 +776,9 @@ class GameStream {
 
     var monsterCountIgnoreList: String = "" {
         didSet {
-            monsterCountIgnoreRegex = try? Regex(monsterCountIgnoreList)
+            if !monsterCountIgnoreList.isEmpty {
+                monsterCountIgnoreRegex = try? Regex(monsterCountIgnoreList)
+            }
         }
     }
 

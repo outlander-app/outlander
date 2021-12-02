@@ -24,6 +24,10 @@ class TestHost: IHost {
     func set(variable: String, value: String) {
         variables[variable] = value
     }
+
+    func get(preset _: String) -> String? {
+        nil
+    }
 }
 
 class ExpPluginTests: XCTestCase {
@@ -156,5 +160,29 @@ class ExpPluginTests: XCTestCase {
         _ = plugin.parse(input: "/tracker highest Sorcery|First_Aid")
 
         XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER First_Aid 1")
+    }
+
+    func test_handles_exp_brief() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Shield Usage'><d cmd='skill Shield Usage'>  Shield</d>:   71 33% [33/34]</component>")
+
+        XCTAssertEqual(host.variables["Shield_Usage.Ranks"], "71.33")
+        XCTAssertEqual(host.variables["Shield_Usage.LearningRate"], "33")
+        XCTAssertEqual(host.variables["Shield_Usage.LearningRateName"], "nearly locked")
+    }
+
+    func test_handles_exp_brief_whisper() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Scholarship'><preset id='whisper'><d cmd='skill Scholarship'> Scholar</d>:  552 30%  [ 3/34]</preset></component>")
+
+        XCTAssertEqual(host.variables["Scholarship.Ranks"], "552.30")
+        XCTAssertEqual(host.variables["Scholarship.LearningRate"], "3")
+        XCTAssertEqual(host.variables["Scholarship.LearningRateName"], "learning")
     }
 }

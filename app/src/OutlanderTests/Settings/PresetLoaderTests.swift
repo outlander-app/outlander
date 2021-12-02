@@ -22,7 +22,7 @@ class PresetLoaderTests: XCTestCase {
 
         loader!.load(context.applicationSettings, context: context)
 
-        XCTAssertEqual(context.presets.count, 22)
+        XCTAssertEqual(context.presets.count, 24)
         XCTAssertEqual(context.presets["automapper"]?.color, "#99ffff")
     }
 
@@ -48,7 +48,9 @@ class PresetLoaderTests: XCTestCase {
                        #preset {commandinput} {#f5f5f5,#1e1e1e}
                        #preset {concentration} {#f5f5f5,#009999}
                        #preset {creatures} {#ffff00}
-                       #preset {exptracker} {#66ffff}
+                       #preset {exptracker:learned} {#66ffff}
+                       #preset {exptracker:pulse} {#66ffff}
+                       #preset {exptracker:text} {#d4d4d4}
                        #preset {health} {#f5f5f5,#cc0000}
                        #preset {mana} {#f5f5f5,#00004b}
                        #preset {roomdesc} {#cccccc}

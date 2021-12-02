@@ -1277,18 +1277,30 @@ class Script {
         case "set":
             result = numberValue
 
+        case "+":
+            fallthrough
         case "add":
             result = existingValue + numberValue
 
+        case "-":
+            fallthrough
         case "subtract":
             result = existingValue - numberValue
 
+        case "*":
+            fallthrough
         case "multiply":
             result = existingValue * numberValue
 
+        case "%":
+            fallthrough
+        case "mod":
+            fallthrough
         case "modulus":
             result = existingValue.truncatingRemainder(dividingBy: numberValue)
 
+        case "/":
+            fallthrough
         case "divide":
             guard numberValue != 0 else {
                 sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)

@@ -67,7 +67,6 @@ class ExpPlugin: OPlugin {
     static let end_check = "EXP HELP for more information"
 
     private var textRegex: Regex
-    private var foreColor = "#cccccc"
 
     init() {
         textRegex = RegexFactory.get("(\\w.*?):\\s+(\\d+)\\s(\\d+)%\\s(\\w.*?)\\s+\\(\\d{1,}/34\\)")!
@@ -90,11 +89,14 @@ class ExpPlugin: OPlugin {
             return input
         }
 
+        let foreColor = host?.get(preset: "exptracker:text") ?? ""
+        let learnedColor = host?.get(preset: "exptracker:learned") ?? ""
+
         if inputCheck.hasPrefix("/tracker report") {
             let trimmed = inputCheck[15...]
             let sorting = trimmed.toOrderBy() ?? tracker.sortingBy
 
-            let report = tracker.buildReport(sorting: sorting)
+            let report = tracker.buildReport(sorting: sorting, foreColor: foreColor, learnedColor: learnedColor)
 
             for cmd in report {
                 host?.send(text: cmd)
@@ -131,6 +133,7 @@ class ExpPlugin: OPlugin {
         case "/tracker update":
             updateExpWindow()
         case "/tracker display learned":
+            tracker.resetLearnedQueue()
             displayLearnedWithPrompt = !displayLearnedWithPrompt
             let onOff = displayLearnedWithPrompt ? "on" : "off"
             host?.send(text: "#echo \(foreColor) \n\(name) - setting display learned to: \(onOff)\n")
@@ -176,7 +179,7 @@ class ExpPlugin: OPlugin {
             host?.send(text: "#echo \(foreColor)  report [orderby]:  display a report of skills with field experience or earned ranks.")
             host?.send(text: "#echo \(foreColor)  reset:   resets the tracking data.")
             host?.send(text: "#echo \(foreColor)  update:  refreshes the experience window.")
-            host?.send(text: "#echo \(foreColor)  display learned: toggle display learning gains. (\(displayLearnedOnOff))")
+            host?.send(text: "#echo \(foreColor)  display learned: toggle display mindstate gains/losses. (\(displayLearnedOnOff))")
             host?.send(text: "#echo \(foreColor)  lowest: calculate the lowest mindstate or rank for a list of skills. (Athletics|Thievery)")
             host?.send(text: "#echo \(foreColor)  highest: calculate the highest mindstate or rank for a list of skills. (Bow|Locksmithing)")
             host?.send(text: "#echo \(foreColor)  ex:")
@@ -208,39 +211,10 @@ class ExpPlugin: OPlugin {
             return xml
         }
 
-        var copy = String(xml[idx...])
-
-        let regex = RegexFactory.get(".+>\\s*(.+):\\s+(\\d+)\\s(\\d+)%\\s([\\w\\s]+)<.*")!
-        if let match = regex.firstMatch(&copy) {
-            let isNew = xml.contains("<preset id='whisper'>")
-
-            let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-            let learningRateName = match.valueAt(index: 4)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "clear"
-            let learningRate = learningRateLookup[learningRateName] ?? .clear
-            let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
-
-            tracker.update(SkillExp(name: name, mindState: learningRate, ranks: ranks, isNew: isNew))
-
-            host?.set(variable: "\(name).Ranks", value: "\(ranks)")
-            host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
-            host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
-
-            updateWindow = true
+        if xml.contains("<d cmd=") {
+            parseExpBrief(idx: idx, xml: xml)
         } else {
-            // handle empty tag
-            let regex = RegexFactory.get("id='exp\\s([\\w\\s]+)'")
-            if let match = regex?.firstMatch(&copy) {
-                let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-                let learningRate = LearningRate.clear
-
-                tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false))
-
-                host?.set(variable: "\(name).Ranks", value: "0.0")
-                host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
-                host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
-
-                updateWindow = true
-            }
+            parseExpNormal(idx: idx, xml: xml)
         }
 
         return xml
@@ -284,7 +258,7 @@ class ExpPlugin: OPlugin {
             let learningRate = learningRateLookup[match.valueAt(index: 4) ?? "0"] ?? .clear
             let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
 
-            tracker.update(SkillExp(name: name, mindState: learningRate, ranks: ranks, isNew: false))
+            tracker.update(SkillExp(name: name, mindState: learningRate, ranks: ranks, isNew: false), trackLearned: displayLearnedWithPrompt)
 
             host?.set(variable: "\(name).Ranks", value: "\(ranks)")
             host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
@@ -294,8 +268,85 @@ class ExpPlugin: OPlugin {
         return text
     }
 
+    private func parseExpNormal(idx: String.Index, xml: String) {
+        var copy = String(xml[idx...])
+
+        let regex = RegexFactory.get(".+>\\s*(.+):\\s+(\\d+)\\s(\\d+)%\\s([\\w\\s]+)<.*")!
+        if let match = regex.firstMatch(&copy) {
+            let isNew = xml.contains("<preset id='whisper'>")
+
+            let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
+            let learningRateName = match.valueAt(index: 4)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "clear"
+            let learningRate = learningRateLookup[learningRateName] ?? .clear
+            let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
+
+            tracker.update(SkillExp(name: name, mindState: learningRate, ranks: ranks, isNew: isNew), trackLearned: displayLearnedWithPrompt)
+
+            host?.set(variable: "\(name).Ranks", value: String(format: "%.2f", ranks))
+            host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+            host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+
+            updateWindow = true
+        } else {
+            // handle empty tag
+            let regex = RegexFactory.get("id='exp\\s([\\w\\s]+)'")
+            if let match = regex?.firstMatch(&copy) {
+                let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
+                let learningRate = LearningRate.clear
+
+                tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
+
+                host?.set(variable: "\(name).Ranks", value: "0.0")
+                host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+                host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+
+                updateWindow = true
+            }
+        }
+    }
+
+    private func parseExpBrief(idx: String.Index, xml: String) {
+        var copy = String(xml[idx...])
+
+        let regex = RegexFactory.get("cmd='skill\\s(.+)'>.+:\\s+(\\d+)\\s(\\d+)%\\s+\\[\\s?(\\d+)?.*")!
+        if let match = regex.firstMatch(&copy) {
+            let isNew = xml.contains("<preset id='whisper'>")
+
+            let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
+            let learningRateStr = match.valueAt(index: 4)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "0"
+            let learningRate = LearningRate(rawValue: Int(learningRateStr) ?? 0) ?? .clear
+            let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
+
+            tracker.update(SkillExp(name: name, mindState: learningRate, ranks: ranks, isNew: isNew), trackLearned: displayLearnedWithPrompt)
+
+            host?.set(variable: "\(name).Ranks", value: String(format: "%.2f", ranks))
+            host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+            host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+
+            updateWindow = true
+        } else {
+            // handle empty tag
+            let regex = RegexFactory.get("id='exp\\s([\\w\\s]+)'")
+            if let match = regex?.firstMatch(&copy) {
+                let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
+                let learningRate = LearningRate.clear
+
+                tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
+
+                host?.set(variable: "\(name).Ranks", value: "0.0")
+                host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+                host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+
+                updateWindow = true
+            }
+        }
+    }
+
     private func updateExpWindow() {
-        let commands = tracker.buildDisplayCommands()
+        let foreColor = host?.get(preset: "exptracker:text") ?? ""
+        let learnedColor = host?.get(preset: "exptracker:learned") ?? ""
+
+        let commands = tracker.buildDisplayCommands(foreColor: foreColor, learnedColor: learnedColor)
         for cmd in commands {
             host?.send(text: cmd)
         }

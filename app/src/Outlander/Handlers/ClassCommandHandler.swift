@@ -12,6 +12,12 @@ class ClassCommandHandler: ICommandHandler {
     var command = "#class"
 
     let validCommands = ["clear", "load", "reload", "list", "save"]
+    
+    var files: FileSystem
+
+    init(_ files: FileSystem) {
+        self.files = files
+    }
 
     func handle(_ command: String, with context: GameContext) {
         let commands = command[6...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
@@ -25,7 +31,7 @@ class ClassCommandHandler: ICommandHandler {
                 return
 
             case "load", "reload":
-                ClassLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
+                ClassLoader(files).load(context.applicationSettings, context: context)
                 context.updateClassFilters()
                 context.events.echoText("Classes reloaded")
                 return
@@ -41,7 +47,7 @@ class ClassCommandHandler: ICommandHandler {
                 return
 
             case "save":
-                ClassLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, classes: context.classes)
+                ClassLoader(files).save(context.applicationSettings, classes: context.classes)
                 context.events.echoText("Classes saved")
                 return
             default:

@@ -89,8 +89,16 @@ class PresetLoader {
             }
         }
 
-        if context.presetFor("exptracker") == nil {
-            context.addPreset("exptracker", color: "#66ffff")
+        if context.presetFor("exptracker:learned") == nil {
+            context.addPreset("exptracker:learned", color: "#66ffff")
+        }
+
+        if context.presetFor("exptracker:text") == nil {
+            context.addPreset("exptracker:text", color: "#d4d4d4")
+        }
+
+        if context.presetFor("exptracker:pulse") == nil {
+            context.addPreset("exptracker:pulse", color: "#66ffff")
         }
     }
 
@@ -133,7 +141,10 @@ class PresetLoader {
         context.addPreset("speech", color: "#66ffff")
         context.addPreset("thought", color: "#66ffff")
         context.addPreset("whisper", color: "#66ffff")
-        context.addPreset("exptracker", color: "#66ffff")
+
+        context.addPreset("exptracker:learned", color: "#66ffff")
+        context.addPreset("exptracker:text", color: "#d4d4d4")
+        context.addPreset("exptracker:pulse", color: "#66ffff")
 
         context.addPreset("roundtime", color: "#f5f5f5", backgroundColor: "#003366")
         context.addPreset("commandinput", color: "#f5f5f5", backgroundColor: "#1e1e1e")

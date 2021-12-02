@@ -661,7 +661,7 @@ class ScriptTests: XCTestCase {
 //        ],
 //        expect: ["a juvenile wyvern,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern\n"])
 //    }
-    
+
     func test_eval_numbers() throws {
         try scenario([
             "eval temp 1+1",
@@ -676,5 +676,50 @@ class ScriptTests: XCTestCase {
             "echo %temp",
         ],
         expect: ["3.1\n"])
+    }
+
+    func test_math_subtract_numbers_senario_1() throws {
+        try scenario([
+            "var temp 2",
+            "math temp - 1",
+            "echo %temp",
+        ],
+        expect: ["1\n"])
+    }
+
+    func test_math_add_numbers_senario_1() throws {
+        try scenario([
+            "var temp 2",
+            "math temp + 1",
+            "echo %temp",
+        ],
+        expect: ["3\n"])
+    }
+
+    func test_math_divide_numbers_senario_1() throws {
+        try scenario([
+            "var temp 4",
+            "math temp / 2",
+            "echo %temp",
+        ],
+        expect: ["2\n"])
+    }
+
+    func test_math_modulus_numbers_senario_1() throws {
+        try scenario([
+            "var temp 4",
+            "math temp % 3",
+            "echo %temp",
+        ],
+        expect: ["1\n"])
+    }
+
+    func test_math_divide_by_zero() throws {
+        try scenario([
+            "var temp 4",
+            "math temp / 0",
+            "echo %temp",
+        ],
+        expect: ["[if(2)]: cannot divide by zero!\n"])
     }
 }

@@ -18,16 +18,27 @@ extension Regex: Hashable {
     }
 }
 
+enum RegexError: Error {
+    case empty
+}
+
 class Regex {
+    let log = LogManager.getLog(String(describing: Regex.self))
+
     var pattern: String
     var expression: NSRegularExpression
 
     init(_ pattern: String, options: NSRegularExpression.Options = []) throws {
-        self.pattern = pattern
         do {
+            if pattern.isEmpty {
+                throw RegexError.empty
+            }
+
+            self.pattern = pattern
+
             expression = try NSRegularExpression(pattern: pattern, options: options)
         } catch {
-            print(error)
+            log.error("Error building regex: \(error)")
             throw error
         }
     }

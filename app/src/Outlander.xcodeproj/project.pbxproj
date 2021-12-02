@@ -44,6 +44,8 @@
 		7B27C5AE274AE2E40095B9BF /* ExpressionTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */; };
 		7B27C5B0274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
 		7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
+		7B3B9A162758BDBE0035D731 /* PresetCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */; };
+		7B3B9A172758BDBE0035D731 /* PresetCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */; };
 		7B903450274F0A3C0072E824 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B90344F274F0A3C0072E824 /* OrderedCollections */; };
 		7B903452274F0A3C0072E824 /* SortedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B903451274F0A3C0072E824 /* SortedCollections */; };
 		7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B40274F8AD900346019 /* CommandProcessorTests.swift */; };
@@ -288,6 +290,7 @@
 		7B27C5AA274ADE1A0095B9BF /* ExpressionTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizer.swift; sourceTree = "<group>"; };
 		7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizerTests.swift; sourceTree = "<group>"; };
 		7B27C5AF274B23760095B9BF /* ScriptContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptContext.swift; sourceTree = "<group>"; };
+		7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetCommandHandler.swift; sourceTree = "<group>"; };
 		7B956B40274F8AD900346019 /* CommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandProcessorTests.swift; sourceTree = "<group>"; };
 		7B956B422750557000346019 /* ScriptLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptLoader.swift; sourceTree = "<group>"; };
 		7B956B4527517B0700346019 /* VitalsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsBar.swift; sourceTree = "<group>"; };
@@ -701,6 +704,7 @@
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
+				7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */,
 				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
 				7B228AF827277BBA0052610B /* SendCommandHandler.swift */,
 				7B228B112735D3B20052610B /* StreamHandler.swift */,
@@ -957,6 +961,7 @@
 				F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				7B228B29273B09D70052610B /* NSViewExtensions.swift in Sources */,
 				7BCBBD22274750CA00219CA0 /* Exceptions.swift in Sources */,
+				7B3B9A162758BDBE0035D731 /* PresetCommandHandler.swift in Sources */,
 				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
 				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
@@ -1090,6 +1095,7 @@
 				F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */,
 				F9CA206124664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7B956B4A2754534600346019 /* ScriptToolbarViewController.swift in Sources */,
+				7B3B9A172758BDBE0035D731 /* PresetCommandHandler.swift in Sources */,
 				7BDF5C79271A53E10020A3B0 /* MacroLoader.swift in Sources */,
 				7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
@@ -1269,7 +1275,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1301,7 +1307,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

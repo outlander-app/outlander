@@ -369,7 +369,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         var str = text.string
 
         if highlightMonsters {
-            if let ignore = context.globalVars["monsterlist"] {
+            if let ignore = context.globalVars["monsterlist"], !ignore.isEmpty {
                 if let creatures = context.presetFor("creatures") {
                     let hl = Highlight(foreColor: creatures.color, backgroundColor: creatures.backgroundColor ?? "", pattern: ignore, className: "", soundFile: "")
                     highlights.insert(hl, at: 0)
@@ -378,6 +378,9 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         for h in highlights {
+            guard !h.pattern.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty else {
+                continue
+            }
             guard let regex = RegexFactory.get(h.pattern) else {
                 continue
             }

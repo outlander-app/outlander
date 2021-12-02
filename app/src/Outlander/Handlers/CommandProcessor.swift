@@ -26,7 +26,6 @@ class CommandProcesssor {
     private var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
-        ClassCommandHandler(),
         FlashCommandHandler(),
         BeepCommandHandler(),
         BugCommandHandler(),
@@ -43,10 +42,12 @@ class CommandProcesssor {
     private var pluginManager: OPlugin
 
     init(_ files: FileSystem, pluginManager: OPlugin) {
+        handlers.append(ClassCommandHandler(files))
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
         handlers.append(MapperComandHandler(files))
         handlers.append(LogCommandHandler(files))
+        handlers.append(PresetCommandHandler(files))
 
         self.pluginManager = pluginManager
     }

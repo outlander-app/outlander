@@ -26,6 +26,18 @@ class LocalHost: IHost {
     func set(variable: String, value: String) {
         context.globalVars[variable] = value
     }
+
+    func get(preset: String) -> String? {
+        guard let preset = context.presetFor(preset) else {
+            return nil
+        }
+
+        var color = preset.color
+        if let bg = preset.backgroundColor, !bg.isEmpty {
+            color = "\(color),\(bg)"
+        }
+        return color
+    }
 }
 
 class GameContext {

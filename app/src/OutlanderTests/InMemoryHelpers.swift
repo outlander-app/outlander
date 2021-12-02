@@ -90,4 +90,8 @@ class InMemoryPluginManager: OPlugin {
     func parse(text: String) -> String {
         text
     }
+
+    func get(preset _: String) -> String? {
+        nil
+    }
 }

@@ -72,7 +72,7 @@ class FunctionEvaluator {
             if let result: String? = evaluator.evaluate(simp) {
                 return EvalResult(text: simp, result: result?.trimmingCharacters(in: CharacterSet(["\""])) ?? "", groups: evaluator.groups)
             }
-            
+
             if let result: Double? = evaluator.evaluate(simp) {
                 var res = "\(result ?? -1)"
 

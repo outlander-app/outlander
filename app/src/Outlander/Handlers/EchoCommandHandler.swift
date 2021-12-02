@@ -11,7 +11,7 @@ import Foundation
 class EchoCommandHandler: ICommandHandler {
     var command = "#echo"
 
-    let regex = try? Regex("^(>(\\w+)\\s)?((#[a-fA-F0-9]+)(,(#[a-fA-F0-9]+))?\\s)?(.*)", options: [.dotMatchesLineSeparators])
+    let regex = try? Regex("^(>(\\w+)\\s?)?((#[a-fA-F0-9]+)(,(#[a-fA-F0-9]+))?\\s)?(.*)", options: [.dotMatchesLineSeparators])
 
     func handle(_ command: String, with: GameContext) {
         guard command.count > 5 else {

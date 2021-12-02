@@ -54,17 +54,29 @@ class SkillExp: CustomStringConvertible {
     }
 }
 
-struct ExpLearned: CustomStringConvertible {
+struct ExpLearned {
     var name: String
     var learned: Double
+    var mindState: Int
 
-    var description: String {
+    var learnedRanksDescription: String {
         var sign = learned > 0 ? "+" : "-"
         if learned == 0 {
             sign = " "
         }
 
         return String(format: "%@ %@%0.2f", name, sign, abs(learned))
+    }
+
+    var learnedMindstateDescription: String {
+        var sign = mindState > 0 ? "+" : "-"
+        if mindState == 0 {
+            sign = ""
+        }
+
+        let display: Double = abs(Double(mindState))
+
+        return "\(name) \(sign)\(Int(display))"
     }
 }
 
@@ -74,8 +86,6 @@ class ExpTracker {
     var sortingBy: OrderBy = .skillSet
 
     var learnedQueue: [ExpLearned] = []
-
-    var foreColor = "#cccccc "
 
     var skillSets: [String]
 
@@ -135,7 +145,7 @@ class ExpTracker {
         startOfTracking = Date()
     }
 
-    func update(_ exp: SkillExp) {
+    func update(_ exp: SkillExp, trackLearned: Bool = false) {
         if startOfTracking == nil {
             startOfTracking = Date()
         }
@@ -146,17 +156,19 @@ class ExpTracker {
             skill = exp
             skill?.originalRanks = exp.ranks
             skills[exp.name] = skill
-        } else if skill?.originalRanks != 0, exp.ranks != 0 {
-            let learnedRanks = exp.ranks - (skill?.ranks ?? 0)
-            if learnedRanks != 0 {
-                learnedQueue.append(ExpLearned(name: exp.name, learned: learnedRanks))
-            }
         }
 
         skill?.ranks = exp.ranks == 0 ? skill?.ranks ?? 0 : exp.ranks
 
         if skill?.originalRanks == 0 {
             skill?.originalRanks = skill?.ranks ?? 0
+        }
+
+        if trackLearned {
+            let learnedMindState: Int = exp.mindState.rawValue - (skill?.mindState.rawValue ?? 0)
+            if learnedMindState != 0 {
+                learnedQueue.append(ExpLearned(name: exp.name, learned: 0, mindState: learnedMindState))
+            }
         }
 
         skill?.isNew = exp.isNew
@@ -208,11 +220,11 @@ class ExpTracker {
         }
     }
 
-    func buildDisplayCommands() -> [String] {
+    func buildDisplayCommands(foreColor: String, learnedColor: String) -> [String] {
         var tags: [String] = []
 
         for skill in skillsWithMindstate() {
-            let fontColor = skill.isNew ? "" : foreColor
+            let fontColor = skill.isNew ? learnedColor : foreColor
             let tag = "\(fontColor)\(skill.description)"
             tags.append(tag)
         }
@@ -222,21 +234,21 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
-        tags.append("\(foreColor)\nTDPs: \(tdps)")
-        tags.append("\(foreColor)Tracking for: \(diff.formatted)")
-        tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))")
+        tags.append("\(foreColor) \nTDPs: \(tdps)")
+        tags.append("\(foreColor) Tracking for: \(diff.formatted)")
+        tags.append("\(foreColor) Last updated: \(ExpTracker.dateFormatter.string(from: Date()))")
 
         return ["#echo >experience @suspend@"] + tags.map {
             "#echo >experience \($0)"
         } + ["#echo >experience @resume@"]
     }
 
-    func buildReport(sorting: OrderBy) -> [String] {
-        var tags: [String] = ["\(foreColor)\nExperience Tracker", "\(foreColor)Showing all skills with field experience or earned ranks.\n"]
+    func buildReport(sorting: OrderBy, foreColor: String, learnedColor: String) -> [String] {
+        var tags: [String] = ["\(foreColor) \nExperience Tracker", "\(foreColor) Showing all skills with field experience or earned ranks.\n"]
 
         for skill in skillsWithMindstateOrGain(sorting: sorting) {
-            let fontColor = skill.isNew ? "" : foreColor
-            let tag = "\(fontColor)\(skill.description)"
+            let fontColor = skill.isNew ? learnedColor : foreColor
+            let tag = "\(fontColor) \(skill.description)"
             tags.append(tag)
         }
 
@@ -245,9 +257,9 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
-        tags.append("\(foreColor)\nTDPs: \(tdps)")
-        tags.append("\(foreColor)Tracking for: \(diff.formatted)")
-        tags.append("\(foreColor)Last updated: \(ExpTracker.dateFormatter.string(from: Date()))\n")
+        tags.append("\(foreColor) \nTDPs: \(tdps)")
+        tags.append("\(foreColor) Tracking for: \(diff.formatted)")
+        tags.append("\(foreColor) Last updated: \(ExpTracker.dateFormatter.string(from: Date()))\n")
 
         return tags.map {
             "#echo \($0)"
@@ -256,14 +268,14 @@ class ExpTracker {
 
     func buildLearnedReport() -> String {
         let learned = (learnedQueue.map {
-            $0.description
+            $0.learnedMindstateDescription
         }).joined(separator: ", ")
 
         guard learned.count > 0 else {
             return ""
         }
 
-        return "<pushstream id='exptracker'/><preset id='exptracker'>Learned: \(learned)\n</preset><popstream/>"
+        return "<pushstream id='exptracker'/><preset id='exptracker:pulse'>Learned: \(learned)\n</preset><popstream/>"
     }
 }
 
