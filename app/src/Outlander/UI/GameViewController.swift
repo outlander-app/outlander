@@ -101,6 +101,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //        gameWindowContainer.backgroundColor = NSColor.blue
 //        statusBar.backgroundColor = NSColor.red
 //        commandInput.progress = 0.5
+//        statusBarController?.roundtime = 25
 
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
