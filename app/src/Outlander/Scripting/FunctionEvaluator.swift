@@ -31,11 +31,11 @@ class FunctionEvaluator {
             return EvalResult(text: simp, result: "\(result)", groups: evaluator.groups)
         case let .function(name, args):
             let simpName = simplify(name)
-            let simpArgs = args.map { simplify($0) }
+            let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
             do {
                 let eval = FunctionExecutor()
                 let result = try eval.execute(name: name, args: simpArgs)
-                return EvalResult(text: simpName, result: result?.toBool() == true ? "true" : "false", groups: eval.groups)
+                return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result?.toBool() == true ? "true" : "false", groups: eval.groups)
             } catch {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }
@@ -85,11 +85,11 @@ class FunctionEvaluator {
             return EvalResult(text: simp, result: "error", groups: [])
         case let .function(name, args):
             let simpName = simplify(name)
-            let simpArgs = args.map { simplify($0) }
+            let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
             let eval = FunctionExecutor()
             do {
                 let result = try eval.execute(name: name, args: simpArgs)
-                return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+                return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result ?? "", groups: eval.groups)
             } catch {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }
@@ -131,11 +131,11 @@ class FunctionEvaluator {
             return EvalResult(text: simp, result: res, groups: evaluator.groups)
         case let .function(name, args):
             let simpName = simplify(name)
-            let simpArgs = args.map { simplify($0) }
+            let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
             let eval = FunctionExecutor()
             do {
                 let result = try eval.execute(name: name, args: simpArgs)
-                return EvalResult(text: simpName, result: result ?? "", groups: eval.groups)
+                return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result ?? "", groups: eval.groups)
             } catch {
                 return EvalResult(text: simpName, result: "\(error)", groups: [])
             }

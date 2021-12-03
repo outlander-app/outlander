@@ -167,6 +167,18 @@ class ExpressionTokenizerTests: XCTestCase {
         XCTAssertEqual(result.rest, "{")
     }
 
+    func test_reads_index_variable() {
+        let result = tokenizer.read("%weaponlist(0){")
+
+        switch result.expression {
+        case let .value(txt):
+            XCTAssertEqual(txt, "%weaponlist(0)")
+        default:
+            XCTFail("wrong expression value, found \(String(describing: result.expression))")
+        }
+        XCTAssertEqual(result.rest, "{")
+    }
+
     func test_reads_function() {
         let result = tokenizer.read("tolower(ABCD){")
 

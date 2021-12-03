@@ -18,7 +18,7 @@ enum ScriptExpression: Hashable {
         case let .value(txt):
             switch other {
             case let .value(otherTxt):
-                if txt == "(" {
+                if txt.hasSuffix("(") || otherTxt == "(" {
                     return [.value(txt + otherTxt)]
                 }
 

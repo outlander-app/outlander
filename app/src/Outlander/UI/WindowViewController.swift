@@ -56,6 +56,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     public var closedTarget: String?
     public var bufferSize: Int = 0
     public var bufferClearSize: Int = 0
+    public var autoScroll: Bool = true
 
     private var foregroundNSColor: NSColor = WindowViewController.defaultFontColor
     private var fontNSFont: NSFont = WindowViewController.defaultFont
@@ -171,6 +172,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         addMenu(title: "Close Window", action: #selector(closeWindow(sender:)))
         addMenu(title: "Show Border", action: #selector(toggleShowBorder(sender:)))
         addMenu(title: "Timestamp", action: #selector(toggleTimestamp(sender:)))
+        addMenu(title: "Auto Scroll", action: #selector(toggleAutoScroll(sender:)))
         addMenu(title: "Clear", action: #selector(clear(sender:)))
         addMenu(tag: 42, action: #selector(menuTitle(sender:)))
     }
@@ -244,6 +246,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             let menuItem = item as! NSMenuItem
             menuItem.state = self.mainView.displayBorder ? .on : .off
         }
+        if item.action == #selector(toggleAutoScroll(sender:)) {
+            let menuItem = item as! NSMenuItem
+            menuItem.state = self.mainView.displayBorder ? .on : .off
+        }
         return true
     }
 
@@ -256,7 +262,6 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     @objc func toggleTimestamp(sender _: Any?) {
-        print("toggle timestamp")
         displayTimestamp = !displayTimestamp
     }
 
@@ -265,6 +270,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     @objc func menuTitle(sender _: Any?) {}
+
+    @objc func toggleAutoScroll(sender _: Any?) {
+        autoScroll = !autoScroll
+    }
 
     func updateTheme() {
         mainView?.name = name
@@ -536,8 +545,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     func appendWithoutProcessing(_ text: NSAttributedString) {
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
-            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
-            let smartScroll = percentScroll >= CGFloat(0.99999999)
+//            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
+//            let smartScroll = percentScroll >= CGFloat(0.99999999)
 
 //            if self.name == "main" {
 //                print("** Window rect: \(percentScroll * 100)% \(self.textView.visibleRect.maxY) / \(self.textView.bounds.maxY)")
@@ -545,7 +554,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
             self.textView.textStorage?.append(text)
 
-            if smartScroll {
+            if self.autoScroll {
                 self.textView.scrollToEndOfDocument(self)
             }
         }
@@ -554,12 +563,12 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     func setWithoutProcessing(_ text: NSMutableAttributedString) {
         // DO NOT add highlights, etc.
         DispatchQueue.main.async {
-            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
-            let smartScroll = percentScroll >= CGFloat(0.99999999)
+//            let percentScroll = self.textView.visibleRect.maxY / self.textView.bounds.maxY
+//            let smartScroll = percentScroll >= CGFloat(0.99999999)
 
             self.textView.textStorage?.setAttributedString(text)
 
-            if smartScroll {
+            if self.autoScroll {
                 self.textView.scrollToEndOfDocument(self)
             }
         }

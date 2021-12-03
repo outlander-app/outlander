@@ -462,7 +462,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
         var results: [ScriptExpression] = []
         while let _ = first {
             consumeSpaces()
-            let identifier = parseMany(while: { $0 != Self.leftParen && !Self.isSpace($0) && $0 != Self.exclamation })
+            let identifier = Self.string(parseMany(while: { $0 != Self.leftParen && !Self.isSpace($0) && $0 != Self.exclamation }))
 
             if identifier.count == 0 {
                 if consume(expecting: Self.leftParen) {
@@ -474,15 +474,15 @@ extension StringView where SubSequence == Self, Element: Equatable {
                 continue
             }
 
-            if first == Self.leftParen {
+            if first == Self.leftParen, identifier.first!.isLetter {
                 // parse args
                 consume(expecting: Self.leftParen)
                 let args = parseFunctionArguments()
                 consume(expecting: Self.rightParen)
-                results.append(.function(Self.string(identifier), args))
+                results.append(.function(identifier, args))
             } else {
                 // spaces should be consumed on next pass...
-                results.append(.value(Self.string(identifier)))
+                results.append(.value(identifier))
             }
         }
 

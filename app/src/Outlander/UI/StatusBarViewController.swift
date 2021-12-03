@@ -125,7 +125,7 @@ class StatusBarViewController: NSViewController {
         poisonedIcon.images = mapImages(files, images, targets: [
             "poisoned",
         ])
-        
+
         directionsView?.images = mapImages(files, images, targets: [
             "directions",
             "north",
@@ -138,7 +138,7 @@ class StatusBarViewController: NSViewController {
             "southwest",
             "out",
             "up",
-            "down"
+            "down",
         ])
 
         setValues()

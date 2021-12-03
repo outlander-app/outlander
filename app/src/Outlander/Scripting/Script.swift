@@ -1182,9 +1182,11 @@ class Script {
         }
 
         let replaced = context.replaceVars(args)
-//        let arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
+        var arguments: [String] = []
 
-        let arguments = [replaced] + replaced.components(separatedBy: " ")
+        if !replaced.isEmpty {
+            arguments = [replaced] + replaced.components(separatedBy: " ")
+        }
 
         return gotoLabel(label, arguments, true)
     }
