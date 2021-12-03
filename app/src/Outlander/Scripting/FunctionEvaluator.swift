@@ -219,7 +219,7 @@ class FunctionExecutor {
             .function("tolower", arity: 1): { args in self.trimQuotes(args[0]).lowercased() },
             .function("toupper", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
             .function("tocaps", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
-            .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) },
+            .function("trim", arity: 1): { args in self.trimQuotes(args[0]).trimmingCharacters(in: .whitespacesAndNewlines) },
             .function("replace", arity: 3): { args in
                 let source = self.trimQuotes(args[0])
                 let pattern = self.trimQuotes(args[1])

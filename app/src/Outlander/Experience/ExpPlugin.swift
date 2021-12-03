@@ -84,7 +84,7 @@ class ExpPlugin: OPlugin {
     func variableChanged(variable _: String, value _: String) {}
 
     func parse(input: String) -> String {
-        let inputCheck = input.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        let inputCheck = input.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard inputCheck.hasPrefix("/tracker") else {
             return input
         }
@@ -105,7 +105,7 @@ class ExpPlugin: OPlugin {
         }
 
         if inputCheck.hasPrefix("/tracker lowest") {
-            guard let (idx, lowest) = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+            guard let (idx, lowest) = getLowestSkill(String(inputCheck.dropFirst(15)).trimmingCharacters(in: .whitespacesAndNewlines)) else {
                 host?.send(text: "#echo sending NONE")
                 host?.send(text: "#parse EXPTRACKER NONE -1")
                 return ""
@@ -117,7 +117,7 @@ class ExpPlugin: OPlugin {
         }
 
         if inputCheck.hasPrefix("/tracker highest") {
-            guard let (idx, highest) = getHighestSkill(String(inputCheck.dropFirst(16)).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)) else {
+            guard let (idx, highest) = getHighestSkill(String(inputCheck.dropFirst(16)).trimmingCharacters(in: .whitespacesAndNewlines)) else {
                 host?.send(text: "#parse EXPTRACKER NONE -1")
                 return ""
             }
@@ -221,12 +221,12 @@ class ExpPlugin: OPlugin {
     }
 
     func parse(text: String) -> String {
-        let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if text.hasPrefix("Time Development Points:") {
             let start = text.index(text.startIndex, offsetBy: 24)
             if let favorsIdx = text.index(of: "Favors") {
-                let number = String(text[start ..< favorsIdx]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                let number = String(text[start ..< favorsIdx]).trimmingCharacters(in: .whitespacesAndNewlines)
                 tracker.tdps = Int(number) ?? 0
                 host?.send(text: "#var tdp \(tracker.tdps)")
             }
@@ -234,7 +234,7 @@ class ExpPlugin: OPlugin {
 
         if trimmed.hasPrefix("TDPs :") {
             let start = text.index(text.startIndex, offsetBy: 6)
-            let number = String(text[start...]).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let number = String(text[start...]).trimmingCharacters(in: .whitespacesAndNewlines)
             tracker.tdps = Int(number) ?? 0
             host?.send(text: "#var tdp \(tracker.tdps)")
         }
@@ -276,7 +276,7 @@ class ExpPlugin: OPlugin {
             let isNew = xml.contains("<preset id='whisper'>")
 
             let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-            let learningRateName = match.valueAt(index: 4)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "clear"
+            let learningRateName = match.valueAt(index: 4)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "clear"
             let learningRate = learningRateLookup[learningRateName] ?? .clear
             let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
 
@@ -313,7 +313,7 @@ class ExpPlugin: OPlugin {
             let isNew = xml.contains("<preset id='whisper'>")
 
             let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-            let learningRateStr = match.valueAt(index: 4)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "0"
+            let learningRateStr = match.valueAt(index: 4)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
             let learningRate = LearningRate(rawValue: Int(learningRateStr) ?? 0) ?? .clear
             let ranks = Double("\(match.valueAt(index: 2) ?? "0").\(match.valueAt(index: 3) ?? "0")") ?? 0
 

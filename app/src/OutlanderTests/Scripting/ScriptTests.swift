@@ -722,4 +722,12 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["[if(2)]: cannot divide by zero!\n"])
     }
+
+    func test_can_variable_replace_shorter_words_combined() throws {
+        try scenario([
+            "var tarantulaSkillSet Weapon",
+            "echo %tarantulaSkillSets",
+        ],
+        expect: ["Weapons\n"])
+    }
 }

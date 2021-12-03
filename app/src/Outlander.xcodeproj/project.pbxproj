@@ -46,6 +46,8 @@
 		7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B27C5AF274B23760095B9BF /* ScriptContext.swift */; };
 		7B3B9A162758BDBE0035D731 /* PresetCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */; };
 		7B3B9A172758BDBE0035D731 /* PresetCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */; };
+		7B3B9A1A2759DB200035D731 /* IconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A192759DB200035D731 /* IconLoader.swift */; };
+		7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A192759DB200035D731 /* IconLoader.swift */; };
 		7B903450274F0A3C0072E824 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B90344F274F0A3C0072E824 /* OrderedCollections */; };
 		7B903452274F0A3C0072E824 /* SortedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 7B903451274F0A3C0072E824 /* SortedCollections */; };
 		7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B40274F8AD900346019 /* CommandProcessorTests.swift */; };
@@ -291,6 +293,8 @@
 		7B27C5AD274AE2E40095B9BF /* ExpressionTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTokenizerTests.swift; sourceTree = "<group>"; };
 		7B27C5AF274B23760095B9BF /* ScriptContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptContext.swift; sourceTree = "<group>"; };
 		7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetCommandHandler.swift; sourceTree = "<group>"; };
+		7B3B9A1827596F390035D731 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7B3B9A192759DB200035D731 /* IconLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconLoader.swift; sourceTree = "<group>"; };
 		7B956B40274F8AD900346019 /* CommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandProcessorTests.swift; sourceTree = "<group>"; };
 		7B956B422750557000346019 /* ScriptLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptLoader.swift; sourceTree = "<group>"; };
 		7B956B4527517B0700346019 /* VitalsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsBar.swift; sourceTree = "<group>"; };
@@ -544,6 +548,7 @@
 				F98B4912246FA438000E2D92 /* TriggerLoader.swift */,
 				F9CA205F24664D4100A92736 /* VariablesLoader.swift */,
 				F969A0FA23A4B7CF00408CE5 /* WindowSettings.swift */,
+				7B3B9A192759DB200035D731 /* IconLoader.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -672,6 +677,7 @@
 				F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */,
 				F98B491A24709CAE000E2D92 /* RegexTester.swift */,
 				F9BCF30222E177E200C7F7F0 /* Info.plist */,
+				7B3B9A1827596F390035D731 /* TestPlayground.playground */,
 			);
 			path = OutlanderTests;
 			sourceTree = "<group>";
@@ -903,6 +909,7 @@
 				7BA27B4725DF8ECA00A88B80 /* ScriptTokenizer.swift in Sources */,
 				F98B4918246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F98B49262470F685000E2D92 /* Events.swift in Sources */,
+				7B3B9A1A2759DB200035D731 /* IconLoader.swift in Sources */,
 				7BDF5C88272736300020A3B0 /* MacroExtensions.swift in Sources */,
 				7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
@@ -1029,6 +1036,7 @@
 				7B228B1E273871720052610B /* Pathfinder.swift in Sources */,
 				F98B4907246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				F98B4911246FA149000E2D92 /* SubstituteLoaderTests.swift in Sources */,
+				7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */,
 				7BA27B5825DF966400A88B80 /* ScriptTokenizerTests.swift in Sources */,
 				F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				7B956B442750557000346019 /* ScriptLoader.swift in Sources */,

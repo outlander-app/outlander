@@ -17,7 +17,7 @@ class InMemoryFileSystem: FileSystem {
     }
 
     func fileExists(_: URL) -> Bool {
-        fatalError()
+        return false
     }
 
     func load(_: URL) -> Data? {

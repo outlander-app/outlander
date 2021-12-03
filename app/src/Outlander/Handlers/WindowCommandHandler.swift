@@ -20,7 +20,7 @@ class WindowCommandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        var commands = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var commands = command[7...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         if commands.hasPrefix("reload") || commands.hasPrefix("load") {
             let loader = WindowLayoutLoader(files)

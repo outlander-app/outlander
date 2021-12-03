@@ -55,7 +55,6 @@ class ScriptLoader: IScriptLoader {
         paths.append(context.applicationSettings.paths.scripts)
 
         for folder in files.foldersIn(directory: context.applicationSettings.paths.scripts) {
-            print("adding folder \(folder)")
             paths.append(folder)
         }
 

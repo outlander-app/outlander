@@ -123,7 +123,7 @@ class VariableReplacerTests: XCTestCase {
         }
 
         measure {
-            _ = replacer.replace("$weapons(0  $exits[1]  $lefthand $Large_Edged.LearningRate", globalVars: variables)
+            _ = replacer.replace("$weapons(0  $exits[1]  $lefthandother $Large_Edged.LearningRate", globalVars: variables)
         }
     }
 }

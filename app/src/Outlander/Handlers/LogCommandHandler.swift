@@ -44,7 +44,7 @@ class LogCommandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        var commands = command[4...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var commands = command[4...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         let regex = RegexFactory.get("^(>([\\w\\.\\$%-]+)\\s)?(.*)")
         guard let match = regex?.firstMatch(&commands) else {

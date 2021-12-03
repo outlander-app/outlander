@@ -16,10 +16,10 @@ class ScriptRunnerCommandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let input = command.dropFirst().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let input = command.dropFirst().trimmingCharacters(in: .whitespacesAndNewlines)
         let split = input.components(separatedBy: " ")
-        let name = (split.first ?? "").lowercased().trimmingCharacters(in: CharacterSet.whitespaces)
-        let maybeArguments = split.dropFirst().joined(separator: " ").trimmingCharacters(in: CharacterSet.whitespaces)
+        let name = (split.first ?? "").lowercased().trimmingCharacters(in: .whitespaces)
+        let maybeArguments = split.dropFirst().joined(separator: " ").trimmingCharacters(in: .whitespaces)
 
         context.events.post("ol:script:run", data: ["name": name, "arguments": maybeArguments])
     }
@@ -31,7 +31,7 @@ class ScriptCommandHandler: ICommandHandler {
     let validCommands = ["abort", "pause", "resume", "stop", "debug", "trace", "stacktrace", "vars"]
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let commands = command[7...].trimmingCharacters(in: .whitespacesAndNewlines)
         let commandTokens = commands.components(separatedBy: " ")
 
         guard commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) else {

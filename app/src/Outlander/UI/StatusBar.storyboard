@@ -11,7 +11,7 @@
             <objects>
                 <viewController id="bU7-R8-ocO" customClass="StatusBarViewController" customModule="Outlander" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="tOy-S4-hL0" customClass="OView" customModule="Outlander" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="900" height="48"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1083" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Qk-ET-pTL">
@@ -23,7 +23,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7BZ-Gt-RQC">
-                                <rect key="frame" x="63" y="17" width="200" height="14"/>
+                                <rect key="frame" x="63" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="L: Empty" id="eXe-kJ-fuM">
                                     <font key="font" size="12" name="Menlo-Regular"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -31,7 +31,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnM-ZN-5rr">
-                                <rect key="frame" x="263" y="17" width="200" height="14"/>
+                                <rect key="frame" x="288" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="R: Empty" id="pzg-93-inc">
                                     <font key="font" size="12" name="Menlo-Regular"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -39,7 +39,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="exc-n3-J4a">
-                                <rect key="frame" x="467" y="17" width="200" height="14"/>
+                                <rect key="frame" x="517" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="S: None" id="d13-CM-FZj">
                                     <font key="font" size="12" name="Menlo-Regular"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -51,31 +51,59 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </customView>
                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HTq-Vu-h5J" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="673" y="12" width="24" height="24"/>
+                                <rect key="frame" x="793" y="12" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="stunned"/>
                                 </userDefinedRuntimeAttributes>
                             </customView>
-                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MlM-3D-8cF" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="737" y="12" width="24" height="24"/>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k8j-Hj-USM" customClass="StandingIndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="768" y="12" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="webbed"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="standing"/>
                                 </userDefinedRuntimeAttributes>
                             </customView>
                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Ft-dN-n8W" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="705" y="12" width="24" height="24"/>
+                                <rect key="frame" x="817" y="12" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="bleeding"/>
                                 </userDefinedRuntimeAttributes>
                             </customView>
-                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rnC-OD-6Cz" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
-                                <rect key="frame" x="769" y="12" width="24" height="24"/>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mtl-mN-hNt" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="841" y="12" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="poison"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="invisible"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="79M-DQ-0Bs" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="865" y="12" width="24" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="hidden"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="69U-4i-Sqv" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="889" y="12" width="24" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="joined"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MlM-3D-8cF" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="913" y="12" width="24" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="webbed"/>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rnC-OD-6Cz" customClass="IndicatorView" customModule="Outlander" customModuleProvider="target">
+                                <rect key="frame" x="937" y="12" width="24" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="poisoned"/>
                                 </userDefinedRuntimeAttributes>
                             </customView>
                         </subviews>
@@ -89,18 +117,22 @@
                     <connections>
                         <outlet property="bleedingIcon" destination="5Ft-dN-n8W" id="isY-2j-CLs"/>
                         <outlet property="directionsView" destination="zKC-tv-RP1" id="7gM-c9-hpq"/>
+                        <outlet property="hiddenIcon" destination="79M-DQ-0Bs" id="Yuh-Id-Glm"/>
+                        <outlet property="invisibleIcon" destination="mtl-mN-hNt" id="gYy-XS-1mn"/>
+                        <outlet property="joinedIcon" destination="69U-4i-Sqv" id="Kmw-UQ-yXx"/>
                         <outlet property="leftHandLabel" destination="7BZ-Gt-RQC" id="gxR-cQ-JcX"/>
                         <outlet property="poisonedIcon" destination="rnC-OD-6Cz" id="R6q-2V-wsA"/>
                         <outlet property="rightHandLabel" destination="dnM-ZN-5rr" id="rfV-gk-knu"/>
                         <outlet property="roundtimeLabel" destination="4Qk-ET-pTL" id="WyV-RA-YHM"/>
                         <outlet property="spellLabel" destination="exc-n3-J4a" id="XMw-WN-Tsj"/>
+                        <outlet property="standingIcon" destination="k8j-Hj-USM" id="EXO-FV-K86"/>
                         <outlet property="stunnedIcon" destination="HTq-Vu-h5J" id="CQJ-WI-mqT"/>
                         <outlet property="webbedIcon" destination="MlM-3D-8cF" id="QfE-8g-wja"/>
                     </connections>
                 </viewController>
                 <customObject id="9uD-mB-xHs" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="120" y="125"/>
+            <point key="canvasLocation" x="211.5" y="125"/>
         </scene>
     </scenes>
 </document>

@@ -14,7 +14,7 @@ class GotoComandHandler: ICommandHandler {
     let log = LogManager.getLog(String(describing: GotoComandHandler.self))
 
     func handle(_ command: String, with context: GameContext) {
-        let area = command[5...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let area = command[5...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard let zone = context.mapZone, let startingRoom = context.globalVars["roomid"] else {
             return

@@ -304,7 +304,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        let indicators = ["bleeding", "stunned", "poisoned", "webbed", "burning"]
+        let indicators = ["bleeding", "stunned", "poisoned", "webbed", "burning", "standing", "sitting", "kneeling", "prone", "dead", "hidden", "invisible", "joined"]
 
         gameContext.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {
@@ -747,6 +747,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let storyboard = NSStoryboard(name: "StatusBar", bundle: Bundle.main)
         statusBarController = storyboard.instantiateInitialController() as? StatusBarViewController
         statusBar.subviews.append(statusBarController!.view)
+        statusBarController?.loadImages(context: gameContext)
     }
 
     func removeAllWindows() {

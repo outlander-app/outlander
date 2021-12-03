@@ -274,7 +274,7 @@ class Script {
             lastNextCount = 0
         }
 
-        guard lastNextCount <= 250 else {
+        guard lastNextCount <= 1000 else {
             printStacktrace()
             sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
             cancel()
@@ -572,15 +572,15 @@ class Script {
         for var line in scriptFile.lines {
             index += 1
 
-            if line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) == "" {
+            if line.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
                 continue
             }
 
             if let includeMatch = includeRegex.firstMatch(&line) {
                 guard let include = includeMatch.valueAt(index: 1) else { continue }
-                var includeName = include.trimmingCharacters(in: CharacterSet.whitespaces)
+                var includeName = include.trimmingCharacters(in: .whitespaces)
                 if includeName.hasSuffix(".cmd") {
-                    includeName = String(includeName.dropLast(4)).trimmingCharacters(in: CharacterSet.whitespaces)
+                    includeName = String(includeName.dropLast(4)).trimmingCharacters(in: .whitespaces)
                 }
                 guard includeName != scriptName, includeName != self.fileName else {
                     sendText("script '\(scriptName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: scriptName)
@@ -590,7 +590,7 @@ class Script {
                 initialize(includeName, isInclude: true)
             } else {
                 let scriptLine = ScriptLine(
-                    line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),
+                    line.trimmingCharacters(in: .whitespacesAndNewlines),
                     fileName: scriptName,
                     lineNumber: index
                 )
@@ -698,7 +698,7 @@ class Script {
         }
 
         let maybeToggle = context.replaceVars(toggle)
-        let enabled = maybeToggle.trimmingCharacters(in: CharacterSet.whitespaces).lowercased() == "on"
+        let enabled = maybeToggle.trimmingCharacters(in: .whitespaces).lowercased() == "on"
 
         notify("action \(name) \(maybeToggle)", debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
 

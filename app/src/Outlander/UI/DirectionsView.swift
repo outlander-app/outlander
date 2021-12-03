@@ -8,12 +8,29 @@
 
 import Cocoa
 
+extension NSImage {
+    var pngData: Data? {
+        guard let tiffRepresentation = tiffRepresentation, let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else { return nil }
+        return bitmapImage.representation(using: .png, properties: [:])
+    }
+
+    @discardableResult
+    func pngWrite(to url: URL, options: Data.WritingOptions = .atomic) -> Bool {
+        do {
+            try pngData?.write(to: url, options: options)
+            return true
+        } catch {
+            print(error)
+            return false
+        }
+    }
+}
+
 class IndicatorView: NSView {
-    var image = NSImage(named: "bleeding")
+    var images: [String: NSImage] = [:]
 
     @IBInspectable var imageName: String = "bleeding" {
         didSet {
-            image = NSImage(named: imageName)
             needsDisplay = true
         }
     }
@@ -30,24 +47,30 @@ class IndicatorView: NSView {
 
     override public func draw(_: NSRect) {
         if toggle {
-            image?.draw(in: bounds)
+            images[imageName]?.draw(in: bounds)
         }
     }
 }
 
+class StandingIndicatorView: IndicatorView {
+    @IBInspectable var isPlayerDead: Bool = false {
+        didSet {
+            needsDisplay = true
+        }
+    }
+
+    override public func draw(_: NSRect) {
+        if isPlayerDead {
+            images["dead"]?.draw(in: bounds)
+            return
+        }
+
+        images[imageName]?.draw(in: bounds)
+    }
+}
+
 class DirectionsView: NSView {
-    var dir = NSImage(named: "directions-dark")
-    var north = NSImage(named: "north")
-    var south = NSImage(named: "south")
-    var east = NSImage(named: "east")
-    var west = NSImage(named: "west")
-    var northeast = NSImage(named: "northeast")
-    var northwest = NSImage(named: "northwest")
-    var southeast = NSImage(named: "southeast")
-    var southwest = NSImage(named: "southwest")
-    var out = NSImage(named: "out")
-    var up = NSImage(named: "up")
-    var down = NSImage(named: "down")
+    var images: [String: NSImage] = [:]
 
     var availableDirections: [String] = [] {
         didSet {
@@ -60,50 +83,50 @@ class DirectionsView: NSView {
     }
 
     override public func draw(_: NSRect) {
-        dir?.draw(in: bounds)
+        images["directions"]?.draw(in: bounds)
 
         if availableDirections.contains("north") {
-            north?.draw(in: bounds)
+            images["north"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("south") {
-            south?.draw(in: bounds)
+            images["south"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("east") {
-            east?.draw(in: bounds)
+            images["east"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("west") {
-            west?.draw(in: bounds)
+            images["west"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("northeast") {
-            northeast?.draw(in: bounds)
+            images["northeast"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("northwest") {
-            northwest?.draw(in: bounds)
+            images["northwest"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("southeast") {
-            southeast?.draw(in: bounds)
+            images["southeast"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("southwest") {
-            southwest?.draw(in: bounds)
+            images["southwest"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("up") {
-            up?.draw(in: bounds)
+            images["up"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("down") {
-            down?.draw(in: bounds)
+            images["down"]?.draw(in: bounds)
         }
 
         if availableDirections.contains("out") {
-            out?.draw(in: bounds)
+            images["out"]?.draw(in: bounds)
         }
     }
 }

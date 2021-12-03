@@ -445,11 +445,11 @@ class ActionMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd()).components(separatedBy: "when").map {
-            $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            $0.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         if rest.count == 1, let name = readName(rest[0]) {
-            let toggle = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let toggle = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: .whitespacesAndNewlines)
             context.target.append(.actionToggle(String(name), String(toggle)))
             return nil
         }
@@ -458,7 +458,7 @@ class ActionMode: IScriptReaderMode {
             return nil
         }
         if let name = readName(rest[0]) {
-            let action = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let action = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: .whitespacesAndNewlines)
             context.target.append(.action(name, action, rest[1]))
         }
         context.target.append(.action("", rest[0], rest[1]))
@@ -563,14 +563,14 @@ class ElseMode: IScriptReaderMode {
             return ElseIfMode()
         }
 
-        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let maybeBrace = String(context.text.parseToEnd()).trimmingCharacters(in: .whitespacesAndNewlines)
 
         if maybeThen == "then" && maybeBrace != "{", let token = ScriptTokenizer().read(maybeBrace) {
             context.target.append(.elseSingle(token))
             return nil
         }
 
-        var fullText = "\(maybeThen) \(maybeBrace)".trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var fullText = "\(maybeThen) \(maybeBrace)".trimmingCharacters(in: .whitespacesAndNewlines)
         let surrounded = fullText.hasPrefix("{") && fullText.hasSuffix("}")
 
         if !surrounded && (maybeThen == "{" || maybeBrace == "{") {
@@ -655,7 +655,7 @@ class IfArgMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let maybeThen = String(context.text.parseWord())
         let rest = String(context.text.parseToEnd())
-        let restTrimmed = rest.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let restTrimmed = rest.trimmingCharacters(in: .whitespacesAndNewlines)
 
         let surrounded = (maybeThen == "{" && rest.hasSuffix("}")) || (restTrimmed.hasPrefix("{") && rest.hasSuffix("}"))
 
@@ -683,12 +683,12 @@ class IfArgMode: IScriptReaderMode {
             return nil
         }
 
-        if let token = ScriptTokenizer().read((maybeThen + rest).trimmingCharacters(in: CharacterSet.whitespaces)) {
+        if let token = ScriptTokenizer().read((maybeThen + rest).trimmingCharacters(in: .whitespaces)) {
             context.target.append(.ifArgSingle(number, token))
             return nil
         }
 
-        if maybeThen.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).count == 0 {
+        if maybeThen.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
             context.target.append(.ifArgNeedsBrace(number))
             return nil
         }
@@ -713,7 +713,7 @@ class IfMode: IScriptReaderMode {
             return nil
         }
 
-        var rest = result.rest.trimmingCharacters(in: CharacterSet.whitespaces)
+        var rest = result.rest.trimmingCharacters(in: .whitespaces)
 
         let surrounded = rest.hasPrefix("{") && rest.hasSuffix("}")
 

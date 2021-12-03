@@ -209,7 +209,7 @@ class VariableReplacer {
             return input
         }
 
-        var result = replaceIndexedVars(input, context: context)
+        var result = input
 
         func doReplace() {
             for setting in context.settings {
@@ -222,6 +222,7 @@ class VariableReplacer {
         var last = result
 
         repeat {
+            result = replaceIndexedVars(result, context: context)
             doReplace()
             last = result
             count += 1
@@ -285,9 +286,22 @@ class VariableReplacer {
 
         let regexChecks = [
             "([\(prefix)]([a-zA-Z0-9_\\-.]+))",
-            "([\(prefix)]([a-zA-Z0-9_\\-]+))",
-            "([\(prefix)]([a-zA-Z0-9]+))",
         ]
+
+        // if the full key does not match, drop letters and check for any shorter matches
+        func matchAllLengths(key: String) -> String? {
+            var result: String?
+            for idx in 0 ..< key.count {
+                let test = String(key.dropLast(idx))
+                guard let val = value(test) else {
+                    continue
+                }
+                result = val + String(key.dropFirst(test.count))
+                break
+            }
+
+            return result
+        }
 
         func doReplace() {
             for pattern in regexChecks {
@@ -300,7 +314,7 @@ class VariableReplacer {
                         continue
                     }
 
-                    guard let val = value(key) else {
+                    guard let val = matchAllLengths(key: key) else {
                         continue
                     }
 

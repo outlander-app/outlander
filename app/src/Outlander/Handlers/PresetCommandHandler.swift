@@ -20,7 +20,7 @@ class PresetCommandHandler: ICommandHandler {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
+        let commands = command[7...].trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
 
         guard commands.count > 0 else {
             return

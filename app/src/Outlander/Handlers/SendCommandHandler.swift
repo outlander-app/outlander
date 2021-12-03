@@ -16,7 +16,7 @@ class SendCommandHandler: ICommandHandler {
     var next: DispatchWorkItem?
 
     func handle(_ text: String, with context: GameContext) {
-        let data = text[5...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let data = text[5...].trimmingCharacters(in: .whitespacesAndNewlines)
         let split = data.components(separatedBy: " ")
 
         if split.count > 0, let wait = Double(split[0]) {

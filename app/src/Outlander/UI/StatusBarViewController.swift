@@ -14,8 +14,12 @@ class StatusBarViewController: NSViewController {
     @IBOutlet var rightHandLabel: NSTextField!
     @IBOutlet var spellLabel: NSTextField!
     @IBOutlet var directionsView: DirectionsView?
+    @IBOutlet var standingIcon: StandingIndicatorView!
     @IBOutlet var stunnedIcon: IndicatorView!
     @IBOutlet var bleedingIcon: IndicatorView!
+    @IBOutlet var invisibleIcon: IndicatorView!
+    @IBOutlet var hiddenIcon: IndicatorView!
+    @IBOutlet var joinedIcon: IndicatorView!
     @IBOutlet var webbedIcon: IndicatorView!
     @IBOutlet var poisonedIcon: IndicatorView!
 
@@ -63,50 +67,96 @@ class StatusBarViewController: NSViewController {
         }
     }
 
-    var bleeding: Bool = false {
-        didSet {
-            setValues()
-        }
-    }
-
-    var stunned: Bool = false {
-        didSet {
-            setValues()
-        }
-    }
-
-    var poisoned: Bool = false {
-        didSet {
-            setValues()
-        }
-    }
-
-    var webbed: Bool = false {
-        didSet {
-            setValues()
-        }
-    }
+    var indicators: [String: Bool] = [
+        "dead": false,
+        "standing": false,
+        "kneeling": false,
+        "sitting": false,
+        "prone": false,
+        "stunned": false,
+        "bleeding": false,
+        "invisible": false,
+        "hidden": false,
+        "joined": false,
+        "webbed": false,
+        "poisoned": false,
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    func loadImages(context: GameContext) {
+        let files = LocalFileSystem(context.applicationSettings)
+        let images = IconLoader(files).load(context.applicationSettings.paths)
+
+        standingIcon.images = mapImages(files, images, targets: [
+            "dead",
+            "standing",
+            "sitting",
+            "kneeling",
+            "prone",
+        ])
+
+        bleedingIcon.images = mapImages(files, images, targets: [
+            "bleeding",
+        ])
+
+        stunnedIcon.images = mapImages(files, images, targets: [
+            "stunned",
+        ])
+
+        invisibleIcon.images = mapImages(files, images, targets: [
+            "invisible",
+        ])
+
+        hiddenIcon.images = mapImages(files, images, targets: [
+            "hidden",
+        ])
+
+        joinedIcon.images = mapImages(files, images, targets: [
+            "joined",
+        ])
+
+        webbedIcon.images = mapImages(files, images, targets: [
+            "webbed",
+        ])
+
+        poisonedIcon.images = mapImages(files, images, targets: [
+            "poisoned",
+        ])
+        
+        directionsView?.images = mapImages(files, images, targets: [
+            "directions",
+            "north",
+            "south",
+            "east",
+            "west",
+            "northeast",
+            "northwest",
+            "southeast",
+            "southwest",
+            "out",
+            "up",
+            "down"
+        ])
 
         setValues()
     }
 
+    func mapImages(_ files: FileSystem, _ images: [String: URL], targets: [String]) -> [String: NSImage] {
+        var res: [String: NSImage] = [:]
+        files.access {
+            res = Dictionary(targets.map { ($0, NSImage(contentsOf: images[$0]!)!) }) { name, _ in name }
+        }
+        return res
+    }
+
     func setIndicator(name: String, enabled: Bool) {
         DispatchQueue.main.async { [self] in
-            switch name {
-            case "bleeding":
-                bleeding = enabled
-            case "stunned":
-                stunned = enabled
-            case "poisoned":
-                poisoned = enabled
-            case "webbed":
-                webbed = enabled
-            default:
-                print("** unknown indicator \(name):\(enabled) **")
-            }
+            print("Setting \(name) to \(enabled)")
+            self.indicators[name] = enabled
+            self.setValues()
         }
     }
 
@@ -128,9 +178,24 @@ class StatusBarViewController: NSViewController {
 
         directionsView?.availableDirections = avaialbleDirections
 
-        bleedingIcon?.toggle = bleeding
-        poisonedIcon?.toggle = poisoned
-        stunnedIcon?.toggle = stunned
-        webbedIcon?.toggle = webbed
+        stunnedIcon?.toggle = indicators["stunned"] ?? false
+        bleedingIcon?.toggle = indicators["bleeding"] ?? false
+        invisibleIcon?.toggle = indicators["invisible"] ?? false
+        hiddenIcon?.toggle = indicators["hidden"] ?? false
+        joinedIcon?.toggle = indicators["joined"] ?? false
+        webbedIcon?.toggle = indicators["webbed"] ?? false
+        poisonedIcon?.toggle = indicators["poisoned"] ?? false
+
+        standingIcon?.isPlayerDead = indicators["dead"] ?? false
+
+        if indicators["standing"] == true {
+            standingIcon?.imageName = "standing"
+        } else if indicators["kneeling"] == true {
+            standingIcon?.imageName = "kneeling"
+        } else if indicators["sitting"] == true {
+            standingIcon?.imageName = "sitting"
+        } else if indicators["prone"] == true {
+            standingIcon?.imageName = "prone"
+        }
     }
 }

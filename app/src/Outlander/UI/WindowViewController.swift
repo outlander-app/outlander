@@ -161,8 +161,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             NSAttributedString.Key.cursor: NSCursor.pointingHand,
         ]
 
-        // queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
-        queue = DispatchQueue.main
+        queue = DispatchQueue(label: "ol:\(name):window\(UUID().uuidString)", qos: .userInteractive)
+//        queue = DispatchQueue.main
 
         if textView.menu?.item(withTitle: "Clear") == nil {
             textView.menu?.insertItem(NSMenuItem.separator(), at: 0)
@@ -366,6 +366,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     func processHighlights(_ text: NSMutableAttributedString, context: GameContext, highlightMonsters: Bool = false) {
         var highlights = context.highlights.active()
 
+//        print("processing highlights: main thread? \(Thread.isMainThread)")
+
         var str = text.string
 
         if highlightMonsters {
@@ -378,7 +380,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         for h in highlights {
-            guard !h.pattern.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty else {
+            guard !h.pattern.trimmingCharacters(in: .whitespaces).isEmpty else {
                 continue
             }
             guard let regex = RegexFactory.get(h.pattern) else {
@@ -441,7 +443,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         var keep: [String] = []
 
-        let lines = text.components(separatedBy: CharacterSet.newlines)
+        let lines = text.components(separatedBy: .newlines)
 
         for line in lines {
             var gagged = false

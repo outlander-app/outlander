@@ -22,7 +22,7 @@ class PlayCommandHandler: NSObject, ICommandHandler, NSSoundDelegate {
     }
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[5...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).components(separatedBy: " ")
+        let commands = command[5...].trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
 
         guard commands.count > 0 else {
             removeStoppedSounds()

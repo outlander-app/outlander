@@ -15,7 +15,7 @@ class GagCommandHandler: ICommandHandler {
     let validCommands = ["add", "clear", "load", "reload", "list", "save"]
 
     func handle(_ command: String, with context: GameContext) {
-        let commandStripped = command[4...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let commandStripped = command[4...].trimmingCharacters(in: .whitespacesAndNewlines)
         let commandTokens = commandStripped.components(separatedBy: " ")
 
         if commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) {

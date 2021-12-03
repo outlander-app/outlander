@@ -62,12 +62,16 @@ class CommandProcesssor {
     }
 
     func process(_ command: Command2, with context: GameContext) {
+        let cmdText = command.command.trimLeadingWhitespace()
+        if cmdText.isEmpty {
+            return
+        }
         if !command.isSystemCommand {
-            context.globalVars["lastcommand"] = command.command
+            context.globalVars["lastcommand"] = cmdText
         }
 
         let replacer = VariableReplacer()
-        var maybeCommand = replacer.replace(command.command, globalVars: context.globalVars)
+        var maybeCommand = replacer.replace(cmdText, globalVars: context.globalVars)
         maybeCommand = processAliases(maybeCommand, with: context)
         maybeCommand = replacer.replace(maybeCommand, globalVars: context.globalVars)
 

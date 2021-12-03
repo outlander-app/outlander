@@ -47,6 +47,8 @@ class ApplicationLoader {
     func load(_ paths: ApplicationPaths, context: GameContext) {
         ensureFolders(paths: paths, context: context)
 
+        _ = IconLoader(files).load(paths)
+
         let fileUrl = paths.config.appendingPathComponent("app.cfg")
 
         guard let data = files.load(fileUrl) else {
@@ -84,6 +86,7 @@ class ApplicationLoader {
             paths.logs,
             paths.sounds,
             paths.scripts,
+            paths.icons,
             context.applicationSettings.currentProfilePath,
         ]
 
@@ -118,13 +121,13 @@ class ProfileConfigLoader {
         let profile = context.applicationSettings.profile
 
         let account = RegexFactory.get("Account: (.+)")?.firstMatch(&content)
-        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
+        profile.account = account?.valueAt(index: 1)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
         let game = RegexFactory.get("Game: (.+)")?.firstMatch(&content)
-        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
+        profile.game = game?.valueAt(index: 1)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
         let character = RegexFactory.get("Character: (.+)")?.firstMatch(&content)
-        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
+        profile.character = character?.valueAt(index: 1)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
         let logging = RegexFactory.get("Logging: (.+)")?.firstMatch(&content)
         profile.logging = logging?.valueAt(index: 1)?.toBool() ?? false
@@ -133,10 +136,10 @@ class ProfileConfigLoader {
         profile.rawLogging = rawlogging?.valueAt(index: 1)?.toBool() ?? false
 
         let layout = RegexFactory.get("Layout: (.+)")?.firstMatch(&content)
-        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? "default.cfg"
+        profile.layout = layout?.valueAt(index: 1)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "default.cfg"
 
         let ignore = RegexFactory.get("MonsterIgnore: (.+)")?.firstMatch(&content)
-        profile.monsterIgnore = ignore?.valueAt(index: 1)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) ?? ""
+        profile.monsterIgnore = ignore?.valueAt(index: 1)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     }
 
     func save(_ context: GameContext) {

@@ -100,7 +100,7 @@ class ExpressionBodyMode: IExpressionReaderMode {
         context.text.consumeSpaces()
         context.hadThen = hadThen
 
-        let result = ExpressionTokenizer(ExpressionMode()).read(expression.trimmingCharacters(in: CharacterSet.whitespaces))
+        let result = ExpressionTokenizer(ExpressionMode()).read(expression.trimmingCharacters(in: .whitespaces))
 
         guard let exp = result.expression else {
             return nil

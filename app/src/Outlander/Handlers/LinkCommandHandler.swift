@@ -12,7 +12,7 @@ class LinkCommandHandler: ICommandHandler {
     var command = "#link"
 
     func handle(_ command: String, with context: GameContext) {
-        let commands = command[5...].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let commands = command[5...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard handleLongFormat(commands, context: context) else {
             _ = handleShortFormat(commands, context: context)

@@ -64,7 +64,7 @@ extension String {
     private static let falseValues = ["false", "no", "0", "off", "-"]
 
     func toBool() -> Bool? {
-        let lowerSelf = trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        let lowerSelf = trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
 
         if String.trueValues.contains(lowerSelf) {
             return true
@@ -163,5 +163,12 @@ extension String {
             }
         }
         return false
+    }
+
+    func trimLeadingWhitespace() -> String {
+        guard let index = firstIndex(where: { !CharacterSet(charactersIn: String($0)).isSubset(of: .whitespaces) }) else {
+            return self
+        }
+        return String(self[index...])
     }
 }

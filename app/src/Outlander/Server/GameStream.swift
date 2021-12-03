@@ -502,7 +502,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
         while let c = first, c != Self.rightParen {
             switch c {
             case Self.comma:
-                results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+                results.append(Self.string(current).trimmingCharacters(in: .whitespaces))
                 current = []
                 _ = popFirst()
             case Self.quote:
@@ -518,7 +518,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
         }
 
         if current.count > 0 {
-            results.append(Self.string(current).trimmingCharacters(in: CharacterSet.whitespaces))
+            results.append(Self.string(current).trimmingCharacters(in: .whitespaces))
         }
 
         return results
@@ -1027,7 +1027,7 @@ class GameStream {
             tag?.window = lastStreamId
 
             if inStream, lastStreamId == "logons" || lastStreamId == "death" {
-                let trimmed = tag?.text.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""
+                let trimmed = tag?.text.trimmingCharacters(in: .whitespaces) ?? ""
                 tag?.text = trimmed
             }
 
