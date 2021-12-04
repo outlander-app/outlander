@@ -12,8 +12,7 @@ class ParseCommandHandler: ICommandHandler {
     var command = "#parse"
 
     func handle(_ text: String, with context: GameContext) {
-        let data = text[6...].trimmingCharacters(in: .whitespacesAndNewlines)
-
+        let data = text[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
         context.events.post("ol:game:parse", data: data)
     }
 }

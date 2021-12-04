@@ -41,8 +41,13 @@ class ClassSettings {
             let components = values.components(separatedBy: " ")
 
             for comp in components {
-                let s = parseSetting(comp)
-                set(s.key, value: s.value)
+                if let s = parseSetting(comp) {
+                    if s.key == "all" {
+                        s.value ? allOn() : allOff()
+                    } else {
+                        set(s.key, value: s.value)
+                    }
+                }
             }
 
             return
@@ -93,12 +98,20 @@ class ClassSettings {
         let symbol = list[1]
         let value = symbol.toBool()
 
+        guard !key.isEmpty else {
+            return nil
+        }
+
         return ClassSetting(key: key.lowercased(), value: value ?? false)
     }
 
-    func parseSetting(_ val: String) -> ClassSetting {
+    func parseSetting(_ val: String) -> ClassSetting? {
         let key = val[1...]
         let value = String(val[0]).toBool()
+
+        guard !key.isEmpty else {
+            return nil
+        }
 
         return ClassSetting(key: key.lowercased(), value: value ?? false)
     }

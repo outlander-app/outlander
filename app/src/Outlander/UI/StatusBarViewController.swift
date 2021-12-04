@@ -154,7 +154,6 @@ class StatusBarViewController: NSViewController {
 
     func setIndicator(name: String, enabled: Bool) {
         DispatchQueue.main.async { [self] in
-            print("Setting \(name) to \(enabled)")
             self.indicators[name] = enabled
             self.setValues()
         }

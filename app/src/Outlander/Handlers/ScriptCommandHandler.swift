@@ -30,8 +30,8 @@ class ScriptCommandHandler: ICommandHandler {
 
     let validCommands = ["abort", "pause", "resume", "stop", "debug", "trace", "stacktrace", "vars"]
 
-    func handle(_ command: String, with context: GameContext) {
-        let commands = command[7...].trimmingCharacters(in: .whitespacesAndNewlines)
+    func handle(_ input: String, with context: GameContext) {
+        let commands = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
         let commandTokens = commands.components(separatedBy: " ")
 
         guard commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) else {

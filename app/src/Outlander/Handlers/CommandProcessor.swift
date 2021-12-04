@@ -23,6 +23,8 @@ struct Command2 {
 }
 
 class CommandProcesssor {
+    private var pluginManager: OPlugin
+
     private var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
         VarCommandHandler(),
@@ -39,13 +41,12 @@ class CommandProcesssor {
         LinkCommandHandler(),
     ]
 
-    private var pluginManager: OPlugin
-
     init(_ files: FileSystem, pluginManager: OPlugin) {
+        handlers.append(MapperComandHandler(files))
         handlers.append(ClassCommandHandler(files))
+        handlers.append(SubsCommandHandler(files))
         handlers.append(WindowCommandHandler(files))
         handlers.append(PlayCommandHandler(files))
-        handlers.append(MapperComandHandler(files))
         handlers.append(LogCommandHandler(files))
         handlers.append(PresetCommandHandler(files))
 

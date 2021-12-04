@@ -843,9 +843,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
     }
 
-    var recongizedKeyCodes = [
-        51, /* DELETE */
-    ]
+    enum KeyCodes: UInt16 {
+        case delete = 51
+        case home = 115
+        case end = 119
+        case leftArrow = 123
+        case rightArrow = 134
+    }
 
     func createWindow(_ settings: WindowData) -> WindowViewController? {
         let storyboard = NSStoryboard(name: "Window", bundle: Bundle.main)
@@ -856,23 +860,37 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
+            let key = KeyCodes(rawValue: event.keyCode)
+
             let matches = regex.allMatches(&val)
 
-            guard !self.commandInput.hasFocus() && matches.count > 0 || self.recongizedKeyCodes.contains(Int(event.keyCode)) else {
+            guard !self.commandInput.hasFocus(), matches.count > 0 || key != nil else {
                 return
             }
 
             var newVal = self.commandInput.stringValue
+            var targetIndex = newVal.count
 
-            if Int(event.keyCode) == 51 /* DELETE */ {
+            switch key {
+            case .delete:
                 newVal = String(newVal.dropLast(1))
-            } else {
+                targetIndex = newVal.count
+            case .leftArrow:
+                targetIndex -= 1
+            case .rightArrow:
+                break
+            case .home:
+                targetIndex = 0
+            case .end:
+                break
+            default:
                 newVal = newVal + val
+                targetIndex = newVal.count
             }
 
             self.commandInput.stringValue = newVal
             self.commandInput.selectText(self)
-            self.commandInput.currentEditor()?.selectedRange = NSMakeRange(newVal.count, 0)
+            self.commandInput.currentEditor()?.selectedRange = NSMakeRange(targetIndex, 0)
         }
 
         controller?.gameContext = gameContext

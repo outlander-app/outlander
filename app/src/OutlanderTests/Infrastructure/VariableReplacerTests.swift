@@ -57,6 +57,12 @@ class VariableReplacerTests: XCTestCase {
         XCTAssertEqual("one", result)
     }
 
+    func test_indexed_parens_variable_dot() {
+        variables["Parse.Arcana"] = "1200|00"
+        let result = replacer.replace("$Parse.Arcana(0)", globalVars: variables)
+        XCTAssertEqual("1200", result)
+    }
+
     func test_indexed_parens_missing() {
         variables["weapons"] = "one|two|three"
         let result = replacer.replace("$weapons(0", globalVars: variables)

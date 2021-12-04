@@ -65,18 +65,30 @@ public class HistoryTextField: NSTextField {
         super.draw(dirtyRect)
     }
 
-    override public func performKeyEquivalent(with event: NSEvent) -> Bool {
-        let s = event.charactersIgnoringModifiers ?? ""
-        let s1 = s.unicodeScalars
-        let s2 = s1[s1.startIndex].value
-        let s3 = Int(s2)
+    enum KeyCodes: UInt16 {
+        case home = 115
+        case end = 119
+        case up = 126
+        case down = 125
+    }
 
-        switch s3 {
-        case NSUpArrowFunctionKey:
+    override public func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let key = KeyCodes(rawValue: event.keyCode)
+
+        switch key {
+        case .up:
             previous()
             return true
-        case NSDownArrowFunctionKey:
+        case .down:
             next()
+            return true
+        case .home:
+            selectText(self)
+            currentEditor()?.selectedRange = NSMakeRange(0, 0)
+            return true
+        case .end:
+            selectText(self)
+            currentEditor()?.selectedRange = NSMakeRange(stringValue.count, 0)
             return true
         default:
             break

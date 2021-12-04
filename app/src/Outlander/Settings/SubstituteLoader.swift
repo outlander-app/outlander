@@ -15,6 +15,7 @@ struct Substitute {
 }
 
 class Substitutes {
+    private let lock = DispatchSemaphore(value: 1)
     private var subs: [Substitute]
     private var cache: [Substitute] = []
 
@@ -23,7 +24,9 @@ class Substitutes {
     }
 
     var count: Int {
-        subs.count
+        lock.wait()
+        defer { lock.signal() }
+        return subs.count
     }
 
     func replace(with subs: [Substitute]) {
@@ -31,25 +34,35 @@ class Substitutes {
     }
 
     func add(_ sub: Substitute) {
+        lock.wait()
         subs.append(sub)
+        lock.signal()
     }
 
     func all() -> [Substitute] {
-        subs
+        lock.wait()
+        defer { lock.signal() }
+        return subs
     }
 
     func active() -> [Substitute] {
-        cache
+        lock.wait()
+        defer { lock.signal() }
+        return cache
     }
 
     func updateActiveCache(with disabled: [String]) {
+        lock.wait()
         cache = subs
             .filter { h in (h.className == nil || h.className?.count == 0 || !disabled.contains(h.className!)) && h.pattern.count > 0 }
             .sorted { $0.pattern.count > $1.pattern.count }
+        lock.signal()
     }
 
     func removeAll() {
+        lock.wait()
         subs.removeAll()
+        lock.signal()
     }
 }
 

@@ -1,15 +1,15 @@
 //
-//  PresetCommandHandler.swift
+//  SubsCommandHandler.swift
 //  Outlander
 //
-//  Created by Joe McBride on 12/2/21.
+//  Created by Joe McBride on 12/3/21.
 //  Copyright © 2021 Joe McBride. All rights reserved.
 //
 
 import Foundation
 
-class PresetCommandHandler: ICommandHandler {
-    var command = "#preset"
+class SubsCommandHandler: ICommandHandler {
+    var command = "#subs"
 
     let validCommands = ["clear", "reload", "load", "save", "help"]
 
@@ -29,14 +29,14 @@ class PresetCommandHandler: ICommandHandler {
 
         switch commands[0].lowercased() {
         case "clear":
-            context.presets.removeAll()
-            context.events.echoText("Presets cleared")
+            context.substitutes.removeAll()
+            context.events.echoText("Subs cleared")
         case "load", "reload":
-            PresetLoader(files).load(context.applicationSettings, context: context)
-            context.events.echoText("Presets reloaded")
+            SubstituteLoader(files).load(context.applicationSettings, context: context)
+            context.events.echoText("Subs reloaded")
         case "save":
-            PresetLoader(files).save(context.applicationSettings, presets: context.presets)
-            context.events.echoText("Presets saved")
+            SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes.all())
+            context.events.echoText("Subs saved")
         case "help":
             fallthrough
         default:
@@ -45,11 +45,11 @@ class PresetCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("#preset commands:")
+        context.events.echoText("#subs commands:")
         context.events.echoText("  clear, reload, save, help")
         context.events.echoText("  ex:")
-        context.events.echoText("    #preset clear")
-        context.events.echoText("    #preset reload")
-        context.events.echoText("    #preset save")
+        context.events.echoText("    #subs clear")
+        context.events.echoText("    #subs reload")
+        context.events.echoText("    #subs save")
     }
 }

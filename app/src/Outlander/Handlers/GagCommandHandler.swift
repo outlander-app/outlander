@@ -55,6 +55,7 @@ class GagCommandHandler: ICommandHandler {
 
                 if context.gags.isEmpty {
                     context.events.echoText("There are no gags saved.")
+                    return
                 }
 
                 context.events.echoText("Gags:")

@@ -104,7 +104,7 @@ public class Stack<T> {
 }
 
 class MemoizeHash<T: Hashable, U> {
-    let lockQueue = DispatchQueue(label: "com.outlanderapp.memoize.\(UUID().uuidString)")
+    private let lock = NSLock()
     var memo = [T: U]()
     var build: (T) -> U?
 
@@ -113,15 +113,16 @@ class MemoizeHash<T: Hashable, U> {
     }
 
     subscript(key: T) -> U? {
-        lockQueue.sync(flags: .barrier) {
-            if let res = memo[key] {
-                return res
-            }
-
-            let r = self.build(key)
-            memo[key] = r
-            return r
+        lock.lock()
+        if let res = memo[key] {
+            defer { lock.unlock() }
+            return res
         }
+
+        let r = build(key)
+        memo[key] = r
+        defer { lock.unlock() }
+        return r
     }
 }
 

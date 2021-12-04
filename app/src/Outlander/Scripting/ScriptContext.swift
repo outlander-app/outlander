@@ -125,13 +125,14 @@ class ScriptContext {
             default:
                 if lineToken.isTopLevelIf {
                     // fake a true result
-                    line.ifResult = true
+                    // line.ifResult = true
                     pushCurrentLineToIfStack()
 
                     if lineToken.ifHasBody {
                         continue
                     }
 
+                    skipSingleLineIfs()
                     skipSingleLineIfElseElses()
 
                     if let next = nextLine {
@@ -152,6 +153,23 @@ class ScriptContext {
         }
 
         return false
+    }
+
+    func skipSingleLineIfs() {
+        while currentLineNumber < lines.count {
+            if let next = nextLine {
+                if next.token == nil {
+                    next.token = tokenizer.read(next.originalText)
+                }
+
+                if next.token?.isIfToken == true, next.token?.isSingleToken == true {
+                    advance()
+                    continue
+                }
+                break
+            }
+            break
+        }
     }
 
     func skipSingleLineIfElseElses() {

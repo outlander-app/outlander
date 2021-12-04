@@ -159,11 +159,25 @@ class MyWindow: NSWindow {
 
     var gameContext: GameContext?
 
+    var lastKeyWasMacro = false
+
     func registerKeyHandlers(_ gameContext: GameContext) {
         self.gameContext = gameContext
 
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
-            if self.macroKeyDown(with: $0) { return nil }
+            if self.macroKeyDown(with: $0) {
+                self.lastKeyWasMacro = true
+                return nil
+            }
+            self.lastKeyWasMacro = false
+            return $0
+        }
+
+        NSEvent.addLocalMonitorForEvents(matching: .keyUp) {
+            if self.lastKeyWasMacro {
+                self.lastKeyWasMacro = false
+                return nil
+            }
             return $0
         }
     }

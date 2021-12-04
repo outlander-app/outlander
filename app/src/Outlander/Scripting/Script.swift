@@ -150,11 +150,7 @@ class Script {
     var includeRegex: Regex
     var labelRegex: Regex
 
-    @Atomic var delayedTask: DispatchWorkItem? {
-        willSet {
-            delayedTask?.cancel()
-        }
-    }
+    var delayedTask: DispatchWorkItem?
 
     var lastNext = Date()
     var lastNextCount: Int = 0
@@ -334,9 +330,9 @@ class Script {
         }
 
         if let roundtime = context.roundtime, roundtime > 0 {
-            delayedTask = delay(roundtime, queue: lockQueue) {
+            setDelayedTask(delay(roundtime, queue: lockQueue) {
                 self.nextAfterRoundtime()
-            }
+            })
             return
         }
 
@@ -367,7 +363,7 @@ class Script {
     }
 
     private func stop() {
-        delayedTask = nil
+        clearDelayedTask()
 
         if stopped { return }
 
@@ -615,6 +611,12 @@ class Script {
             return .next
         }
 
+        if let previous = context.previousLine {
+            if previous.token?.isTopLevelIf == true, previous.token?.isSingleToken == true, !(token.isElseIfToken || token.isElseToken) {
+                context.popIfStack()
+            }
+        }
+
         return executeToken(line, token)
     }
 
@@ -627,6 +629,21 @@ class Script {
             sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
+    }
+
+    private let taskLock = NSLock()
+    private func clearDelayedTask() {
+        taskLock.lock()
+        delayedTask?.cancel()
+        delayedTask = nil
+        taskLock.unlock()
+    }
+
+    private func setDelayedTask(_ task: DispatchWorkItem) {
+        taskLock.lock()
+        delayedTask?.cancel()
+        delayedTask = task
+        taskLock.unlock()
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
@@ -645,7 +662,7 @@ class Script {
             return .exit
         }
 
-        delayedTask?.cancel()
+        clearDelayedTask()
         matchwait = nil
         matchStack.removeAll()
 
@@ -1241,7 +1258,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            delayedTask = delay(timeout, queue: lockQueue) {
+            let task = delay(timeout, queue: lockQueue) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -1249,6 +1266,7 @@ class Script {
                     self.next()
                 }
             }
+            setDelayedTask(task)
         }
 
         return .wait
@@ -1259,7 +1277,11 @@ class Script {
             return .next
         }
 
-        let val = context.variables[variable] ?? "0"
+        var val = context.variables[variable] ?? "0"
+        if val.isEmpty {
+            val = "0"
+        }
+
         let existingVariable = context.replaceVars(val)
 
         guard let existingValue = Double(existingVariable) else {
@@ -1267,7 +1289,12 @@ class Script {
             return .next
         }
 
-        let replacedNumber = context.replaceVars(number)
+        var maybeNumber = number
+        if maybeNumber.isEmpty {
+            maybeNumber = "0"
+        }
+
+        let replacedNumber = context.replaceVars(maybeNumber)
         guard let numberValue = Double(replacedNumber) else {
             sendText("unable to convert '\(replacedNumber)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .next
@@ -1368,9 +1395,9 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        delayedTask = delay(duration, queue: lockQueue) {
+        setDelayedTask(delay(duration, queue: lockQueue) {
             self.nextAfterRoundtime()
-        }
+        })
 
         return .wait
     }
@@ -1432,7 +1459,7 @@ class Script {
             context.setLabelVars([])
         }
 
-        delayedTask = nil
+        clearDelayedTask()
         matchwait = nil
         matchStack.removeAll()
 

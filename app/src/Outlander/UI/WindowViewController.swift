@@ -248,7 +248,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
         if item.action == #selector(toggleAutoScroll(sender:)) {
             let menuItem = item as! NSMenuItem
-            menuItem.state = self.mainView.displayBorder ? .on : .off
+            menuItem.state = self.autoScroll ? .on : .off
         }
         return true
     }

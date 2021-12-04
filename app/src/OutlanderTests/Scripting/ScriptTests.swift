@@ -619,6 +619,106 @@ class ScriptTests: XCTestCase {
         args: ["one"])
     }
 
+    func test_if_arg_with_then() throws {
+        try scenario([
+            "if_1 then {",
+            "  echo yep",
+            "}",
+            "echo end",
+        ],
+        expect: ["yep\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_needs_brace() throws {
+        try scenario([
+            "if_1",
+            "{",
+            "  echo yep",
+            "}",
+            "echo end",
+        ],
+        expect: ["yep\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_needs_brace_with_then() throws {
+        try scenario([
+            "if_1 then",
+            "{",
+            "  echo yep",
+            "}",
+            "echo end",
+        ],
+        expect: ["yep\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_needs_brace_with_then_elseif_single_line() throws {
+        try scenario([
+            "if_2 then",
+            "{",
+            "  echo two",
+            "}",
+            "else if_1 then echo one",
+            "echo end",
+        ],
+        expect: ["one\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_needs_brace_with_then_else_single_line() throws {
+        try scenario([
+            "if_2 then",
+            "{",
+            "  echo two",
+            "}",
+            "else echo one",
+            "echo end",
+        ],
+        expect: ["one\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_needs_brace_with_then_with_if_after() throws {
+        try scenario([
+            "if_1 then",
+            "{",
+            "  echo one",
+            "}",
+            "if 1 == 1 then echo yes",
+            "echo end",
+        ],
+        expect: ["one\n", "yes\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_inner_ifs() throws {
+        try scenario([
+            "if_1 then {",
+            "  if 1 == 1 then echo one",
+            "  if 1 == 1 then echo two",
+            "}",
+            "if 1 == 1 then echo after",
+            "echo end",
+        ],
+        expect: ["one\n", "two\n", "after\n", "end\n"],
+        args: ["one"])
+    }
+
+    func test_if_arg_inner_ifs_no_args() throws {
+        try scenario([
+            "if_1 then {",
+            "  if 1 == 1 then echo one",
+            "  if 1 == 1 then echo two",
+            "}",
+            "if 1 == 1 then echo after",
+            "echo end",
+        ],
+        expect: ["after\n", "end\n"],
+        args: [])
+    }
+
     func test_replacere() throws {
         try scenario([
             "var replacedList a juvenile wyvern,,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern",
@@ -652,16 +752,6 @@ class ScriptTests: XCTestCase {
         expect: ["an unfinished red-leucro headband\n", "some razor sharp scissors crafted from animite\n"])
     }
 
-//    func test_replacere_scenario2() throws {
-//        try scenario([
-//            "var SkillSetArray Armor|Magic|Lore|Weapon",
-//            "var tarantulaSkillSet Magic",
-//            "eval SkillSetArray replacere(\"%SkillSetArray\", \"(?i)%tarantulaSkillSets?\", \"\")",
-//            "echo %SkillSetArray",
-//        ],
-//        expect: ["a juvenile wyvern,a juvenile wyvern,a juvenile wyvern,a juvenile wyvern\n"])
-//    }
-
     func test_eval_numbers() throws {
         try scenario([
             "eval temp 1+1",
@@ -676,6 +766,23 @@ class ScriptTests: XCTestCase {
             "echo %temp",
         ],
         expect: ["3.1\n"])
+    }
+
+    func test_math_works_without_variable_previously_defined() throws {
+        try scenario([
+            "math temp - 1",
+            "echo %temp",
+        ],
+        expect: ["-1\n"])
+    }
+
+    func test_math_work_with_variable_defined_as_blank() throws {
+        try scenario([
+            "var temp",
+            "math temp - 1",
+            "echo %temp",
+        ],
+        expect: ["-1\n"])
     }
 
     func test_math_subtract_numbers_senario_1() throws {
