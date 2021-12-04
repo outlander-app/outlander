@@ -87,6 +87,7 @@ class ApplicationLoader {
             paths.sounds,
             paths.scripts,
             paths.icons,
+            paths.plugins,
             context.applicationSettings.currentProfilePath,
         ]
 

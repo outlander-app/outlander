@@ -11,7 +11,7 @@ import Foundation
 class SendCommandHandler: ICommandHandler {
     var command = "#send"
 
-    var delayedTask: DelayedTask = DelayedTask()
+    var delayedTask = DelayedTask()
     var queue = Queue<String>()
     var delayOffset: Double = 0.3
 

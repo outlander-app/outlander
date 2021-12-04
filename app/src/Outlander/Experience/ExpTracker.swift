@@ -136,6 +136,11 @@ class ExpTracker {
         learnedQueue = []
     }
 
+    func clear() {
+        skills.removeAll()
+        startOfTracking = nil
+    }
+
     func reset() {
         for skill in skills.values {
             skill.originalRanks = skill.ranks

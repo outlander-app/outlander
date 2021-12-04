@@ -117,12 +117,12 @@ class Script {
 
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
-    private var reactToStream: AtomicArray<IWantStreamInfo> = AtomicArray<IWantStreamInfo>()
+    private var reactToStream = AtomicArray<IWantStreamInfo>()
     private var actions: [IAction] = []
 
     private var gosubStack: Stack<GosubContext>
 
-    private var matchStack: AtomicArray<IMatch> = AtomicArray<IMatch>()
+    private var matchStack = AtomicArray<IMatch>()
     @Atomic() private var matchwait: Matchwait? = nil
 
     private var lastLine: ScriptLine? {
@@ -151,7 +151,7 @@ class Script {
     var labelRegex: Regex
 
 //    var delayedTask: DispatchWorkItem?
-    var delayedTask: DelayedTask = DelayedTask()
+    var delayedTask = DelayedTask()
 
     var lastNext = Date()
     var lastNextCount: Int = 0

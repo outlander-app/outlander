@@ -8,38 +8,6 @@
 
 import Foundation
 
-class LocalHost: IHost {
-    var context: GameContext
-
-    init(context: GameContext) {
-        self.context = context
-    }
-
-    func send(text: String) {
-        context.events.sendCommand(Command2(command: text, isSystemCommand: true))
-    }
-
-    func get(variable: String) -> String {
-        context.globalVars[variable] ?? ""
-    }
-
-    func set(variable: String, value: String) {
-        context.globalVars[variable] = value
-    }
-
-    func get(preset: String) -> String? {
-        guard let preset = context.presetFor(preset) else {
-            return nil
-        }
-
-        var color = preset.color
-        if let bg = preset.backgroundColor, !bg.isEmpty {
-            color = "\(color),\(bg)"
-        }
-        return color
-    }
-}
-
 class GameContext {
     var events: Events
 

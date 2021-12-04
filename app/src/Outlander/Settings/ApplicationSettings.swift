@@ -105,6 +105,10 @@ class ApplicationPaths {
     var icons: URL {
         rootUrl.appendingPathComponent("Icons")
     }
+
+    var plugins: URL {
+        rootUrl.appendingPathComponent("Plugins")
+    }
 }
 
 extension GameContext {

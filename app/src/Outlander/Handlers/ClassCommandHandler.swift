@@ -19,10 +19,10 @@ class ClassCommandHandler: ICommandHandler {
         self.files = files
     }
 
-    func handle(_ command: String, with context: GameContext) {
-        let commands = command[6...].trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
+    func handle(_ input: String, with context: GameContext) {
+        let commands = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ").filter { !$0.isEmpty }
 
-        guard commands.count >= 1, validCommands.contains(commands[0].lowercased()) else {
+        guard commands.count >= 1 else {
             displayHelp(context)
             return
         }

@@ -8,53 +8,6 @@
 
 import Foundation
 
-class PluginManager: OPlugin {
-    private var host: IHost?
-    var plugins: [OPlugin] = []
-
-    var name: String {
-        "Plugin Manager"
-    }
-
-    func initialize(host: IHost) {
-        self.host = host
-        for plugin in plugins {
-            host.send(text: "#echo Initializing Plugin '\(plugin.name)'")
-            plugin.initialize(host: host)
-        }
-    }
-
-    func variableChanged(variable: String, value: String) {
-        for plugin in plugins {
-            plugin.variableChanged(variable: variable, value: value)
-        }
-    }
-
-    func parse(input: String) -> String {
-        var result = input
-        for plugin in plugins {
-            result = plugin.parse(input: result)
-        }
-        return result
-    }
-
-    func parse(xml: String) -> String {
-        var result = xml
-        for plugin in plugins {
-            result = plugin.parse(xml: result)
-        }
-        return result
-    }
-
-    func parse(text: String) -> String {
-        var result = text
-        for plugin in plugins {
-            result = plugin.parse(text: result)
-        }
-        return result
-    }
-}
-
 class ExpPlugin: OPlugin {
     private var host: IHost?
     private var tracker: ExpTracker
@@ -79,6 +32,29 @@ class ExpPlugin: OPlugin {
 
     func initialize(host: IHost) {
         self.host = host
+
+        tracker.clear()
+
+        // load any existing exp from variables
+        for skill in tracker.skillSets {
+            let ranksStr = host.get(variable: "\(skill).Ranks")
+
+            print("\(skill): \(ranksStr) ", terminator: "")
+
+            if ranksStr.isEmpty {
+                print("")
+                continue
+            }
+
+            let ranks = Double(ranksStr) ?? 0
+            let learningRateStr = host.get(variable: "\(skill).LearningRateName")
+            let learningRate = learningRateLookup[learningRateStr] ?? .clear
+
+            print("\(learningRate.description)")
+
+            let exp = SkillExp(name: skill, mindState: learningRate, ranks: Double(ranks), isNew: false)
+            tracker.update(exp)
+        }
     }
 
     func variableChanged(variable _: String, value _: String) {}
@@ -223,34 +199,34 @@ class ExpPlugin: OPlugin {
     func parse(text: String) -> String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if text.hasPrefix("Time Development Points:") {
-            let start = text.index(text.startIndex, offsetBy: 24)
-            if let favorsIdx = text.index(of: "Favors") {
-                let number = String(text[start ..< favorsIdx]).trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("Time Development Points:") {
+            let start = trimmed.index(trimmed.startIndex, offsetBy: 24)
+            if let favorsIdx = trimmed.index(of: "Favors") {
+                let number = String(trimmed[start ..< favorsIdx]).trimmingCharacters(in: .whitespacesAndNewlines)
                 tracker.tdps = Int(number) ?? 0
                 host?.send(text: "#var tdp \(tracker.tdps)")
             }
         }
 
         if trimmed.hasPrefix("TDPs :") {
-            let start = text.index(text.startIndex, offsetBy: 6)
-            let number = String(text[start...]).trimmingCharacters(in: .whitespacesAndNewlines)
+            let start = trimmed.index(trimmed.startIndex, offsetBy: 6)
+            let number = String(trimmed[start...]).trimmingCharacters(in: .whitespacesAndNewlines)
             tracker.tdps = Int(number) ?? 0
             host?.send(text: "#var tdp \(tracker.tdps)")
         }
 
-        if !parsing, text.hasPrefix(ExpPlugin.start_check) {
+        if !parsing, trimmed.hasPrefix(ExpPlugin.start_check) {
             parsing = true
             return text
         }
 
-        if parsing, text.hasPrefix(ExpPlugin.end_check) {
+        if parsing, trimmed.hasPrefix(ExpPlugin.end_check) {
             parsing = false
             updateExpWindow()
             return text
         }
 
-        var copy = text
+        var copy = trimmed
         let matches = textRegex.allMatches(&copy)
 
         for match in matches {

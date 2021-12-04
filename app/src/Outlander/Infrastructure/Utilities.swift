@@ -9,7 +9,7 @@
 import Foundation
 
 public class Queue<T> {
-    private var lock: NSLock = NSLock()
+    private var lock = NSLock()
     private var queue: [T] = []
 
     public func queue(_ item: T) {
@@ -219,13 +219,13 @@ extension AtomicArray: Collection {
         return list.endIndex
     }
 
-    subscript (position: Index) -> Iterator.Element {
+    subscript(position: Index) -> Iterator.Element {
         lock.lock()
         defer { lock.unlock() }
         precondition(position > -1 && position < list.count, "out of bounds")
         return list[position]
     }
-    
+
     func index(after i: Index) -> Index {
         lock.lock()
         defer { lock.unlock() }
