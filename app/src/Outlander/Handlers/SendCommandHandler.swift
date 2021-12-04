@@ -11,16 +11,29 @@ import Foundation
 class SendCommandHandler: ICommandHandler {
     var command = "#send"
 
-    var delayedTask: DispatchWorkItem?
+    var delayedTask: DelayedTask = DelayedTask()
     var queue = Queue<String>()
-    var next: DispatchWorkItem?
+    var delayOffset: Double = 0.3
 
     func handle(_ text: String, with context: GameContext) {
         let data = text[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !data.isEmpty else {
+            context.events.echoText("#send queue:")
+            let messages = queue.all
+            for cmd in messages {
+                context.events.echoText("  \(cmd)")
+            }
+            if messages.count > 0 {
+                context.events.echoText("\n")
+            }
+            return
+        }
+
         let split = data.components(separatedBy: " ")
 
         if split.count > 0, let wait = Double(split[0]) {
-            _ = delay(wait) {
+            delay(wait - delayOffset) {
                 self.queue.queue(split.dropFirst().joined(separator: " "))
                 self.processQueueWithRoundtime(context)
             }
@@ -42,8 +55,7 @@ class SendCommandHandler: ICommandHandler {
             return
         }
 
-        delayedTask?.cancel()
-        delayedTask = delay(roundtime - 0.5) {
+        delayedTask.set(roundtime - delayOffset) {
             self.processQueue(context)
         }
     }

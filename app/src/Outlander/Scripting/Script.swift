@@ -8,7 +8,7 @@
 
 import Foundation
 
-func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) -> DispatchWorkItem {
+@discardableResult func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
     // TODO: swap from main queue?
     queue.asyncAfter(deadline: .now() + delay, execute: task)
@@ -85,7 +85,7 @@ protocol IAction: IWantStreamInfo {
 
 @propertyWrapper
 struct Atomic<Value> {
-    private let lock = DispatchSemaphore(value: 1)
+    private let lock = NSLock()
     private var value: Value
 
     init(wrappedValue value: Value) {
@@ -94,14 +94,14 @@ struct Atomic<Value> {
 
     var wrappedValue: Value {
         get {
-            lock.wait()
-            defer { lock.signal() }
+            lock.lock()
+            defer { lock.unlock() }
             return value
         }
         set {
-            lock.wait()
+            lock.lock()
             value = newValue
-            lock.signal()
+            lock.unlock()
         }
     }
 }
@@ -117,12 +117,12 @@ class Script {
 
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
-    private var reactToStream: [IWantStreamInfo] = []
+    private var reactToStream: AtomicArray<IWantStreamInfo> = AtomicArray<IWantStreamInfo>()
     private var actions: [IAction] = []
 
     private var gosubStack: Stack<GosubContext>
 
-    @Atomic() private var matchStack: [IMatch] = []
+    private var matchStack: AtomicArray<IMatch> = AtomicArray<IMatch>()
     @Atomic() private var matchwait: Matchwait? = nil
 
     private var lastLine: ScriptLine? {
@@ -150,7 +150,8 @@ class Script {
     var includeRegex: Regex
     var labelRegex: Regex
 
-    var delayedTask: DispatchWorkItem?
+//    var delayedTask: DispatchWorkItem?
+    var delayedTask: DelayedTask = DelayedTask()
 
     var lastNext = Date()
     var lastNextCount: Int = 0
@@ -330,9 +331,9 @@ class Script {
         }
 
         if let roundtime = context.roundtime, roundtime > 0 {
-            setDelayedTask(delay(roundtime, queue: lockQueue) {
+            delayedTask.set(roundtime, queue: lockQueue) {
                 self.nextAfterRoundtime()
-            })
+            }
             return
         }
 
@@ -363,7 +364,9 @@ class Script {
     }
 
     private func stop() {
-        clearDelayedTask()
+        delayedTask.reset()
+        matchwait = nil
+        matchStack.removeAll()
 
         if stopped { return }
 
@@ -631,21 +634,6 @@ class Script {
         }
     }
 
-    private let taskLock = NSLock()
-    private func clearDelayedTask() {
-        taskLock.lock()
-        delayedTask?.cancel()
-        delayedTask = nil
-        taskLock.unlock()
-    }
-
-    private func setDelayedTask(_ task: DispatchWorkItem) {
-        taskLock.lock()
-        delayedTask?.cancel()
-        delayedTask = task
-        taskLock.unlock()
-    }
-
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
         let result = context.replaceVars(label)
 
@@ -662,7 +650,7 @@ class Script {
             return .exit
         }
 
-        clearDelayedTask()
+        delayedTask.reset()
         matchwait = nil
         matchStack.removeAll()
 
@@ -1258,7 +1246,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            let task = delay(timeout, queue: lockQueue) {
+            delayedTask.set(timeout, queue: lockQueue) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -1266,7 +1254,6 @@ class Script {
                     self.next()
                 }
             }
-            setDelayedTask(task)
         }
 
         return .wait
@@ -1395,9 +1382,9 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        setDelayedTask(delay(duration, queue: lockQueue) {
+        delayedTask.set(duration, queue: lockQueue) {
             self.nextAfterRoundtime()
-        })
+        }
 
         return .wait
     }
@@ -1459,7 +1446,7 @@ class Script {
             context.setLabelVars([])
         }
 
-        clearDelayedTask()
+        delayedTask.reset()
         matchwait = nil
         matchStack.removeAll()
 

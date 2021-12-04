@@ -9,13 +9,18 @@
 import Foundation
 
 public class Queue<T> {
+    private var lock: NSLock = NSLock()
     private var queue: [T] = []
 
     public func queue(_ item: T) {
+        lock.lock()
+        defer { lock.unlock() }
         queue.append(item)
     }
 
     public func dequeue() -> T? {
+        lock.lock()
+        defer { lock.unlock() }
         guard queue.count > 0 else {
             return nil
         }
@@ -23,19 +28,27 @@ public class Queue<T> {
     }
 
     public func peek() -> T? {
-        queue.first
+        lock.lock()
+        defer { lock.unlock() }
+        return queue.first
     }
 
     public func hasItems() -> Bool {
-        queue.count > 0
+        lock.lock()
+        defer { lock.unlock() }
+        return queue.count > 0
     }
 
     public var count: Int {
-        queue.count
+        lock.lock()
+        defer { lock.unlock() }
+        return queue.count
     }
 
     public var all: [T] {
-        queue
+        lock.lock()
+        defer { lock.unlock() }
+        return queue
     }
 }
 
@@ -114,14 +127,13 @@ class MemoizeHash<T: Hashable, U> {
 
     subscript(key: T) -> U? {
         lock.lock()
+        defer { lock.unlock() }
         if let res = memo[key] {
-            defer { lock.unlock() }
             return res
         }
 
         let r = build(key)
         memo[key] = r
-        defer { lock.unlock() }
         return r
     }
 }
@@ -144,5 +156,85 @@ func memoize<T: Hashable, U>(work: @escaping (T) -> U) -> (T) -> U {
         let r = work(x)
         memo[x] = r
         return r
+    }
+}
+
+class DelayedTask {
+    private let lock = NSLock()
+    private var value: DispatchWorkItem?
+
+    func reset() {
+        lock.lock()
+        value?.cancel()
+        value = nil
+        lock.unlock()
+    }
+
+    func set(_ duration: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) {
+        lock.lock()
+        value = delay(duration, queue: queue, closure)
+        lock.unlock()
+    }
+}
+
+class AtomicArray<Element> {
+    private let lock = NSLock()
+    private var list: [Element] = []
+
+    func append(_ item: Element) {
+        lock.lock()
+        list.append(item)
+        lock.unlock()
+    }
+
+    func removeAll() {
+        lock.lock()
+        list.removeAll()
+        lock.unlock()
+    }
+}
+
+extension AtomicArray: Sequence {
+    typealias Iterator = IndexingIterator<[Element]>
+
+    func makeIterator() -> IndexingIterator<[Element]> {
+        lock.lock()
+        defer { lock.unlock() }
+        return list.makeIterator()
+    }
+}
+
+extension AtomicArray: Collection {
+    typealias Index = Int
+
+    var startIndex: Index {
+        lock.lock()
+        defer { lock.unlock() }
+        return list.startIndex
+    }
+
+    var endIndex: Index {
+        lock.lock()
+        defer { lock.unlock() }
+        return list.endIndex
+    }
+
+    subscript (position: Index) -> Iterator.Element {
+        lock.lock()
+        defer { lock.unlock() }
+        precondition(position > -1 && position < list.count, "out of bounds")
+        return list[position]
+    }
+    
+    func index(after i: Index) -> Index {
+        lock.lock()
+        defer { lock.unlock() }
+        return list.index(after: i)
+    }
+
+    func remove(at index: Index) {
+        lock.lock()
+        defer { lock.unlock() }
+        list.remove(at: index)
     }
 }
