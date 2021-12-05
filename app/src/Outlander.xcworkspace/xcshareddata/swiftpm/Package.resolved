@@ -36,6 +36,15 @@
           "revision": "96fb84f45a96630e7583903bd7e08cf095c7a7ef",
           "version": "19.0.0"
         }
+      },
+      {
+        "package": "Outlander Plugins",
+        "repositoryURL": "https://github.com/outlander-app/plugin-package.git",
+        "state": {
+          "branch": "main",
+          "revision": "a457ac24c6334e5c219320250160ada2c7aea22d",
+          "version": null
+        }
       }
     ]
   },

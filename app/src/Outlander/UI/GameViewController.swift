@@ -28,7 +28,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var mapWindow: MapWindow?
     var scriptRunner: ScriptRunner?
 
-    var pluginManager = PluginManager()
+    var pluginManager: PluginManager?
 
     var log = LogManager.getLog(String(describing: GameViewController.self))
     var gameLog: ILogger?
@@ -88,8 +88,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         createScriptToolbarView()
         createStatusBarView()
-        pluginManager.plugins.append(ExpPlugin())
-        pluginManager.plugins.append(AutoMapperPlugin(context: gameContext))
+        pluginManager = PluginManager(fileSystem!, context: gameContext)
+        pluginManager?.add(ExpPlugin())
+        pluginManager?.add(AutoMapperPlugin(context: gameContext))
+        pluginManager?.loadPlugins()
 
 //        print("Appearance Dark Mode: \(view.isDarkMode), \(view.effectiveAppearance.name)")
 
@@ -125,7 +127,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         windowLayoutLoader = WindowLayoutLoader(fileSystem!)
-        commandProcessor = CommandProcesssor(fileSystem!, pluginManager: pluginManager)
+        commandProcessor = CommandProcesssor(fileSystem!, pluginManager: pluginManager!)
         scriptRunner = ScriptRunner(gameContext, loader: ScriptLoader(fileSystem!, context: gameContext))
 
         authServer = AuthenticationServer()
@@ -310,7 +312,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameContext.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
-                    self.pluginManager.variableChanged(variable: key, value: value)
+                    self.pluginManager?.variableChanged(variable: key, value: value)
 
                     if key == "zoneid" || key == "roomid" {
                         self.shouldUpdateRoom = true
@@ -415,10 +417,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
     func handleRawStream(data: String, streamData: Bool = false) {
         var result = data
 
-        if data.hasPrefix("<") {
-            result = pluginManager.parse(xml: data)
+        if result.hasPrefix("<") {
+            result = pluginManager?.parse(xml: result) ?? result
         } else {
-            result = pluginManager.parse(text: result)
+            result = pluginManager?.parse(text: result) ?? result
         }
 
         if gameContext.applicationSettings.profile.rawLogging {
@@ -491,7 +493,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-            self.pluginManager.initialize(host: LocalHost(context: self.gameContext))
+            self.pluginManager?.initialize(host: LocalHost(context: self.gameContext))
             self.updateWindowTitle()
         }
     }

@@ -33,6 +33,8 @@ class OLTextView: NSTextView {
 
     override func keyUp(with event: NSEvent) {
         onKeyUp(event)
+
+        // self.textContainerInset
     }
 }
 

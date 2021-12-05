@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Plugins
 
 class InMemoryFileSystem: FileSystem {
     var contentToLoad: String?
@@ -70,10 +71,33 @@ class InMemoryEvents: Events {
     func unregister(_: AnyObject) {}
 }
 
+class TestHost: IHost {
+    var variables: [String: String] = [:]
+    var sendHistory: [String] = []
+
+    func send(text: String) {
+        sendHistory.append(text)
+    }
+
+    func get(variable: String) -> String {
+        variables[variable] ?? ""
+    }
+
+    func set(variable: String, value: String) {
+        variables[variable] = value
+    }
+
+    func get(preset _: String) -> String? {
+        nil
+    }
+}
+
 class InMemoryPluginManager: OPlugin {
     var name: String {
         "Test Plugin Manager"
     }
+
+    required init() {}
 
     func initialize(host _: IHost) {}
 

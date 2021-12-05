@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Plugins
 
 class LocalHost: IHost {
     var context: GameContext

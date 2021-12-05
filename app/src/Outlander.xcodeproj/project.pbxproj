@@ -9,10 +9,9 @@
 /* Begin PBXBuildFile section */
 		7B10A569275C0CC1000FEDE8 /* PluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A568275C0CC1000FEDE8 /* PluginManager.swift */; };
 		7B10A56A275C0CC1000FEDE8 /* PluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A568275C0CC1000FEDE8 /* PluginManager.swift */; };
-		7B10A597275C1E40000FEDE8 /* Framework.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A596275C1E40000FEDE8 /* Framework.swift */; };
-		7B10A598275C1E40000FEDE8 /* Framework.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A596275C1E40000FEDE8 /* Framework.swift */; };
 		7B10A59A275C1F26000FEDE8 /* LocalHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A599275C1F26000FEDE8 /* LocalHost.swift */; };
 		7B10A59B275C1F26000FEDE8 /* LocalHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A599275C1F26000FEDE8 /* LocalHost.swift */; };
+		7B10A667275C9399000FEDE8 /* Plugins in Frameworks */ = {isa = PBXBuildFile; productRef = 7B10A666275C9399000FEDE8 /* Plugins */; };
 		7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
@@ -276,7 +275,6 @@
 
 /* Begin PBXFileReference section */
 		7B10A568275C0CC1000FEDE8 /* PluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginManager.swift; sourceTree = "<group>"; };
-		7B10A596275C1E40000FEDE8 /* Framework.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Framework.swift; sourceTree = "<group>"; };
 		7B10A599275C1F26000FEDE8 /* LocalHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHost.swift; sourceTree = "<group>"; };
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
@@ -439,6 +437,7 @@
 				7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */,
 				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
 				7BDF5C842727315A0020A3B0 /* Carbon.framework in Frameworks */,
+				7B10A667275C9399000FEDE8 /* Plugins in Frameworks */,
 				7BF17D36274B95A000A2EAB6 /* Expression in Frameworks */,
 				F9B2540C2481B5950097C07F /* CocoaAsyncSocket in Frameworks */,
 			);
@@ -495,7 +494,6 @@
 			isa = PBXGroup;
 			children = (
 				7B228B31273B90130052610B /* AutoMapperPlugin.swift */,
-				7B10A596275C1E40000FEDE8 /* Framework.swift */,
 				7B10A599275C1F26000FEDE8 /* LocalHost.swift */,
 				7B10A568275C0CC1000FEDE8 /* PluginManager.swift */,
 			);
@@ -795,6 +793,7 @@
 				7BCE4A2225C5007A00AF0444 /* Fuzi */,
 				7BAC840825E9B51800A6C7D5 /* KeychainSwift */,
 				7BF17D35274B95A000A2EAB6 /* Expression */,
+				7B10A666275C9399000FEDE8 /* Plugins */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -853,6 +852,7 @@
 				7BCE4A2125C5007A00AF0444 /* XCRemoteSwiftPackageReference "Fuzi" */,
 				7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */,
+				7B10A665275C9399000FEDE8 /* XCRemoteSwiftPackageReference "plugin-package" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -935,7 +935,6 @@
 				7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */,
-				7B10A597275C1E40000FEDE8 /* Framework.swift in Sources */,
 				F9CA2075246776E100A92736 /* ClassLoader.swift in Sources */,
 				7B3B9A1D275B11390035D731 /* SubsCommandHandler.swift in Sources */,
 				7B9C5A6C273F327700A17134 /* Variables.swift in Sources */,
@@ -1075,7 +1074,6 @@
 				7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */,
 				F995752624944DBB00A980FC /* MapNode.swift in Sources */,
 				F9CA2069246675E200A92736 /* VariablesLoaderTests.swift in Sources */,
-				7B10A598275C1E40000FEDE8 /* Framework.swift in Sources */,
 				7BAC842E25ECA23C00A6C7D5 /* Matches.swift in Sources */,
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
@@ -1435,6 +1433,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7B10A665275C9399000FEDE8 /* XCRemoteSwiftPackageReference "plugin-package" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/outlander-app/plugin-package.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
@@ -1470,6 +1476,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7B10A666275C9399000FEDE8 /* Plugins */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B10A665275C9399000FEDE8 /* XCRemoteSwiftPackageReference "plugin-package" */;
+			productName = Plugins;
+		};
 		7BAC840825E9B51800A6C7D5 /* KeychainSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */;

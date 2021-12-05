@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import Plugins
 
 class AutoMapperPlugin: OPlugin {
     private var host: IHost?
-    private var context: GameContext
+    private var context: GameContext?
     private var movedRooms: Bool = false
     private var showAfterPrompt: Bool = false
 
@@ -24,18 +25,20 @@ class AutoMapperPlugin: OPlugin {
         self.context = context
     }
 
+    required init() {}
+
     func initialize(host: IHost) {
         self.host = host
         self.host?.send(text: "#mapper reload")
     }
 
     func variableChanged(variable: String, value: String) {
-        guard let zone = context.mapZone else {
+        guard let zone = context?.mapZone else {
             return
         }
 
         if variable == "zoneid", zone.id != value {
-            context.mapZone = context.maps[value]
+            context?.mapZone = context?.maps[value]
         }
     }
 
@@ -55,6 +58,10 @@ class AutoMapperPlugin: OPlugin {
         }
 
         guard movedRooms, showAfterPrompt, let insertionIdx = xml.range(of: "<prompt") else {
+            return xml
+        }
+
+        guard let context = context else {
             return xml
         }
 

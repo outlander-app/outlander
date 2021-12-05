@@ -9,27 +9,6 @@
 @testable import Outlander
 import XCTest
 
-class TestHost: IHost {
-    var variables: [String: String] = [:]
-    var sendHistory: [String] = []
-
-    func send(text: String) {
-        sendHistory.append(text)
-    }
-
-    func get(variable: String) -> String {
-        variables[variable] ?? ""
-    }
-
-    func set(variable: String, value: String) {
-        variables[variable] = value
-    }
-
-    func get(preset _: String) -> String? {
-        nil
-    }
-}
-
 class ExpPluginTests: XCTestCase {
     func test_xml_parse() {
         let host = TestHost()

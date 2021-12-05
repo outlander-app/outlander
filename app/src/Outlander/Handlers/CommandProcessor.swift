@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Plugins
 
 protocol ICommandHandler {
     var command: String { get }

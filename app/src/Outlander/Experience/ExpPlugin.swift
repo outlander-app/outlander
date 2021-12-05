@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Plugins
 
 class ExpPlugin: OPlugin {
     private var host: IHost?
@@ -21,7 +22,7 @@ class ExpPlugin: OPlugin {
 
     private var textRegex: Regex
 
-    init() {
+    required init() {
         textRegex = RegexFactory.get("(\\w.*?):\\s+(\\d+)\\s(\\d+)%\\s(\\w.*?)\\s+\\(\\d{1,}/34\\)")!
         tracker = ExpTracker()
     }
@@ -39,10 +40,10 @@ class ExpPlugin: OPlugin {
         for skill in tracker.skillSets {
             let ranksStr = host.get(variable: "\(skill).Ranks")
 
-            print("\(skill): \(ranksStr) ", terminator: "")
+            // print("\(skill): \(ranksStr) ", terminator: "")
 
             if ranksStr.isEmpty {
-                print("")
+                // print("")
                 continue
             }
 
@@ -50,7 +51,7 @@ class ExpPlugin: OPlugin {
             let learningRateStr = host.get(variable: "\(skill).LearningRateName")
             let learningRate = learningRateLookup[learningRateStr] ?? .clear
 
-            print("\(learningRate.description)")
+            // print("\(learningRate.description)")
 
             let exp = SkillExp(name: skill, mindState: learningRate, ranks: Double(ranks), isNew: false)
             tracker.update(exp)
