@@ -40,6 +40,7 @@ class CommandProcesssor {
         ScriptRunnerCommandHandler(),
         AliasCommandHandler(),
         LinkCommandHandler(),
+        PluginCommandHandler(),
     ]
 
     init(_ files: FileSystem, pluginManager: OPlugin) {

@@ -9,9 +9,37 @@
 import Foundation
 import Plugins
 
-struct LocalPlugin {
+class LocalPlugin {
     var bundle: Bundle?
     var value: OPlugin?
+    
+    init(bundle: Bundle? = nil, value: OPlugin? = nil) {
+        self.bundle = bundle
+        self.value = value
+    }
+
+    func load() {
+        guard let bundle = bundle else {
+            return
+        }
+        if !bundle.isLoaded {
+            bundle.load()
+        }
+        guard let pluginType = bundle.principalClass as? OPlugin.Type else {
+            return
+        }
+        value = pluginType.init()
+    }
+
+    func unload() {
+        value = nil
+        guard let bundle = bundle else {
+            return
+        }
+        if bundle.isLoaded {
+            bundle.unload()
+        }
+    }
 }
 
 class PluginManager: OPlugin {
@@ -28,12 +56,72 @@ class PluginManager: OPlugin {
     init(_ files: FileSystem, context: GameContext) {
         self.files = files
         self.context = context
+
+        context.events.handle(self, channel: "ol:plugin") { result in
+            guard let (command, name) = result as? (String, String) else {
+                return
+            }
+
+            
+            DispatchQueue.main.async {
+                switch command.lowercased() {
+                case "load", "reload":
+                    self.load(name)
+                case "unload":
+                    self.unload(name)
+                default:
+                    print("hrm")
+                }
+            }
+        }
     }
 
     required init() {}
 
     func add(_ plugin: OPlugin) {
-        plugins.append(LocalPlugin(bundle: nil, value: plugin))
+        plugins.append(LocalPlugin(value: plugin))
+    }
+
+    func unload(_ name: String) {
+        // unload plugin if already loaded
+        if let idx = plugins.firstIndex(where: { $0.bundle?.bundleURL.lastPathComponent == name }) {
+            host?.send(text: "#echo Unloading plugin \(name)")
+            let plugin = plugins[idx]
+            plugin.unload()
+            plugins.remove(at: idx)
+        }
+    }
+
+    func load(_ name: String) {
+        unload(name)
+
+        guard let files = files, let context = context else {
+            return
+        }
+
+        let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
+
+        if bundleUrl != nil {
+            load(url: bundleUrl!)
+        }
+    }
+
+    func load(url: URL) {
+        guard let bundle = Bundle(url: url), bundle.load() == true else {
+            return
+        }
+
+        print("loaded? \(bundle.isLoaded)")
+        
+        if let pluginType = bundle.principalClass as? OPlugin.Type {
+            let instance = pluginType.init()
+            plugins.append(LocalPlugin(bundle: bundle, value: instance))
+
+            if host != nil {
+                host!.send(text: "#echo Initializing Plugin '\(instance.name)'")
+                instance.initialize(host: host!)
+            }
+        }
     }
 
     func initialize(host: IHost) {
@@ -96,13 +184,8 @@ class PluginManager: OPlugin {
         }
 
         let bundles = files.contentsOf(context.applicationSettings.paths.plugins).filter { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
-        for b in bundles {
-            if let bundle = Bundle(url: b), bundle.load() {
-                if let pluginType = bundle.principalClass as? OPlugin.Type {
-                    let instance = pluginType.init()
-                    plugins.append(LocalPlugin(bundle: bundle, value: instance))
-                }
-            }
+        for url in bundles {
+            load(url: url)
         }
     }
 }

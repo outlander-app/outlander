@@ -12,6 +12,8 @@
 		7B10A59A275C1F26000FEDE8 /* LocalHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A599275C1F26000FEDE8 /* LocalHost.swift */; };
 		7B10A59B275C1F26000FEDE8 /* LocalHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A599275C1F26000FEDE8 /* LocalHost.swift */; };
 		7B10A667275C9399000FEDE8 /* Plugins in Frameworks */ = {isa = PBXBuildFile; productRef = 7B10A666275C9399000FEDE8 /* Plugins */; };
+		7B10A66C275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */; };
+		7B10A66D275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */; };
 		7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
@@ -276,6 +278,7 @@
 /* Begin PBXFileReference section */
 		7B10A568275C0CC1000FEDE8 /* PluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginManager.swift; sourceTree = "<group>"; };
 		7B10A599275C1F26000FEDE8 /* LocalHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHost.swift; sourceTree = "<group>"; };
+		7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
 		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
@@ -717,6 +720,7 @@
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				F98B4917246FAC25000E2D92 /* PlayCommandHandler.swift */,
+				7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */,
 				7B3B9A152758BDBE0035D731 /* PresetCommandHandler.swift */,
 				7BAC83FB25E0739B00A6C7D5 /* ScriptCommandHandler.swift */,
 				7B228AF827277BBA0052610B /* SendCommandHandler.swift */,
@@ -920,6 +924,7 @@
 				7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
 				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
+				7B10A66C275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
 				7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */,
 				7B956B492754534600346019 /* ScriptToolbarViewController.swift in Sources */,
@@ -1103,6 +1108,7 @@
 				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,
+				7B10A66D275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */,
 				7B228B2127387B360052610B /* PathfinderTests.swift in Sources */,
 				F98B4916246FA520000E2D92 /* TriggerLoaderTests.swift in Sources */,
 				7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */,
