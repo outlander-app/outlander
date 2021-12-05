@@ -33,12 +33,12 @@ class LocalPlugin {
 
     func unload() {
         value = nil
-        guard let bundle = bundle else {
-            return
-        }
-        if bundle.isLoaded {
-            bundle.unload()
-        }
+//        guard let bundle = bundle else {
+//            return
+//        }
+//        if bundle.isLoaded {
+//            bundle.unload()
+//        }
     }
 }
 
@@ -98,11 +98,16 @@ class PluginManager: OPlugin {
         guard let files = files, let context = context else {
             return
         }
-
-        let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
-
-        if bundleUrl != nil {
-            load(url: bundleUrl!)
+        
+        do {
+            try ObjC.perform {
+                let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
+                if bundleUrl != nil {
+                    load(url: bundleUrl!)
+                }
+            }
+        } catch {
+            context.events.echoError("Error when trying to load plugin \(name):\n\(error)")
         }
     }
 
@@ -111,16 +116,23 @@ class PluginManager: OPlugin {
             return
         }
 
-        print("loaded? \(bundle.isLoaded)")
+//        print("loaded? \(bundle.isLoaded)")
         
-        if let pluginType = bundle.principalClass as? OPlugin.Type {
-            let instance = pluginType.init()
-            plugins.append(LocalPlugin(bundle: bundle, value: instance))
+        do {
+            try ObjC.perform {
+                if let pluginType = bundle.principalClass as? OPlugin.Type {
+                    let instance = pluginType.init()
+                    plugins.append(LocalPlugin(bundle: bundle, value: instance))
 
-            if host != nil {
-                host!.send(text: "#echo Initializing Plugin '\(instance.name)'")
-                instance.initialize(host: host!)
+                    if host != nil {
+                        host!.send(text: "#echo Initializing Plugin '\(instance.name)'")
+                        instance.initialize(host: host!)
+                    }
+                }
             }
+        }
+        catch {
+            context?.events.echoError("Error when trying to load plugin \(url):\n\(error)")
         }
     }
 

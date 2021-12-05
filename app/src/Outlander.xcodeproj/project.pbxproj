@@ -14,6 +14,10 @@
 		7B10A667275C9399000FEDE8 /* Plugins in Frameworks */ = {isa = PBXBuildFile; productRef = 7B10A666275C9399000FEDE8 /* Plugins */; };
 		7B10A66C275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */; };
 		7B10A66D275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */; };
+		7B10A66F275D7EE9000FEDE8 /* OView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66E275D7EE9000FEDE8 /* OView.swift */; };
+		7B10A670275D7EE9000FEDE8 /* OView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A66E275D7EE9000FEDE8 /* OView.swift */; };
+		7B10A672275D7F37000FEDE8 /* OWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A671275D7F37000FEDE8 /* OWindow.swift */; };
+		7B10A673275D7F37000FEDE8 /* OWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A671275D7F37000FEDE8 /* OWindow.swift */; };
 		7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
@@ -212,16 +216,6 @@
 		F9BCF32522E28F2400C7F7F0 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32322E28F2400C7F7F0 /* Regex.swift */; };
 		F9BCF32722E2900B00C7F7F0 /* GameServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32622E2900B00C7F7F0 /* GameServer.swift */; };
 		F9BCF32822E2900B00C7F7F0 /* GameServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32622E2900B00C7F7F0 /* GameServer.swift */; };
-		F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32922E4D33E00C7F7F0 /* Elm.swift */; };
-		F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32922E4D33E00C7F7F0 /* Elm.swift */; };
-		F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32D22E4D9CF00C7F7F0 /* VirtualViews.swift */; };
-		F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF32D22E4D9CF00C7F7F0 /* VirtualViews.swift */; };
-		F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33022E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift */; };
-		F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33022E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift */; };
-		F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */; };
-		F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */; };
-		F9BCF33822E5811C00C7F7F0 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33722E5811C00C7F7F0 /* Driver.swift */; };
-		F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF33722E5811C00C7F7F0 /* Driver.swift */; };
 		F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */; };
 		F9CA20472453AEBB00A92736 /* EchoCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */; };
 		F9CA2049245C9E2300A92736 /* WindowCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */; };
@@ -252,8 +246,6 @@
 		F9CA2076246776E100A92736 /* ClassLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA2074246776E100A92736 /* ClassLoader.swift */; };
 		F9CA20782467849700A92736 /* ClassCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA20772467849700A92736 /* ClassCommandHandler.swift */; };
 		F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CA20772467849700A92736 /* ClassCommandHandler.swift */; };
-		F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E7D22E6A907008BC6E6 /* BasicView.swift */; };
-		F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E7D22E6A907008BC6E6 /* BasicView.swift */; };
 		F9D36E8F22EAE326008BC6E6 /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */; };
 		F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */; };
 		F9D36E9322EF76E8008BC6E6 /* GameStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D36E9222EF76E8008BC6E6 /* GameStream.swift */; };
@@ -279,6 +271,8 @@
 		7B10A568275C0CC1000FEDE8 /* PluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginManager.swift; sourceTree = "<group>"; };
 		7B10A599275C1F26000FEDE8 /* LocalHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHost.swift; sourceTree = "<group>"; };
 		7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginCommandHandler.swift; sourceTree = "<group>"; };
+		7B10A66E275D7EE9000FEDE8 /* OView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OView.swift; sourceTree = "<group>"; };
+		7B10A671275D7F37000FEDE8 /* OWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWindow.swift; sourceTree = "<group>"; };
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
 		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
@@ -401,11 +395,6 @@
 		F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		F9BCF32322E28F2400C7F7F0 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		F9BCF32622E2900B00C7F7F0 /* GameServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameServer.swift; sourceTree = "<group>"; };
-		F9BCF32922E4D33E00C7F7F0 /* Elm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elm.swift; sourceTree = "<group>"; };
-		F9BCF32D22E4D9CF00C7F7F0 /* VirtualViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualViews.swift; sourceTree = "<group>"; };
-		F9BCF33022E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirtualViews+Rendering.swift"; sourceTree = "<group>"; };
-		F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualViewControllers.swift; sourceTree = "<group>"; };
-		F9BCF33722E5811C00C7F7F0 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 		F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA2048245C9E2300A92736 /* WindowCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCommandHandler.swift; sourceTree = "<group>"; };
 		F9CA204B245CAA9700A92736 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
@@ -424,7 +413,6 @@
 		F9CA2072246776B800A92736 /* ClassLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassLoaderTests.swift; sourceTree = "<group>"; };
 		F9CA2074246776E100A92736 /* ClassLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassLoader.swift; sourceTree = "<group>"; };
 		F9CA20772467849700A92736 /* ClassCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassCommandHandler.swift; sourceTree = "<group>"; };
-		F9D36E7D22E6A907008BC6E6 /* BasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicView.swift; sourceTree = "<group>"; };
 		F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtensions.swift; sourceTree = "<group>"; };
 		F9D36E9222EF76E8008BC6E6 /* GameStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStream.swift; sourceTree = "<group>"; };
 		F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStreamTests.swift; sourceTree = "<group>"; };
@@ -600,6 +588,7 @@
 				7BD0FD4D25C75AD400ED030E /* MapView.swift */,
 				7BD0FD4325C7559900ED030E /* MapWindow.swift */,
 				7BD0FD4425C7559900ED030E /* MapWindow.xib */,
+				7B10A66E275D7EE9000FEDE8 /* OView.swift */,
 				F9B254042478996D0097C07F /* ProfileWindow.swift */,
 				F9B254052478996D0097C07F /* ProfileWindow.xib */,
 				F969A0ED23A21BD400408CE5 /* ProgressBar.swift */,
@@ -610,6 +599,7 @@
 				7B956B4527517B0700346019 /* VitalsBar.swift */,
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
+				7B10A671275D7F37000FEDE8 /* OWindow.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -649,7 +639,6 @@
 			isa = PBXGroup;
 			children = (
 				7B228B30273B8FFA0052610B /* Plugins */,
-				F9BCF32C22E4D9A500C7F7F0 /* Elm */,
 				7B228B07273446270052610B /* Experience */,
 				F9CA20442453ACDC00A92736 /* Handlers */,
 				F98B49222470F502000E2D92 /* Infrastructure */,
@@ -690,19 +679,6 @@
 				7B3B9A1827596F390035D731 /* TestPlayground.playground */,
 			);
 			path = OutlanderTests;
-			sourceTree = "<group>";
-		};
-		F9BCF32C22E4D9A500C7F7F0 /* Elm */ = {
-			isa = PBXGroup;
-			children = (
-				F9D36E7D22E6A907008BC6E6 /* BasicView.swift */,
-				F9BCF33722E5811C00C7F7F0 /* Driver.swift */,
-				F9BCF32922E4D33E00C7F7F0 /* Elm.swift */,
-				F9BCF32D22E4D9CF00C7F7F0 /* VirtualViews.swift */,
-				F9BCF33022E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift */,
-				F9BCF33322E57AC400C7F7F0 /* VirtualViewControllers.swift */,
-			);
-			path = Elm;
 			sourceTree = "<group>";
 		};
 		F9CA20442453ACDC00A92736 /* Handlers */ = {
@@ -913,7 +889,6 @@
 				7B10A59A275C1F26000FEDE8 /* LocalHost.swift in Sources */,
 				7BCBBD122746C03E00219CA0 /* FunctionEvaluator.swift in Sources */,
 				7BDF5C78271A53E10020A3B0 /* MacroLoader.swift in Sources */,
-				F9BCF33122E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 				F969A0EE23A21BD400408CE5 /* ProgressBar.swift in Sources */,
 				7BDF5C7B271AB4F40020A3B0 /* BoolExtensions.swift in Sources */,
 				7BA27B4725DF8ECA00A88B80 /* ScriptTokenizer.swift in Sources */,
@@ -923,6 +898,7 @@
 				7BDF5C88272736300020A3B0 /* MacroExtensions.swift in Sources */,
 				7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
+				7B10A672275D7F37000FEDE8 /* OWindow.swift in Sources */,
 				F62EA131247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
 				7B10A66C275C9C40000FEDE8 /* PluginCommandHandler.swift in Sources */,
 				F9CA204C245CAA9700A92736 /* EventBus.swift in Sources */,
@@ -936,7 +912,6 @@
 				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
 				F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */,
 				7B228B05272C6D170052610B /* DirectionsView.swift in Sources */,
-				F9BCF33822E5811C00C7F7F0 /* Driver.swift in Sources */,
 				7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */,
@@ -960,7 +935,6 @@
 				7B10A569275C0CC1000FEDE8 /* PluginManager.swift in Sources */,
 				F969A0FB23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F98B490E246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
-				F9BCF32A22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				7BCBBD152746D1D800219CA0 /* ExpressionEvaluator.swift in Sources */,
 				7B27C5AB274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				F9CA2063246669D800A92736 /* FileSystem.swift in Sources */,
@@ -973,7 +947,6 @@
 				7B228B2C273B76B20052610B /* TriggerHandler.swift in Sources */,
 				F9BCF32422E28F2400C7F7F0 /* Regex.swift in Sources */,
 				7BD0FD4E25C75AD400ED030E /* MapView.swift in Sources */,
-				F9D36E7E22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				F98B4913246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B4906246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				7BAC841B25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,
@@ -982,9 +955,7 @@
 				7B228B29273B09D70052610B /* NSViewExtensions.swift in Sources */,
 				7BCBBD22274750CA00219CA0 /* Exceptions.swift in Sources */,
 				7B3B9A162758BDBE0035D731 /* PresetCommandHandler.swift in Sources */,
-				F9BCF32E22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
-				F9BCF33422E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7BAC83FC25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
@@ -1006,6 +977,7 @@
 				7BCE4A2C25C5016400AF0444 /* MapZone.swift in Sources */,
 				7B228B23273880320052610B /* GotoCommandHandler.swift in Sources */,
 				F9CA20462453AEBB00A92736 /* EchoCommandHandler.swift in Sources */,
+				7B10A66F275D7EE9000FEDE8 /* OView.swift in Sources */,
 				7B228B122735D3B20052610B /* StreamHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1019,7 +991,6 @@
 				F9CA205C2466322B00A92736 /* VarCommandHandler.swift in Sources */,
 				7BCBBD18274743B300219CA0 /* ExpressionEvaluatorTests.swift in Sources */,
 				7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
-				F9D36E7F22E6A907008BC6E6 /* BasicView.swift in Sources */,
 				7B10A59B275C1F26000FEDE8 /* LocalHost.swift in Sources */,
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
@@ -1057,12 +1028,10 @@
 				F9CA206D2466765D00A92736 /* WindowCommandHandlerTests.swift in Sources */,
 				7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */,
 				F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */,
-				F9BCF32B22E4D33E00C7F7F0 /* Elm.swift in Sources */,
 				7B9C5A6D273F327700A17134 /* Variables.swift in Sources */,
 				F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
 				7B228B1B273654E80052610B /* DateTimeExtensionsTests.swift in Sources */,
 				7B228B18273619010052610B /* ExpPluginTests.swift in Sources */,
-				F9BCF33922E5811C00C7F7F0 /* Driver.swift in Sources */,
 				F98B4902246F6AD1000E2D92 /* GagLoaderTests.swift in Sources */,
 				F969A0EC239C812900408CE5 /* WindowViewController.swift in Sources */,
 				7B956B4727517B0700346019 /* VitalsBar.swift in Sources */,
@@ -1088,7 +1057,6 @@
 				7BDF5C81272723DA0020A3B0 /* MacroLoaderTests.swift in Sources */,
 				7BA27B5125DF93C500A88B80 /* Combinators.swift in Sources */,
 				7BCBBD23274750CA00219CA0 /* Exceptions.swift in Sources */,
-				F9BCF32F22E4D9CF00C7F7F0 /* VirtualViews.swift in Sources */,
 				F9B254072478996D0097C07F /* ProfileWindow.swift in Sources */,
 				F9BCF32222E28EFB00C7F7F0 /* DataExtensions.swift in Sources */,
 				F9D36E9722EFC73B008BC6E6 /* GameStreamTests.swift in Sources */,
@@ -1098,6 +1066,7 @@
 				F9CA206B2466761B00A92736 /* InMemoryHelpers.swift in Sources */,
 				F9CA2064246669DB00A92736 /* FileSystem.swift in Sources */,
 				7BAC841725EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
+				7B10A670275D7EE9000FEDE8 /* OView.swift in Sources */,
 				F9CA205924662B5500A92736 /* BeepCommandHandler.swift in Sources */,
 				F98B491B24709CAE000E2D92 /* RegexTester.swift in Sources */,
 				7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */,
@@ -1122,10 +1091,10 @@
 				7B3B9A172758BDBE0035D731 /* PresetCommandHandler.swift in Sources */,
 				7BDF5C79271A53E10020A3B0 /* MacroLoader.swift in Sources */,
 				7B27C5AC274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
+				7B10A673275D7F37000FEDE8 /* OWindow.swift in Sources */,
 				7BCBBD102743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BDF5C7C271AB4F40020A3B0 /* BoolExtensions.swift in Sources */,
 				7BAC841C25EA0B4100A6C7D5 /* ParseCommandHandler.swift in Sources */,
-				F9BCF33522E57AC400C7F7F0 /* VirtualViewControllers.swift in Sources */,
 				F9D36E9022EAE326008BC6E6 /* NSColorExtensions.swift in Sources */,
 				7B10A56A275C0CC1000FEDE8 /* PluginManager.swift in Sources */,
 				F98B490F246F9EE1000E2D92 /* SubstituteLoader.swift in Sources */,
@@ -1145,7 +1114,6 @@
 				7BCBBD2027474EB600219CA0 /* FunctionEvaluatorTests.swift in Sources */,
 				F969A0FC23A4B7CF00408CE5 /* WindowSettings.swift in Sources */,
 				F62EA132247A2846004E2C1E /* GagCommandHandler.swift in Sources */,
-				F9BCF33222E4DC1E00C7F7F0 /* VirtualViews+Rendering.swift in Sources */,
 				F62EA141247BE6EB004E2C1E /* GagCommandHandlerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

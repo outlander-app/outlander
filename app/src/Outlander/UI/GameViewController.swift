@@ -393,7 +393,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
 
                 win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
-                if let m = win as? MyWindow {
+                if let m = win as? OWindow {
                     let font = NSFont(name: self.gameContext.layout?.primary.fontName ?? "Helvetica", size: CGFloat(Double(self.gameContext.layout?.primary.fontSize ?? 14)))!
                     m.titleFont = font
                     m.titleColor = self.gameContext.layout?.primary.fontColor.asColor() ?? NSColor(hex: "#d4d4d4")!

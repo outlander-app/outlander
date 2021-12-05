@@ -71,7 +71,7 @@ class ScriptToolbarViewController: NSViewController {
     func resumeScript(_ scriptName: String) {
         for view in view.subviews {
             if let button = view as? NSPopUpButton {
-                if button.menu?.title == scriptName || scriptName == "all" {
+                if button.menu?.title.lowercased() == scriptName.lowercased() || scriptName == "all" {
                     button.menu?.item(at: 0)?.image = NSImage(named: "NSStatusAvailable")
                 }
             }
@@ -81,7 +81,7 @@ class ScriptToolbarViewController: NSViewController {
     func pauseScript(_ scriptName: String) {
         for view in view.subviews {
             if let button = view as? NSPopUpButton {
-                if button.menu?.title == scriptName || scriptName == "all" {
+                if button.menu?.title.lowercased() == scriptName.lowercased() || scriptName == "all" {
                     button.menu?.item(at: 0)?.image = NSImage(named: "NSStatusPartiallyAvailable")
                 }
             }
@@ -101,7 +101,7 @@ class ScriptToolbarViewController: NSViewController {
 
         for view in view.subviews {
             if let button = view as? NSPopUpButton {
-                if button.menu?.title == scriptName {
+                if button.menu?.title.lowercased() == scriptName.lowercased() {
                     button.removeFromSuperview()
                 }
             }
