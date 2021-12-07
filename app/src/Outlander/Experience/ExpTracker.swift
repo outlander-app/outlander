@@ -129,7 +129,7 @@ class ExpTracker {
     }
 
     func find(_ skillName: String) -> SkillExp? {
-        skills.values.first(where: { $0.name.lowercased() == skillName.lowercased() })
+        skills.values.first(where: { $0.name.lowercased() == skillName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased() })
     }
 
     func resetLearnedQueue() {

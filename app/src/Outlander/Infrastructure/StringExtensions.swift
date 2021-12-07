@@ -171,4 +171,53 @@ extension String {
         }
         return String(self[index...])
     }
+
+    private static var valueFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        formatter.groupingSeparator = ""
+        return formatter
+    }()
+
+    var formattedNumber: String? {
+        guard let dbl = Double(self) else {
+            return nil
+        }
+        let number = NSNumber(value: dbl)
+        return Self.valueFormatter.string(from: number)!
+    }
+}
+
+extension CGFloat {
+    private static var valueFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        formatter.groupingSeparator = ""
+        return formatter
+    }()
+
+    var formattedNumber: String {
+        let number = NSNumber(value: self)
+        return Self.valueFormatter.string(from: number)!
+    }
+}
+
+extension Double {
+    private static var valueFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        formatter.groupingSeparator = ""
+        return formatter
+    }()
+
+    var formattedNumber: String {
+        let number = NSNumber(value: self)
+        return Self.valueFormatter.string(from: number)!
+    }
 }

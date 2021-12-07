@@ -161,9 +161,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case let .text(tags):
                 for tag in tags {
                     self?.logTag(tag)
-//                    if tag.window != "raw" {
-//                        self?.scriptRunner?.stream(tag.text, [])
-//                    }
                 }
 
             case let .vitals(name, value):
@@ -912,6 +909,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         controller?.bufferSize = settings.bufferSize
         controller?.bufferClearSize = settings.bufferClearSize
         controller?.location = NSRect(x: settings.x, y: settings.y, width: settings.width, height: settings.height)
+        controller?.padding = settings.padding
 
         return controller
     }

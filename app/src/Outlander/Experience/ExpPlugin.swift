@@ -56,6 +56,8 @@ class ExpPlugin: OPlugin {
             let exp = SkillExp(name: skill, mindState: learningRate, ranks: Double(ranks), isNew: false)
             tracker.update(exp)
         }
+
+        displayLearnedWithPrompt = host.get(variable: "exptracker:displaylearned").toBool() == true
     }
 
     func variableChanged(variable _: String, value _: String) {}
@@ -113,6 +115,7 @@ class ExpPlugin: OPlugin {
             tracker.resetLearnedQueue()
             displayLearnedWithPrompt = !displayLearnedWithPrompt
             let onOff = displayLearnedWithPrompt ? "on" : "off"
+            host?.set(variable: "exptracker:displaylearned", value: onOff)
             host?.send(text: "#echo \(foreColor) \n\(name) - setting display learned to: \(onOff)\n")
         case "/tracker orderby name":
             tracker.sortingBy = .name
@@ -340,6 +343,8 @@ class ExpPlugin: OPlugin {
 
     func getLowestSkill(_ maybeSkills: String) -> (Int, SkillExp)? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
+            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
 
         var found: SkillExp?
         var foundIdx = -1
@@ -369,6 +374,8 @@ class ExpPlugin: OPlugin {
 
     func getHighestSkill(_ maybeSkills: String) -> (Int, SkillExp)? {
         let skills = maybeSkills.components(separatedBy: CharacterSet([" ", "|", ","]))
+            .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
 
         var found: SkillExp?
         var foundIdx = -1

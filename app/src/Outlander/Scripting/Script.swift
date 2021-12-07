@@ -1200,6 +1200,8 @@ class Script {
 
         if !replaced.isEmpty {
             arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
+        } else {
+            arguments = [""]
         }
 
         return gotoLabel(label, arguments, true)
@@ -1215,6 +1217,8 @@ class Script {
 
         if !replaced.isEmpty {
             arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
+        } else {
+            arguments = [""]
         }
 
         return gotoLabel(label, arguments)
@@ -1346,7 +1350,7 @@ class Script {
             return .next
         }
 
-        var textResult = "\(result)"
+        var textResult = "\(result.formattedNumber)"
 
         if result == rint(result) {
             textResult = "\(Int(result))"
@@ -1468,7 +1472,7 @@ class Script {
 
         context.ifStack = ctx.ifStack.copy()
 
-        notify("returning to line \(returnToLine.lineNumber)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
+        notify("returning to line \(returnToLine.lineNumber) of \(returnToLine.fileName)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
 
         context.currentLineNumber = returnToIndex
 

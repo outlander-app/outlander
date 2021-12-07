@@ -639,6 +639,11 @@ struct TextTag {
 
         return combined
     }
+
+    static func lines(tags: [TextTag]) -> [String] {
+        let combined = tags.map { $0.text }.joined(separator: "").components(separatedBy: "\n").filter { !$0.isEmpty }
+        return combined
+    }
 }
 
 enum StreamCommand: CustomStringConvertible {
@@ -819,10 +824,8 @@ class GameStream {
                     streamCommands(.text(combined))
                     tags.removeAll()
 
-                    // TODO: should this be combined text?
-                    // TODO: verify if combined, can mess up trigger regex with leading ^
-                    for t in combined {
-                        sendToHandlers(text: t.text)
+                    for line in TextTag.lines(tags: combined) {
+                        sendToHandlers(text: line)
                     }
                 }
             }
@@ -830,8 +833,12 @@ class GameStream {
     }
 
     public func sendToHandlers(text: String) {
-        for handler in handlers {
-            handler.stream(text, with: context)
+        let lines = text.components(separatedBy: "\n").filter { !$0.isEmpty }
+
+        for line in lines {
+            for handler in handlers {
+                handler.stream(line, with: context)
+            }
         }
     }
 

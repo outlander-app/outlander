@@ -21,6 +21,11 @@ extension GameContext {
 class TriggerHandler: StreamHandler {
     func stream(_ data: String, with context: GameContext) {
         var data = data
+
+        guard !data.isEmpty else {
+            return
+        }
+
         for trigger in context.activeTriggers() {
             guard let matches = RegexFactory.get(trigger.pattern)?.allMatches(&data) else {
                 continue

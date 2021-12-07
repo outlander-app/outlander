@@ -838,7 +838,7 @@ class ScriptTests: XCTestCase {
         expect: ["dir: swim southwest\n", "dir: southwest\n", "type: swim\n", "dir: swim west\n", "dir: west\n", "type: swim\n"],
         args: ["\"swim southwest\"", "\"swim west\""])
     }
-    
+
     func test_gosub_with_ampersand() throws {
         try scenario([
             "gosub go %1",

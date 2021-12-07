@@ -74,7 +74,7 @@ class FunctionEvaluator {
             }
 
             if let result: Double? = evaluator.evaluate(simp) {
-                var res = "\(result ?? -1)"
+                var res = "\((result ?? -1).formattedNumber)"
 
                 if result == rint(result ?? -1) {
                     res = "\(Int(result ?? -1))"
@@ -122,7 +122,7 @@ class FunctionEvaluator {
                 return EvalResult(text: simp, result: "0", groups: [])
             }
 
-            var res = "\(result)"
+            var res = "\(result.formattedNumber)"
 
             if result == rint(result) {
                 res = "\(Int(result))"

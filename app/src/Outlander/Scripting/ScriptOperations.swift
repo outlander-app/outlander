@@ -46,11 +46,11 @@ class ActionOp: IAction {
         let regex = RegexFactory.get(resolvedPattern)
         var input = text
 
-        if let matches = regex?.allMatches(&input) {
-            for match in matches {
-                print(match.values())
-            }
-        }
+//        if let matches = regex?.allMatches(&input) {
+//            for match in matches {
+//                print(match.values())
+//            }
+//        }
 
         if let match = regex?.firstMatch(&input) {
             groups = match.values()

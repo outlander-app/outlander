@@ -47,14 +47,6 @@ class ScriptRunner: StreamHandler {
 
             self.remove([scriptName])
         }
-
-//        self.context.events.handle(self, channel: "ol:game:parse") { result in
-//            guard let data = result as? String else {
-//                return
-//            }
-//
-//            self.stream(data, [])
-//        }
     }
 
     func stream(_ data: String, _ tokens: [StreamCommand]) {

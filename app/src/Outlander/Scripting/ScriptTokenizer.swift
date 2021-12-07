@@ -365,7 +365,7 @@ class CommandMode: IScriptReaderMode {
         "debuglevel": DebugMode(),
         "echo": EchoMode(),
         "eval": EvalMode(),
-        "evalmath": EvalMode(),
+        "evalmath": EvalMathMode(),
         "exit": ExitMode(),
         "gosub": GosubMode(),
         "goto": GotoMode(),

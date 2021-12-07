@@ -29,6 +29,7 @@ class WindowData: Codable {
     public var backgroundColor: String = "#1e1e1e"
     public var borderColor: String = "#cccccc"
     public var order: Int = 0
+    public var padding: String? = "0,0"
 }
 
 enum WindowLayoutCodingKeys: CodingKey {

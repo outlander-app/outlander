@@ -33,8 +33,6 @@ class OLTextView: NSTextView {
 
     override func keyUp(with event: NSEvent) {
         onKeyUp(event)
-
-        // self.textContainerInset
     }
 }
 
@@ -136,6 +134,12 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
     }
 
+    public var padding: String? {
+        didSet {
+            updatePadding()
+        }
+    }
+
     static var defaultFontColor = NSColor(hex: "#cccccc")!
     static var defaultFont = NSFont(name: "Helvetica", size: 14)!
     static var defaultMonoFont = NSFont(name: "Menlo", size: 13)!
@@ -148,8 +152,11 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     var suspended: Bool = false
     var suspendedQueue: [TextTag] = []
 
+    var loaded: Bool = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        loaded = true
 
         WindowViewController.dateFormatter.dateFormat = "HH:mm"
 
@@ -179,6 +186,13 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         addMenu(tag: 42, action: #selector(menuTitle(sender:)))
     }
 
+    private static var valueFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
+
     func toWindowData(order: Int = 0) -> WindowData {
         let data = WindowData()
         data.name = name
@@ -202,9 +216,38 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         data.height = Double(mainView?.frame.height ?? 100)
         data.x = Double(lastLocation.origin.x)
         data.y = Double(lastLocation.origin.y)
+
+        let inset = textView.textContainerInset
+        data.padding = "\(inset.width.formattedNumber),\(inset.height.formattedNumber)"
+
         data.order = order
 
         return data
+    }
+
+    func updatePadding() {
+        guard loaded else {
+            return
+        }
+        guard let val = padding else {
+            return
+        }
+
+        let split = val.components(separatedBy: ",").map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }
+
+        var width: Double = 0
+        var height: Double = 0
+
+        if split.count > 0 {
+            width = Double(split[0]) ?? 0
+        }
+
+        if split.count > 1 {
+            height = Double(split[1]) ?? 0
+        }
+
+        let size = NSSize(width: width, height: height)
+        textView.textContainerInset = size
     }
 
     func hide() {
@@ -284,6 +327,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         mainView?.borderColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
         mainView?.backgroundColor = NSColor(hex: borderColor) ?? WindowViewController.defaultFontColor
         textView?.backgroundColor = NSColor(hex: backgroundColor) ?? WindowViewController.defaultBorderColor
+        updatePadding()
     }
 
     func clear() {
@@ -332,7 +376,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         var foregroundColorToUse = foregroundNSColor
-        var backgroundHex = tag.backgroundColor
+        var backgroundHex: String?
 
         if tag.bold {
             if let value = context.presetFor("creatures") {
@@ -347,6 +391,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         if let foreColorHex = tag.color, let foreColor = NSColor(hex: foreColorHex) {
             foregroundColorToUse = foreColor
+        }
+
+        if let bg = tag.backgroundColor {
+            backgroundHex = bg
         }
 
         var font = fontNSFont

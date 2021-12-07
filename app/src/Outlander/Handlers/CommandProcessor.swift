@@ -41,6 +41,8 @@ class CommandProcesssor {
         AliasCommandHandler(),
         LinkCommandHandler(),
         PluginCommandHandler(),
+        EvalCommandHandler(),
+        EvalMathCommandHandler(),
     ]
 
     init(_ files: FileSystem, pluginManager: OPlugin) {
@@ -51,6 +53,8 @@ class CommandProcesssor {
         handlers.append(PlayCommandHandler(files))
         handlers.append(LogCommandHandler(files))
         handlers.append(PresetCommandHandler(files))
+        handlers.append(HighlightsCommandHandler(files))
+        handlers.append(TriggerCommandHandler(files))
 
         self.pluginManager = pluginManager
     }
@@ -69,14 +73,16 @@ class CommandProcesssor {
         if cmdText.isEmpty {
             return
         }
-        if !command.isSystemCommand {
-            context.globalVars["lastcommand"] = cmdText
-        }
 
         let replacer = VariableReplacer()
         var maybeCommand = replacer.replace(cmdText, globalVars: context.globalVars)
         maybeCommand = processAliases(maybeCommand, with: context)
         maybeCommand = replacer.replace(maybeCommand, globalVars: context.globalVars)
+
+        // set lastcommand _after_ variable replacement
+        if !command.isSystemCommand, !cmdText.contains("$lastcommand") {
+            context.globalVars["lastcommand"] = cmdText
+        }
 
         maybeCommand = pluginManager.parse(input: maybeCommand)
 
