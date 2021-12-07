@@ -6,8 +6,8 @@
 //  Copyright © 2021 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+import Foundation
 
 class OWindow: NSWindow {
     @IBInspectable

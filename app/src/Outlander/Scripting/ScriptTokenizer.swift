@@ -86,7 +86,7 @@ enum ScriptTokenValue: Hashable {
     case `if`(ScriptExpression)
     case ifNeedsBrace(ScriptExpression)
     case gosub(String, String)
-    case goto(String)
+    case goto(String, String)
     case label(String)
     case match(String, String)
     case matchre(String, String)
@@ -751,7 +751,9 @@ class GotoMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let label = String(context.text.parseWord())
-        context.target.append(.goto(label))
+        context.text.consumeSpaces()
+        let args = String(context.text.parseToEnd())
+        context.target.append(.goto(label, args))
         return nil
     }
 }

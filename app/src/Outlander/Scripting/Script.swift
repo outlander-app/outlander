@@ -405,15 +405,15 @@ class Script {
     func varsForDisplay() -> [String] {
         var vars: [String] = []
 
-        for key in context.argumentVars.keys {
+        for key in context.argumentVars.displayKeys {
             vars.append("\(key): \(context.argumentVars[key] ?? "")")
         }
 
-        for key in context.variables.keys {
+        for key in context.variables.displayKeys {
             vars.append("\(key): \(context.variables[key] ?? "")")
         }
 
-        return vars.sorted { $0 < $1 }
+        return vars
     }
 
     func stream(_ text: String, _ tokens: [StreamCommand]) {
@@ -654,10 +654,19 @@ class Script {
         matchwait = nil
         matchStack.removeAll()
 
+        // clear any previous regex vars as those get applied before the label vars
+        context.regexVars.removeAll()
         context.setLabelVars(args)
 
+        var count = 0
         let displayArgs = args
-            .map { $0.range(of: " ") != nil ? "\"\($0)\"" : $0 }
+            .map {
+                defer { count += 1 }
+                if count > 0, $0.range(of: " ") != nil {
+                    return "\"\($0)\""
+                }
+                return $0
+            }
             .joined(separator: " ")
 
         let command = isGosub ? "gosub" : "goto"
@@ -1190,18 +1199,25 @@ class Script {
         var arguments: [String] = []
 
         if !replaced.isEmpty {
-            arguments = [replaced] + replaced.components(separatedBy: " ")
+            arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
         }
 
         return gotoLabel(label, arguments, true)
     }
 
     func handleGoto(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        guard case let .goto(label) = token else {
+        guard case let .goto(label, args) = token else {
             return .next
         }
 
-        return gotoLabel(label, [])
+        let replaced = context.replaceVars(args)
+        var arguments: [String] = []
+
+        if !replaced.isEmpty {
+            arguments = [replaced] + replaced.argumentsSeperated().map { $0.trimmingCharacters(in: CharacterSet(["\""])) }
+        }
+
+        return gotoLabel(label, arguments)
     }
 
     func handleLabel(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {

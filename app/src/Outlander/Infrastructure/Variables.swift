@@ -159,7 +159,7 @@ class Variables {
 
     func sorted() -> [(String, String)] {
         lockQueue.sync(flags: .barrier) {
-            vars.sorted(by: { $0.key < $1.key }).map { key, value in (key, value.rawValue ?? "") }
+            vars.sorted(by: { $0.key.compare($1.key, options: .numeric) == .orderedAscending }).map { key, value in (key, value.rawValue ?? "") }
         }
     }
 
@@ -168,6 +168,12 @@ class Variables {
             vars.map { $0.key }.sorted(by: { $0.count > $1.count })
         }
         // return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
+    }
+
+    var displayKeys: [String] {
+        lockQueue.sync(flags: .barrier) {
+            vars.map { $0.key }.sorted(by: { $0.compare($1, options: .numeric) == .orderedAscending })
+        }
     }
 
     func addDynamic(key: String, value: DynamicValue) {

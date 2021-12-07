@@ -752,6 +752,117 @@ class ScriptTests: XCTestCase {
         expect: ["an unfinished red-leucro headband\n", "some razor sharp scissors crafted from animite\n"])
     }
 
+    func test_matchre_replacement_after_match_group() throws {
+        let events = InMemoryEvents()
+        let context = GameContext(events)
+        let loader = InMemoryScriptLoader()
+        loader.lines["bank"] = [
+            "balance:",
+            "  matchre CalcTotals current balance is (.*) (Kronars|Lirums|Dokoras)\\.",
+            "  put balance",
+            "  matchwait",
+            "CalcTotals:",
+            "  var total $1",
+            "if matchre(\"%total\", \"(\\d+) platinum\") then {var platinum $1}",
+            "else {var platinum 0}",
+        ]
+        let script = try Script("bank", loader: loader, gameContext: context)
+        script.run([], runAsync: false)
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
+
+        XCTAssertEqual(script.context.variables["platinum"], "16135")
+    }
+
+    func test_matchre_replacement_after_match_group_with_ampersand() throws {
+        let events = InMemoryEvents()
+        let context = GameContext(events)
+        let loader = InMemoryScriptLoader()
+        loader.lines["bank"] = [
+            "balance:",
+            "  matchre CalcTotals current balance is (.*) (Kronars|Lirums|Dokoras)\\.",
+            "  put balance",
+            "  matchwait",
+            "CalcTotals:",
+            "  var total &1",
+            "if matchre(\"%total\", \"(\\d+) platinum\") then {var platinum $1}",
+            "else {var platinum 0}",
+        ]
+        let script = try Script("bank", loader: loader, gameContext: context)
+        script.run([], runAsync: false)
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
+
+        XCTAssertEqual(script.context.variables["platinum"], "16135")
+    }
+
+    func test_eval_and_matchre() throws {
+        try scenario([
+            "gosub go \"swim southwest\"",
+            "goto end",
+            "go:",
+            "  var dir $1",
+            "  echo dir: %dir",
+            "  var type default",
+            "  if matchre(\"%dir\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \") then",
+            "  {",
+            "    var type $1",
+            "    eval dir replacere(\"%dir\", \"^(script |search|swim|web|muck|rt|wait|slow|script|room|ice) \", \"\")",
+            "  }",
+            "  return",
+            "end:",
+            "  echo dir: %dir",
+            "  echo type: %type",
+        ],
+        expect: ["dir: swim southwest\n", "dir: southwest\n", "type: swim\n"])
+    }
+
+    func test_gosub() throws {
+        try scenario([
+            "gosub go %1",
+            "shift",
+            "gosub go %1",
+            "goto end",
+            "go:",
+            "  var dir $0",
+            "  echo dir: %dir",
+            "  var type default",
+            "  if matchre(\"%dir\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \") then",
+            "  {",
+            "    var type $1",
+            "    eval dir replacere(\"%dir\", \"^(script |search|swim|web|muck|rt|wait|slow|script|room|ice) \", \"\")",
+            "  }",
+            "  echo dir: %dir",
+            "  echo type: %type",
+            "  return",
+            "end:",
+        ],
+        expect: ["dir: swim southwest\n", "dir: southwest\n", "type: swim\n", "dir: swim west\n", "dir: west\n", "type: swim\n"],
+        args: ["\"swim southwest\"", "\"swim west\""])
+    }
+    
+    func test_gosub_with_ampersand() throws {
+        try scenario([
+            "gosub go %1",
+            "shift",
+            "gosub go %1",
+            "goto end",
+            "go:",
+            "  var dir &0",
+            "  echo dir: %dir",
+            "  var type default",
+            "  if matchre(\"%dir\", \"^(script|search|swim|climb|web|muck|rt|wait|slow|drag|script|room|ice) \") then",
+            "  {",
+            "    var type $1",
+            "    eval dir replacere(\"%dir\", \"^(script |search|swim|web|muck|rt|wait|slow|script|room|ice) \", \"\")",
+            "  }",
+            "  echo dir: %dir",
+            "  echo type: %type",
+            "  return",
+            "end:",
+        ],
+        expect: ["dir: swim southwest\n", "dir: southwest\n", "type: swim\n", "dir: swim west\n", "dir: west\n", "type: swim\n"],
+        args: ["\"swim southwest\"", "\"swim west\""])
+    }
+
     func test_eval_numbers() throws {
         try scenario([
             "eval temp 1+1",

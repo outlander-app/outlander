@@ -12,7 +12,7 @@ import Plugins
 class LocalPlugin {
     var bundle: Bundle?
     var value: OPlugin?
-    
+
     init(bundle: Bundle? = nil, value: OPlugin? = nil) {
         self.bundle = bundle
         self.value = value
@@ -33,6 +33,7 @@ class LocalPlugin {
 
     func unload() {
         value = nil
+        // don't actually unload the bundle here, can cause memory issues
 //        guard let bundle = bundle else {
 //            return
 //        }
@@ -62,7 +63,6 @@ class PluginManager: OPlugin {
                 return
             }
 
-            
             DispatchQueue.main.async {
                 switch command.lowercased() {
                 case "load", "reload":
@@ -98,7 +98,7 @@ class PluginManager: OPlugin {
         guard let files = files, let context = context else {
             return
         }
-        
+
         do {
             try ObjC.perform {
                 let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
@@ -117,7 +117,7 @@ class PluginManager: OPlugin {
         }
 
 //        print("loaded? \(bundle.isLoaded)")
-        
+
         do {
             try ObjC.perform {
                 if let pluginType = bundle.principalClass as? OPlugin.Type {
@@ -130,8 +130,7 @@ class PluginManager: OPlugin {
                     }
                 }
             }
-        }
-        catch {
+        } catch {
             context?.events.echoError("Error when trying to load plugin \(url):\n\(error)")
         }
     }

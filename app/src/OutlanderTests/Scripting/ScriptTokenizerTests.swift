@@ -50,8 +50,22 @@ class ScriptTokenizerTests: XCTestCase {
         let token = tokenizer.read("goto label")
 
         switch token {
-        case let .goto(label):
+        case let .goto(label, args):
             XCTAssertEqual(label, "label")
+            XCTAssertEqual(args, "")
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+
+    func test_tokenizes_goto_with_args() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("goto label arg1 arg2")
+
+        switch token {
+        case let .goto(label, args):
+            XCTAssertEqual(label, "label")
+            XCTAssertEqual(args, "arg1 arg2")
         default:
             XCTFail("wrong token value")
         }

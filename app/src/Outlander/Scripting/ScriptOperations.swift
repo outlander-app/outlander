@@ -45,7 +45,7 @@ class ActionOp: IAction {
         let resolvedPattern = context.replaceVars(pattern)
         let regex = RegexFactory.get(resolvedPattern)
         var input = text
-        
+
         if let matches = regex?.allMatches(&input) {
             for match in matches {
                 print(match.values())
