@@ -84,7 +84,7 @@ class PluginManager: OPlugin {
 
     func unload(_ name: String) {
         // unload plugin if already loaded
-        if let idx = plugins.firstIndex(where: { $0.bundle?.bundleURL.lastPathComponent == name }) {
+        if let idx = plugins.firstIndex(where: { $0.bundle?.bundleURL.lastPathComponent.lowercased() == name.lowercased() }) {
             host?.send(text: "#echo Unloading plugin \(name)")
             let plugin = plugins[idx]
             plugin.unload()
@@ -101,7 +101,7 @@ class PluginManager: OPlugin {
 
         do {
             try ObjC.perform {
-                let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.hasSuffix(".bundle") }
+                let bundleUrl = files.contentsOf(context.applicationSettings.paths.plugins).first { $0.isFileURL && $0.lastPathComponent.lowercased() == name.lowercased() }
                 if bundleUrl != nil {
                     load(url: bundleUrl!)
                 }
