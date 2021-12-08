@@ -8,12 +8,65 @@
 
 import Cocoa
 
-class MapWindow: NSWindowController {
+class MapsDataSource: NSObject, NSComboBoxDataSource {
+    public typealias Count = () -> Int
+    public typealias Description = (_ index: Int) -> String
+    public typealias Values = () -> [MapZone]
+
+    var getCount: Count = { 0 }
+    var getDescription: Description = {_ in "" }
+    var getValues: Values = { [] }
+
+    func indexOfMap(id: String) -> Int? {
+        let values = getValues()
+
+        for (index, item) in values.enumerated() {
+            if item.id == id {
+                return index
+            }
+        }
+
+        return nil
+    }
+    
+    func mapAt(index: Int) -> MapZone? {
+        let values = getValues()
+        
+        guard index > 0 && index < values.count else {
+            return nil
+        }
+
+        for (idx, item) in values.enumerated() {
+            if idx == index {
+                return item
+            }
+        }
+
+        return nil
+    }
+    
+    func numberOfItems(in comboBox: NSComboBox) -> Int {
+        return getCount()
+    }
+
+    func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
+        guard index > -1 else {
+            return ""
+        }
+
+        return getDescription(index)
+    }
+}
+
+class MapWindow: NSWindowController, NSComboBoxDelegate {
     @IBOutlet var mapView: MapView?
     @IBOutlet var scrollView: NSScrollView!
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
+    @IBOutlet weak var mapsList: NSComboBox!
+
+    var dataSource: MapsDataSource = MapsDataSource()
 
     var loaded: Bool = false
 
@@ -40,13 +93,20 @@ class MapWindow: NSWindowController {
 
     func initialize(context: GameContext) {
         self.context = context
+        self.context?.events.handle(self, channel: "ol:mapper:setpath") { result in
+            if let path = result as? [String] {
+                DispatchQueue.main.async {
+                    self.setWalkPath(path)
+                }
+            }
+        }
+        
         self.context?.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
                     if key == "zoneid" {
                         guard self.loaded else { return }
-                        guard let newMap = context.mapZone else { return }
-                        self.renderMap(newMap)
+                        self.setSelectedZone()
                     }
 
                     if key == "roomid" {
@@ -55,10 +115,35 @@ class MapWindow: NSWindowController {
                 }
             }
         }
+
+        dataSource.getCount = {
+            self.context?.maps.count ?? 0
+        }
+
+        dataSource.getValues =  {
+            guard let maps = self.context?.maps else {
+                return []
+            }
+            let values = Array(maps.values).sorted { $0.id.compare($1.id, options: .numeric) == .orderedAscending }
+            return values
+        }
+
+        dataSource.getDescription = { index in
+            let values = self.dataSource.getValues()
+
+            guard index > -1 && index < values.count else {
+                return ""
+            }
+
+            let map = values[index]
+            return "\(map.id). \(map.name)"
+        }
     }
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        
+        mapsList?.dataSource = self.dataSource
 
         loaded = true
 
@@ -134,12 +219,18 @@ class MapWindow: NSWindowController {
     }
 
     func setSelectedZone() {
-        guard let zone = context?.mapZone else { return }
+        print("MapWindow - selecting zone ...")
+        guard let zoneId = context?.globalVars["zoneid"], let zone = context?.maps[zoneId] else { return }
+        
+        if let idx = self.dataSource.indexOfMap(id: zoneId) {
+            self.mapsList.selectItem(at: idx)
+        }
 
         renderMap(zone)
     }
 
     func renderMap(_ zone: MapZone) {
+        print("rendering map ... \(zone.id)")
         let rect = zone.mapSize(0, padding: 100.0)
 
         if let context = context {
@@ -152,7 +243,7 @@ class MapWindow: NSWindowController {
         mapView?.setZone(zone, rect: rect)
         clearWalkPath()
 
-        zoneLabel.stringValue = "Map \(zone.id). \(zone.name), \(zone.rooms.count) rooms"
+        zoneLabel.stringValue = "\(zone.rooms.count) rooms"
     }
 
     func setWalkPath(_ path: [String]) {
@@ -161,5 +252,20 @@ class MapWindow: NSWindowController {
 
     func clearWalkPath() {
         mapView?.walkPath = []
+    }
+
+    func comboBoxSelectionDidChange(_ notification: Notification) {
+        print("Selection changed")
+        guard let idx = self.mapsList?.indexOfSelectedItem else {
+            return
+        }
+        guard let selectedMap = self.dataSource.mapAt(index: idx) else {
+            return
+        }
+
+        print("Selection changed \(idx) \(selectedMap.id) \(selectedMap.name)")
+
+//        self.context?.globalVars["zoneid"] = selectedMap.id
+        self.context?.mapZone = selectedMap
     }
 }

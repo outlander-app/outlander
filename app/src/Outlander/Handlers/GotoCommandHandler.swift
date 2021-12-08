@@ -13,42 +13,97 @@ class GotoComandHandler: ICommandHandler {
 
     let log = LogManager.getLog(String(describing: GotoComandHandler.self))
 
-    func handle(_ input: String, with context: GameContext) {
-        let area = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
+    private var started = Date()
 
-        guard let zone = context.mapZone, let startingRoom = context.globalVars["roomid"] else {
+    func handle(_ input: String, with context: GameContext) {
+        let area = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines).lowercased().components(separatedBy: "from")
+
+        started = Date()
+
+        DispatchQueue.global(qos: .userInteractive).async {
+            if area.count > 1 {
+                self.gotoArea(area: area[0], from: area[1], context: context)
+            } else if area.count > 0 {
+                self.gotoArea(area: area[0], context: context)
+            }
+        }
+    }
+
+    func gotoArea(area: String, context: GameContext) {
+        var to: MapNode?
+        var from: MapNode?
+        var matches: [MapNode] = []
+
+        if let zone = context.mapZone {
+            let roomId = context.globalVars["roomid"] ?? ""
+            from = zone.room(id: roomId)
+
+            let (toRoom, m) = room(for: zone, area: area)
+            to = toRoom
+            matches = m
+        }
+
+        goto(to: to, from: from, matches: matches, area: area, context: context)
+    }
+
+    func gotoArea(area: String, from: String, context: GameContext) {
+        let (fromRoom, _) = room(for: context.mapZone, area: from)
+        let (toRoom, matches) = room(for: context.mapZone, area: area)
+
+        goto(to: toRoom, from: fromRoom, matches: matches, area: area, context: context)
+    }
+
+    func processMoves(moves: [String], context: GameContext) {
+        let args = moves.map {
+            $0.range(of: " ") != nil
+                ? "\"\($0)\""
+                : $0
+        }.joined(separator: " ")
+
+        context.events.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
+    }
+
+    func goto(to: MapNode?, from: MapNode?, matches: [MapNode], area: String, context: GameContext) {
+        guard let zone = context.mapZone else {
+            let msg = "no map data loaded"
+            context.events.echoError(msg)
+            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER NO MAP DATA", isSystemCommand: true))
             return
         }
 
-        DispatchQueue.global(qos: .background).async {
-            let (toRoom, matches) = self.room(for: zone, area: area)
-
-            for match in matches {
-                context.events.echoText("[AutoMapper]: \(match)", preset: "automapper")
-            }
-
-            if let toRoom = toRoom {
-                let start = Date()
-                let finder = Pathfinder()
-                let path = finder.findPath(start: startingRoom, target: toRoom.id, zone: zone)
-                let moves = zone.getMoves(ids: path)
-                let diff = Date() - start
-
-                context.events.post("ol:mapper:setpath", data: path)
-
-                // context.events.echoText(path.joined(separator: ", "))
-                context.events.echoText("found path in: \(diff.formatted)")
-                context.events.echoText(moves.joined(separator: ", "))
-
-                let args = moves.map {
-                    $0.range(of: " ") != nil
-                        ? "\"\($0)\""
-                        : $0
-                }.joined(separator: " ")
-
-                context.events.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
-            }
+        guard let to = to, let from = from else {
+            let msg = "no path found for \"\(area)\""
+            context.events.echoError(msg)
+            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER NO PATH FOUND", isSystemCommand: true))
+            return
         }
+
+        if to.id == from.id {
+            let msg = "You are already here!"
+            context.events.echoText("[AutoMapper]: \(msg)", preset: "automapper")
+            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER ALREADY HERE", isSystemCommand: true))
+            return
+        }
+
+        for match in matches {
+            context.events.echoText("[AutoMapper]: \(match)", preset: "automapper")
+        }
+
+        let finder = Pathfinder()
+        let path = finder.findPath(start: from.id, target: to.id, zone: zone)
+        let moves = zone.getMoves(ids: path)
+        let diff = Date() - started
+
+        context.events.post("ol:mapper:setpath", data: path)
+
+        if context.globalVars["debugautomapper"]?.toBool() == true {
+            context.events.echoText("[AutoMapper] (debug): " + moves.joined(separator: ", "), preset: "automapper")
+            context.events.echoText("[AutoMapper] (debug): found path in: \(diff.formatted)", preset: "automapper")
+        }
+        processMoves(moves: moves, context: context)
     }
 
     func room(for zone: MapZone?, area: String) -> (MapNode?, [MapNode]) {

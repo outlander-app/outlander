@@ -312,6 +312,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     self.pluginManager?.variableChanged(variable: key, value: value)
 
                     if key == "zoneid" || key == "roomid" {
+                        print("GameViewController - \(key) changed to \(value)")
                         self.shouldUpdateRoom = true
                     }
 
@@ -328,14 +329,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
 
             self.handleRawStream(data: data, streamData: false)
-        }
-
-        gameContext.events.handle(self, channel: "ol:mapper:setpath") { result in
-            if let path = result as? [String] {
-                DispatchQueue.main.async {
-                    self.mapWindow?.setWalkPath(path)
-                }
-            }
         }
 
         vitalsBar.presetFor = { name in

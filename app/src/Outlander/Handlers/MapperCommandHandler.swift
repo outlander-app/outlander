@@ -18,8 +18,8 @@ class MapperComandHandler: ICommandHandler {
         self.files = files
     }
 
-    func handle(_ command: String, with context: GameContext) {
-        let command = command[7...].trimmingCharacters(in: .whitespacesAndNewlines)
+    func handle(_ input: String, with context: GameContext) {
+        let command = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
         guard command.count > 0 else {
             return
         }

@@ -33,11 +33,13 @@ class AutoMapperPlugin: OPlugin {
     }
 
     func variableChanged(variable: String, value: String) {
-        guard let zone = context?.mapZone else {
+        guard variable == "zoneid" else {
             return
         }
 
-        if variable == "zoneid", zone.id != value {
+        print("Automapper Plugin - var changed \(variable) to \(value)")
+
+        if context?.mapZone?.id != value {
             context?.mapZone = context?.maps[value]
         }
     }

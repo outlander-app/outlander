@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="mapLevelSegment" destination="ZfO-Ag-jbc" id="Mur-WM-07n"/>
                 <outlet property="mapView" destination="ED8-n4-Ak2" id="1Vj-Iv-sIY"/>
+                <outlet property="mapsList" destination="ixo-5h-EM0" id="Ojd-Lx-e7M"/>
                 <outlet property="roomLabel" destination="oWP-KH-2r6" id="yn7-hs-OV8"/>
                 <outlet property="scrollView" destination="S5h-GQ-ava" id="bin-EL-fVL"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
@@ -96,6 +97,18 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ixo-5h-EM0">
+                        <rect key="frame" x="72" y="515" width="337" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" usesDataSource="YES" numberOfVisibleItems="5" id="66B-9S-GuG">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </comboBoxCell>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="xkV-TF-h8Q"/>
+                        </connections>
+                    </comboBox>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="S5h-GQ-ava" secondAttribute="bottom" constant="33" id="8Uc-r9-Fym"/>
@@ -107,7 +120,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="140" y="177"/>
+            <point key="canvasLocation" x="140" y="176.5"/>
         </window>
     </objects>
     <resources>
