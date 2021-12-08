@@ -14,7 +14,7 @@ class MapsDataSource: NSObject, NSComboBoxDataSource {
     public typealias Values = () -> [MapZone]
 
     var getCount: Count = { 0 }
-    var getDescription: Description = {_ in "" }
+    var getDescription: Description = { _ in "" }
     var getValues: Values = { [] }
 
     func indexOfMap(id: String) -> Int? {
@@ -28,11 +28,11 @@ class MapsDataSource: NSObject, NSComboBoxDataSource {
 
         return nil
     }
-    
+
     func mapAt(index: Int) -> MapZone? {
         let values = getValues()
-        
-        guard index > 0 && index < values.count else {
+
+        guard index > 0, index < values.count else {
             return nil
         }
 
@@ -44,12 +44,12 @@ class MapsDataSource: NSObject, NSComboBoxDataSource {
 
         return nil
     }
-    
-    func numberOfItems(in comboBox: NSComboBox) -> Int {
-        return getCount()
+
+    func numberOfItems(in _: NSComboBox) -> Int {
+        getCount()
     }
 
-    func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
+    func comboBox(_: NSComboBox, objectValueForItemAt index: Int) -> Any? {
         guard index > -1 else {
             return ""
         }
@@ -64,9 +64,10 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
     @IBOutlet var roomLabel: NSTextField!
     @IBOutlet var zoneLabel: NSTextField!
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
-    @IBOutlet weak var mapsList: NSComboBox!
+    @IBOutlet var mapsList: NSComboBox!
 
-    var dataSource: MapsDataSource = MapsDataSource()
+    var shouldCenterOnRoom = true
+    var dataSource = MapsDataSource()
 
     var loaded: Bool = false
 
@@ -100,7 +101,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
                 }
             }
         }
-        
+
         self.context?.events.handle(self, channel: "ol:variable:changed") { result in
             if let dict = result as? [String: String] {
                 for (key, value) in dict {
@@ -111,6 +112,9 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
                     if key == "roomid" {
                         self.mapView?.currentRoomId = value
+                        if self.shouldCenterOnRoom {
+                            self.scrollToRoom()
+                        }
                     }
                 }
             }
@@ -120,7 +124,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
             self.context?.maps.count ?? 0
         }
 
-        dataSource.getValues =  {
+        dataSource.getValues = {
             guard let maps = self.context?.maps else {
                 return []
             }
@@ -131,7 +135,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         dataSource.getDescription = { index in
             let values = self.dataSource.getValues()
 
-            guard index > -1 && index < values.count else {
+            guard index > -1, index < values.count else {
                 return ""
             }
 
@@ -142,8 +146,8 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        
-        mapsList?.dataSource = self.dataSource
+
+        mapsList?.dataSource = dataSource
 
         loaded = true
 
@@ -221,12 +225,13 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
     func setSelectedZone() {
         print("MapWindow - selecting zone ...")
         guard let zoneId = context?.globalVars["zoneid"], let zone = context?.maps[zoneId] else { return }
-        
-        if let idx = self.dataSource.indexOfMap(id: zoneId) {
-            self.mapsList.selectItem(at: idx)
+
+        if let idx = dataSource.indexOfMap(id: zoneId) {
+            mapsList.selectItem(at: idx)
         }
 
         renderMap(zone)
+        scrollToRoom()
     }
 
     func renderMap(_ zone: MapZone) {
@@ -254,18 +259,42 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         mapView?.walkPath = []
     }
 
-    func comboBoxSelectionDidChange(_ notification: Notification) {
+    func comboBoxSelectionDidChange(_: Notification) {
         print("Selection changed")
-        guard let idx = self.mapsList?.indexOfSelectedItem else {
+        guard let idx = mapsList?.indexOfSelectedItem else {
             return
         }
-        guard let selectedMap = self.dataSource.mapAt(index: idx) else {
+        guard let selectedMap = dataSource.mapAt(index: idx) else {
             return
         }
 
         print("Selection changed \(idx) \(selectedMap.id) \(selectedMap.name)")
 
-//        self.context?.globalVars["zoneid"] = selectedMap.id
-        self.context?.mapZone = selectedMap
+        context?.mapZone = selectedMap
+    }
+
+    @IBAction func centerAction(_ sender: Any) {
+        shouldCenterOnRoom = !shouldCenterOnRoom
+
+        if let btn = sender as? NSButton {
+            btn.state = shouldCenterOnRoom ? .on : .off
+        }
+
+        if shouldCenterOnRoom {
+            scrollToRoom()
+        }
+    }
+
+    func scrollToRoom() {
+        guard let roomId = self.context?.globalVars["roomid"] else {
+            return
+        }
+
+        guard let rect = mapView?.rectForRoom(roomId) else {
+            return
+        }
+
+        let point = NSPoint(x: rect.origin.x - 200, y: rect.origin.y - 200)
+        self.scrollView.contentView.scroll(point)
     }
 }

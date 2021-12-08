@@ -100,8 +100,8 @@
                     <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ixo-5h-EM0">
                         <rect key="frame" x="72" y="515" width="337" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" usesDataSource="YES" numberOfVisibleItems="5" id="66B-9S-GuG">
-                            <font key="font" metaFont="system"/>
+                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" usesDataSource="YES" numberOfVisibleItems="15" id="66B-9S-GuG">
+                            <font key="font" metaFont="system" size="15"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </comboBoxCell>
@@ -109,6 +109,17 @@
                             <outlet property="delegate" destination="-2" id="xkV-TF-h8Q"/>
                         </connections>
                     </comboBox>
+                    <button toolTip="Center on Current Room" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Zd-px-rqc">
+                        <rect key="frame" x="881" y="492" width="46" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="circle.grid.2x2.fill" catalog="system" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tFg-YV-Rv1">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="centerAction:" target="-2" id="5mn-Jk-zxt"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="S5h-GQ-ava" secondAttribute="bottom" constant="33" id="8Uc-r9-Fym"/>
@@ -126,5 +137,6 @@
     <resources>
         <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSRemoveTemplate" width="14" height="4"/>
+        <image name="circle.grid.2x2.fill" catalog="system" width="16" height="15"/>
     </resources>
 </document>
