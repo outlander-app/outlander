@@ -112,7 +112,7 @@
                     <button toolTip="Center on Current Room" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Zd-px-rqc">
                         <rect key="frame" x="881" y="492" width="46" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="circle.grid.2x2.fill" catalog="system" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tFg-YV-Rv1">
+                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="walk" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tFg-YV-Rv1">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -137,6 +137,6 @@
     <resources>
         <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSRemoveTemplate" width="14" height="4"/>
-        <image name="circle.grid.2x2.fill" catalog="system" width="16" height="15"/>
+        <image name="walk" width="48" height="48"/>
     </resources>
 </document>

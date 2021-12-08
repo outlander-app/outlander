@@ -155,14 +155,13 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         zoneLabel.stringValue = ""
 
         mapView?.nodeTravelTo = { node in
-            self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "scriptinput")
+            self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "automapper")
             self.context?.events.sendCommand(Command2(command: "#goto \(node.id)", isSystemCommand: true))
         }
 
         mapView?.nodeClicked = { node in
             if node.isTransfer() {
-                self.context?.events.echoText("switch map \(node.id) (\(node.name))", preset: "scriptinput")
-//                self.context?.globalVars["roomid"] = node.id
+                self.context?.events.echoText("Switching to map \(node.id), \(node.name)", preset: "automapper")
 
                 guard let transferMap = node.transferMap else {
                     return
@@ -286,7 +285,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
     }
 
     func scrollToRoom() {
-        guard let roomId = self.context?.globalVars["roomid"] else {
+        guard let roomId = context?.globalVars["roomid"] else {
             return
         }
 
@@ -295,6 +294,6 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         }
 
         let point = NSPoint(x: rect.origin.x - 200, y: rect.origin.y - 200)
-        self.scrollView.contentView.scroll(point)
+        scrollView.contentView.scroll(point)
     }
 }
