@@ -66,6 +66,8 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
     @IBOutlet var mapLevelSegment: NSSegmentedControl!
     @IBOutlet var mapsList: NSComboBox!
 
+    private var appearanceObserver: NSKeyValueObservation?
+
     var shouldCenterOnRoom = true
     var dataSource = MapsDataSource()
 
@@ -148,6 +150,21 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         super.windowDidLoad()
 
         mapsList?.dataSource = dataSource
+
+        if window?.contentView?.isDarkMode == false {
+            mapView?.theme = MapTheme.light
+        }
+
+        appearanceObserver = window?.contentView?.observe(\.effectiveAppearance) { [weak self] _, _ in
+//            print("map view: \(self?.window?.contentView?.isDarkMode), \(self?.window?.contentView?.effectiveAppearance.name)")
+            var theme = MapTheme.dark
+
+            if self?.window?.contentView?.isDarkMode == false {
+                theme = .light
+            }
+
+            self?.mapView?.theme = theme
+        }
 
         loaded = true
 

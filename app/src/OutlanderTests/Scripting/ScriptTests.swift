@@ -948,4 +948,12 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["Weapons\n"])
     }
+
+    func test_empty_variable_definition() throws {
+        try scenario([
+            "var empty",
+            "echo empty: %empty",
+        ],
+        expect: ["empty: \n"])
+    }
 }

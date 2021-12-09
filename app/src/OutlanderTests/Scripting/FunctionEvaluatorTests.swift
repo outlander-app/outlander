@@ -92,4 +92,19 @@ class FunctionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateBool(.values([.value("!!"), .function("contains", ["have one", "one"])]))
         XCTAssertTrue(result.result.toBool() == true)
     }
+
+    func test_evals_math_round() {
+        let result = evaluator.evaluateValue(.value("round(5.5)"))
+        XCTAssertEqual(result.result, "6")
+    }
+
+    func test_evals_math_ceil() {
+        let result = evaluator.evaluateValue(.value("ceil(5.5)"))
+        XCTAssertEqual(result.result, "6")
+    }
+
+    func test_evals_math_floor() {
+        let result = evaluator.evaluateValue(.value("floor(5.5)"))
+        XCTAssertEqual(result.result, "5")
+    }
 }

@@ -124,8 +124,7 @@ class MapView: NSView {
     var currentRoomId: String? = "" {
         didSet {
             if oldValue != currentRoomId {
-                redrawRoom(oldValue)
-                redrawRoom(currentRoomId)
+                redrawRooms([currentRoomId, oldValue])
             }
         }
     }
@@ -181,12 +180,19 @@ class MapView: NSView {
         true
     }
 
-    func redrawRoom(_ id: String?) {
-        if let rect = rectForRoom(id) {
-            DispatchQueue.main.async {
-                self.setNeedsDisplay(rect)
-            }
-        }
+    func redrawRooms(_: [String?]) {
+        needsDisplay = true
+//        let ids = ids.filter { $0 != nil }
+//
+//        let rects = ids.map { rectForRoom($0!) }.filter { $0 != nil }
+//
+//        DispatchQueue.main.async {
+//            for r in rects {
+//                if let rect = r {
+//                    self.setNeedsDisplay(rect)
+//                }
+//            }
+//        }
     }
 
     func rectForRoom(_ id: String?) -> NSRect? {

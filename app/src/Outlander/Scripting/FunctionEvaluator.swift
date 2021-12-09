@@ -185,6 +185,13 @@ class FunctionExecutor {
     var groups: [String] = []
 
     init() {
+        func capitalize(args: [String]) -> String {
+            let trimmed = trimQuotes(args[0])
+            let start = trimmed.first?.uppercased() ?? ""
+            let rest = trimmed.dropFirst().lowercased()
+            return start + rest
+        }
+
         functions = [
             .function("contains", arity: 2): { args in
                 let res = self.trimQuotes(args[0]).lowercased().contains(self.trimQuotes(args[1]).lowercased())
@@ -242,6 +249,8 @@ class FunctionExecutor {
                     ? "true" : "false"
             },
             .function("endswith", arity: 2): { args in self.trimQuotes(args[0]).hasSuffix(self.trimQuotes(args[1])) ? "true" : "false" },
+            .function("capitalize", arity: 1): { args in capitalize(args: args) },
+            .function("titlecase", arity: 1): { args in capitalize(args: args) },
         ]
     }
 

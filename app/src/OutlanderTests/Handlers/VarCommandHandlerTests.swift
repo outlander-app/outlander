@@ -30,4 +30,9 @@ class VarCommandHandlerTests: XCTestCase {
         handler.handle("#var one.two three four", with: context)
         XCTAssertEqual(context.globalVars["one.two"], "three four")
     }
+
+    func test_no_value_sets_empty() {
+        handler.handle("#var empty", with: context)
+        XCTAssertEqual(context.globalVars["empty"], "")
+    }
 }

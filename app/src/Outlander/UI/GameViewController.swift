@@ -59,9 +59,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var scriptToolbarController: ScriptToolbarViewController?
     var statusBarController: StatusBarViewController?
 
-    var game: String = "DR"
-    var character: String = ""
-
     var shouldUpdateRoom: Bool = false
 
     private var apperanceObserver: NSKeyValueObservation?
@@ -202,9 +199,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             case .room:
                 self?.shouldUpdateRoom = true
 
-            case let .character(game, character):
-                self?.game = game
-                self?.character = character
+            case .character:
                 self?.updateWindowTitle()
                 self?.setGameLogger()
 
@@ -377,9 +372,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
     func updateWindowTitle() {
         DispatchQueue.main.async {
             if let win = self.view.window {
+                let character = self.gameContext.globalVars["charactername"] ?? ""
+                let game = self.gameContext.globalVars["game"] ?? ""
+
                 let version = self.appVersion()
-                let gameInfo = self.game.count > 0 ? "\(self.game)" : ""
-                let charInfo = self.character.count > 0 ? "\(self.character) - " : ""
+                let gameInfo = game.count > 0 ? "\(game)" : ""
+                let charInfo = character.count > 0 ? "\(character) - " : ""
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
 
                 win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
@@ -464,10 +462,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func showMapWindow() {
-        // DispatchQueue.main.async {
+        let character = gameContext.globalVars["charactername"] ?? ""
+        let game = gameContext.globalVars["game"] ?? ""
+        
+        var title = "AutoMapper"
+
+        if !game.isEmpty && !character.isEmpty {
+            title = "AutoMapper - \(game): \(character)"
+        }
+        
+        mapWindow?.window?.title = title
         mapWindow?.showWindow(self)
         mapWindow?.setSelectedZone()
-        // }
     }
 
     func loadSettings() {
