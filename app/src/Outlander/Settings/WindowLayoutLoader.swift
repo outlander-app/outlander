@@ -1,5 +1,5 @@
 //
-//  WindowSettings.swift
+//  WindowLayoutLoader.swift
 //  Outlander
 //
 //  Created by Joseph McBride on 12/13/19.

@@ -154,6 +154,8 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
     var loaded: Bool = false
 
+    private var settingsVC: WindowSettingsViewController?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         loaded = true
@@ -184,6 +186,41 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         addMenu(title: "Auto Scroll", action: #selector(toggleAutoScroll(sender:)))
         addMenu(title: "Clear", action: #selector(clear(sender:)))
         addMenu(tag: 42, action: #selector(menuTitle(sender:)))
+    }
+
+    func toggleSettings() {
+        if settingsVC != nil {
+            hideSettings()
+            settingsVC = nil
+        } else {
+            showSettings()
+        }
+    }
+
+    func hideSettings() {
+        settingsVC?.view.removeFromSuperview()
+    }
+
+    func showSettings() {
+        let storyboard = NSStoryboard(name: "WindowSettings", bundle: Bundle.main)
+        let controller = storyboard.instantiateInitialController() as! WindowSettingsViewController
+        settingsVC = controller
+        controller.view.setFrameSize(location.size)
+
+        controller.settings = WindowViewSettings(
+            x: location.origin.x,
+            y: location.origin.y,
+            height: location.size.height,
+            width: location.size.width,
+            padding: padding ?? ""
+        )
+
+        controller.onSettingsChanged = { settings in
+            self.location = NSRect(x: settings.x, y: settings.y, width: settings.width, height: settings.height)
+            self.padding = settings.padding
+        }
+
+        mainView.subviews.append(controller.view)
     }
 
     private static var valueFormatter: NumberFormatter = {
@@ -244,6 +281,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         if split.count > 1 {
             height = Double(split[1]) ?? 0
+        }
+
+        if split.count == 1 {
+            height = width
         }
 
         let size = NSSize(width: width, height: height)

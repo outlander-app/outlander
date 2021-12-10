@@ -17,6 +17,15 @@ extension String {
             return String(suffix(toLength))
         }
     }
+
+    func rightPadding(toLength: Int, withPad character: Character = " ") -> String {
+        let stringLength = count
+        if stringLength < toLength {
+            return self + String(repeatElement(character, count: toLength - stringLength))
+        } else {
+            return String(suffix(toLength))
+        }
+    }
 }
 
 class SkillExp: CustomStringConvertible {

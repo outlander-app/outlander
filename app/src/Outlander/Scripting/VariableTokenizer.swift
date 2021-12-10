@@ -99,11 +99,10 @@ class IndexedVariableMode: IVariableReaderMode {
 
         var start = input.startIndex
 
-        for (index, match) in matches.enumerated() {
-            guard let range = match.rangeOf(index: index) else {
+        for match in matches {
+            guard let range = match.rangeOf(index: 0) else {
                 continue
             }
-            // let newRange = Range(range, in: input)!
             if range.lowerBound != start {
                 let str = String(input[start ..< range.lowerBound])
                 context.target.append(.value(str))

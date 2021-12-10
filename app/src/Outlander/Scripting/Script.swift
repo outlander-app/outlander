@@ -107,8 +107,9 @@ struct Atomic<Value> {
 }
 
 class Script {
-    // private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
-    private let lockQueue = DispatchQueue.global(qos: .default)
+//     private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    // private let lockQueue = DispatchQueue.global(qos: .default)
+    private let lock = NSRecursiveLock()
     private let log = LogManager.getLog("Script")
 
     var started: Date?
@@ -214,6 +215,7 @@ class Script {
         tokenHandlers["nextroom"] = handleNextroom
         tokenHandlers["pause"] = handlePause
         tokenHandlers["put"] = handlePut
+        tokenHandlers["printbox"] = handlePrintBox
         tokenHandlers["random"] = handleRandom
         tokenHandlers["return"] = handleReturn
         tokenHandlers["save"] = handleSave
@@ -233,7 +235,7 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_ args: [String], runAsync: Bool = true) {
+    func run(_ args: [String]) {
         func doRun() {
             started = Date()
 
@@ -244,15 +246,9 @@ class Script {
             next()
         }
 
-        // doRun()
+        print("Main thread? \(Thread.isMainThread)")
 
-        if runAsync {
-            lockQueue.async {
-                doRun()
-            }
-        } else {
-            doRun()
-        }
+        doRun()
     }
 
     func next() {
@@ -331,7 +327,7 @@ class Script {
         }
 
         if let roundtime = context.roundtime, roundtime > 0 {
-            delayedTask.set(roundtime, queue: lockQueue) {
+            delayedTask.set(roundtime) {
                 self.nextAfterRoundtime()
             }
             return
@@ -624,14 +620,14 @@ class Script {
     }
 
     func executeToken(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        lockQueue.sync {
-            if let handler = tokenHandlers[token.description] {
-                return handler(line, token)
-            }
-
-            sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+        lock.lock()
+        defer { lock.unlock() }
+        if let handler = tokenHandlers[token.description] {
+            return handler(line, token)
         }
+
+        sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        return .exit
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
@@ -775,7 +771,6 @@ class Script {
         }
 
         let targetText = context.replaceVars(text)
-        // notify("echo \(targetText)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
         gameContext.events.echoText(targetText, preset: "scriptecho", mono: true)
         return .next
@@ -1266,7 +1261,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            delayedTask.set(timeout, queue: lockQueue) {
+            delayedTask.set(timeout) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -1402,11 +1397,25 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        delayedTask.set(duration, queue: lockQueue) {
+        delayedTask.set(duration) {
             self.nextAfterRoundtime()
         }
 
         return .wait
+    }
+
+    func handlePrintBox(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .printbox(text) = token else {
+            return .next
+        }
+
+        let send = context.replaceVars(text)
+
+        notify("printbox \(send)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        gameContext.events.sendCommand(Command2(command: "#printbox \(send)"))
+
+        return .next
     }
 
     func handlePut(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {

@@ -89,9 +89,8 @@ class GlobalVariables: Variables {
 }
 
 class Variables {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.variables.\(UUID().uuidString)", attributes: .concurrent)
+    private let lock = NSLock()
     private var vars: [String: DynamicValue] = [:]
-//    private var vars: SortedDictionary<String, DynamicValue> = [:]
     private var events: Events
 
     private var eventKey: String
@@ -107,73 +106,71 @@ class Variables {
 
     subscript(key: String) -> String? {
         get {
-            lockQueue.sync {
-                vars[key]?.rawValue
-            }
+            lock.lock()
+            defer { lock.unlock() }
+            return vars[key]?.rawValue
         }
         set {
-            lockQueue.async(flags: .barrier) {
-                guard !self.dynamicKeys.contains(key) else {
-                    return
-                }
+            lock.lock()
+            defer { lock.unlock() }
+            guard !dynamicKeys.contains(key) else {
+                return
+            }
 
-                let res = newValue ?? ""
-                guard self.vars[key]?.rawValue != res else {
-                    return
-                }
-                self.vars[key] = .value(res)
-                DispatchQueue.main.async {
-                    if self.eventKey.count > 0 {
-//                        print("var changed: \(key): \(res)")
-                        self.events.post(self.eventKey, data: [key: res])
-                    }
-                }
+            let res = newValue ?? ""
+            guard vars[key]?.rawValue != res else {
+                return
+            }
+            vars[key] = .value(res)
+            lock.unlock()
+            if eventKey.count > 0 {
+//                print("var changed: \(key): \(res)")
+                events.post(eventKey, data: [key: res])
             }
         }
     }
 
     var count: Int {
-        lockQueue.sync {
-            vars.count
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        return vars.count
     }
 
     func removeValue(forKey key: String) {
-        lockQueue.async(flags: .barrier) {
-            self.vars.removeValue(forKey: key)
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        vars.removeValue(forKey: key)
     }
 
     func removeAll() {
-        lockQueue.sync(flags: .barrier) {
-            vars.removeAll()
-            addDynamics()
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        vars.removeAll()
+        addDynamics()
     }
 
     func keysAndValues() -> [String: String] {
-        lockQueue.sync(flags: .barrier) {
-            Dictionary(uniqueKeysWithValues: vars.sorted(by: { $0.key < $1.key }).map { key, value in (key, value.rawValue ?? "") })
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        return Dictionary(uniqueKeysWithValues: vars.sorted(by: { $0.key < $1.key }).map { key, value in (key, value.rawValue ?? "") })
     }
 
     func sorted() -> [(String, String)] {
-        lockQueue.sync(flags: .barrier) {
-            vars.sorted(by: { $0.key.compare($1.key, options: .numeric) == .orderedAscending }).map { key, value in (key, value.rawValue ?? "") }
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        return vars.sorted(by: { $0.key.compare($1.key, options: .numeric) == .orderedAscending }).map { key, value in (key, value.rawValue ?? "") }
     }
 
     var keys: [String] {
-        lockQueue.sync(flags: .barrier) {
-            vars.map { $0.key }.sorted(by: { $0.count > $1.count })
-        }
-        // return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
+        lock.lock()
+        defer { lock.unlock() }
+        return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
     }
 
     var displayKeys: [String] {
-        lockQueue.sync(flags: .barrier) {
-            vars.map { $0.key }.sorted(by: { $0.compare($1, options: .numeric) == .orderedAscending })
-        }
+        lock.lock()
+        defer { lock.unlock() }
+        return vars.map { $0.key }.sorted(by: { $0.compare($1, options: .numeric) == .orderedAscending })
     }
 
     func addDynamic(key: String, value: DynamicValue) {

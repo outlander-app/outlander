@@ -43,6 +43,9 @@ class CommandProcesssor {
         PluginCommandHandler(),
         EvalCommandHandler(),
         EvalMathCommandHandler(),
+        PrintBoxCommandHandler(),
+        EpediaCommandHandler(),
+        PingCommandHandler(),
     ]
 
     init(_ files: FileSystem, pluginManager: OPlugin) {

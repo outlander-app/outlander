@@ -29,7 +29,7 @@ class ScriptTests: XCTestCase {
             script.context.variables[v.key] = v.value
         }
 
-        script.run(args, runAsync: false)
+        script.run(args)
 
         for (index, message) in expect.enumerated() {
             XCTAssertEqual(message, events.history.dropFirst(index + 2).first?.text?.text)
@@ -42,7 +42,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
     }
@@ -53,7 +53,7 @@ class ScriptTests: XCTestCase {
         loader.lines["forage"] = ["include util", "mylabel:", "  echo hello"]
         loader.lines["util"] = ["something:", "  echo something"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 2)
     }
@@ -63,7 +63,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["include forage", "mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
     }
@@ -74,7 +74,7 @@ class ScriptTests: XCTestCase {
         loader.lines["forage"] = ["include util", "alabel:", "  echo hello"]
         loader.lines["util"] = ["alabel:", "  echo something"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 1)
     }
@@ -84,7 +84,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
     }
 
     func test_argument_shift() throws {
@@ -92,7 +92,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
-        script.run(["one", "two"], runAsync: false)
+        script.run(["one", "two"])
         XCTAssertEqual(script.context.args, ["one", "two"])
         XCTAssertEqual(
             script.context.argumentVars.keysAndValues(),
@@ -767,7 +767,7 @@ class ScriptTests: XCTestCase {
             "else {var platinum 0}",
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
@@ -788,7 +788,7 @@ class ScriptTests: XCTestCase {
             "else {var platinum 0}",
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
-        script.run([], runAsync: false)
+        script.run([])
         script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
@@ -955,5 +955,21 @@ class ScriptTests: XCTestCase {
             "echo empty: %empty",
         ],
         expect: ["empty: \n"])
+    }
+
+    func test_variable_indexing_scenario1() throws {
+        try scenario([
+            "var WeaponArray Offhand_Weapon|Large_Edged",
+            "var c 0",
+            "var temp $%WeaponArray[%c].Ranks,$%WeaponArray[%c].LearningRate",
+            "echo %temp",
+        ],
+        globalVars: [
+            "Offhand_Weapon.Ranks": "555.50",
+            "Offhand_Weapon.LearningRate": "5",
+            "Large_Edged.Ranks": "777.70",
+            "Large_Edged.LearningRate": "7",
+        ],
+        expect: ["555.50,5\n"])
     }
 }

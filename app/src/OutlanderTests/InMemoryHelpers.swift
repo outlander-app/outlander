@@ -63,6 +63,9 @@ class InMemoryEvents: Events {
     }
 
     func post(_ channel: String, data: Any?) {
+        guard channel != "ol:variable:changed" else {
+            return
+        }
         history.append(TestEvent(channel: channel, data: data))
     }
 

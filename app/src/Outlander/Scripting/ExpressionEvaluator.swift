@@ -14,6 +14,8 @@ class ExpressionEvaluator {
 
     var groups: [String] = []
 
+    private var exp: AnyExpression?
+
     init() {
         log = LogManager.getLog(String(describing: type(of: self)))
     }
@@ -46,6 +48,10 @@ class ExpressionEvaluator {
     }
 
     func evaluateLogic(_ input: String) -> Bool {
+        guard input.count >= 0 else {
+            return false
+        }
+
         if let b = input.toBool() {
             return b
         }
@@ -61,15 +67,36 @@ class ExpressionEvaluator {
 
     func evaluate<T>(_ input: String) -> T? {
         do {
-            let result: T? = try AnyExpression(
-                input: input
-            ).evaluate()
+            exp = AnyExpression(input: input)
+            let result: T? = try exp?.evaluate()
             return result
         } catch {
             print("AnyExpression Error: \(error) for input \(input)")
             log.error("AnyExpression Error: \(error) for input \(input)")
             return nil
         }
+    }
+
+    static func replaceSingleOperators(_ input: String) -> String {
+        let operators = [
+            "=",
+            // trying to replace these cause problems
+//            "&",
+//            "\\|",
+        ]
+
+        var result = input
+
+        for op in operators {
+            let exp = "((?<![!<>\(op)])\(op)(?!\(op)))"
+            guard let regex = RegexFactory.get(exp) else {
+                continue
+            }
+
+            result = regex.replace(result, with: "\(op)\(op)")
+        }
+
+        return result
     }
 }
 
@@ -78,8 +105,8 @@ public extension AnyExpression {
         input: String,
         symbols: [Symbol: SymbolEvaluator] = [:]
     ) {
-//        print("evaluating \(input)")
-        let replaced = AnyExpression.replaceSingleOperators(input)
+        print("evaluating \(input)")
+        let replaced = ExpressionEvaluator.replaceSingleOperators(input)
         let exp = Expression.parse(replaced, usingCache: true)
         self.init(
             exp,
@@ -196,27 +223,5 @@ public extension AnyExpression {
                 }
             }
         )
-    }
-
-    static func replaceSingleOperators(_ input: String) -> String {
-        let operators = [
-            "=",
-            // trying to replace these cause problems
-//            "&",
-//            "\\|",
-        ]
-
-        var result = input
-
-        for op in operators {
-            let exp = "((?<![!<>\(op)])\(op)(?!\(op)))"
-            guard let regex = RegexFactory.get(exp) else {
-                continue
-            }
-
-            result = regex.replace(result, with: "\(op)\(op)")
-        }
-
-        return result
     }
 }

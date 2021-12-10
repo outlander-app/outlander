@@ -584,6 +584,15 @@ class GameViewController: NSViewController, NSWindowDelegate {
             return
         }
 
+        if command == "layout:Settings" {
+            for (_, win) in gameWindows {
+                if win.visible {
+                    win.toggleSettings()
+                }
+            }
+            return
+        }
+
         if command == "show:mapwindow" {
             showMapWindow()
 

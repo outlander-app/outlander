@@ -632,6 +632,13 @@
                                     <action selector="saveLayoutAsAction:" target="-1" id="bAL-Kp-TtV"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="9ft-K1-7sB"/>
+                            <menuItem title="Toggle Layout Settings..." id="m3W-iF-rQg">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showWindowSettings:" target="-1" id="gta-UC-kTH"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

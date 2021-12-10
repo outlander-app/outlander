@@ -191,7 +191,7 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     func test_multi_tag_death_stream() {
         let context = GameContext()
         let commands = streamCommands([

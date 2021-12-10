@@ -123,6 +123,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         sendCommand("layout:SaveAs")
     }
 
+    @IBAction func showWindowSettings(_: Any) {
+        sendCommand("layout:Settings")
+    }
+
     func sendCommand(_ command: String) {
         activeController?.command(command)
     }

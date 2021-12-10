@@ -95,6 +95,7 @@ enum ScriptTokenValue: Hashable {
     case move(String)
     case nextroom
     case pause(String)
+    case printbox(String)
     case put(String)
     case random(String, String)
     case `return`
@@ -249,6 +250,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "nextroom"
         case .pause:
             return "pause"
+        case .printbox:
+            return "printbox"
         case .put:
             return "put"
         case .random:
@@ -377,6 +380,7 @@ class CommandMode: IScriptReaderMode {
         "nextroom": NextroomMode(),
         "pause": PauseMode(),
         "put": PutMode(),
+        "printbox": PrintBoxMode(),
         "random": RandomMode(),
         "return": ReturnMode(),
         "save": SaveMode(),
@@ -838,6 +842,15 @@ class PauseMode: IScriptReaderMode {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(.pause(rest))
+        return nil
+    }
+}
+
+class PrintBoxMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(.printbox(rest))
         return nil
     }
 }
