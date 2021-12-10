@@ -56,6 +56,10 @@ class LocalFileSystem: FileSystem {
     }
 
     func append(_ data: String, to fileUrl: URL) throws {
+        guard !data.isEmpty else {
+            return
+        }
+
         try ensure(folder: fileUrl.deletingLastPathComponent())
         try access {
             try data.appendLine(to: fileUrl)
@@ -63,6 +67,9 @@ class LocalFileSystem: FileSystem {
     }
 
     func append(_ data: Data, to fileUrl: URL) throws {
+        guard data.count != 0 else {
+            return
+        }
         try ensure(folder: fileUrl.deletingLastPathComponent())
         access {
             try? data.write(to: fileUrl)
@@ -70,6 +77,9 @@ class LocalFileSystem: FileSystem {
     }
 
     func write(_ content: String, to fileUrl: URL) {
+        guard !content.isEmpty else {
+            return
+        }
         access {
             do {
                 try content.write(to: fileUrl, atomically: true, encoding: .utf8)
@@ -78,6 +88,9 @@ class LocalFileSystem: FileSystem {
     }
 
     func write(_ data: Data, to fileUrl: URL) throws {
+        guard data.count != 0 else {
+            return
+        }
         try access {
             try data.write(to: fileUrl)
         }

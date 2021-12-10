@@ -427,7 +427,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
 //        print("processing highlights: main thread? \(Thread.isMainThread)")
 
-        var str = text.string
+//        var str = text.string
 
         if highlightMonsters {
             if let ignore = context.globalVars["monsterlist"], !ignore.isEmpty {
@@ -446,7 +446,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 continue
             }
 
-            let matches = regex.allMatches(&str)
+            let matches = regex.allMatches(text.string)
             for match in matches {
                 guard let range = match.rangeOfNS(index: 0), range.length > 0 else {
                     continue

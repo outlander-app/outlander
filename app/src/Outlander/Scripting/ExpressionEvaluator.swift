@@ -78,9 +78,8 @@ public extension AnyExpression {
         input: String,
         symbols: [Symbol: SymbolEvaluator] = [:]
     ) {
+//        print("evaluating \(input)")
         let replaced = AnyExpression.replaceSingleOperators(input)
-//        print("AnyExpression input: \(input)")
-//        print("AnyExpression replaced: \(replaced)")
         let exp = Expression.parse(replaced, usingCache: true)
         self.init(
             exp,

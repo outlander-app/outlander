@@ -310,7 +310,12 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
             return
         }
 
-        let point = NSPoint(x: rect.origin.x - 200, y: rect.origin.y - 200)
+        let xpadding: CGFloat = scrollView.contentSize.width / 4
+        let ypadding: CGFloat = scrollView.contentSize.height / 2
+
+        let point = NSPoint(x: rect.origin.x - xpadding, y: rect.origin.y - ypadding)
         scrollView.contentView.scroll(point)
+
+        print("Content size: \(scrollView.contentSize), point: \(point)")
     }
 }

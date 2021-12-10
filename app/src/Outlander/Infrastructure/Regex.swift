@@ -27,6 +27,7 @@ class Regex {
 
     var pattern: String
     var expression: NSRegularExpression
+    var options: NSRegularExpression.Options
 
     init(_ pattern: String, options: NSRegularExpression.Options = []) throws {
         do {
@@ -35,6 +36,7 @@ class Regex {
             }
 
             self.pattern = pattern
+            self.options = options
 
             expression = try NSRegularExpression(pattern: pattern, options: options)
         } catch {
@@ -77,14 +79,14 @@ class Regex {
             return nil
         }
 
-        return MatchResult(&input, result: result)
+        return MatchResult(input, result: result)
     }
 
-    public func allMatches(_ input: inout String) -> [MatchResult] {
+    public func allMatches(_ input: String) -> [MatchResult] {
         let range = NSRange(input.startIndex..., in: input)
         let results = expression.matches(in: input, range: range)
         return results.map { res in
-            MatchResult(&input, result: res)
+            MatchResult(input, result: res)
         }
     }
 }
@@ -93,7 +95,7 @@ class MatchResult {
     private let input: String
     private let result: NSTextCheckingResult
 
-    init(_ input: inout String, result: NSTextCheckingResult) {
+    init(_ input: String, result: NSTextCheckingResult) {
         self.input = input
         self.result = result
     }

@@ -230,8 +230,8 @@ class ExpPlugin: OPlugin {
             return text
         }
 
-        var copy = trimmed
-        let matches = textRegex.allMatches(&copy)
+//        var copy = trimmed
+        let matches = textRegex.allMatches(trimmed)
 
         for match in matches {
             let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""

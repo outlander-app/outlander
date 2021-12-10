@@ -191,6 +191,24 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func test_multi_tag_death_stream() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<pushStream id=\"death\"/> * Krohhnos was just struck down!\n",
+            "<popStream/><pushStream id=\"death\"/> * Krohhnos just disintegrated!\n",
+            "<popStream/><prompt time=\"1639032361\">H&gt;</prompt>\n",
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 5)
+
+        switch commands[4] {
+        case let .text(tags):
+            XCTAssertEqual(tags[0].text, "* Krohhnos was just struck down!\n* Krohhnos just disintegrated!\n")
+        default:
+            XCTFail()
+        }
+    }
 }
 
 class GameStreamTokenizerTests: XCTestCase {
@@ -433,6 +451,17 @@ class GameStreamTokenizerTests: XCTestCase {
 
         let token = tokens[5]
         XCTAssertEqual(token.value(), "\n[You're bruised, winded, nimbly balanced and in very strong position.]\n[Roundtime 4 sec.]\n")
+    }
+
+    func test_multi_tag_death_stream() {
+        let tokens = reader.read("""
+            <pushStream id="death"/> * Krohhnos was just struck down!
+            <popStream/><pushStream id="death"/> * Krohhnos just disintegrated!
+            <popStream/><prompt time="1639032361">H&gt;</prompt>
+            """
+        )
+
+        XCTAssertEqual(tokens.count, 7)
     }
 
     func test_combat_measure() {

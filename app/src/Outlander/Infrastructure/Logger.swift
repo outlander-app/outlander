@@ -148,14 +148,23 @@ class FileLogger: ILogger {
     func warn(_: String) {}
 
     func error(_ data: String) {
+        guard !data.isEmpty else {
+            return
+        }
         try? files.append(data, to: fileStreamName)
     }
 
     func stream(_ data: String) {
+        guard !data.isEmpty else {
+            return
+        }
         try? files.append(data, to: fileStreamName)
     }
 
     func rawStream(_ data: String) {
+        guard !data.isEmpty else {
+            return
+        }
         try? files.append(data, to: rawFileStreamName)
     }
 

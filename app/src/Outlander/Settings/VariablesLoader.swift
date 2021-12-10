@@ -26,11 +26,11 @@ class VariablesLoader {
             return
         }
 
-        guard var content = String(data: data, encoding: .utf8) else {
+        guard let content = String(data: data, encoding: .utf8) else {
             return
         }
 
-        guard let matches = regex?.allMatches(&content) else {
+        guard let matches = regex?.allMatches(content) else {
             return
         }
 

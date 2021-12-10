@@ -213,21 +213,22 @@ class VariableReplacer {
             return input
         }
 
-        var result = input
-
-        func doReplace() {
+        func doReplace(_ input: String) -> String {
+            var result = input
             for setting in context.settings {
-                simplify(prefix: setting.token, target: &result, value: setting.values)
+                result = simplify(prefix: setting.token, target: result, value: setting.values)
             }
+            return result
         }
 
         let max = 15
         var count = 0
-        var last = result
+        var result = input
+        var last = input
 
         repeat {
             result = replaceIndexedVars(result, context: context)
-            doReplace()
+            result = doReplace(result)
             last = result
             count += 1
         } while count < max && last != result && hasPotentialVars(result, context: context)
@@ -283,9 +284,9 @@ class VariableReplacer {
         return false
     }
 
-    private func simplify(prefix: String, target: inout String, value: (String) -> String?) {
+    private func simplify(prefix: String, target: String, value: (String) -> String?) -> String {
         guard target.contains(prefix) else {
-            return
+            return target
         }
 
         let regexChecks = [
@@ -307,12 +308,13 @@ class VariableReplacer {
             return result
         }
 
-        func doReplace() {
+        func doReplace(_ input: String) -> String {
+            var result = input
             for pattern in regexChecks {
                 guard let regex = RegexFactory.get(pattern) else {
-                    return
+                    continue
                 }
-                let matches = regex.allMatches(&target)
+                let matches = regex.allMatches(result)
                 for match in matches.reversed() {
                     guard let _ = match.valueAt(index: 1), let key = match.valueAt(index: 2) else {
                         continue
@@ -326,17 +328,23 @@ class VariableReplacer {
                         continue
                     }
 
-                    target.replaceSubrange(range, with: val)
+                    result.replaceSubrange(range, with: val)
                 }
             }
+
+            return result
         }
 
         let max = 15
         var count = 0
 
+        var result = target
+
         repeat {
-            doReplace()
+            result = doReplace(result)
             count += 1
         } while count < max && target.contains(prefix)
+
+        return result
     }
 }

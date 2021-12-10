@@ -10,7 +10,8 @@ import Foundation
 
 extension String {
     func appendLine(to url: URL) throws {
-        try "\(self)\n".append(to: url)
+//        let txt = self.hasSuffix("\n") ? self : "\(self)\n"
+        try append(to: url)
     }
 
     func append(to url: URL) throws {
@@ -58,6 +59,10 @@ class LogCommandHandler: ICommandHandler {
 
         text = text.replacingOccurrences(of: "\\n", with: "\n")
         text = text.replacingOccurrences(of: "\\r", with: "\r")
+
+        if !text.hasSuffix("\n") {
+            text += "\n"
+        }
 
         do {
             let file = context.applicationSettings.paths.logs.appendingPathComponent(fileName)

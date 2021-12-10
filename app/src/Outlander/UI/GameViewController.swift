@@ -156,9 +156,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
             switch command {
             case let .text(tags):
-                for tag in tags {
-                    self?.logTag(tag)
-                }
+                self?.logTag(tags)
 
             case let .vitals(name, value):
                 self?.vitalsBar.updateValue(vital: name, text: "\(name) \(value)%".capitalized, value: value)
@@ -269,7 +267,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         gameContext.events.handle(self, channel: "ol:echo") { result in
             if let tag = result as? TextTag {
-                self.logTag(tag)
+                self.logTag([tag])
             }
         }
 
@@ -289,7 +287,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         gameContext.events.handle(self, channel: "ol:texttag") { result in
             if let data = result as? TextTag {
-                self.logTag(data)
+                self.logTag([data])
             }
         }
 
@@ -464,13 +462,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
     func showMapWindow() {
         let character = gameContext.globalVars["charactername"] ?? ""
         let game = gameContext.globalVars["game"] ?? ""
-        
+
         var title = "AutoMapper"
 
-        if !game.isEmpty && !character.isEmpty {
+        if !game.isEmpty, !character.isEmpty {
             title = "AutoMapper - \(game): \(character)"
         }
-        
+
         mapWindow?.window?.title = title
         mapWindow?.showWindow(self)
         mapWindow?.setSelectedZone()
@@ -854,13 +852,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
         let controller = storyboard.instantiateInitialController() as? WindowViewController
 
         controller?.onKeyUp = { event in
-            guard var val = event.charactersIgnoringModifiers, let regex = RegexFactory.get("[a-zA-Z0-9\\!\\\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\\\\\-\\./:;<=>\\?@\\[\\]\\^_`{|}~]") else {
+            guard let val = event.charactersIgnoringModifiers, let regex = RegexFactory.get("[a-zA-Z0-9\\!\\\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\\\\\-\\./:;<=>\\?@\\[\\]\\^_`{|}~]") else {
                 return
             }
 
             let key = KeyCodes(rawValue: event.keyCode)
 
-            let matches = regex.allMatches(&val)
+            let matches = regex.allMatches(val)
 
             guard !self.commandInput.hasFocus(), matches.count > 0 || key != nil else {
                 return
@@ -937,22 +935,36 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func logText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false, playerCommand: Bool = false) {
-        logTag(TextTag.tagFor(text, window: "main", mono: mono, color: color, preset: preset, playerCommand: playerCommand))
+        logTag([TextTag.tagFor(text, window: "main", mono: mono, color: color, preset: preset, playerCommand: playerCommand)])
     }
 
     func logError(_ text: String) {
-        logTag(TextTag(text: text, window: "main", mono: true, preset: "scripterror"))
+        logTag([TextTag(text: text, window: "main", mono: true, preset: "scripterror")])
     }
 
-    func logTag(_ tag: TextTag) {
-        guard let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] else {
-            return
+    func logTag(_ tags: [TextTag]) {
+        let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
+        var logText = ""
+        for tag in tags {
+            guard let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] else {
+                continue
+            }
+
+            if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
+                if tag.text == "\n" {
+                    if !logText.hasSuffix("\n") {
+                        logText += tag.text
+                    }
+                } else {
+                    logText += tag.text
+                }
+            }
+
+            window.append(tag)
         }
 
-        let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
-        if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
-            gameLog?.stream(tag.text)
+        if gameContext.applicationSettings.profile.logging, !logText.isEmpty {
+            gameLog?.stream(logText)
         }
-        window.append(tag)
     }
 }
