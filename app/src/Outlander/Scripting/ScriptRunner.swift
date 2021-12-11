@@ -9,7 +9,7 @@
 import Foundation
 
 class ScriptRunner: StreamHandler {
-    //private let runQueue = DispatchQueue(label: "com.outlanderapp.scriptrunner.\(UUID().uuidString)", attributes: .concurrent)
+    // private let runQueue = DispatchQueue(label: "com.outlanderapp.scriptrunner.\(UUID().uuidString)", attributes: .concurrent)
     private var context: GameContext
     private var loader: IScriptLoader
 

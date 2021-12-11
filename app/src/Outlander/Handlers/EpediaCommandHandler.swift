@@ -6,13 +6,13 @@
 //  Copyright © 2021 Joe McBride. All rights reserved.
 //
 
-import Foundation
 import AppKit
+import Foundation
 
 class EpediaCommandHandler: ICommandHandler {
     var command = "#epedia"
 
-    func handle(_ input: String, with context: GameContext) {
+    func handle(_ input: String, with _: GameContext) {
         let text = input[command.count...].trimLeadingWhitespace()
 
         var value = "https://elanthipedia.play.net/Main_Page"

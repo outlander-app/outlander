@@ -109,7 +109,7 @@ struct Atomic<Value> {
 class Script {
     private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
     // private let lockQueue = DispatchQueue.global(qos: .default)
-    //private let lock = NSRecursiveLock()
+    // private let lock = NSRecursiveLock()
     private let log = LogManager.getLog("Script")
 
     var started: Date?
@@ -247,7 +247,7 @@ class Script {
         }
 
         print("Main thread? \(Thread.isMainThread)")
-        
+
         if async {
             lockQueue.async {
                 doRun()

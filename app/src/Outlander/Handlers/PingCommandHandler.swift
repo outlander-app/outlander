@@ -49,7 +49,7 @@ class Pinger {
 
     func ping() {
         count -= 1
-        PlainPing.ping(target, withTimeout: 1.0) { (time, error) in
+        PlainPing.ping(target, withTimeout: 1.0) { time, error in
             print("pinged \(String(describing: time)) \(String(describing: error))")
             if error != nil {
                 self.done("Error: \(error!.localizedDescription)")

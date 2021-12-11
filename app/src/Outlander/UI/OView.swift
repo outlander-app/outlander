@@ -10,11 +10,11 @@ import Cocoa
 import Foundation
 
 class OView: NSView {
-    typealias OnPositionChanged = ((CGPoint)->Void)
+    typealias OnPositionChanged = ((CGPoint) -> Void)
 
     private let resizableArea: CGFloat = 8
     private let borderPadding: CGFloat = 0
-    private var draggedPoint: CGPoint  = .zero
+    private var draggedPoint: CGPoint = .zero
     private var minHeight: CGFloat = 100
     private var minWidth: CGFloat = 100
 
@@ -40,6 +40,7 @@ class OView: NSView {
             needsDisplay = true
         }
     }
+
 //
 //    @IBInspectable dynamic var cornerRadius: CGFloat = 0 {
 //        didSet {
@@ -108,7 +109,7 @@ class OView: NSView {
             layer.borderWidth = CGFloat.zero
         }
     }
-    
+
     override func mouseEntered(with event: NSEvent) {
         super.mouseEntered(with: event)
         guard allowMove else {
@@ -135,7 +136,7 @@ class OView: NSView {
         isMouseDown = true
 
         let locationInView = convert(event.locationInWindow, from: nil)
-        draggedPoint            = locationInView
+        draggedPoint = locationInView
         NSCursor.closedHand.set()
     }
 
@@ -169,13 +170,13 @@ class OView: NSView {
         }
 
         isDragging = true
-        
-        let locationInView              = convert(event.locationInWindow, from: nil)
-        let horizontalDistanceDragged   = locationInView.x - draggedPoint.x
-        let verticalDistanceDragged     = locationInView.y - draggedPoint.y
-        let cursorPosition              = cursorBorderPosition(draggedPoint)
+
+        let locationInView = convert(event.locationInWindow, from: nil)
+        let horizontalDistanceDragged = locationInView.x - draggedPoint.x
+        let verticalDistanceDragged = locationInView.y - draggedPoint.y
+        let cursorPosition = cursorBorderPosition(draggedPoint)
         if cursorPosition != .none {
-            let drag    = CGPoint(x: horizontalDistanceDragged, y: verticalDistanceDragged)
+            let drag = CGPoint(x: horizontalDistanceDragged, y: verticalDistanceDragged)
             if checkIfBorder(cursorPosition, andDraggedOutward: drag) {
                 return
             }
@@ -185,17 +186,17 @@ class OView: NSView {
             size.height += verticalDistanceDragged
             draggedPoint = locationInView
         case .left:
-            origin.x    += horizontalDistanceDragged
-            size.width  = max(size.width - horizontalDistanceDragged, minWidth)
+            origin.x += horizontalDistanceDragged
+            size.width = max(size.width - horizontalDistanceDragged, minWidth)
         case .bottom:
-            origin.y    += verticalDistanceDragged
+            origin.y += verticalDistanceDragged
             size.height = max(size.height - verticalDistanceDragged, minHeight)
         case .right:
-            size.width  += horizontalDistanceDragged
+            size.width += horizontalDistanceDragged
             draggedPoint = locationInView
         case .none:
-            origin.x    += locationInView.x - draggedPoint.x
-            origin.y    += locationInView.y - draggedPoint.y
+            origin.x += locationInView.x - draggedPoint.x
+            origin.y += locationInView.y - draggedPoint.y
             repositionView()
         }
 
@@ -231,18 +232,19 @@ class OView: NSView {
     }
 
     private func checkIfBorder(_ border: BorderPosition,
-                               andDraggedOutward drag: CGPoint) -> Bool {
-        if border == .left && frame.minX <= borderPadding && drag.x < 0 {
+                               andDraggedOutward drag: CGPoint) -> Bool
+    {
+        if border == .left, frame.minX <= borderPadding, drag.x < 0 {
             return true
         }
-        if border == .bottom && frame.minY <= borderPadding && drag.y < 0 {
+        if border == .bottom, frame.minY <= borderPadding, drag.y < 0 {
             return true
         }
         guard let superView = superview else { return false }
-        if border == .right && frame.maxX >= superView.frame.maxX - borderPadding && drag.x > 0 {
+        if border == .right, frame.maxX >= superView.frame.maxX - borderPadding, drag.x > 0 {
             return true
         }
-        if border == .top && frame.maxY >= superView.frame.maxY - borderPadding && drag.y > 0 {
+        if border == .top, frame.maxY >= superView.frame.maxY - borderPadding, drag.y > 0 {
             return true
         }
         return false
@@ -250,17 +252,17 @@ class OView: NSView {
 
     private func repositionView() {
         if frame.minX < borderPadding {
-            origin.x    = borderPadding
+            origin.x = borderPadding
         }
         if frame.minY < borderPadding {
-            origin.y    = borderPadding
+            origin.y = borderPadding
         }
         guard let superView = superview else { return }
         if frame.maxX > superView.frame.maxX - borderPadding {
-            origin.x    = superView.frame.maxX - frame.width - borderPadding
+            origin.x = superView.frame.maxX - frame.width - borderPadding
         }
         if frame.maxY > superView.frame.maxY - borderPadding {
-            origin.y    = superView.frame.maxY - frame.height - borderPadding
+            origin.y = superView.frame.maxY - frame.height - borderPadding
         }
     }
 }
@@ -370,7 +372,7 @@ public extension NSView {
     @IBInspectable
     var shadowRadius: CGFloat {
         get {
-            return layer?.shadowRadius ?? 0
+            layer?.shadowRadius ?? 0
         }
         set {
             wantsLayer = true
@@ -385,7 +387,9 @@ public extension NSView {
             options: [
                 .mouseMoved,
                 .mouseEnteredAndExited,
-                .activeAlways],
-            owner: self))
+                .activeAlways,
+            ],
+            owner: self
+        ))
     }
 }

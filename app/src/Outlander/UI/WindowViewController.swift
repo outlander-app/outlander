@@ -170,7 +170,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         WindowViewController.dateFormatter.dateFormat = "HH:mm"
 
-        mainView.positionChanged = { origin in
+        mainView.positionChanged = { _ in
             self.settingsVC?.settings = WindowViewSettings(
                 x: self.location.origin.x,
                 y: self.location.origin.y,
