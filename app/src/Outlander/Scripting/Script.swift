@@ -107,9 +107,9 @@ struct Atomic<Value> {
 }
 
 class Script {
-//     private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
+    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
     // private let lockQueue = DispatchQueue.global(qos: .default)
-    private let lock = NSRecursiveLock()
+    //private let lock = NSRecursiveLock()
     private let log = LogManager.getLog("Script")
 
     var started: Date?
@@ -235,7 +235,7 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_ args: [String]) {
+    func run(_ args: [String], async: Bool = false) {
         func doRun() {
             started = Date()
 
@@ -247,8 +247,14 @@ class Script {
         }
 
         print("Main thread? \(Thread.isMainThread)")
-
-        doRun()
+        
+        if async {
+            lockQueue.async {
+                doRun()
+            }
+        } else {
+            doRun()
+        }
     }
 
     func next() {
@@ -620,14 +626,16 @@ class Script {
     }
 
     func executeToken(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        lock.lock()
-        defer { lock.unlock() }
-        if let handler = tokenHandlers[token.description] {
-            return handler(line, token)
-        }
+//        lock.lock()
+//        defer { lock.unlock() }
+        lockQueue.sync {
+            if let handler = tokenHandlers[token.description] {
+                return handler(line, token)
+            }
 
-        sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-        return .exit
+            sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .exit
+        }
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {

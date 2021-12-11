@@ -635,6 +635,7 @@
 				7BD0FD4D25C75AD400ED030E /* MapView.swift */,
 				7BD0FD4325C7559900ED030E /* MapWindow.swift */,
 				7BD0FD4425C7559900ED030E /* MapWindow.xib */,
+				7B10A671275D7F37000FEDE8 /* OWindow.swift */,
 				7B10A66E275D7EE9000FEDE8 /* OView.swift */,
 				F9B254042478996D0097C07F /* ProfileWindow.swift */,
 				F9B254052478996D0097C07F /* ProfileWindow.xib */,
@@ -648,7 +649,6 @@
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 				7B10A699276346C9000FEDE8 /* WindowSettingsViewController.swift */,
 				7B10A6962763468C000FEDE8 /* WindowSettings.storyboard */,
-				7B10A671275D7F37000FEDE8 /* OWindow.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";

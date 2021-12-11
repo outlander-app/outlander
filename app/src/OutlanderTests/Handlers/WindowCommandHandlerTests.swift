@@ -45,7 +45,7 @@ class WindowCommandHandlerTests: XCTestCase {
     }
 
     func test_handles_reload_command() {
-        files.contentToLoad = ""
+        files.contentToLoad = "{}"
         handler.handle("#window reload", with: context)
 
         if let data = events.lastData as? [String: String] {

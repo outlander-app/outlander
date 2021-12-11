@@ -6,7 +6,6 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
-@testable import Outlander
 import XCTest
 
 class OutlanderTests: XCTestCase {

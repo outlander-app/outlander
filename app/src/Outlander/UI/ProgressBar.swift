@@ -24,12 +24,12 @@ class ProgressBar: NSView {
         }
     }
 
-    @IBInspectable
-    public var backgroundColor = NSColor.blue {
-        didSet {
-            needsDisplay = true
-        }
-    }
+//    @IBInspectable
+//    public var backgroundColor = NSColor.blue {
+//        didSet {
+//            needsDisplay = true
+//        }
+//    }
 
     @IBInspectable
     public var foregroundColor = NSColor.white {
@@ -56,7 +56,7 @@ class ProgressBar: NSView {
         NSColor(hex: "#999999")?.setFill()
         NSMakeRect(0, 0, width, height).fill()
 
-        backgroundColor.setFill()
+        backgroundColor?.setFill()
         NSMakeRect(CGFloat(strokeWidth), CGFloat(strokeWidth), CGFloat(calcValue - (strokeWidth * 2)), CGFloat(Float(height) - (strokeWidth * 2))).fill()
 
         super.draw(dirtyRect)

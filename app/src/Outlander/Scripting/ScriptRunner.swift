@@ -9,7 +9,7 @@
 import Foundation
 
 class ScriptRunner: StreamHandler {
-    private let runQueue = DispatchQueue(label: "com.outlanderapp.scriptrunner.\(UUID().uuidString)", attributes: .concurrent)
+    //private let runQueue = DispatchQueue(label: "com.outlanderapp.scriptrunner.\(UUID().uuidString)", attributes: .concurrent)
     private var context: GameContext
     private var loader: IScriptLoader
 
@@ -76,9 +76,7 @@ class ScriptRunner: StreamHandler {
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
             updateActiveScriptVars()
-            runQueue.async {
-                script.run(arguments)
-            }
+            script.run(arguments, async: true)
         } catch {
             context.events.echoError("An error occurred running script '\(scriptName)'.")
         }

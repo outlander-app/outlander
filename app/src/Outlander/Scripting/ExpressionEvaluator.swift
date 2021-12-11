@@ -61,11 +61,17 @@ class ExpressionEvaluator {
     }
 
     func evaluateValue(_ input: String) -> Double? {
+        if input.isEmpty {
+            return nil
+        }
         let res: String? = evaluate(input)
         return Double(res ?? "")
     }
 
     func evaluate<T>(_ input: String) -> T? {
+        if input.isEmpty {
+            return nil
+        }
         do {
             exp = AnyExpression(input: input)
             let result: T? = try exp?.evaluate()

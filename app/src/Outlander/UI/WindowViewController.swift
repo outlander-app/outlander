@@ -29,10 +29,18 @@ class OLScrollView: NSScrollView {
 }
 
 class OLTextView: NSTextView {
+    var disabled = false
     var onKeyUp: ((NSEvent) -> Void) = { _ in }
 
     override func keyUp(with event: NSEvent) {
         onKeyUp(event)
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard !disabled else {
+            return nil
+        }
+        return super.hitTest(point)
     }
 }
 
@@ -162,6 +170,16 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         WindowViewController.dateFormatter.dateFormat = "HH:mm"
 
+        mainView.positionChanged = { origin in
+            self.settingsVC?.settings = WindowViewSettings(
+                x: self.location.origin.x,
+                y: self.location.origin.y,
+                height: self.location.size.height,
+                width: self.location.size.width,
+                padding: self.padding ?? ""
+            )
+        }
+
         textView.onKeyUp = { event in
             self.onKeyUp(event)
         }
@@ -198,10 +216,14 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     func hideSettings() {
+        mainView.allowMove = false
+        textView.disabled = false
         settingsVC?.view.removeFromSuperview()
     }
 
     func showSettings() {
+        textView.disabled = true
+        mainView.allowMove = true
         let storyboard = NSStoryboard(name: "WindowSettings", bundle: Bundle.main)
         let controller = storyboard.instantiateInitialController() as! WindowSettingsViewController
         settingsVC = controller

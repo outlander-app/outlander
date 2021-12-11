@@ -89,7 +89,7 @@ class GlobalVariables: Variables {
 }
 
 class Variables {
-    private let lock = NSLock()
+    private let lock = NSRecursiveLock()
     private var vars: [String: DynamicValue] = [:]
     private var events: Events
 
