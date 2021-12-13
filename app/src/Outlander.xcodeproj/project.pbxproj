@@ -90,6 +90,7 @@
 		7B917E6227641EC200887F95 /* PlainPing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E6127641EC200887F95 /* PlainPing.swift */; };
 		7B917E6327641EC200887F95 /* PlainPing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E6127641EC200887F95 /* PlainPing.swift */; };
 		7B917E7C2764A78000887F95 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B917E7B2764A78000887F95 /* Carbon.framework */; };
+		7B917E802764A9CE00887F95 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 7B917E7F2764A9CE00887F95 /* Sparkle */; };
 		7B956B41274F8AD900346019 /* CommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B40274F8AD900346019 /* CommandProcessorTests.swift */; };
 		7B956B432750557000346019 /* ScriptLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B422750557000346019 /* ScriptLoader.swift */; };
 		7B956B442750557000346019 /* ScriptLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B422750557000346019 /* ScriptLoader.swift */; };
@@ -467,6 +468,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B917E802764A9CE00887F95 /* Sparkle in Frameworks */,
 				7BAC840925E9B51800A6C7D5 /* KeychainSwift in Frameworks */,
 				7B917E7C2764A78000887F95 /* Carbon.framework in Frameworks */,
 				7BCE4A2325C5007A00AF0444 /* Fuzi in Frameworks */,
@@ -830,6 +832,7 @@
 				7BAC840825E9B51800A6C7D5 /* KeychainSwift */,
 				7BF17D35274B95A000A2EAB6 /* Expression */,
 				7B10A666275C9399000FEDE8 /* Plugins */,
+				7B917E7F2764A9CE00887F95 /* Sparkle */,
 			);
 			productName = Outlander;
 			productReference = F9BCF2EA22E177E100C7F7F0 /* Outlander.app */;
@@ -889,6 +892,7 @@
 				7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				7BF17D34274B95A000A2EAB6 /* XCRemoteSwiftPackageReference "Expression" */,
 				7B10A665275C9399000FEDE8 /* XCRemoteSwiftPackageReference "plugin-package" */,
+				7B917E7E2764A9CE00887F95 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = F9BCF2EB22E177E100C7F7F0 /* Products */;
 			projectDirPath = "";
@@ -1356,7 +1360,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1388,7 +1392,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -1503,6 +1507,14 @@
 				kind = branch;
 			};
 		};
+		7B917E7E2764A9CE00887F95 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				branch = 2.x;
+				kind = branch;
+			};
+		};
 		7BAC840725E9B51800A6C7D5 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
@@ -1542,6 +1554,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7B10A665275C9399000FEDE8 /* XCRemoteSwiftPackageReference "plugin-package" */;
 			productName = Plugins;
+		};
+		7B917E7F2764A9CE00887F95 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B917E7E2764A9CE00887F95 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		7BAC840825E9B51800A6C7D5 /* KeychainSwift */ = {
 			isa = XCSwiftPackageProductDependency;

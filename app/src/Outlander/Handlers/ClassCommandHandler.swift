@@ -63,6 +63,7 @@ class ClassCommandHandler: ICommandHandler {
             }
         } else {
             context.classes.parse(commands.joined(separator: " "))
+            context.updateClassFilters()
         }
     }
 

@@ -124,12 +124,13 @@ class VariableReplacerTests: XCTestCase {
         variables["exits"] = "north|south"
         variables["lefthand"] = "tankard"
         variables["Large_Edged.LearningRate"] = "7"
+        variables["c"] = "1"
         for v in 0 ... 100_000 {
             variables["\(v)"] = UUID().uuidString
         }
 
         measure {
-            _ = replacer.replace("$weapons(0  $exits[1]  $lefthandother $Large_Edged.LearningRate", globalVars: variables)
+            _ = replacer.replace("$weapons(0  %another_$exits[%c]  $lefthandother $Large_Edged.LearningRate", globalVars: variables)
         }
     }
 }

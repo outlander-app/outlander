@@ -180,7 +180,8 @@ class ExpTracker {
 
         if trackLearned {
             let learnedMindState: Int = exp.mindState.rawValue - (skill?.mindState.rawValue ?? 0)
-            if learnedMindState != 0 {
+            // track only positive gained minstate
+            if learnedMindState > 0 {
                 learnedQueue.append(ExpLearned(name: exp.name, learned: 0, mindState: learnedMindState))
             }
         }

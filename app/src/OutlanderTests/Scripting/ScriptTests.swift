@@ -957,6 +957,24 @@ class ScriptTests: XCTestCase {
         expect: ["empty: \n"])
     }
 
+    func test_variable_indexing_scenario_first() throws {
+        try scenario([
+            "var WeaponArray Offhand_Weapon|Large_Edged",
+            "var temp %WeaponArray[0]",
+            "echo %temp",
+        ],
+        expect: ["Offhand_Weapon\n"])
+    }
+
+    func test_variable_indexing_scenario_second() throws {
+        try scenario([
+            "var WeaponArray Offhand_Weapon|Large_Edged",
+            "var temp %WeaponArray[1]",
+            "echo %temp",
+        ],
+        expect: ["Large_Edged\n"])
+    }
+
     func test_variable_indexing_scenario1() throws {
         try scenario([
             "var WeaponArray Offhand_Weapon|Large_Edged",
@@ -971,5 +989,78 @@ class ScriptTests: XCTestCase {
             "Large_Edged.LearningRate": "7",
         ],
         expect: ["555.50,5\n"])
+    }
+
+    func test_variable_indexing_scenario2() throws {
+        try scenario([
+            "var WeaponArray Offhand_Weapon|Large_Edged",
+            "var c 1",
+            "var b %c",
+            "var temp $%WeaponArray[%b].Ranks,$%WeaponArray[%c].LearningRate",
+            "echo %temp",
+        ],
+        globalVars: [
+            "Offhand_Weapon.Ranks": "555.50",
+            "Offhand_Weapon.LearningRate": "5",
+            "Large_Edged.Ranks": "777.70",
+            "Large_Edged.LearningRate": "7",
+        ],
+        expect: ["777.70,7\n"])
+    }
+
+    func test_variable_indexing_scenario3() throws {
+        try scenario([
+            "var WeaponArray Offhand_Weapon|Large_Edged",
+            "var attacks_Large_Edged 10",
+            "var c 1",
+            "var temp $%WeaponArray[%c].Ranks,$%WeaponArray[%c].LearningRate,%attacks_%WeaponArray[%c]",
+            "echo %temp",
+        ],
+        globalVars: [
+            "Offhand_Weapon.Ranks": "555.50",
+            "Offhand_Weapon.LearningRate": "5",
+            "Large_Edged.Ranks": "777.70",
+            "Large_Edged.LearningRate": "7",
+        ],
+        expect: ["777.70,7,10\n"])
+    }
+
+    func test_gosub_variables() throws {
+        try scenario([
+            "gosub release",
+            "goto end",
+            "release:",
+            "  var releaseVar &0",
+            "  echo release %releaseVar",
+            "  return",
+            "end:",
+            "  echo done",
+        ],
+        expect: ["release \n", "done\n"])
+    }
+
+    func test_gosub_within_if_blocks() throws {
+        try scenario([
+            "if 1 == 1 then {",
+            "  if (1 < 5) then {",
+            "    gosub one",
+            "    gosub two",
+            "    math temp add 1",
+            "    }",
+            "  if (8 > 7) then echo next",
+            "  echo after",
+            "}",
+            "goto end",
+            "one:",
+            "  echo one",
+            "  return",
+            "two:",
+            "  echo two",
+            "  return",
+            "end:",
+            "  echo %temp",
+            "  echo done",
+        ],
+        expect: ["one\n", "two\n", "next\n", "after\n", "1\n", "done\n"])
     }
 }

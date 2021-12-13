@@ -205,7 +205,7 @@ class ScriptContext {
                 return false
             }
 
-            if !ifStack.hasItems() && lineToken.isTopLevelIf {
+            if lineToken.isTopLevelIf {
                 retreat()
                 return true
             }
@@ -288,6 +288,10 @@ class ScriptContext {
         labelVars.removeAll()
         for (index, param) in vars.enumerated() {
             labelVars["\(index)"] = param
+        }
+
+        if vars.count == 0 {
+            labelVars["0"] = ""
         }
     }
 

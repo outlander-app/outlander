@@ -7,11 +7,17 @@
 //
 
 import Cocoa
+import Sparkle
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+//    let updaterController: SPUStandardUpdaterController
     var windows: [NSWindow] = []
     var rootUrl: URL?
+
+    override init() {
+//        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    }
 
     var activeWindow: NSWindow? {
         var win = NSApplication.shared.keyWindow
@@ -129,6 +135,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func sendCommand(_ command: String) {
         activeController?.command(command)
+    }
+
+    @IBAction func checkForUpdates(_: Any) {
+//        self.updaterController.checkForUpdates(sender)
     }
 
     static var mainMenu: NSNib {

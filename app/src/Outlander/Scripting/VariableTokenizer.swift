@@ -108,8 +108,16 @@ class IndexedVariableMode: IVariableReaderMode {
                 context.target.append(.value(str))
             }
 
-            let variable = match.valueAt(index: 1) ?? ""
+            let variableCandidate = match.valueAt(index: 1) ?? ""
             let idx = match.valueAt(index: 2) ?? ""
+
+            let vars = splitToVariables(variableCandidate)
+            let variable = vars.last ?? ""
+
+            if vars.count > 1 {
+                context.target.append(.value(vars.dropLast().joined(separator: "")))
+            }
+
             context.target.append(.indexed(variable, idx))
 
             start = range.upperBound
@@ -121,5 +129,39 @@ class IndexedVariableMode: IVariableReaderMode {
         }
 
         return nil
+    }
+
+    private func splitToVariables(_ input: String) -> [String] {
+        var results: [String] = []
+
+        func isVariable(_ char: Character) -> Bool {
+            char == "$" || char == "%" || char == "&"
+        }
+
+        func isSpace(_ char: Character) -> Bool {
+            char == " " || char == "\t"
+        }
+
+        var current = ""
+
+        for c in input {
+            if isSpace(c), !current.isEmpty {
+                results.append(current)
+                current = ""
+            }
+
+            if isVariable(c), !current.isEmpty {
+                results.append(current)
+                current = ""
+            }
+
+            current += String(c)
+        }
+
+        if !current.isEmpty {
+            results.append(current)
+        }
+
+        return results
     }
 }

@@ -280,6 +280,7 @@ class TagMode: IReaderMode {
 protocol StringView: Collection, Equatable {
     static func string(_ elements: [Element]) -> String
     static func isSpace(_ element: Element) -> Bool
+    static func isVariablePrefix(_ element: Element) -> Bool
 
     static var newline: Element { get }
     static var carriageReturn: Element { get }
@@ -299,6 +300,9 @@ protocol StringView: Collection, Equatable {
     static var leftParen: Element { get }
     static var rightParen: Element { get }
 
+    static var percent: Element { get }
+    static var dollar: Element { get }
+
     static var exclamation: Element { get }
     static var and: Element { get }
     static var comma: Element { get }
@@ -312,6 +316,10 @@ extension Substring: StringView {
 
     static func isSpace(_ element: Character) -> Bool {
         element == space || element == tab
+    }
+
+    static func isVariablePrefix(_ element: Element) -> Bool {
+        element == dollar || element == percent || element == and
     }
 
     static let newline: Character = "\n"
@@ -329,6 +337,9 @@ extension Substring: StringView {
     static let leftBrace: Character = "{"
     static let greaterThan: Character = ">"
     static let lessThan: Character = "<"
+
+    static var percent: Character = "%"
+    static var dollar: Character = "$"
 
     static let leftParen: Character = "("
     static let rightParen: Character = ")"

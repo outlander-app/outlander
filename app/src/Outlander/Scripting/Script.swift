@@ -611,6 +611,8 @@ class Script {
     }
 
     func handleLine(_ line: ScriptLine) -> ScriptExecuteResult {
+        print("handling line \(line.lineNumber)")
+
         guard let token = line.token else {
             sendText("Unknown script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .next
@@ -1480,7 +1482,7 @@ class Script {
         if let prev = gosubStack.last {
             context.setLabelVars(prev.arguments)
         } else {
-            context.setLabelVars([])
+            context.setLabelVars([""])
         }
 
         delayedTask.reset()

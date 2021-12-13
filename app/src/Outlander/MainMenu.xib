@@ -27,6 +27,13 @@
                                     <action selector="preferences:" target="-1" id="VGP-Vt-cDj"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="hUx-y0-UNZ"/>
+                            <menuItem title="Check for Updates..." id="DxX-pv-pyI">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdates:" target="-1" id="acp-OS-gsG"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
                             <menuItem title="Services" id="NMo-om-nkz">
                                 <modifierMask key="keyEquivalentModifierMask"/>
