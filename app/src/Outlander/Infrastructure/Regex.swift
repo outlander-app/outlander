@@ -41,6 +41,7 @@ class Regex {
             expression = try NSRegularExpression(pattern: pattern, options: options)
         } catch {
             log.error("Error building regex: \(error)")
+            print("Error building regex: \(error)")
             throw error
         }
     }

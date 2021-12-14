@@ -11,6 +11,7 @@ import Foundation
 class ScriptContext {
     private var context: GameContext
     private var tokenizer: ScriptTokenizer
+    private var replacer = VariableReplacer()
 
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
@@ -258,7 +259,7 @@ class ScriptContext {
         context.add("%", values: { key in self.variables[key] })
         context.add("%", values: { key in self.argumentVars[key] })
         context.add("$", values: { key in self.context.globalVars[key] })
-        return VariableReplacer().replace(input, context: context)
+        return replacer.replace(input, context: context)
     }
 
     func replaceActionVars(_ input: String) -> String {
@@ -267,7 +268,7 @@ class ScriptContext {
         context.add("%", values: { key in self.variables[key] })
         context.add("%", values: { key in self.argumentVars[key] })
         context.add("$", values: { key in self.context.globalVars[key] })
-        return VariableReplacer().replace(input, context: context)
+        return replacer.replace(input, context: context)
     }
 
     func setRegexVars(_ vars: [String]) {

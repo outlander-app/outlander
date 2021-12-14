@@ -1063,4 +1063,32 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["one\n", "two\n", "next\n", "after\n", "1\n", "done\n"])
     }
+
+    func test_variable_indexing_moons() throws {
+        try scenario([
+            "var moon Katamba",
+            "gosub moon_check",
+            "goto end",
+            "moon_check:",
+            "  var offset_check $%moon_offset",
+            "  if $%moon_offset(2) = above && $%moon_offset(3) = eastern then {",
+            "    echo yep!",
+            "  }",
+            "end:",
+            "echo done",
+        ],
+        globalVars: [
+            "Katamba_offset": "1639421208|one|above|eastern",
+        ],
+        expect: ["yep!\n", "done\n"])
+    }
+
+    func test_variable_indexing_syntax_without_proper_indexed_variable() throws {
+        try scenario([
+            "var moon Katamba",
+            "echo $%moon_offset(2)",
+            "echo done",
+        ],
+        expect: ["$Katamba_offset[2]\n", "done\n"])
+    }
 }

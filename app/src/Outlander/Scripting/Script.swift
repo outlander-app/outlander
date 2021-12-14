@@ -166,7 +166,7 @@ class Script {
 
         tokenizer = ScriptTokenizer()
 
-        stackTrace = Stack<ScriptLine>(100)
+        stackTrace = Stack<ScriptLine>(50)
         gosubStack = Stack<GosubContext>(101)
 
         includeRegex = RegexFactory.get("^\\s*include (.+)$")!
@@ -273,7 +273,9 @@ class Script {
             lastNextCount = 0
         }
 
-        guard lastNextCount <= 1000 else {
+        print("lastNextCount: \(lastNextCount)")
+
+        guard lastNextCount <= 500 else {
             printStacktrace()
             sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
             cancel()

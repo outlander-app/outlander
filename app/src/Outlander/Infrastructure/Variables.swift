@@ -199,6 +199,8 @@ class VariableContext {
 }
 
 class VariableReplacer {
+    let tokenizer = VariableTokenizer()
+
     func replace(_ input: String, globalVars: Variables) -> String {
         let context = VariableContext()
         context.add("$", values: { key in globalVars[key] })
@@ -238,7 +240,7 @@ class VariableReplacer {
             return result
         }
 
-        let tokens = VariableTokenizer().read(result)
+        let tokens = tokenizer.read(result)
         guard tokens.count > 0 else {
             return result
         }
@@ -249,17 +251,20 @@ class VariableReplacer {
             case let .value(val):
                 results.append(val)
             case let .indexed(varname, index):
-                let name = replace(varname, context: context)
                 let idx = replace(index, context: context)
 
                 guard let number = Int(idx) else {
+                    let name = replace(varname, context: context)
                     results.append("\(name)[\(idx)]")
                     continue
                 }
 
-                let list = name.components(separatedBy: "|")
+                let (last, list, res) = determineIndexedVariable(varname, context: context)
+
+                results.append(contentsOf: res)
+
                 guard number > -1, number < list.count else {
-                    results.append("\(name)[\(idx)]")
+                    results.append("\(last)[\(idx)]")
                     continue
                 }
 
@@ -269,6 +274,36 @@ class VariableReplacer {
         }
 
         return results.joined(separator: "")
+    }
+    
+    func determineIndexedVariable(_ varname: String, context: VariableContext) -> (String, [String], [String]) {
+        // split into individual variables
+        let vars = VariableTokenizer.splitToVariables(varname)
+        var list: [String] = []
+        var last = ""
+        var results: [String] = []
+
+        // is is expected that vars is > 0 because the variable was tokenized to contain an index
+        // check the variables in reverse order
+        // the first resolved variable that contains a list is the target
+        for (index, v) in vars.reversed().enumerated() {
+            var resolved = replace(v, context: context)
+            let combined = resolved + last
+            resolved = replace(combined, context: context)
+            if resolved.contains("|") {
+                list = resolved.components(separatedBy: "|")
+                // if there are any vars still left, add them to the list
+                if index < vars.count - 1 {
+                    results.append(vars.dropLast(vars.count - 1 - index).joined(separator: ""))
+                }
+                break
+            }
+            else {
+                last = resolved
+            }
+        }
+
+        return (last, list, results)
     }
 
     func hasPotentialVars(_ input: String, context: VariableContext) -> Bool {
