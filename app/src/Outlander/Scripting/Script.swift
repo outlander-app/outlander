@@ -264,65 +264,71 @@ class Script {
             nextAfterUnpause = true
             return
         }
+        
+        while !stopped && !paused {
+            let interval = Date().timeIntervalSince(lastNext)
 
-        let interval = Date().timeIntervalSince(lastNext)
-
-        if interval < 0.1 {
-            lastNextCount += 1
-        } else {
-            lastNextCount = 0
-        }
-
-        print("lastNextCount: \(lastNextCount)")
-
-        guard lastNextCount <= 500 else {
-            printStacktrace()
-            sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
-            cancel()
-            return
-        }
-
-        lastNext = Date()
-
-        context.advance()
-
-        guard let line = context.currentLine else {
-            cancel()
-            return
-        }
-
-        if line.token == nil {
-            line.token = tokenizer.read(line.originalText)
-        }
-
-        stackTrace.push(line)
-
-//        log.info("passing \(line.lineNumber) - \(line.originalText)")
-
-        let result = handleLine(line)
-
-        switch result {
-        case .next: next()
-        case .wait: return
-        case .exit: cancel()
-        case .advanceToNextBlock:
-            if context.advanceToNextBlock() {
-                next()
+            if interval < 0.1 {
+                lastNextCount += 1
             } else {
-                if let line = context.currentLine {
-                    sendText("Unable to match next if block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-                }
-                cancel()
+                lastNextCount = 0
             }
-        case .advanceToEndOfBlock:
-            if context.advanceToEndOfBlock() {
-                next()
-            } else {
-                if let line = context.currentLine {
-                    sendText("Unable to match end of block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-                }
+
+//            print("lastNextCount: \(lastNextCount)")
+
+            guard lastNextCount <= 500 else {
+                printStacktrace()
+                sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
                 cancel()
+                return
             }
+
+            lastNext = Date()
+
+            context.advance()
+
+            guard let line = context.currentLine else {
+                cancel()
+                return
+            }
+
+            if line.token == nil {
+                line.token = tokenizer.read(line.originalText)
+            }
+
+            stackTrace.push(line)
+
+    //        log.info("passing \(line.lineNumber) - \(line.originalText)")
+
+            let result = handleLine(line)
+
+            switch result {
+            case .next: continue
+            case .wait: return
+            case .exit: cancel()
+            case .advanceToNextBlock:
+                if context.advanceToNextBlock() {
+                    continue
+                } else {
+                    if let line = context.currentLine {
+                        sendText("Unable to match next if block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+                    }
+                    cancel()
+                }
+            case .advanceToEndOfBlock:
+                if context.advanceToEndOfBlock() {
+                    continue
+                } else {
+                    if let line = context.currentLine {
+                        sendText("Unable to match end of block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+                    }
+                    cancel()
+                }
+            }
+        }
+
+        if paused {
+            nextAfterUnpause = true
         }
     }
 
@@ -613,7 +619,7 @@ class Script {
     }
 
     func handleLine(_ line: ScriptLine) -> ScriptExecuteResult {
-        print("handling line \(line.lineNumber)")
+//        print("handling line \(line.lineNumber)")
 
         guard let token = line.token else {
             sendText("Unknown script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
