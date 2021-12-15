@@ -22,6 +22,12 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                            <menuItem title="Settings Directory..." id="7MP-tn-LsS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="chooseSettingsDirectoryAction:" target="-1" id="tql-lx-flc"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                 <connections>
                                     <action selector="preferences:" target="-1" id="VGP-Vt-cDj"/>

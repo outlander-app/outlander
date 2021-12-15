@@ -1091,4 +1091,22 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["$Katamba_offset[2]\n", "done\n"])
     }
+
+    func test_variable_indexing_syntax_without_pipe() throws {
+        try scenario([
+            "var pathBack east",
+            "var moveCounter 0",
+            "echo walk %pathBack[%moveCounter]",
+        ],
+        expect: ["walk east\n"])
+    }
+
+    func test_allow_vars_in_var_name_with_math() throws {
+        try scenario([
+            "var temp Dokoras",
+            "math %tempTotal add 4168",
+            "echo Doks: %DokorasTotal",
+        ],
+        expect: ["Doks: 4168\n"])
+    }
 }

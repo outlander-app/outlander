@@ -275,7 +275,7 @@ class VariableReplacer {
 
         return results.joined(separator: "")
     }
-    
+
     func determineIndexedVariable(_ varname: String, context: VariableContext) -> (String, [String], [String]) {
         // split into individual variables
         let vars = VariableTokenizer.splitToVariables(varname)
@@ -297,10 +297,14 @@ class VariableReplacer {
                     results.append(vars.dropLast(vars.count - 1 - index).joined(separator: ""))
                 }
                 break
-            }
-            else {
+            } else {
                 last = resolved
             }
+        }
+
+        // treat last as the list as there was no resolved variable with a pipe
+        if list.count == 0 {
+            list = last.components(separatedBy: "|")
         }
 
         return (last, list, results)

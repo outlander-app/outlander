@@ -264,8 +264,8 @@ class Script {
             nextAfterUnpause = true
             return
         }
-        
-        while !stopped && !paused {
+
+        while !stopped, !paused {
             let interval = Date().timeIntervalSince(lastNext)
 
             if interval < 0.1 {
@@ -274,9 +274,9 @@ class Script {
                 lastNextCount = 0
             }
 
-//            print("lastNextCount: \(lastNextCount)")
+            print("lastNextCount: \(lastNextCount)")
 
-            guard lastNextCount <= 500 else {
+            guard lastNextCount <= 1000 else {
                 printStacktrace()
                 sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
                 cancel()
@@ -298,7 +298,7 @@ class Script {
 
             stackTrace.push(line)
 
-    //        log.info("passing \(line.lineNumber) - \(line.originalText)")
+            //        log.info("passing \(line.lineNumber) - \(line.originalText)")
 
             let result = handleLine(line)
 
@@ -1297,7 +1297,9 @@ class Script {
             return .next
         }
 
-        var val = context.variables[variable] ?? "0"
+        let variableName = context.replaceVars(variable)
+
+        var val = context.variables[variableName] ?? "0"
         if val.isEmpty {
             val = "0"
         }
@@ -1369,9 +1371,9 @@ class Script {
             textResult = "\(Int(result))"
         }
 
-        context.variables[variable] = textResult
+        context.variables[variableName] = textResult
 
-        notify("math \(variable): \(existingValue) \(function) \(numberValue) = \(textResult)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+        notify("math \(variableName): \(existingValue) \(function) \(numberValue) = \(textResult)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
         return .next
     }

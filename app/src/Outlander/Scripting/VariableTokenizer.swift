@@ -84,7 +84,7 @@ class VariableTokenizer: VariableReaderBase<[VariableToken]> {
     override func afterRead() {
         push(IndexedVariableMode())
     }
-    
+
     public static func splitToVariables(_ input: String) -> [String] {
         var results: [String] = []
 

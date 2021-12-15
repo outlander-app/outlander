@@ -199,6 +199,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         addMenu(title: "Close Window", action: #selector(closeWindow(sender:)))
+        // addMenu(title: "Show Settings", action: #selector(toggleSettingsAction(sender:)))
         addMenu(title: "Show Border", action: #selector(toggleShowBorder(sender:)))
         addMenu(title: "Timestamp", action: #selector(toggleTimestamp(sender:)))
         addMenu(title: "Auto Scroll", action: #selector(toggleAutoScroll(sender:)))
@@ -358,6 +359,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
             let menuItem = item as! NSMenuItem
             menuItem.state = self.autoScroll ? .on : .off
         }
+        if item.action == #selector(toggleSettingsAction(sender:)) {
+            let menuItem = item as! NSMenuItem
+            menuItem.state = self.settingsVC != nil ? .on : .off
+        }
         return true
     }
 
@@ -381,6 +386,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
     @objc func toggleAutoScroll(sender _: Any?) {
         autoScroll = !autoScroll
+    }
+
+    @objc func toggleSettingsAction(sender _: Any?) {
+        toggleSettings()
     }
 
     func updateTheme() {

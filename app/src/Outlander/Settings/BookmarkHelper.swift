@@ -12,10 +12,10 @@ import Foundation
 class Preferences {
     static var workingDirectoryBookmark: Data? {
         get {
-            UserDefaults.standard.data(forKey: "workingDirectoryBookmark")
+            UserDefaults.standard.data(forKey: "outlanderWorkingDirectoryBookmark")
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "workingDirectoryBookmark")
+            UserDefaults.standard.set(newValue, forKey: "outlanderWorkingDirectoryBookmark")
         }
     }
 }
@@ -24,7 +24,7 @@ class Preferences {
 class BookmarkHelper {
     func promptOrRestore() -> URL? {
         guard let bookmark = Preferences.workingDirectoryBookmark else {
-            if let url = promptForWorkingDirectoryPermission() {
+            if let url = promptForWorkingDirectoryPermission(nil) {
                 saveBookmarkData(for: url)
                 if let bookmark2 = Preferences.workingDirectoryBookmark {
                     return restoreFileAccess(with: bookmark2)
@@ -38,7 +38,25 @@ class BookmarkHelper {
         return restoreFileAccess(with: bookmark)
     }
 
-    private func promptForWorkingDirectoryPermission() -> URL? {
+    func prompt() -> URL? {
+        var previous: URL?
+
+        if let bookmark = Preferences.workingDirectoryBookmark {
+            previous = restoreFileAccess(with: bookmark)
+        }
+
+        if let url = promptForWorkingDirectoryPermission(previous) {
+            saveBookmarkData(for: url)
+            if let bookmark2 = Preferences.workingDirectoryBookmark {
+                return restoreFileAccess(with: bookmark2)
+            }
+            return nil
+        }
+
+        return nil
+    }
+
+    private func promptForWorkingDirectoryPermission(_ previous: URL?) -> URL? {
         let openPanel = NSOpenPanel()
         openPanel.message = "Choose your Outlander settings directory"
         openPanel.prompt = "Choose"
@@ -46,7 +64,7 @@ class BookmarkHelper {
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
-        openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents").appendingPathComponent("Outlander2")
+        openPanel.directoryURL = previous ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents").appendingPathComponent("Outlander2")
 
         _ = openPanel.runModal()
         print(openPanel.urls) // this contains the chosen folder

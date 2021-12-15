@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         AppDelegate.mainMenu.instantiate(withOwner: NSApplication.shared, topLevelObjects: nil)
 
-        Preferences.workingDirectoryBookmark = nil
+//        Preferences.workingDirectoryBookmark = nil
 
         if let rootUrl = BookmarkHelper().promptOrRestore() {
             self.rootUrl = rootUrl
@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.setFrameAutosaveName("")
 
         window.title = "Outlander 2"
-        window.center()
+//        window.center()
         window.isMovableByWindowBackground = true
         window.titlebarAppearsTransparent = true
 
@@ -131,6 +131,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showWindowSettings(_: Any) {
         sendCommand("layout:Settings")
+    }
+
+    @IBAction func chooseSettingsDirectoryAction(_: Any) {
+        if let rootUrl = BookmarkHelper().prompt() {
+            self.rootUrl = rootUrl
+
+            for win in windows {
+                (win.contentViewController as? GameViewController)?.gameContext.applicationSettings.paths.rootUrl = rootUrl
+            }
+        }
     }
 
     func sendCommand(_ command: String) {
