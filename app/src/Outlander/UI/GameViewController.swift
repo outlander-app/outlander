@@ -828,11 +828,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
         settings.name = lower
         settings.title = title
         settings.closedTarget = closedTarget
-        settings.visible = 0
+        settings.visible = false
         settings.x = 0
         settings.y = 0
         settings.height = 200
         settings.width = 300
+        settings.autoScroll = true
 
         addWindow(settings)
     }
@@ -858,6 +859,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         case end = 119
         case leftArrow = 123
         case rightArrow = 134
+        case enter = 36
     }
 
     func createWindow(_ settings: WindowData) -> WindowViewController? {
@@ -877,6 +879,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
+            var sendInput = false
+
             var newVal = self.commandInput.stringValue
             var targetIndex = newVal.count
 
@@ -892,6 +896,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 targetIndex = 0
             case .end:
                 break
+            case .enter:
+                sendInput = true
             default:
                 newVal = newVal + val
                 targetIndex = newVal.count
@@ -900,12 +906,16 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.commandInput.stringValue = newVal
             self.commandInput.selectText(self)
             self.commandInput.currentEditor()?.selectedRange = NSMakeRange(targetIndex, 0)
+
+            if sendInput {
+                self.commandInput.commitHistory()
+            }
         }
 
         controller?.gameContext = gameContext
 
         controller?.name = settings.name
-        controller?.visible = settings.visible == 1
+        controller?.visible = settings.visible ?? true
         controller?.closedTarget = settings.closedTarget
         controller?.fontName = settings.fontName
         controller?.fontSize = settings.fontSize
@@ -914,12 +924,13 @@ class GameViewController: NSViewController, NSWindowDelegate {
         controller?.foregroundColor = settings.fontColor
         controller?.backgroundColor = settings.backgroundColor
         controller?.borderColor = settings.borderColor
-        controller?.displayBorder = settings.showBorder == 1
-        controller?.displayTimestamp = settings.timestamp == 1
+        controller?.displayBorder = settings.showBorder ?? true
+        controller?.displayTimestamp = settings.timestamp ?? false
         controller?.bufferSize = settings.bufferSize
         controller?.bufferClearSize = settings.bufferClearSize
         controller?.location = NSRect(x: settings.x, y: settings.y, width: settings.width, height: settings.height)
         controller?.padding = settings.padding
+        controller?.autoScroll = settings.autoScroll ?? true
 
         return controller
     }
@@ -956,14 +967,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func logTag(_ tags: [TextTag]) {
-        let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
+//        let logWindows = ["main", "assess", "atmospherics", "chatter", "combat", "conversation", "death", "familiar", "group", "logons", "ooc", "talk", "thoughts", "whispers"]
         var logText = ""
         for tag in tags {
             guard let windowName = windowFor(name: tag.window), let window = gameWindows[windowName] else {
                 continue
             }
 
-            if gameContext.applicationSettings.profile.logging, logWindows.contains(windowName) {
+            if gameContext.applicationSettings.profile.logging, gameContext.applicationSettings.windowsToLog.contains(windowName) {
                 if tag.text == "\n" {
                     if !logText.hasSuffix("\n") {
                         logText += tag.text

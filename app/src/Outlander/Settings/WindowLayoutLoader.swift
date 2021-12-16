@@ -16,9 +16,9 @@ class WindowData: Codable {
     public var width: Double = 200
     @NullEncodable public var title: String?
     @NullEncodable public var closedTarget: String?
-    public var visible: Int = 1
-    public var timestamp: Int = 0
-    public var showBorder: Int = 1
+    public var visible: Bool? = true
+    public var timestamp: Bool? = false
+    public var showBorder: Bool? = true
     public var fontName: String = "Helvetica"
     public var fontSize: Double = 14
     public var fontColor: String = "#d4d4d4"
@@ -29,7 +29,59 @@ class WindowData: Codable {
     public var backgroundColor: String = "#1e1e1e"
     public var borderColor: String = "#cccccc"
     public var order: Int = 0
-    public var padding: String? = "0,0"
+    @NullEncodable public var padding: String? = "0,0"
+    public var autoScroll: Bool?
+
+    init() {}
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+        x = try container.decodeIfPresent(Double.self, forKey: .x) ?? 0
+        y = try container.decodeIfPresent(Double.self, forKey: .y) ?? 0
+        height = try container.decodeIfPresent(Double.self, forKey: .height) ?? 0
+        width = try container.decodeIfPresent(Double.self, forKey: .width) ?? 0
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        closedTarget = try container.decodeIfPresent(String.self, forKey: .closedTarget)
+
+        visible = try? container.decodeIfPresent(Bool.self, forKey: .visible)
+        if visible == nil {
+            let num = try? container.decodeIfPresent(Int.self, forKey: .visible) ?? 1
+            visible = num == 1
+        }
+        if visible == nil { visible = true }
+
+        timestamp = try? container.decodeIfPresent(Bool.self, forKey: .timestamp)
+        if timestamp == nil {
+            let num = try? container.decodeIfPresent(Int.self, forKey: .timestamp) ?? 1
+            timestamp = num == 1
+        }
+        if timestamp == nil { timestamp = false }
+
+        showBorder = try? container.decodeIfPresent(Bool.self, forKey: .showBorder)
+        if showBorder == nil {
+            let num = try? container.decodeIfPresent(Int.self, forKey: .showBorder) ?? 1
+            showBorder = num == 1
+        }
+        if showBorder == nil { showBorder = true }
+
+        fontName = try container.decodeIfPresent(String.self, forKey: .fontName) ?? "Helvetica"
+        fontSize = try container.decodeIfPresent(Double.self, forKey: .fontSize) ?? 14
+        fontColor = try container.decodeIfPresent(String.self, forKey: .fontColor) ?? "#d4d4d4"
+        monoFontName = try container.decodeIfPresent(String.self, forKey: .monoFontName) ?? "Menlo"
+        monoFontSize = try container.decodeIfPresent(Double.self, forKey: .monoFontSize) ?? 13
+
+        bufferSize = try container.decodeIfPresent(Int.self, forKey: .bufferSize) ?? 1000
+        bufferClearSize = try container.decodeIfPresent(Int.self, forKey: .bufferClearSize) ?? 50
+
+        backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor) ?? "#1e1e1e"
+        borderColor = try container.decodeIfPresent(String.self, forKey: .borderColor) ?? "#cccccc"
+
+        order = try container.decodeIfPresent(Int.self, forKey: .order) ?? 0
+
+        padding = try container.decodeIfPresent(String.self, forKey: .padding) ?? "0,0"
+        autoScroll = try container.decodeIfPresent(Bool.self, forKey: .autoScroll) ?? true
+    }
 }
 
 enum WindowLayoutCodingKeys: CodingKey {
@@ -37,7 +89,7 @@ enum WindowLayoutCodingKeys: CodingKey {
 }
 
 struct WindowLayout: Codable {
-    var version: Double = 2.0
+    var version: Double? = 2.0
     var primary: WindowData
     var windows: [WindowData]
 
@@ -48,7 +100,7 @@ struct WindowLayout: Codable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: WindowLayoutCodingKeys.self)
-        version = try container.decodeIfPresent(Double.self, forKey: .version) ?? 2.0
+        version = try? container.decodeIfPresent(Double.self, forKey: .version) ?? 2.0
         primary = try container.decodeIfPresent(WindowData.self, forKey: .primary) ?? WindowLayout.createWindow("primary")
         windows = try container.decodeIfPresent([WindowData].self, forKey: .windows) ?? [WindowLayout.createWindow("main")]
     }
@@ -64,29 +116,29 @@ struct WindowLayout: Codable {
         let primary = createWindow("primary", with: NSRect(x: 0, y: 55, width: 1440, height: 815))
         let windows = [
             createWindow("main", with: NSRect(x: 0, y: 260.4375, width: 1061, height: 424.5625)),
-            createWindow("thoughts", with: NSRect(x: 0, y: 0, width: 521, height: 148), timestamp: 1),
-            createWindow("logons", with: NSRect(x: 1060, y: 0, width: 380, height: 133.86328125), timestamp: 1),
-            createWindow("death", with: NSRect(x: 1060, y: 133.359375, width: 380, height: 136), timestamp: 1),
+            createWindow("thoughts", with: NSRect(x: 0, y: 0, width: 521, height: 148), timestamp: true),
+            createWindow("logons", with: NSRect(x: 1060, y: 0, width: 380, height: 133.86328125), timestamp: true),
+            createWindow("death", with: NSRect(x: 1060, y: 133.359375, width: 380, height: 136), timestamp: true),
             createWindow("room", with: NSRect(x: 520.44140625, y: 0, width: 540.44140625, height: 260.99609375)),
             createWindow("percwindow", with: NSRect(x: 762.18359375, y: 203.68359375, width: 298.5234375, height: 158.07421875)),
-            createWindow("log", with: NSRect(x: 0, y: 147, width: 521, height: 114), timestamp: 1),
+            createWindow("log", with: NSRect(x: 0, y: 147, width: 521, height: 114), timestamp: true),
             createWindow("experience", with: NSRect(x: 1060.0625, y: 268.89453125, width: 379.9375, height: 416.10546875)),
-            createWindow("assess", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "main"),
-            createWindow("chatter", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "main"),
-            createWindow("familiar", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "main"),
-            createWindow("atmospherics", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "main"),
-            createWindow("talk", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "conversation"),
-            createWindow("whispers", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "conversation"),
-            createWindow("conversation", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "log"),
-            createWindow("ooc", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "conversation"),
-            createWindow("group", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: "conversation"),
-            createWindow("inv", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: 0, closedTarget: ""),
-            createWindow("raw", with: NSRect(x: 0, y: 0, width: 900, height: 400), visible: 0),
+            createWindow("assess", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "main"),
+            createWindow("chatter", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "main"),
+            createWindow("familiar", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "main"),
+            createWindow("atmospherics", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "main"),
+            createWindow("talk", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
+            createWindow("whispers", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
+            createWindow("conversation", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "log"),
+            createWindow("ooc", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
+            createWindow("group", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
+            createWindow("inv", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: ""),
+            createWindow("raw", with: NSRect(x: 0, y: 0, width: 900, height: 400), visible: false),
         ]
         return WindowLayout(primary: primary, windows: windows)
     }
 
-    static func createWindow(_ name: String, with rect: NSRect = NSRect(x: 0, y: 0, width: 300, height: 200), visible: Int = 1, closedTarget: String = "", timestamp: Int = 0) -> WindowData {
+    static func createWindow(_ name: String, with rect: NSRect = NSRect(x: 0, y: 0, width: 300, height: 200), visible: Bool = true, closedTarget: String = "", timestamp: Bool = false) -> WindowData {
         let win = WindowData()
         win.name = name
         win.visible = visible
@@ -96,6 +148,7 @@ struct WindowLayout: Codable {
         win.y = rect.origin.y
         win.height = rect.height
         win.width = rect.width
+        win.autoScroll = true
         return win
     }
 }

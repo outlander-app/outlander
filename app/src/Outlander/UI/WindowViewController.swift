@@ -36,6 +36,10 @@ class OLTextView: NSTextView {
         onKeyUp(event)
     }
 
+    override func keyDown(with event: NSEvent) {
+        // need to override, otherwise "enter" keyUp never fires
+    }
+
     override func hitTest(_ point: NSPoint) -> NSView? {
         guard !disabled else {
             return nil
@@ -179,7 +183,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 padding: self.padding ?? ""
             )
         }
-
+        
         textView.onKeyUp = { event in
             self.onKeyUp(event)
         }
@@ -267,10 +271,10 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         let data = WindowData()
         data.name = name
         data.title = title?.count == 0 ? nil : title
-        data.visible = visible ? 1 : 0
-        data.showBorder = displayBorder ? 1 : 0
+        data.visible = visible
+        data.showBorder = displayBorder
         data.borderColor = borderColor
-        data.timestamp = displayTimestamp ? 1 : 0
+        data.timestamp = displayTimestamp
         data.closedTarget = closedTarget?.count == 0 ? nil : closedTarget
         data.fontColor = foregroundColor
         data.backgroundColor = backgroundColor
@@ -289,6 +293,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
 
         let inset = textView.textContainerInset
         data.padding = "\(inset.width.formattedNumber),\(inset.height.formattedNumber)"
+        data.autoScroll = autoScroll
 
         data.order = order
 

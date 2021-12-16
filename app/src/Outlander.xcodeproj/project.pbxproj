@@ -585,13 +585,13 @@
 				F9CA2074246776E100A92736 /* ClassLoader.swift */,
 				F98B48FE246F6570000E2D92 /* GagLoader.swift */,
 				F98B4908246F9668000E2D92 /* HighlightLoader.swift */,
+				7B3B9A192759DB200035D731 /* IconLoader.swift */,
 				7BDF5C77271A53E10020A3B0 /* MacroLoader.swift */,
 				F9D78D2F23A9E3A500FE2343 /* PresetLoader.swift */,
 				F98B490D246F9EE1000E2D92 /* SubstituteLoader.swift */,
 				F98B4912246FA438000E2D92 /* TriggerLoader.swift */,
 				F9CA205F24664D4100A92736 /* VariablesLoader.swift */,
 				F969A0FA23A4B7CF00408CE5 /* WindowLayoutLoader.swift */,
-				7B3B9A192759DB200035D731 /* IconLoader.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

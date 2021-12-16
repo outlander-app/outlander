@@ -21,6 +21,8 @@ class ApplicationSettings {
     var authenticationServerAddress = "eaccess.play.net"
     var authenticationServerPort: UInt16 = 7910
 
+    var windowsToLog: [String] = []
+
     var currentProfilePath: URL {
         paths.profiles.appendingPathComponent(profile.name)
     }
@@ -34,6 +36,7 @@ class ApplicationSettings {
         profile.name = settings.defaultProfile
         authenticationServerAddress = settings.authenticationServerAddress
         authenticationServerPort = UInt16(settings.authenticationServerPort)
+        windowsToLog = settings.windowsToLog?.components(separatedBy: CharacterSet([",", "|", ";", " "])).map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }.filter { !$0.isEmpty } ?? []
     }
 
     func toDto() -> ApplicationSettingsDto {
@@ -46,6 +49,7 @@ class ApplicationSettings {
         dto.variableDatetimeFormat = variableDatetimeFormat
         dto.authenticationServerAddress = authenticationServerAddress
         dto.authenticationServerPort = Int(authenticationServerPort)
+        dto.windowsToLog = windowsToLog.joined(separator: ", ")
         return dto
     }
 }
