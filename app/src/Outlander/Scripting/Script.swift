@@ -151,7 +151,6 @@ class Script {
     var includeRegex: Regex
     var labelRegex: Regex
 
-//    var delayedTask: DispatchWorkItem?
     var delayedTask = DelayedTask()
 
     var lastNext = Date()
@@ -341,7 +340,7 @@ class Script {
         }
 
         if let roundtime = context.roundtime, roundtime > 0 {
-            delayedTask.set(roundtime) {
+            delayedTask.set(roundtime, queue: lockQueue) {
                 self.nextAfterRoundtime()
             }
             return
@@ -1279,7 +1278,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            delayedTask.set(timeout) {
+            delayedTask.set(timeout, queue: lockQueue) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -1417,7 +1416,7 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        delayedTask.set(duration) {
+        delayedTask.set(duration, queue: lockQueue) {
             self.nextAfterRoundtime()
         }
 
@@ -1608,7 +1607,9 @@ class Script {
             return .next
         }
 
-        notify("waitfor \(text)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
+        let resolved = context.replaceVars(text)
+
+        notify("waitfor \(resolved)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
         reactToStream.append(WaitforOp(text))
 
@@ -1620,7 +1621,9 @@ class Script {
             return .next
         }
 
-        notify("waitforre \(pattern)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
+        let resolved = context.replaceVars(pattern)
+
+        notify("waitforre \(resolved)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
         reactToStream.append(WaitforReOp(pattern))
 

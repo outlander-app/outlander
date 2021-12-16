@@ -165,15 +165,16 @@ class DelayedTask {
 
     func reset() {
         lock.lock()
+        defer { lock.unlock() }
         value?.cancel()
         value = nil
-        lock.unlock()
     }
 
     func set(_ duration: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) {
         lock.lock()
+        defer { lock.unlock() }
+        value?.cancel()
         value = delay(duration, queue: queue, closure)
-        lock.unlock()
     }
 }
 

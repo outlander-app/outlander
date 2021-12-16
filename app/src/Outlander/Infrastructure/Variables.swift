@@ -85,6 +85,10 @@ class GlobalVariables: Variables {
             GlobalVariables.dateFormatter.dateFormat = self.settings.variableTimeFormat
             return GlobalVariables.dateFormatter.string(from: self.clock.now)
         })
+
+        addDynamic(key: "unixtime", value: .dynamic {
+            "\(self.clock.now.timeIntervalSince1970.formattedNumber)"
+        })
     }
 }
 
