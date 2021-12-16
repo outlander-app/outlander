@@ -194,23 +194,25 @@ extension String {
         var emojiStr: String = ""
         for char in replacingOccurrences(of: "\\\\x", with: "\\x").replacingOccurrences(of: "\\\\X", with: "\\X") {
             let str = String(char)
-            if str == "\\" || str.lowercased() == "x" || str == "%" {
+            if str == "\\" || str == "%" {
+                emojiStr.append(str)
+            } else if emojiStr == "\\" && str.lowercased() == "x" {
                 emojiStr.append(str)
             } else if emojiStr.hasPrefix("\\x") || emojiStr.hasPrefix("\\X") || emojiStr.hasPrefix("%") {
                 emojiStr.append(str)
                 if emojiStr.count == 4 || (emojiStr.count == 3 && emojiStr.hasPrefix("%")) {
-                    // It can be a hexa value
+                    // it can be a hex value
                     let value = emojiStr.replacingOccurrences(of: "\\x", with: "").replacingOccurrences(of: "%", with: "")
                     if let byte = UInt8(value, radix: 16) {
                         newData.append(byte)
                     } else {
                         newData.append(emojiStr.data(using: .utf8)!)
                     }
-                    // Reset emojiStr
+                    // reset emoji
                     emojiStr = ""
                 }
             } else {
-                // Append the data as it is
+                // append the data as is
                 newData.append(str.data(using: .utf8)!)
             }
         }
