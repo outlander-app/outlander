@@ -16,7 +16,7 @@ protocol Events {
 
 extension Events {
     func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
-        let data = TextData(text: "\(text)\n", preset: preset, color: color, mono: mono)
+        let data = TextData(text: "\(text)\n".hexDecoededString(), preset: preset, color: color, mono: mono)
         post("ol:text", data: data)
     }
 
@@ -25,7 +25,7 @@ extension Events {
     }
 
     func echoError(_ text: String) {
-        post("ol:error", data: "\(text)\n")
+        post("ol:error", data: "\(text)\n".hexDecoededString())
     }
 
     func sendCommand(_ command: Command2) {

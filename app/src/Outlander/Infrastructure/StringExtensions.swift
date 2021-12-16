@@ -188,6 +188,36 @@ extension String {
         let number = NSNumber(value: dbl)
         return Self.valueFormatter.string(from: number)!
     }
+
+    func hexDecoededString() -> String {
+        var newData = Data()
+        var emojiStr: String = ""
+        for char in self.replacingOccurrences(of: "\\\\x", with: "\\x").replacingOccurrences(of: "\\\\X", with: "\\X") {
+            let str = String(char)
+            if str == "\\" || str.lowercased() == "x" || str == "%" {
+                emojiStr.append(str)
+            } else if emojiStr.hasPrefix("\\x") || emojiStr.hasPrefix("\\X") || emojiStr.hasPrefix("%") {
+                emojiStr.append(str)
+                if emojiStr.count == 4 || (emojiStr.count == 3 && emojiStr.hasPrefix("%")) {
+                    // It can be a hexa value
+                    let value = emojiStr.replacingOccurrences(of: "\\x", with: "").replacingOccurrences(of: "%", with: "")
+                    if let byte = UInt8(value, radix: 16) {
+                        newData.append(byte)
+                    } else {
+                        newData.append(emojiStr.data(using: .utf8)!)
+                    }
+                    // Reset emojiStr
+                    emojiStr = ""
+                }
+            } else {
+                // Append the data as it is
+                newData.append(str.data(using: .utf8)!)
+            }
+        }
+
+        let decodedString = String(data: newData, encoding: String.Encoding.utf8)
+        return decodedString ?? ""
+    }
 }
 
 extension CGFloat {

@@ -552,8 +552,8 @@ class Script {
             ? scriptFileName
             .absoluteString[7...]
             .replacingOccurrences(of: gameContext.applicationSettings.paths.scripts.absoluteString[7...], with: "")
-            .replacingOccurrences(of: ".cmd", with: "")
-            : scriptFileName.absoluteString
+            .replacingOccurrences(of: ".cmd", with: "").hexDecoededString()
+            : scriptFileName.absoluteString.hexDecoededString()
 
         if !isInclude {
             let formattedDate = Script.dateFormatter.string(from: started!)
@@ -564,7 +564,7 @@ class Script {
 
             let homeDir = gameContext.applicationSettings.paths.rootUrl.absoluteString[7...]
 
-            scriptFilePath = scriptFilePath.replacingOccurrences(of: homeDir, with: "~/")
+            scriptFilePath = scriptFilePath.replacingOccurrences(of: homeDir, with: "~/").hexDecoededString()
 
             sendText("[Starting '\(scriptFilePath)' at \(formattedDate)]")
 

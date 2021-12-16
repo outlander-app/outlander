@@ -207,6 +207,16 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         addMenu(tag: 42, action: #selector(menuTitle(sender:)))
     }
 
+//    func addImage() {
+//        let link = "https://c.tenor.com/oMddqeihSJwAAAAC/okily-dokily.gif"
+//        let image = NSImage(byReferencing: URL(string: link)!)
+//        let attachment = NSTextAttachment()
+//        attachment.attachmentCell = NSTextAttachmentCell(imageCell: image)
+//        let str = NSMutableAttributedString(attachment: attachment)
+//        self.appendWithoutProcessing(str)
+//        self.append(TextTag(text: "\n", window: self.name))
+//    }
+
     func toggleSettings() {
         if settingsVC != nil {
             hideSettings()

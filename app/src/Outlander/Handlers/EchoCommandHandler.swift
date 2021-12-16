@@ -29,7 +29,7 @@ class EchoCommandHandler: ICommandHandler {
         let backgroundColor = groups.valueAt(index: 6)
         let text = groups.valueAt(index: 7) ?? ""
 
-        var tag = TextTag(text: "\(text)\n", window: window.lowercased())
+        var tag = TextTag(text: "\(text)\n".hexDecoededString(), window: window.lowercased())
         tag.color = foregroundColor
         tag.backgroundColor = backgroundColor
         tag.mono = true

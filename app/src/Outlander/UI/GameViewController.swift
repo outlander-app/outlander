@@ -227,6 +227,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameStream?.addHandler(scriptRunner!)
 
         commandInput.executeCommand = { command in
+//            if command.trimmingCharacters(in: CharacterSet.whitespaces).lowercased() == "gif" {
+//                self.gameWindows["main"]?.addImage()
+//            }
+
             self.commandProcessor!.process(command, with: self.gameContext)
         }
 

@@ -52,4 +52,9 @@ class SplitToCommandsTests: XCTestCase {
         let commands = "one \"two three".argumentsSeperated()
         XCTAssertEqual(commands, ["one", "\"two three"])
     }
+
+    func test_emoji() {
+        let fileName = "%F0%9F%94%A5.cmd"
+        XCTAssertEqual(fileName.hexDecoededString(), "🔥.cmd")
+    }
 }
