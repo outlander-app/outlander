@@ -87,7 +87,9 @@ class GlobalVariables: Variables {
         })
 
         addDynamic(key: "unixtime", value: .dynamic {
-            "\(self.clock.now.timeIntervalSince1970.formattedNumber)"
+            let interval: Double = self.clock.now.timeIntervalSince1970
+            let str = "\(interval.formattedNumber)"
+            return str
         })
     }
 }

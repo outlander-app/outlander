@@ -10,7 +10,6 @@ import Foundation
 
 @discardableResult func delay(_ delay: Double, queue: DispatchQueue = DispatchQueue.global(qos: .userInteractive), _ closure: @escaping () -> Void) -> DispatchWorkItem {
     let task = DispatchWorkItem { closure() }
-    // TODO: swap from main queue?
     queue.asyncAfter(deadline: .now() + delay, execute: task)
     return task
 }
@@ -29,6 +28,12 @@ struct Label {
     var line: Int
     var scriptLine: Int
     var fileName: String
+}
+
+extension Label: CustomStringConvertible {
+    var description: String {
+        "\(line) \(fileName) (\(scriptLine)) \(name)"
+    }
 }
 
 class GosubContext {
@@ -61,6 +66,12 @@ class ScriptLine {
         self.originalText = originalText
         self.fileName = fileName
         self.lineNumber = lineNumber
+    }
+}
+
+extension ScriptLine: CustomStringConvertible {
+    var description: String {
+        "[\(fileName)(\(lineNumber))]: \(originalText)"
     }
 }
 
@@ -100,16 +111,14 @@ struct Atomic<Value> {
         }
         set {
             lock.lock()
+            defer { lock.unlock() }
             value = newValue
-            lock.unlock()
         }
     }
 }
 
 class Script {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", attributes: .concurrent)
-    // private let lockQueue = DispatchQueue.global(qos: .default)
-    // private let lock = NSRecursiveLock()
+    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", qos: .userInteractive, autoreleaseFrequency: .never)
     private let log = LogManager.getLog("Script")
 
     var started: Date?
@@ -242,6 +251,14 @@ class Script {
 
             initialize(fileName, isInclude: false)
 
+//            for label in self.context.labels.sorted(by: { $0.value.line < $1.value.line }) {
+//                print(label.value.description)
+//            }
+//
+//            for (idx, line) in self.context.lines.enumerated() {
+//                print("\(idx) \(line.description)")
+//            }
+
             next()
         }
 
@@ -372,6 +389,15 @@ class Script {
         stop()
     }
 
+    func matchesName(_ name: String) -> Bool {
+        var nameToCheck = fileName
+        // trim off any leading folder name
+        if let idx = fileName.lastIndex(of: "/") {
+            nameToCheck = String(fileName[fileName.index(after: idx)...])
+        }
+        return nameToCheck == name
+    }
+
     private func stop() {
         delayedTask.reset()
         matchwait = nil
@@ -425,33 +451,43 @@ class Script {
         return vars
     }
 
-    func stream(_ text: String, _ tokens: [StreamCommand]) {
+    func stream(_ text: String, _ tokens: [StreamCommand], async: Bool = true) {
         guard text.count > 0 || tokens.count > 0, !paused, !stopped else {
             return
         }
 
-        _ = checkActions(text, tokens)
+        func doStream() {
+            _ = checkActions(text, tokens)
 
-        let handlers = reactToStream.filter { x in
-            let res = x.stream(text, tokens, self.context)
-            switch res {
-            case let .match(txt):
-                notify("matched \(txt)", debug: .wait)
-                return true
-            default:
-                return false
+            let handlers = reactToStream.filter { x in
+                let res = x.stream(text, tokens, self.context)
+                switch res {
+                case let .match(txt):
+                    self.notify("matched \(txt)", debug: .wait)
+                    return true
+                default:
+                    return false
+                }
             }
+
+            handlers.forEach { handler in
+                guard let idx = self.reactToStream.firstIndex(where: { $0.id == handler.id }) else {
+                    return
+                }
+                self.reactToStream.remove(at: idx)
+                handler.execute(self, self.context)
+            }
+
+            checkMatches(text)
         }
 
-        handlers.forEach { handler in
-            guard let idx = reactToStream.firstIndex(where: { $0.id == handler.id }) else {
-                return
+        if async {
+            lockQueue.async {
+                doStream()
             }
-            reactToStream.remove(at: idx)
-            handler.execute(self, context)
+        } else {
+            doStream()
         }
-
-        checkMatches(text)
     }
 
     private func checkActions(_ text: String, _ tokens: [StreamCommand]) -> Bool {
@@ -635,16 +671,12 @@ class Script {
     }
 
     func executeToken(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-//        lock.lock()
-//        defer { lock.unlock() }
-        lockQueue.sync {
-            if let handler = tokenHandlers[token.description] {
-                return handler(line, token)
-            }
-
-            sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+        if let handler = tokenHandlers[token.description] {
+            return handler(line, token)
         }
+
+        sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        return .exit
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
@@ -1272,7 +1304,7 @@ class Script {
         let timeout = Double(maybeNumber) ?? -1
 
         let time = timeout > 0 ? "\(timeout)" : ""
-        notify("matchwait \(time)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber)
+        notify("matchwait \(time)", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
         let token = Matchwait()
         matchwait = token
@@ -1483,8 +1515,8 @@ class Script {
 
     func gotoReturn(_ line: ScriptLine) -> ScriptExecuteResult {
         guard let ctx = gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
-            notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber)
-            sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
+            notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
+            sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
             return .exit
         }
 

@@ -9,6 +9,8 @@
 import Foundation
 
 class ApplicationSettingsDto: Codable {
+    static var defaultWindowsToLog = "main, assess, atmospherics, chatter, combat, conversation, death, familiar, group, logons, ooc, talk, thoughts, whispers"
+
     var defaultProfile = "Default"
     var downloadPreReleaseVersions: String = "no"
     var checkForApplicationUpdates: String = "no"
@@ -36,7 +38,7 @@ class ApplicationSettingsDto: Codable {
         variableDatetimeFormat = try container.decodeIfPresent(String.self, forKey: .variableDatetimeFormat) ?? "yyyy-MM-dd hh:mm:ss a"
         authenticationServerAddress = try container.decodeIfPresent(String.self, forKey: .authenticationServerAddress) ?? "eaccess.play.net"
         authenticationServerPort = try container.decodeIfPresent(Int.self, forKey: .authenticationServerPort) ?? 7910
-        windowsToLog = try container.decodeIfPresent(String.self, forKey: .windowsToLog) ?? "main, assess, atmospherics, chatter, combat, conversation, death, familiar, group, logons, ooc, talk, thoughts, whispers"
+        windowsToLog = try container.decodeIfPresent(String.self, forKey: .windowsToLog) ?? ApplicationSettingsDto.defaultWindowsToLog
     }
 }
 

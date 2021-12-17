@@ -36,7 +36,11 @@ class ApplicationSettings {
         profile.name = settings.defaultProfile
         authenticationServerAddress = settings.authenticationServerAddress
         authenticationServerPort = UInt16(settings.authenticationServerPort)
-        windowsToLog = settings.windowsToLog?.components(separatedBy: CharacterSet([",", "|", ";", " "])).map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }.filter { !$0.isEmpty } ?? []
+        windowsToLog =
+            settings.windowsToLog?.components(separatedBy: CharacterSet([",", "|", ";", " "]))
+                .map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+                ?? ApplicationSettingsDto.defaultWindowsToLog.components(separatedBy: CharacterSet([","]))
     }
 
     func toDto() -> ApplicationSettingsDto {

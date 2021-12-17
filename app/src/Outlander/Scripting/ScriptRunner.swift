@@ -69,7 +69,7 @@ class ScriptRunner: StreamHandler {
                 return
             }
 
-            if let previous = scripts.first(where: { $0.fileName == scriptName }) {
+            if let previous = scripts.first(where: { $0.matchesName(scriptName) }) {
                 previous.cancel()
             }
 

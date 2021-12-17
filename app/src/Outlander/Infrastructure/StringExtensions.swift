@@ -197,8 +197,8 @@ extension String {
             if str == "\\" || str == "%" {
                 emojiStr.append(str)
             } else if emojiStr == "\\" && str.lowercased() == "x" {
-                emojiStr.append(str)
-            } else if emojiStr.hasPrefix("\\x") || emojiStr.hasPrefix("\\X") || emojiStr.hasPrefix("%") {
+                emojiStr.append(str.lowercased())
+            } else if emojiStr.hasPrefix("\\x") || emojiStr.hasPrefix("%") {
                 emojiStr.append(str)
                 if emojiStr.count == 4 || (emojiStr.count == 3 && emojiStr.hasPrefix("%")) {
                     // it can be a hex value

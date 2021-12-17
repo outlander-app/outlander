@@ -768,7 +768,7 @@ class ScriptTests: XCTestCase {
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
         script.run([])
-        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [], async: false)
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
     }
@@ -789,7 +789,7 @@ class ScriptTests: XCTestCase {
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
         script.run([])
-        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [], async: false)
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
     }

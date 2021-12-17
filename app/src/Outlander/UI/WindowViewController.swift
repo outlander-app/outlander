@@ -36,7 +36,7 @@ class OLTextView: NSTextView {
         onKeyUp(event)
     }
 
-    override func keyDown(with event: NSEvent) {
+    override func keyDown(with _: NSEvent) {
         // need to override, otherwise "enter" keyUp never fires
     }
 
@@ -183,7 +183,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 padding: self.padding ?? ""
             )
         }
-        
+
         textView.onKeyUp = { event in
             self.onKeyUp(event)
         }
@@ -642,11 +642,12 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                     return
                 }
 
+                // previous was a prompt, but this was not a player command, so add a newline
                 self.appendWithoutProcessing(NSAttributedString(string: "\n"))
                 addedNewline = true
             }
 
-            // TODO: do not display timestamp if previous tag did not end with a newline
+            // do not display timestamp if previous tag did not end with a newline
             let previousEndendWithNewline = addedNewline || self.lastTag?.text.hasSuffix("\n") ?? true
 
             self.lastTag = tag
