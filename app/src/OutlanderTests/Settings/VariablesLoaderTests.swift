@@ -51,6 +51,8 @@ class VariablesLoaderTests: XCTestCase {
 
         loader!.load(context.applicationSettings, context: context)
         loader!.save(context.applicationSettings, variables: context.globalVars)
+        
+        let unixTime = clock.now.timeIntervalSince1970.formattedNumber
 
         XCTAssertEqual(fileSystem.savedContent ?? "",
                        """
@@ -65,7 +67,7 @@ class VariablesLoaderTests: XCTestCase {
                        #var {roundtime} {0}
                        #var {tdp} {0}
                        #var {time} {12:00:00 AM}
-                       #var {unixtime} {1636531200}
+                       #var {unixtime} {\(unixTime)}
 
                        """)
     }
