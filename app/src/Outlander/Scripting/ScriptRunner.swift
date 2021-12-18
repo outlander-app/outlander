@@ -76,7 +76,7 @@ class ScriptRunner: StreamHandler {
             let script = try Script(scriptName, loader: loader, gameContext: context)
             scripts.append(script)
             updateActiveScriptVars()
-            script.run(arguments, async: true)
+            script.run(arguments)
         } catch {
             context.events.echoError("An error occurred running script '\(scriptName)'.")
         }

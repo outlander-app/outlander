@@ -24,6 +24,7 @@ class ScriptTests: XCTestCase {
 
         loader.lines[fileName] = lines
         let script = try Script(fileName, loader: loader, gameContext: context)
+        script.async = false
 
         for v in variables {
             script.context.variables[v.key] = v.value
@@ -42,6 +43,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -53,6 +55,7 @@ class ScriptTests: XCTestCase {
         loader.lines["forage"] = ["include util", "mylabel:", "  echo hello"]
         loader.lines["util"] = ["something:", "  echo something"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 2)
@@ -63,6 +66,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["include forage", "mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
         XCTAssertEqual(script.context.lines.count, 2)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -74,6 +78,7 @@ class ScriptTests: XCTestCase {
         loader.lines["forage"] = ["include util", "alabel:", "  echo hello"]
         loader.lines["util"] = ["alabel:", "  echo something"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 1)
@@ -84,6 +89,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
     }
 
@@ -92,6 +98,7 @@ class ScriptTests: XCTestCase {
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
         let script = try Script("forage", loader: loader, gameContext: context)
+        script.async = false
         script.run(["one", "two"])
         XCTAssertEqual(script.context.args, ["one", "two"])
         XCTAssertEqual(
@@ -767,8 +774,9 @@ class ScriptTests: XCTestCase {
             "else {var platinum 0}",
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
-        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [], async: false)
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
     }
@@ -788,8 +796,9 @@ class ScriptTests: XCTestCase {
             "else {var platinum 0}",
         ]
         let script = try Script("bank", loader: loader, gameContext: context)
+        script.async = false
         script.run([])
-        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [], async: false)
+        script.stream("Your current balance is 16135 platinum, 8 gold, 8 silver, 1 bronze Kronars.", [])
 
         XCTAssertEqual(script.context.variables["platinum"], "16135")
     }

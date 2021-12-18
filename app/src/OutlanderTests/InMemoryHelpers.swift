@@ -122,3 +122,36 @@ class InMemoryPluginManager: OPlugin {
         nil
     }
 }
+
+class InMemoryLogger: ILogger {
+    var name: String = "InMemory"
+    var history: [String] = []
+
+    func info(_ message: String) {
+        append("INFO", message)
+    }
+
+    func warn(_ message: String) {
+        append("WARN", message)
+    }
+
+    func error(_ message: String) {
+        append("ERROR", message)
+    }
+
+    func stream(_ data: String) {
+        append("STREAM", data)
+    }
+
+    func rawStream(_ data: String) {
+        append("RAWSTREAM", data)
+    }
+
+    func scriptLog(_ data: String, to: String) {
+        append("SCRIPT(\(to))", data)
+    }
+
+    func append(_ category: String, _ message: String) {
+        history.append("[\(category)]: \(message)")
+    }
+}

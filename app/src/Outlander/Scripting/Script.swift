@@ -118,8 +118,14 @@ struct Atomic<Value> {
 }
 
 class Script {
-    private let lockQueue = DispatchQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", qos: .userInteractive, autoreleaseFrequency: .never)
+    private let lockQueue = AtomicQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", qos: .userInteractive, autoreleaseFrequency: .never)
     private let log = LogManager.getLog("Script")
+
+    var async = true {
+        didSet {
+            lockQueue.enabled = async
+        }
+    }
 
     var started: Date?
     var fileName: String = ""
@@ -243,7 +249,7 @@ class Script {
         self.gameContext.events.unregister(self)
     }
 
-    func run(_ args: [String], async: Bool = false) {
+    func run(_ args: [String]) {
         func doRun() {
             started = Date()
 
@@ -264,16 +270,18 @@ class Script {
 
         print("Main thread? \(Thread.isMainThread)")
 
-        if async {
-            lockQueue.async {
-                doRun()
-            }
-        } else {
+        lockQueue.async {
             doRun()
         }
     }
 
     func next() {
+        lockQueue.async {
+            self._next()
+        }
+    }
+
+    private func _next() {
         if stopped { return }
 
         if paused {
@@ -349,6 +357,12 @@ class Script {
     }
 
     func nextAfterRoundtime() {
+        lockQueue.async {
+            self._nextAfterRoundtime()
+        }
+    }
+
+    func _nextAfterRoundtime() {
         let ignoreRoundtime = gameContext.globalVars["scriptengine:ignoreroundtime"]?.toBool()
 
         if ignoreRoundtime == true {
@@ -357,7 +371,7 @@ class Script {
         }
 
         if let roundtime = context.roundtime, roundtime > 0 {
-            delayedTask.set(roundtime, queue: lockQueue) {
+            delayedTask.set(roundtime, queue: lockQueue.queue) {
                 self.nextAfterRoundtime()
             }
             return
@@ -451,7 +465,7 @@ class Script {
         return vars
     }
 
-    func stream(_ text: String, _ tokens: [StreamCommand], async: Bool = true) {
+    func stream(_ text: String, _ tokens: [StreamCommand]) {
         guard text.count > 0 || tokens.count > 0, !paused, !stopped else {
             return
         }
@@ -481,11 +495,7 @@ class Script {
             checkMatches(text)
         }
 
-        if async {
-            lockQueue.async {
-                doStream()
-            }
-        } else {
+        lockQueue.async {
             doStream()
         }
     }
@@ -1310,7 +1320,7 @@ class Script {
         matchwait = token
 
         if timeout > 0 {
-            delayedTask.set(timeout, queue: lockQueue) {
+            delayedTask.set(timeout, queue: lockQueue.queue) {
                 if let match = self.matchwait, match.id == token.id {
                     self.matchwait = nil
                     self.matchStack.removeAll()
@@ -1448,7 +1458,7 @@ class Script {
 
         notify("pausing for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        delayedTask.set(duration, queue: lockQueue) {
+        delayedTask.set(duration, queue: lockQueue.queue) {
             self.nextAfterRoundtime()
         }
 
