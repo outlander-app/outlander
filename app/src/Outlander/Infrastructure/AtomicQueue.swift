@@ -30,7 +30,7 @@ class AtomicQueue {
     }
 
     func async(execute work: @escaping @convention(block) () -> Void) {
-        print("is on target queue: \(isOnQueue)")
+//        print("is on target queue: \(isOnQueue)")
         guard isOnQueue == false, enabled == true else {
             work()
             return

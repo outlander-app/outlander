@@ -9,7 +9,7 @@
 import XCTest
 
 class ScriptTokenizerTests: XCTestCase {
-    func testTokenizesComments() throws {
+    func test_comments() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("# a comment")
 
@@ -21,7 +21,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesEcho() throws {
+    func test_echo() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("echo hello world")
 
@@ -33,7 +33,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesExit() throws {
+    func test_exit() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("exit")
 
@@ -45,7 +45,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesGoto() throws {
+    func test_goto() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("goto label")
 
@@ -71,7 +71,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesLabels() throws {
+    func test_labels() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("mylabel:")
 
@@ -83,7 +83,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testIgnoresTextAfterLabel() throws {
+    func test_ignores_text_after_label() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("mylabel: something something")
 
@@ -95,7 +95,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesMatch() throws {
+    func test_match() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("match one two")
 
@@ -108,7 +108,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesMatchre() throws {
+    func test_matchre() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("matchre one two")
 
@@ -121,7 +121,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesPut() throws {
+    func test_put() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("put hello friends")
 
@@ -133,7 +133,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesPutWithCommands() throws {
+    func test_put_with_commands() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("put #echo a message")
 
@@ -145,7 +145,7 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func testTokenizesWaitfor() throws {
+    func test_waitfor() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("waitfor abcd")
 
@@ -162,8 +162,8 @@ class ScriptTokenizerTests: XCTestCase {
         let token = tokenizer.read("action put hello when Sorry")
 
         switch token {
-        case let .action(name, action, trigger):
-            XCTAssertEqual(name, "")
+        case let .action(className, action, trigger):
+            XCTAssertEqual(className, "")
             XCTAssertEqual(action, "put hello")
             XCTAssertEqual(trigger, "Sorry")
         default:
@@ -171,13 +171,13 @@ class ScriptTokenizerTests: XCTestCase {
         }
     }
 
-    func test_named_action() throws {
+    func test_action_with_class() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("action (mapper) put hello when Sorry")
 
         switch token {
-        case let .action(name, action, trigger):
-            XCTAssertEqual(name, "mapper")
+        case let .action(className, action, trigger):
+            XCTAssertEqual(className, "mapper")
             XCTAssertEqual(action, "put hello")
             XCTAssertEqual(trigger, "Sorry")
         default:
@@ -190,8 +190,8 @@ class ScriptTokenizerTests: XCTestCase {
         let token = tokenizer.read("action (mapper) on")
 
         switch token {
-        case let .actionToggle(name, toggle):
-            XCTAssertEqual(name, "mapper")
+        case let .actionToggle(className, toggle):
+            XCTAssertEqual(className, "mapper")
             XCTAssertEqual(toggle, "on")
         default:
             XCTFail("wrong token value")
@@ -202,6 +202,46 @@ class ScriptTokenizerTests: XCTestCase {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("action whoops")
         XCTAssertNil(token)
+    }
+    
+    func test_action_eval() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action put hello when eval 1==1")
+
+        switch token {
+        case let .actionEval(className, action, expression):
+            XCTAssertEqual(className, "")
+            XCTAssertEqual(action, "put hello")
+            
+            switch expression {
+            case let .value(txt):
+                XCTAssertEqual(txt, "1==1")
+            default:
+                XCTFail("wrong expression value")
+            }
+        default:
+            XCTFail("wrong token value")
+        }
+    }
+    
+    func test_action_eval_with_class() throws {
+        let tokenizer = ScriptTokenizer()
+        let token = tokenizer.read("action (myclass) put hello when eval $bleeding = 1")
+
+        switch token {
+        case let .actionEval(className, action, expression):
+            XCTAssertEqual(className, "myclass")
+            XCTAssertEqual(action, "put hello")
+            
+            switch expression {
+            case let .value(txt):
+                XCTAssertEqual(txt, "$bleeding = 1")
+            default:
+                XCTFail("wrong expression value")
+            }
+        default:
+            XCTFail("wrong token value")
+        }
     }
 
     func test_if_arg_0_then() throws {

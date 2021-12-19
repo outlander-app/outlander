@@ -17,7 +17,7 @@ class ActionOp: IAction {
     var id: String
     var enabled: Bool
 
-    var name: String
+    var className: String
     var command: String
     var pattern: String
 
@@ -29,7 +29,7 @@ class ActionOp: IAction {
         id = UUID().uuidString
         enabled = true
 
-        self.name = name
+        className = name
         self.command = command
         self.pattern = pattern
         self.line = line
@@ -54,7 +54,7 @@ class ActionOp: IAction {
 
         if let match = regex?.firstMatch(&input) {
             groups = match.values()
-            return .match("action (line \(line.lineNumber)) triggered by: \(text)")
+            return .match("action triggered by: \(text)")
         }
 
         return .none
@@ -77,7 +77,67 @@ class ActionOp: IAction {
                 guard case .goto = token else {
                     continue
                 }
-                script.next()
+                script.queueNext()
+            case .exit: script.cancel()
+            default: continue
+            }
+        }
+    }
+}
+
+class ActionEvalOp: IAction {
+    var id: String
+    var enabled: Bool
+
+    var className: String
+    var command: String
+    var expression: ScriptExpression
+
+    var groups: [String]
+
+    var line: ScriptLine
+
+    init(className: String, command: String, expression: ScriptExpression, line: ScriptLine) {
+        id = UUID().uuidString
+        enabled = true
+
+        self.className = className
+        self.command = command
+        self.expression = expression
+        self.line = line
+
+        groups = []
+    }
+
+    func stream(_ text: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+        let result = FunctionEvaluator(context.replaceVars).evaluateBool(expression)
+
+        if result.result.toBool() == true {
+            groups = result.groups
+            return .match("action triggered by: \(result.text)")
+        }
+
+        return .none
+    }
+
+    func execute(_ script: Script, _ context: ScriptContext) {
+        context.setActionVars(groups)
+        let commands = context.replaceActionVars(command).commandsSeperated()
+
+        let tokenizer = ScriptTokenizer()
+
+        for command in commands {
+            guard let token = tokenizer.read(command) else {
+                continue
+            }
+
+            let result = script.executeToken(line, token)
+            switch result {
+            case .next:
+                guard case .goto = token else {
+                    continue
+                }
+                script.queueNext()
             case .exit: script.cancel()
             default: continue
             }
@@ -106,7 +166,7 @@ class MoveOp: IWantStreamInfo {
     }
 
     func execute(_ script: Script, _: ScriptContext) {
-        script.next()
+        script.queueNext()
     }
 }
 
@@ -208,7 +268,7 @@ class WaitforOp: IWantStreamInfo {
     }
 
     func execute(_ script: Script, _: ScriptContext) {
-        script.next()
+        script.queueNext()
     }
 }
 
@@ -237,6 +297,6 @@ class WaitforReOp: IWantStreamInfo {
 
     func execute(_ script: Script, _ context: ScriptContext) {
         context.setRegexVars(groups)
-        script.next()
+        script.queueNext()
     }
 }

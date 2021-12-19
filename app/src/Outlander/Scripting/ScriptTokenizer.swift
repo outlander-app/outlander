@@ -64,6 +64,7 @@ extension ScriptExpression: CustomStringConvertible {
 
 enum ScriptTokenValue: Hashable {
     case action(String, String, String)
+    case actionEval(String, String, ScriptExpression)
     case actionToggle(String, String)
     case leftBrace
     case rightBrace
@@ -188,6 +189,8 @@ extension ScriptTokenValue: CustomStringConvertible {
         switch self {
         case .action:
             return "action"
+        case .actionEval:
+            return "actioneval"
         case .actionToggle:
             return "actiontoggle"
         case .leftBrace:
@@ -461,11 +464,25 @@ class ActionMode: IScriptReaderMode {
         guard rest.count > 1 else {
             return nil
         }
-        if let name = readName(rest[0]) {
-            let action = rest[0].dropFirst(name.count + 2).trimmingCharacters(in: .whitespacesAndNewlines)
-            context.target.append(.action(name, action, rest[1]))
+
+        var action = rest[0]
+        let name = readName(rest[0])
+
+        if name != nil {
+            action = rest[0].dropFirst(name!.count + 2).trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        context.target.append(.action("", rest[0], rest[1]))
+
+        let pattern = rest[1]
+
+        if pattern.hasPrefix("eval ") {
+            let result = ExpressionTokenizer().read(String(pattern[5...]))
+            if let expression = result.expression {
+                context.target.append(.actionEval(name ?? "", action, expression))
+                return nil
+            }
+        }
+
+        context.target.append(.action(name ?? "", action, pattern))
         return nil
     }
 

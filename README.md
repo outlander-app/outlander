@@ -36,4 +36,4 @@
 - [x] Hands, RT, status (bleeding, poisoned, etc.) display
 - [x] Script Bar
 - [x] Script Engine
-- [ ] Drag / re-arrange windows (or some other way to configure window settings)
+- [x] Drag / re-arrange windows (or some other way to configure window settings)

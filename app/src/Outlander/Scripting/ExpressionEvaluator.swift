@@ -111,7 +111,7 @@ public extension AnyExpression {
         input: String,
         symbols: [Symbol: SymbolEvaluator] = [:]
     ) {
-        print("evaluating \(input)")
+//        print("evaluating \(input)")
         let replaced = ExpressionEvaluator.replaceSingleOperators(input)
         let exp = Expression.parse(replaced, usingCache: true)
         self.init(

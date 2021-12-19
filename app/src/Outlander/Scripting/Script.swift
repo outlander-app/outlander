@@ -90,8 +90,25 @@ protocol IWantStreamInfo {
 }
 
 protocol IAction: IWantStreamInfo {
-    var name: String { get set }
+    var className: String { get set }
     var enabled: Bool { get set }
+    var line: ScriptLine { get set }
+}
+
+enum ScriptQueueItem {
+    case next
+    case stream(String, [StreamCommand])
+}
+
+extension ScriptQueueItem: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .next:
+            return "next"
+        case .stream:
+            return "stream"
+        }
+    }
 }
 
 @propertyWrapper
@@ -131,6 +148,7 @@ class Script {
     var fileName: String = ""
     var debugLevel = ScriptLogLevel.none
 
+    private var scriptQueue = Queue<ScriptQueueItem>()
     private var stackTrace: Stack<ScriptLine>
     private var tokenHandlers: [String: (ScriptLine, ScriptTokenValue) -> ScriptExecuteResult]
     private var reactToStream = AtomicArray<IWantStreamInfo>()
@@ -192,6 +210,7 @@ class Script {
 
         tokenHandlers = [:]
         tokenHandlers["action"] = handleAction
+        tokenHandlers["actioneval"] = handleActionEval
         tokenHandlers["actiontoggle"] = handleActionToggle
         tokenHandlers["leftbrace"] = handleLeftBrace
         tokenHandlers["rightbrace"] = handleRightBrace
@@ -265,14 +284,20 @@ class Script {
 //                print("\(idx) \(line.description)")
 //            }
 
-            next()
+            queueNext()
         }
 
-        print("Main thread? \(Thread.isMainThread)")
+//        print("Main thread? \(Thread.isMainThread)")
 
         lockQueue.async {
             doRun()
         }
+    }
+
+    func queueNext() {
+//        print("queue next")
+        scriptQueue.queue(.next)
+        next()
     }
 
     func next() {
@@ -281,92 +306,105 @@ class Script {
         }
     }
 
+    @Atomic() private var inLoop = false
     private func _next() {
-        if stopped { return }
+//        print("_next - inLoop: \(inLoop), current: \(context.currentLine?.lineNumber)")
+        guard !inLoop, !stopped else { return }
 
         if paused {
             nextAfterUnpause = true
             return
         }
 
-        while !stopped, !paused {
-            let interval = Date().timeIntervalSince(lastNext)
-
-            if interval < 0.1 {
-                lastNextCount += 1
-            } else {
-                lastNextCount = 0
-            }
-
-            print("lastNextCount: \(lastNextCount)")
-
-            guard lastNextCount <= 1000 else {
-                printStacktrace()
-                sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
-                cancel()
-                return
-            }
-
-            lastNext = Date()
-
-            context.advance()
-
-            guard let line = context.currentLine else {
-                cancel()
-                return
-            }
-
-            if line.token == nil {
-                line.token = tokenizer.read(line.originalText)
-            }
-
-            stackTrace.push(line)
-
-            //        log.info("passing \(line.lineNumber) - \(line.originalText)")
-
-            let result = handleLine(line)
-
-            switch result {
-            case .next: continue
-            case .wait: return
-            case .exit: cancel()
-            case .advanceToNextBlock:
-                if context.advanceToNextBlock() {
-                    continue
-                } else {
-                    if let line = context.currentLine {
-                        sendText("Unable to match next if block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-                    }
-                    cancel()
-                }
-            case .advanceToEndOfBlock:
-                if context.advanceToEndOfBlock() {
-                    continue
-                } else {
-                    if let line = context.currentLine {
-                        sendText("Unable to match end of block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-                    }
-                    cancel()
-                }
+        inLoop = true
+        while !stopped, !paused, let queueItem = scriptQueue.dequeue() {
+//            print("dequeued \(queueItem)")
+            switch queueItem {
+            case let .stream(text, tokens):
+                _stream(text, tokens)
+                continue
+            case .next:
+                _processLine()
             }
         }
-
+        inLoop = false
         if paused {
             nextAfterUnpause = true
         }
     }
 
-    func nextAfterRoundtime() {
-        lockQueue.async {
-            self._nextAfterRoundtime()
+    private func _processLine() {
+        let interval = Date().timeIntervalSince(lastNext)
+
+        if interval < 0.1 {
+            lastNextCount += 1
+        } else {
+            lastNextCount = 0
         }
+
+//        print("lastNextCount: \(lastNextCount)")
+
+        guard lastNextCount <= 1000 else {
+            printStacktrace()
+            sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
+            cancel()
+            return
+        }
+
+        lastNext = Date()
+
+        context.advance()
+
+        guard let line = context.currentLine else {
+            cancel()
+            return
+        }
+
+        if line.token == nil {
+            line.token = tokenizer.read(line.originalText)
+        }
+
+        stackTrace.push(line)
+
+        log.info("passing \(line.lineNumber) - \(line.originalText)")
+
+        let result = handleLine(line)
+
+        switch result {
+        case .next: scriptQueue.queue(.next)
+        case .wait: return
+        case .exit: cancel()
+        case .advanceToNextBlock:
+            if context.advanceToNextBlock() {
+                scriptQueue.queue(.next)
+            } else {
+                if let line = context.currentLine {
+                    sendText("Unable to match next if block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+                }
+                cancel()
+            }
+        case .advanceToEndOfBlock:
+            if context.advanceToEndOfBlock() {
+                scriptQueue.queue(.next)
+            } else {
+                if let line = context.currentLine {
+                    sendText("Unable to match end of block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+                }
+                cancel()
+            }
+        }
+    }
+
+    func nextAfterRoundtime() {
+        print("next after roundtime")
+        _nextAfterRoundtime()
     }
 
     func _nextAfterRoundtime() {
         let ignoreRoundtime = gameContext.globalVars["scriptengine:ignoreroundtime"]?.toBool()
 
         if ignoreRoundtime == true {
-            next()
+            queueNext()
             return
         }
 
@@ -377,7 +415,7 @@ class Script {
             return
         }
 
-        next()
+        queueNext()
     }
 
     func pause() {
@@ -395,7 +433,7 @@ class Script {
         paused = false
 
         if nextAfterUnpause {
-            next()
+            queueNext()
         }
     }
 
@@ -470,34 +508,33 @@ class Script {
             return
         }
 
-        func doStream() {
-            _ = checkActions(text, tokens)
+        scriptQueue.queue(.stream(text, tokens))
+        next()
+    }
 
-            let handlers = reactToStream.filter { x in
-                let res = x.stream(text, tokens, self.context)
-                switch res {
-                case let .match(txt):
-                    self.notify("matched \(txt)", debug: .wait)
-                    return true
-                default:
-                    return false
-                }
+    private func _stream(_ text: String, _ tokens: [StreamCommand]) {
+        _ = checkActions(text, tokens)
+
+        let handlers = reactToStream.filter { x in
+            let res = x.stream(text, tokens, self.context)
+            switch res {
+            case let .match(txt):
+                self.notify("matched \(txt)", debug: .wait)
+                return true
+            default:
+                return false
             }
-
-            handlers.forEach { handler in
-                guard let idx = self.reactToStream.firstIndex(where: { $0.id == handler.id }) else {
-                    return
-                }
-                self.reactToStream.remove(at: idx)
-                handler.execute(self, self.context)
-            }
-
-            checkMatches(text)
         }
 
-        lockQueue.async {
-            doStream()
+        handlers.forEach { handler in
+            guard let idx = self.reactToStream.firstIndex(where: { $0.id == handler.id }) else {
+                return
+            }
+            self.reactToStream.remove(at: idx)
+            handler.execute(self, self.context)
         }
+
+        checkMatches(text)
     }
 
     private func checkActions(_ text: String, _ tokens: [StreamCommand]) -> Bool {
@@ -509,7 +546,7 @@ class Script {
             let result = a.stream(text, tokens, context)
             switch result {
             case let .match(txt):
-                notify(txt, debug: .actions)
+                notify(txt, debug: .actions, scriptLine: a.line.lineNumber, fileName: a.line.fileName)
                 return true
             case .none:
                 return false
@@ -557,7 +594,7 @@ class Script {
 
         switch result {
         case .exit: cancel()
-        case .next: next()
+        case .next: scriptQueue.queue(.next)
         default: return
         }
     }
@@ -755,23 +792,43 @@ class Script {
         let message = "action\(nameText) \(action) \(resolvedPattern)"
         notify(message, debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        let actionOp = ActionOp(name: name, command: action, pattern: pattern.trimmingCharacters(in: CharacterSet(["\""])), line: line)
+        let trimmed = pattern.trimmingCharacters(in: CharacterSet(["\""]))
+
+        let actionOp = ActionOp(name: name, command: action, pattern: trimmed, line: line)
+        actions.append(actionOp)
+
+        return .next
+    }
+
+    func handleActionEval(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .actionEval(className, action, expression) = token else {
+            return .next
+        }
+
+        let classText = className.count > 0 ? " (\(className))" : ""
+
+        let message = "action\(classText) \(action) \(expression.description)"
+        notify(message, debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        let actionOp = ActionEvalOp(className: className, command: action, expression: expression, line: line)
         actions.append(actionOp)
 
         return .next
     }
 
     func handleActionToggle(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
-        guard case let .actionToggle(name, toggle) = token else {
+        guard case let .actionToggle(className, toggle) = token else {
             return .next
         }
 
         let maybeToggle = context.replaceVars(toggle)
-        let enabled = maybeToggle.trimmingCharacters(in: .whitespaces).lowercased() == "on"
+        let enabled = maybeToggle.trimmingCharacters(in: .whitespaces).lowercased().toBool() == true
 
-        notify("action \(name) \(maybeToggle)", debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
+        notify("action \(className) \(maybeToggle)", debug: .actions, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        if var action = actions.first(where: { $0.name == name }) {
+        let filtered = actions.filter { $0.className == className }
+
+        for var action in filtered {
             action.enabled = enabled
         }
 
@@ -1062,7 +1119,6 @@ class Script {
         }
 
         let targetVar = context.replaceVars(variable)
-
         let result = funcEvaluator.evaluateStrValue(expression)
 
         notify("eval \(targetVar) \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
@@ -1325,7 +1381,7 @@ class Script {
                     self.matchwait = nil
                     self.matchStack.removeAll()
                     self.notify("matchwait timeout", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
-                    self.next()
+                    self.queueNext()
                 }
             }
         }
