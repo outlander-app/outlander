@@ -109,7 +109,7 @@ class ActionEvalOp: IAction {
         groups = []
     }
 
-    func stream(_ text: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
+    func stream(_: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
         let result = FunctionEvaluator(context.replaceVars).evaluateBool(expression)
 
         if result.result.toBool() == true {

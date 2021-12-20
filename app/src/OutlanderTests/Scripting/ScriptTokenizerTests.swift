@@ -203,7 +203,7 @@ class ScriptTokenizerTests: XCTestCase {
         let token = tokenizer.read("action whoops")
         XCTAssertNil(token)
     }
-    
+
     func test_action_eval() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("action put hello when eval 1==1")
@@ -212,7 +212,7 @@ class ScriptTokenizerTests: XCTestCase {
         case let .actionEval(className, action, expression):
             XCTAssertEqual(className, "")
             XCTAssertEqual(action, "put hello")
-            
+
             switch expression {
             case let .value(txt):
                 XCTAssertEqual(txt, "1==1")
@@ -223,7 +223,7 @@ class ScriptTokenizerTests: XCTestCase {
             XCTFail("wrong token value")
         }
     }
-    
+
     func test_action_eval_with_class() throws {
         let tokenizer = ScriptTokenizer()
         let token = tokenizer.read("action (myclass) put hello when eval $bleeding = 1")
@@ -232,7 +232,7 @@ class ScriptTokenizerTests: XCTestCase {
         case let .actionEval(className, action, expression):
             XCTAssertEqual(className, "myclass")
             XCTAssertEqual(action, "put hello")
-            
+
             switch expression {
             case let .value(txt):
                 XCTAssertEqual(txt, "$bleeding = 1")
