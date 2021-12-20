@@ -430,6 +430,8 @@ class Script {
 
         sendText("[Resuming '\(fileName)']")
 
+        scriptQueue.clear()
+
         paused = false
 
         if nextAfterUnpause {
@@ -504,7 +506,7 @@ class Script {
     }
 
     func stream(_ text: String, _ tokens: [StreamCommand]) {
-        guard text.count > 0 || tokens.count > 0, !paused, !stopped else {
+        guard !paused, !stopped, text.count > 0 || tokens.count > 0 else {
             return
         }
 

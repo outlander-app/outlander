@@ -50,6 +50,12 @@ public class Queue<T> {
         defer { lock.unlock() }
         return queue
     }
+
+    public func clear() {
+        lock.lock()
+        defer { lock.unlock() }
+        queue.removeAll()
+    }
 }
 
 public class Stack<T> {
