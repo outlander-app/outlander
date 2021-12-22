@@ -58,6 +58,7 @@ class CommandProcesssor {
         handlers.append(PresetCommandHandler(files))
         handlers.append(HighlightsCommandHandler(files))
         handlers.append(TriggerCommandHandler(files))
+        handlers.append(EditCommandHandler(files))
 
         self.pluginManager = pluginManager
     }

@@ -218,9 +218,18 @@ class GameViewController: NSViewController, NSWindowDelegate {
                         self?.updateRoom()
                     }
                 }
+            case let .launchUrl(maybeurl):
+                let url = maybeurl.lowercased().hasPrefix("/forums") ? "http://play.net" + maybeurl : maybeurl
+                guard let url = URL(string: url) else {
+                    return
+                }
 
-            default:
-                self?.log.warn("Unhandled command \(command)")
+                if url.scheme?.hasPrefix("http") == true {
+                    NSWorkspace.shared.open(url)
+                }
+
+//            default:
+//                self?.log.warn("Unhandled command \(command)")
             }
         })
 
