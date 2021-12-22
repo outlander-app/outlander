@@ -69,7 +69,9 @@ enum ScriptTokenValue: Hashable {
     case leftBrace
     case rightBrace
     case comment(String)
+    case counter(String, String)
     case debug(String)
+    case delay(String)
     case echo(String)
     indirect case elseIfSingle(ScriptExpression, ScriptTokenValue)
     case elseIf(ScriptExpression)
@@ -199,8 +201,12 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "rightbrace"
         case .comment:
             return "comment"
+        case .counter:
+            return "counter"
         case .debug:
             return "debug"
+        case .delay:
+            return "delay"
         case .echo:
             return "echo"
         case .elseIfSingle:
@@ -367,8 +373,10 @@ class CommandMode: IScriptReaderMode {
         "{": LeftBraceMode(),
         "}": RightBraceMode(),
         "action": ActionMode(),
+        "counter": CounterMode(),
         "debug": DebugMode(),
         "debuglevel": DebugMode(),
+        "delay": DelayMode(),
         "echo": EchoMode(),
         "eval": EvalMode(),
         "evalmath": EvalMathMode(),
@@ -525,11 +533,41 @@ class RightBraceMode: IScriptReaderMode {
     }
 }
 
+class CounterMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let action = context.text.parseWord()
+
+        guard action.count > 0 else {
+            return nil
+        }
+
+        context.text.consumeSpaces()
+        let number = String(context.text.parseToEnd())
+
+        guard number.count > 0 else {
+            return nil
+        }
+
+        context.target.append(.counter(String(action), String(number)))
+        return nil
+    }
+}
+
 class DebugMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.text.consumeSpaces()
         let rest = String(context.text.parseToEnd())
         context.target.append(.debug(rest))
+        return nil
+    }
+}
+
+class DelayMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let rest = String(context.text.parseToEnd())
+        context.target.append(.delay(rest))
         return nil
     }
 }

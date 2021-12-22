@@ -215,7 +215,9 @@ class Script {
         tokenHandlers["leftbrace"] = handleLeftBrace
         tokenHandlers["rightbrace"] = handleRightBrace
         tokenHandlers["comment"] = handleComment
+        tokenHandlers["counter"] = handleCounter
         tokenHandlers["debug"] = handleDebug
+        tokenHandlers["delay"] = handleDelay
         tokenHandlers["echo"] = handleEcho
         tokenHandlers["eval"] = handleEval
         tokenHandlers["evalmath"] = handleEvalMath
@@ -287,15 +289,25 @@ class Script {
             queueNext()
         }
 
-//        print("Main thread? \(Thread.isMainThread)")
-
         lockQueue.async {
             doRun()
         }
     }
 
+    func handleError() -> ScriptExecuteResult {
+        guard context.labels["scripterror"] != nil else {
+            return .exit
+        }
+
+        _ = gotoLabel("scripterror", [""])
+        return .next
+    }
+
+    func gosubClear() {
+        gosubStack.clear()
+    }
+
     func queueNext() {
-//        print("queue next")
         scriptQueue.queue(.next)
         next()
     }
@@ -308,7 +320,6 @@ class Script {
 
     @Atomic() private var inLoop = false
     private func _next() {
-//        print("_next - inLoop: \(inLoop), current: \(context.currentLine?.lineNumber)")
         guard !inLoop, !stopped else { return }
 
         if paused {
@@ -318,7 +329,6 @@ class Script {
 
         inLoop = true
         while !stopped, !paused, let queueItem = scriptQueue.dequeue() {
-//            print("dequeued \(queueItem)")
             switch queueItem {
             case let .stream(text, tokens):
                 _stream(text, tokens)
@@ -341,8 +351,6 @@ class Script {
         } else {
             lastNextCount = 0
         }
-
-//        print("lastNextCount: \(lastNextCount)")
 
         guard lastNextCount <= 1000 else {
             printStacktrace()
@@ -484,7 +492,7 @@ class Script {
 
     func printVars() {
         let diff = Date().timeIntervalSince(started!)
-        sendText("+----- '\(fileName)' variables (running for \(diff.formatted) -----+", preset: "scriptinfo")
+        sendText("+------- '\(fileName)' variables (running for \(diff.formatted) -------+", preset: "scriptinfo")
         for v in varsForDisplay() {
             sendText("|  \(v)", preset: "scriptinfo")
         }
@@ -570,8 +578,6 @@ class Script {
         guard let _ = matchwait else {
             return
         }
-
-        // print("Checking \(matchStack.count) matches against \(text)")
 
         var foundMatch: IMatch?
 
@@ -725,7 +731,7 @@ class Script {
         }
 
         sendText("No handler for script command: '\(line.originalText)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-        return .exit
+        return handleError()
     }
 
     func gotoLabel(_ label: String, _ args: [String], _ isGosub: Bool = false) -> ScriptExecuteResult {
@@ -733,7 +739,7 @@ class Script {
 
         guard let currentLine = context.currentLine else {
             sendText("Tried to goto \(result) but had no 'currentLine'", preset: "scripterror", fileName: fileName)
-            return .exit
+            return handleError()
         }
 
         guard let target = context.labels[result.lowercased()] else {
@@ -741,7 +747,7 @@ class Script {
                 return gotoReturn(currentLine)
             }
             sendText("label '\(result)' not found", preset: "scripterror", scriptLine: currentLine.lineNumber, fileName: currentLine.fileName)
-            return .exit
+            return handleError()
         }
 
         delayedTask.reset()
@@ -852,7 +858,7 @@ class Script {
         let (popped, ifLine) = context.popIfStack()
         guard popped else {
             sendText("End brace encountered without matching beginning block", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         if ifLine?.ifResult == true {
@@ -870,6 +876,86 @@ class Script {
         return .next
     }
 
+    func handleCounter(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .counter(function, number) = token else {
+            return .next
+        }
+
+        let val = context.variables["c"] ?? "0"
+        let existingVariable = context.replaceVars(val)
+
+        guard let existingValue = Double(existingVariable) else {
+            sendText("unable to convert '\(existingVariable)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .next
+        }
+
+        var maybeNumber = number
+        if maybeNumber.isEmpty {
+            maybeNumber = "0"
+        }
+
+        let replacedNumber = context.replaceVars(maybeNumber)
+        guard let numberValue = Double(replacedNumber) else {
+            sendText("unable to convert '\(replacedNumber)' to a number", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .next
+        }
+
+        var result: Double = 0
+
+        switch function.lowercased() {
+        case "set":
+            result = numberValue
+
+        case "+":
+            fallthrough
+        case "add":
+            result = existingValue + numberValue
+
+        case "-":
+            fallthrough
+        case "subtract":
+            result = existingValue - numberValue
+
+        case "*":
+            fallthrough
+        case "multiply":
+            result = existingValue * numberValue
+
+        case "%":
+            fallthrough
+        case "mod":
+            fallthrough
+        case "modulus":
+            result = existingValue.truncatingRemainder(dividingBy: numberValue)
+
+        case "/":
+            fallthrough
+        case "divide":
+            guard numberValue != 0 else {
+                sendText("cannot divide by zero!", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+                return .next
+            }
+
+            result = existingValue / numberValue
+
+        default:
+            sendText("unknown math function '\(function)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+            return .next
+        }
+
+        var textResult = "\(result.formattedNumber)"
+
+        if result == rint(result) {
+            textResult = "\(Int(result))"
+        }
+
+        context.variables["c"] = textResult
+
+        notify("counter: \(existingValue) \(function) \(numberValue) = \(textResult)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        return .next
+    }
+
     func handleDebug(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .debug(level) = token else {
             return .next
@@ -881,6 +967,23 @@ class Script {
         notify("debug \(debugLevel.rawValue) (\(debugLevel))", debug: ScriptLogLevel.none, scriptLine: line.lineNumber)
 
         return .next
+    }
+
+    func handleDelay(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .delay(str) = token else {
+            return .next
+        }
+
+        let maybeNumber = context.replaceVars(str)
+        let duration = Double(maybeNumber) ?? 1
+
+        notify("delaying for \(duration) seconds", debug: ScriptLogLevel.wait, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        delayedTask.set(duration, queue: lockQueue.queue) {
+            self.queueNext()
+        }
+
+        return .wait
     }
 
     func handleEcho(_: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
@@ -901,7 +1004,7 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -946,7 +1049,7 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -990,12 +1093,12 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         if !context.consumeToken(.leftBrace) {
             sendText("Expecting opening bracket", preset: "scripterror", scriptLine: line.lineNumber + 1, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -1039,7 +1142,7 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -1067,7 +1170,7 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected there to be a previous 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -1092,12 +1195,12 @@ class Script {
 
         guard context.ifStack.count > 0 else {
             sendText("Expected previous command to be an 'if' or 'else if'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         if !context.consumeToken(.leftBrace) {
             sendText("Expecting opening bracket", preset: "scripterror", scriptLine: line.lineNumber + 1, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         var execute = false
@@ -1202,7 +1305,7 @@ class Script {
 
         if !context.consumeToken(.leftBrace) {
             sendText("Expected {", preset: "scripterror", scriptLine: line.lineNumber + 1, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         line.ifResult = hasArgs
@@ -1268,7 +1371,7 @@ class Script {
 
         if !context.consumeToken(.leftBrace) {
             sendText("Expected {", preset: "scripterror", scriptLine: line.lineNumber + 1, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         context.pushLineToIfStack(line)
@@ -1296,7 +1399,7 @@ class Script {
 
         guard gosubStack.count <= 100 else {
             sendText("Potential infinite loop of 100+ gosubs - use gosub clear if this is intended", preset: "scripterror", scriptLine: line.lineNumber, fileName: fileName)
-            return .exit
+            return handleError()
         }
 
         let replacedLabel = context.replaceVars(label)
@@ -1342,6 +1445,7 @@ class Script {
         }
 
         notify("passing label '\(label)'", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
+        context.variables["lastlabel"] = label
         return .next
     }
 
@@ -1585,7 +1689,7 @@ class Script {
         guard let ctx = gosubStack.pop(), let returnToLine = ctx.returnToLine, let returnToIndex = ctx.returnToIndex else {
             notify("no gosub to return to!", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
             sendText("no gosub to return to!", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
-            return .exit
+            return handleError()
         }
 
         if let prev = gosubStack.last {

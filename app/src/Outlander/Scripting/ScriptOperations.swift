@@ -77,6 +77,7 @@ class ActionOp: IAction {
                 guard case .goto = token else {
                     continue
                 }
+                script.gosubClear()
                 script.queueNext()
             case .exit: script.cancel()
             default: continue
@@ -137,6 +138,7 @@ class ActionEvalOp: IAction {
                 guard case .goto = token else {
                     continue
                 }
+                script.gosubClear()
                 script.queueNext()
             case .exit: script.cancel()
             default: continue
