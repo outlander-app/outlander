@@ -25,6 +25,16 @@ class SplitToCommandsTests: XCTestCase {
         XCTAssertEqual(commands, ["one;two", "three"])
     }
 
+    func test_semi_in_quotes() {
+        let commands = "one \"two;three\"".commandsSeperated()
+        XCTAssertEqual(commands, ["one \"two;three\""])
+    }
+
+    func test_semi_in_quotes_with_escaped_quote() {
+        let commands = "one \"two\\\";three\"".commandsSeperated()
+        XCTAssertEqual(commands, ["one \"two\\\";three\""])
+    }
+
     func test_escaped_measure() {
         measure {
             _ = "one\\;two;three".commandsSeperated()

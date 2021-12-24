@@ -62,10 +62,23 @@ class InMemoryEvents: Events {
         history.last?.data
     }
 
+    public var processor: CommandProcesssor?
+    public var gameContext: GameContext?
+
     func post(_ channel: String, data: Any?) {
         guard channel != "ol:variable:changed" else {
             return
         }
+
+        if channel == "ol:command" {
+            guard let command = data as? Command2 else {
+                return
+            }
+
+            processor?.process(command, with: gameContext!)
+            return
+        }
+
         history.append(TestEvent(channel: channel, data: data))
     }
 

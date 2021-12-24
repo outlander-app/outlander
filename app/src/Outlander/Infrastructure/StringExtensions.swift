@@ -64,7 +64,7 @@ extension String {
     private static let falseValues = ["false", "no", "0", "off", "-"]
 
     func toBool() -> Bool? {
-        let lowerSelf = trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let lowerSelf = trimmingCharacters(in: CharacterSet(["(", ")"])).trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
 
         if String.trueValues.contains(lowerSelf) {
             return true
@@ -85,11 +85,15 @@ extension String {
         var result = [String]()
         var current = ""
         var previous = ""
+        var inQuote = false
         for c in self {
-            if String(c) == delimiter, previous != "\\" {
+            if String(c) == delimiter, previous != "\\", !inQuote {
                 result.append(current.replacingOccurrences(of: "\\\(delimiter)", with: delimiter))
                 current = ""
                 continue
+            }
+            if c == "\"", previous != "\\" {
+                inQuote = !inQuote
             }
             current += String(c)
             previous = String(c)

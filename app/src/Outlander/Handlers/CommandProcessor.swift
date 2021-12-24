@@ -150,7 +150,7 @@ class CommandProcesssor {
 
 extension ICommandHandler {
     func canHandle(_ command: String) -> Bool {
-        let commands = command.split(separator: " ")
-        return commands.count > 0 && String(commands[0]).lowercased() == self.command
+        let commands = command.split(separator: " ", maxSplits: 1)
+        return commands.count > 0 && String(commands[0]).lowercased() == self.command.lowercased()
     }
 }

@@ -111,7 +111,7 @@ class ActionEvalOp: IAction {
     }
 
     func stream(_: String, _: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult {
-        let result = FunctionEvaluator(context.replaceVars).evaluateBool(expression)
+        let result = FunctionEvaluator(context.context, context.replaceVars).evaluateBool(expression)
 
         if result.result.toBool() == true {
             groups = result.groups

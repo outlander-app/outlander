@@ -15,8 +15,21 @@ class SendCommandHandler: ICommandHandler {
     var queue = Queue<String>()
     var delayOffset: Double = 0.3
 
+    func canHandle(_ command: String) -> Bool {
+        if command.hasPrefix("-") {
+            return true
+        }
+
+        let commands = command.split(separator: " ", maxSplits: 1)
+        return commands.count > 0 && commands[0].lowercased() == "#send"
+    }
+
     func handle(_ text: String, with context: GameContext) {
-        let data = text[command.count...].trimmingCharacters(in: .whitespacesAndNewlines)
+        var commandLength = command.count
+        if text.hasPrefix("-") {
+            commandLength = 1
+        }
+        let data = text[commandLength...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !data.isEmpty else {
             context.events.echoText("#send queue:")

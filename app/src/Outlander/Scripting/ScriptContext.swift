@@ -9,7 +9,7 @@
 import Foundation
 
 class ScriptContext {
-    private var context: GameContext
+    var context: GameContext
     private var tokenizer: ScriptTokenizer
     private var replacer = VariableReplacer()
 

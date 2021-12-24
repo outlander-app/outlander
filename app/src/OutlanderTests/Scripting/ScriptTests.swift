@@ -18,6 +18,10 @@ class ScriptTests: XCTestCase {
         let context = GameContext(events)
         let loader = InMemoryScriptLoader()
 
+        let commandProcessor = CommandProcesssor(InMemoryFileSystem(), pluginManager: InMemoryPluginManager())
+        events.processor = commandProcessor
+        events.gameContext = context
+
         for v in globalVars {
             context.globalVars[v.key] = v.value
         }
@@ -38,7 +42,7 @@ class ScriptTests: XCTestCase {
         return events
     }
 
-    func testCanReadBasicScript() throws {
+    func test_can_read_basic_script() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["mylabel:", "  echo hello"]
@@ -49,7 +53,7 @@ class ScriptTests: XCTestCase {
         XCTAssertEqual(script.context.labels.count, 1)
     }
 
-    func testCanIncludeOtherScripts() throws {
+    func test_can_include_other_scripts() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["include util", "mylabel:", "  echo hello"]
@@ -61,7 +65,7 @@ class ScriptTests: XCTestCase {
         XCTAssertEqual(script.context.labels.count, 2)
     }
 
-    func testCannotIncludeItself() throws {
+    func test_cannot_include_itself() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["include forage", "mylabel:", "  echo hello"]
@@ -72,7 +76,7 @@ class ScriptTests: XCTestCase {
         XCTAssertEqual(script.context.labels.count, 1)
     }
 
-    func testReplacesExistingLabelsWhenIncludingOtherScripts() throws {
+    func test_replaces_existing_labels_when_including_other_scripts() throws {
         let context = GameContext()
         let loader = InMemoryScriptLoader()
         loader.lines["forage"] = ["include util", "alabel:", "  echo hello"]
@@ -82,15 +86,6 @@ class ScriptTests: XCTestCase {
         script.run([])
         XCTAssertEqual(script.context.lines.count, 4)
         XCTAssertEqual(script.context.labels.count, 1)
-    }
-
-    func testStuff() throws {
-        let context = GameContext()
-        let loader = InMemoryScriptLoader()
-        loader.lines["forage"] = ["mylabel:", "  echo hello"]
-        let script = try Script("forage", loader: loader, gameContext: context)
-        script.async = false
-        script.run([])
     }
 
     func test_argument_shift() throws {
@@ -1117,5 +1112,75 @@ class ScriptTests: XCTestCase {
             "echo Doks: %DokorasTotal",
         ],
         expect: ["Doks: 4168\n"])
+    }
+
+    func test_floor() throws {
+        try scenario([
+            "var totaltime 3800",
+            "eval hours %totaltime / 3600",
+            "evalmath hours floor(%hours)",
+            "echo %hours",
+        ],
+        expect: ["1\n"])
+    }
+
+    func test_ceil() throws {
+        try scenario([
+            "var totaltime 3800",
+            "eval hours %totaltime / 3600",
+            "evalmath hours ceil(%hours)",
+            "echo %hours",
+        ],
+        expect: ["2\n"])
+    }
+
+    func test_tvar() throws {
+        try scenario([
+            "put #tvar mapwalk 0",
+            "echo $mapwalk",
+        ],
+        expect: ["0\n"])
+    }
+
+    func test_var() throws {
+        try scenario([
+            "put #var mapwalk 0",
+            "echo $mapwalk",
+        ],
+        expect: ["0\n"])
+    }
+
+    func test_def() throws {
+        try scenario([
+            "if !def(mapwalk) then put #tvar mapwalk 0",
+            "echo $mapwalk",
+        ],
+        expect: ["0\n"])
+    }
+
+    func test_def_existing() throws {
+        try scenario([
+            "if !def(mapwalk) then put #tvar mapwalk 0",
+            "echo $mapwalk",
+        ],
+        globalVars: ["mapwalk": "1"],
+        expect: ["1\n"])
+    }
+
+    func test_if_number_in_parens() throws {
+        try scenario([
+            "if (1) then echo yep",
+            "echo done",
+        ],
+        expect: ["yep\n", "done\n"])
+    }
+
+    func test_if_not_number_in_parens() throws {
+        try scenario([
+            "if (!$standing) then echo nope",
+            "echo done",
+        ],
+        globalVars: ["standing": "0"],
+        expect: ["nope\n", "done\n"])
     }
 }

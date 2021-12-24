@@ -9,7 +9,7 @@
 import XCTest
 
 class FunctionEvaluatorTests: XCTestCase {
-    let evaluator = FunctionEvaluator { val in val }
+    let evaluator = FunctionEvaluator(GameContext(InMemoryEvents())) { val in val }
 
     func test_evals_math() {
         let result = evaluator.evaluateValue(.value("2+2"))

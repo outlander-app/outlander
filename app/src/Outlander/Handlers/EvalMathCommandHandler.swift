@@ -25,7 +25,7 @@ class EvalMathCommandHandler: ICommandHandler {
         switch result {
         case let .evalMath(variable, expression):
             let targetVar = replaceVars(variable)
-            let result = FunctionEvaluator(replaceVars).evaluateValue(expression)
+            let result = FunctionEvaluator(context, replaceVars).evaluateValue(expression)
             context.globalVars[targetVar] = result.result
         default:
             context.events.echoError("Unable to parse input for #evalmath: \(text)")

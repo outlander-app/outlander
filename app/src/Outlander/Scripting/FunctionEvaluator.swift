@@ -15,10 +15,12 @@ struct EvalResult {
 }
 
 class FunctionEvaluator {
+    private let context: GameContext
     private let simplify: (String) -> String
     private let evaluator: ExpressionEvaluator
 
-    init(_ simplify: @escaping (String) -> String) {
+    init(_ context: GameContext, _ simplify: @escaping (String) -> String) {
+        self.context = context
         self.simplify = simplify
         evaluator = ExpressionEvaluator()
     }
@@ -33,7 +35,7 @@ class FunctionEvaluator {
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
             do {
-                let eval = FunctionExecutor()
+                let eval = FunctionExecutor(context)
                 let result = try eval.execute(name: name, args: simpArgs)
                 return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result?.toBool() == true ? "true" : "false", groups: eval.groups)
             } catch {
@@ -86,7 +88,7 @@ class FunctionEvaluator {
         case let .function(name, args):
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
-            let eval = FunctionExecutor()
+            let eval = FunctionExecutor(context)
             do {
                 let result = try eval.execute(name: name, args: simpArgs)
                 return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result ?? "", groups: eval.groups)
@@ -132,7 +134,7 @@ class FunctionEvaluator {
         case let .function(name, args):
             let simpName = simplify(name)
             let simpArgs = args.map { simplify($0).trimmingCharacters(in: CharacterSet(["\""])) }
-            let eval = FunctionExecutor()
+            let eval = FunctionExecutor(context)
             do {
                 let result = try eval.execute(name: name, args: simpArgs)
                 return EvalResult(text: "\(simpName)(\(simpArgs.map { "\"\($0)\"" }.joined(separator: ", ")))", result: result ?? "", groups: eval.groups)
@@ -181,10 +183,13 @@ class FunctionExecutor {
     public typealias SymbolEvaluator = (_ args: [String]) -> String
 
     private var functions: [Symbol: SymbolEvaluator] = [:]
+    private var context: GameContext?
 
     var groups: [String] = []
 
-    init() {
+    init(_ context: GameContext? = nil) {
+        self.context = context
+
         func capitalize(args: [String]) -> String {
             let trimmed = trimQuotes(args[0])
             let start = trimmed.first?.uppercased() ?? ""
@@ -251,6 +256,35 @@ class FunctionExecutor {
             .function("endswith", arity: 2): { args in self.trimQuotes(args[0]).hasSuffix(self.trimQuotes(args[1])) ? "true" : "false" },
             .function("capitalize", arity: 1): { args in capitalize(args: args) },
             .function("titlecase", arity: 1): { args in capitalize(args: args) },
+            .function("floor", arity: 1): { args in
+                let num = Double(args[0]) ?? 0
+                let result = floor(num)
+
+                var res = "\(result.formattedNumber)"
+
+                if result == rint(result) {
+                    res = "\(Int(result))"
+                }
+
+                return String(res)
+            },
+            .function("ceil", arity: 1): { args in
+                let num = Double(args[0]) ?? 0
+                let result = ceil(num)
+
+                var res = "\(result.formattedNumber)"
+
+                if result == rint(result) {
+                    res = "\(Int(result))"
+                }
+
+                return String(res)
+            },
+            .function("def", arity: 1): { args in
+                let variable = args[0]
+                let result = context?.globalVars[variable] != nil ? true : false
+                return String(result)
+            },
         ]
     }
 

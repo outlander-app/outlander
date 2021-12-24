@@ -206,7 +206,7 @@ class Script {
 
         context = ScriptContext(context: gameContext)
         context.variables["scriptname"] = fileName
-        funcEvaluator = FunctionEvaluator(context.replaceVars)
+        funcEvaluator = FunctionEvaluator(gameContext, context.replaceVars)
 
         tokenHandlers = [:]
         tokenHandlers["action"] = handleAction
