@@ -95,6 +95,7 @@ class AutoMapperPlugin: OPlugin {
         let exits = swapped.nonCardinalExists().map { $0.move }.joined(separator: ", ")
         if assignRoom {
             host?.set(variable: "roomid", value: swapped.id)
+            host?.set(variable: "roomname", value: swapped.name)
         }
 
         guard exits.count > 0 else {
@@ -147,6 +148,7 @@ extension GameContext {
         if let zone = mapZone {
             if let currentRoom = zone.findRoomFuzyFrom(previousRoomId: nil, name: title, description: description, exits: exits, ignoreTransfers: true) {
                 globalVars["roomid"] = currentRoom.id
+                globalVars["roomname"] = currentRoom.name
             } else {
                 _ = findRoomInZones(name: title, description: description)
             }

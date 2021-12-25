@@ -256,6 +256,7 @@ class Script {
         tokenHandlers["save"] = handleSave
         tokenHandlers["send"] = handleSend
         tokenHandlers["shift"] = handleShift
+        tokenHandlers["timer"] = handleTimer
         tokenHandlers["unvar"] = handleUnVar
         tokenHandlers["variable"] = handleVariable
         tokenHandlers["waiteval"] = handleWaitEval
@@ -374,7 +375,7 @@ class Script {
 
         stackTrace.push(line)
 
-        log.info("passing \(line.lineNumber) - \(line.originalText)")
+//        log.info("passing \(line.lineNumber) - \(line.originalText)")
 
         let result = handleLine(line)
 
@@ -404,7 +405,6 @@ class Script {
     }
 
     func nextAfterRoundtime() {
-        print("next after roundtime")
         _nextAfterRoundtime()
     }
 
@@ -1747,6 +1747,34 @@ class Script {
         notify("shift", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
         context.shiftArgs()
+
+        return .next
+    }
+
+    func handleTimer(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+        guard case let .timer(command, maybeDate) = token else {
+            return .next
+        }
+
+        let resolvedCommand = context.replaceVars(command)
+        let resolvedMaybeDate = context.replaceVars(maybeDate)
+
+        notify("timer \(resolvedCommand) \(resolvedMaybeDate)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+
+        switch resolvedCommand.lowercased() {
+        case "start":
+            context.variables.startTimer()
+        case "stop":
+            context.variables.stopTimer()
+        case "clear":
+            context.variables.clearTimer()
+        case "setstart":
+            let date = DateFormats.parse(resolvedMaybeDate)
+            print("parsed date: \(String(describing: date))")
+            context.variables.startTimer(date)
+        default:
+            sendText("unknown timer command '\(resolvedCommand)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        }
 
         return .next
     }

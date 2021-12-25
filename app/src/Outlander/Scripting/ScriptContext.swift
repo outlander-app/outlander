@@ -15,7 +15,7 @@ class ScriptContext {
 
     var lines: [ScriptLine] = []
     var labels: [String: Label] = [:]
-    var variables = Variables(eventKey: "")
+    var variables: ScriptVariables
     var args: [String] = []
     var argumentVars = Variables(eventKey: "")
     var actionVars = Variables(eventKey: "")
@@ -56,6 +56,7 @@ class ScriptContext {
 
     init(context: GameContext) {
         self.context = context
+        variables = ScriptVariables(events: context.events, settings: context.applicationSettings)
         tokenizer = ScriptTokenizer()
     }
 

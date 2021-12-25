@@ -380,6 +380,11 @@ extension StringView where SubSequence == Self, Element: Equatable {
         consume(while: { Self.isSpace($0) })
     }
 
+    mutating func consumeSingleSpace() {
+        guard let f = first, Self.isSpace(f) else { return }
+        removeFirst()
+    }
+
     mutating func parseToEnd() -> [Element] {
         parseMany(while: { _ in true })
     }
@@ -652,7 +657,12 @@ struct TextTag {
     }
 
     static func lines(tags: [TextTag]) -> [String] {
-        let combined = tags.map { $0.text }.joined(separator: "").components(separatedBy: "\n").filter { !$0.isEmpty }
+        let combined = tags
+            .map { $0.text }
+            .joined(separator: "")
+            .components(separatedBy: "\n")
+            .map { $0.trimLeadingWhitespace() }
+            .filter { !$0.isEmpty }
         return combined
     }
 }
@@ -844,7 +854,7 @@ class GameStream {
     }
 
     public func sendToHandlers(text: String) {
-        let lines = text.components(separatedBy: "\n").filter { !$0.isEmpty }
+        let lines = text.components(separatedBy: "\n").map { $0.trimLeadingWhitespace() }.filter { !$0.isEmpty }
 
         for line in lines {
             for handler in handlers {

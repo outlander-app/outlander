@@ -26,6 +26,7 @@ class GameContext {
     var mapZone: MapZone? {
         didSet {
             globalVars["zoneid"] = mapZone?.id ?? ""
+            globalVars["zonename"] = mapZone?.name ?? ""
         }
     }
 

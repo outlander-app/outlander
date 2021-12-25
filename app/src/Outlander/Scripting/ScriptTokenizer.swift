@@ -105,6 +105,7 @@ enum ScriptTokenValue: Hashable {
     case save(String)
     case send(String)
     case shift
+    case timer(String, String)
     case unvar(String)
     case variable(String, String)
     case waitEval(String)
@@ -273,6 +274,8 @@ extension ScriptTokenValue: CustomStringConvertible {
             return "send"
         case .shift:
             return "shift"
+        case .timer:
+            return "timer"
         case .unvar:
             return "unvar"
         case .variable:
@@ -397,6 +400,7 @@ class CommandMode: IScriptReaderMode {
         "save": SaveMode(),
         "send": SendMode(),
         "shift": ShiftMode(),
+        "timer": TimerMode(),
         "unvar": UnVarMode(),
         "setvariable": VariableMode(),
         "var": VariableMode(),
@@ -574,7 +578,8 @@ class DelayMode: IScriptReaderMode {
 
 class EchoMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
-        context.text.consumeSpaces()
+        // do not consume multiple leading spaces
+        context.text.consumeSingleSpace()
         let rest = String(context.text.parseToEnd())
         context.target.append(.echo(rest))
         return nil
@@ -958,6 +963,17 @@ class SendMode: IScriptReaderMode {
 class ShiftMode: IScriptReaderMode {
     func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
         context.target.append(.shift)
+        return nil
+    }
+}
+
+class TimerMode: IScriptReaderMode {
+    func read(_ context: ScriptTokenizerContext) -> IScriptReaderMode? {
+        context.text.consumeSpaces()
+        let command = String(context.text.parseWord()).lowercased()
+        context.text.consumeSpaces()
+        let maybeDate = String(context.text.parseToEnd())
+        context.target.append(.timer(command, maybeDate))
         return nil
     }
 }

@@ -217,6 +217,10 @@ extension String {
                 }
             } else {
                 // append the data as is
+                if emojiStr.count > 0 {
+                    newData.append(emojiStr.data(using: .utf8)!)
+                    emojiStr = ""
+                }
                 newData.append(str.data(using: .utf8)!)
             }
         }

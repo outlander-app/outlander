@@ -131,6 +131,8 @@
 		7BBBC51C276DD0F800D1CF3E /* AtomicQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC51A276DD0F800D1CF3E /* AtomicQueue.swift */; };
 		7BBBC51E2772C4E800D1CF3E /* EditCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */; };
 		7BBBC51F2772C4E800D1CF3E /* EditCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */; };
+		7BBBC5212776912700D1CF3E /* DateFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC5202776912700D1CF3E /* DateFormats.swift */; };
+		7BBBC5222776912700D1CF3E /* DateFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC5202776912700D1CF3E /* DateFormats.swift */; };
 		7BC74D1B2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BC74D1C2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BC74D1D27575B4300B6DF62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
@@ -371,6 +373,7 @@
 		7BBBC517276DA3E400D1CF3E /* LogBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogBuilder.swift; sourceTree = "<group>"; };
 		7BBBC51A276DD0F800D1CF3E /* AtomicQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicQueue.swift; sourceTree = "<group>"; };
 		7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommandHandler.swift; sourceTree = "<group>"; };
+		7BBBC5202776912700D1CF3E /* DateFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormats.swift; sourceTree = "<group>"; };
 		7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCommandHandler.swift; sourceTree = "<group>"; };
 		7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableReplacerTests.swift; sourceTree = "<group>"; };
 		7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableTokenizer.swift; sourceTree = "<group>"; };
@@ -635,6 +638,7 @@
 				7B917E5B27641E5300887F95 /* SimplePing.m */,
 				7B917E5E27641E9700887F95 /* SimplePingAdapter.swift */,
 				7B917E6127641EC200887F95 /* PlainPing.swift */,
+				7BBBC5202776912700D1CF3E /* DateFormats.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -1026,6 +1030,7 @@
 				7BCBBD152746D1D800219CA0 /* ExpressionEvaluator.swift in Sources */,
 				7B27C5AB274ADE1A0095B9BF /* ExpressionTokenizer.swift in Sources */,
 				F9CA2063246669D800A92736 /* FileSystem.swift in Sources */,
+				7BBBC5212776912700D1CF3E /* DateFormats.swift in Sources */,
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
@@ -1154,6 +1159,7 @@
 				F9CA205E24664A4500A92736 /* VarCommandHandlerTests.swift in Sources */,
 				7B917E5A27641E3600887F95 /* SimplePing.h in Sources */,
 				F9CA204D245CAA9700A92736 /* EventBus.swift in Sources */,
+				7BBBC5222776912700D1CF3E /* DateFormats.swift in Sources */,
 				7BCBBD132746C03E00219CA0 /* FunctionEvaluator.swift in Sources */,
 				7BC74D1D27575B4300B6DF62 /* AppDelegate.swift in Sources */,
 				7B228B0D2734F8E80052610B /* ExpTracker.swift in Sources */,

@@ -94,6 +94,45 @@ class GlobalVariables: Variables {
     }
 }
 
+class ScriptVariables: Variables {
+    private var clock: IClock
+    private var settings: ApplicationSettings
+    private var timerStartTime: Date?
+    private var timerEndTime: Date?
+
+    init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
+        self.clock = clock
+        self.settings = settings
+        super.init(eventKey: "", events: events)
+    }
+
+    func startTimer(_ at: Date? = nil) {
+        timerStartTime = at ?? clock.now
+        timerEndTime = nil
+    }
+
+    func stopTimer() {
+        timerEndTime = clock.now
+    }
+
+    func clearTimer() {
+        timerStartTime = nil
+        timerEndTime = nil
+    }
+
+    override func addDynamics() {
+        addDynamic(key: "t", value: .dynamic {
+            guard let start = self.timerStartTime else {
+                return nil
+            }
+
+            let end = self.timerEndTime ?? self.clock.now
+            let diff = end.timeIntervalSince(start)
+            return "\(diff.formattedNumber)"
+        })
+    }
+}
+
 class Variables {
     private let lock = NSRecursiveLock()
     private var vars: [String: DynamicValue] = [:]
