@@ -1770,7 +1770,7 @@ class Script {
             context.variables.clearTimer()
         case "setstart":
             let date = DateFormats.parse(resolvedMaybeDate)
-            print("parsed date: \(String(describing: date))")
+//            print("parsed date: \(String(describing: date))")
             context.variables.startTimer(date)
         default:
             sendText("unknown timer command '\(resolvedCommand)'", preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)

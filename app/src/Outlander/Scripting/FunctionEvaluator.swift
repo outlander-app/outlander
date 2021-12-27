@@ -285,6 +285,18 @@ class FunctionExecutor {
                 let result = context?.globalVars[variable] != nil ? true : false
                 return String(result)
             },
+            .function("round", arity: 1): { args in
+                let num = Double(args[0]) ?? 0
+                let result = round(num)
+
+                var res = "\(result.formattedNumber)"
+
+                if result == rint(result) {
+                    res = "\(Int(result))"
+                }
+
+                return String(res)
+            },
         ]
     }
 

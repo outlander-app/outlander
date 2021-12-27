@@ -1183,4 +1183,13 @@ class ScriptTests: XCTestCase {
         globalVars: ["standing": "0"],
         expect: ["nope\n", "done\n"])
     }
+
+    func test_eval_round() throws {
+        try scenario([
+            "var value 5.5",
+            "eval value round(%value)",
+            "echo %value"
+        ],
+        expect: ["6\n"])
+    }
 }

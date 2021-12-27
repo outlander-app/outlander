@@ -94,17 +94,17 @@ class FunctionEvaluatorTests: XCTestCase {
     }
 
     func test_evals_math_round() {
-        let result = evaluator.evaluateValue(.value("round(5.5)"))
+        let result = evaluator.evaluateValue(.function("round", ["5.5"]))
         XCTAssertEqual(result.result, "6")
     }
 
     func test_evals_math_ceil() {
-        let result = evaluator.evaluateValue(.value("ceil(5.5)"))
+        let result = evaluator.evaluateValue(.function("ceil", ["5.5"]))
         XCTAssertEqual(result.result, "6")
     }
 
     func test_evals_math_floor() {
-        let result = evaluator.evaluateValue(.value("floor(5.5)"))
+        let result = evaluator.evaluateValue(.function("floor", ["5.5"]))
         XCTAssertEqual(result.result, "5")
     }
 }
