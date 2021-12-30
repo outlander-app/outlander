@@ -1188,7 +1188,7 @@ class ScriptTests: XCTestCase {
         try scenario([
             "var value 5.5",
             "eval value round(%value)",
-            "echo %value"
+            "echo %value",
         ],
         expect: ["6\n"])
     }

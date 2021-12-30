@@ -142,6 +142,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 self?.logText("\n\(self?.timestamp() ?? "")disconnected from game server\n", mono: true)
                 self?.updateWindowTitle()
                 self?.vitalsBar.enabled = false
+                self?.pauseAllScripts()
                 self?.saveSettings()
             }
         }
@@ -378,6 +379,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     func unregisterMacros() {
 //        print("un-registering macros")
+    }
+
+    func pauseAllScripts() {
+        commandProcessor?.process("#script pause all", with: gameContext)
     }
 
     func updateWindowTitle() {

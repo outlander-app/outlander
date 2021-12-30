@@ -40,4 +40,22 @@ class RegexTester: XCTestCase {
         XCTAssertEqual(match.count, 1)
         XCTAssertEqual(match.values(), ["Imperial weave cloth"])
     }
+
+//    func test_mesure() {
+//        var text = "        Thievery:    887 46.22% engaged       (22/34)"
+//
+//        measure {
+//            let regex = try! Regex("Thievery:\\s+(\\d+) (\\d{2})\\.(\\d{2})%", options: [.caseInsensitive])
+//            _ = regex.firstMatch(&text)
+//        }
+//    }
+//
+//    func test_mesure_2() {
+//        var text = "Thievery:    887 46.22% engaged       (22/34)"
+//
+//        measure {
+//            let regex = try! Regex("Thievery:\\s+(\\d+) (\\d{2})\\.(\\d{2})%", options: [.caseInsensitive])
+//            _ = regex.firstMatch(&text)
+//        }
+//    }
 }
