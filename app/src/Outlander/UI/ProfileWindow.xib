@@ -110,8 +110,8 @@ Gw
                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="rCb-tk-tSz">
                             <font key="font" metaFont="system"/>
                             <segments>
-                                <segment image="plus" catalog="system" width="28"/>
-                                <segment image="minus" catalog="system" width="28" tag="1"/>
+                                <segment image="plus" width="28"/>
+                                <segment image="minus" width="28" tag="1"/>
                             </segments>
                         </segmentedCell>
                         <connections>
@@ -128,7 +128,7 @@ Gw
         </window>
     </objects>
     <resources>
-        <image name="minus" catalog="system" width="14" height="4"/>
-        <image name="plus" catalog="system" width="14" height="13"/>
+        <image name="minus" width="12" height="12"/>
+        <image name="plus" width="12" height="11"/>
     </resources>
 </document>
