@@ -906,6 +906,7 @@ class GameStream {
         case "spell":
             if let spell = token.value() {
                 context.globalVars["preparedspell"] = spell
+                context.globalVars["spell"] = spell
                 streamCommands(.spell(spell))
             }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -35,23 +35,24 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="ok:" target="-2" id="HKs-eT-xNJ"/>
+                            <outlet property="nextKeyView" destination="J9b-OJ-8GF" id="yjO-ED-HHj"/>
                         </connections>
                     </button>
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ys-QM-Xo2">
-                        <rect key="frame" x="20" y="61" width="214" height="217"/>
+                        <rect key="frame" x="20" y="72" width="214" height="206"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" id="HTI-UF-LR6">
-                            <rect key="frame" x="1" y="1" width="212" height="215"/>
+                        <clipView key="contentView" drawsBackground="NO" id="HTI-UF-LR6">
+                            <rect key="frame" x="1" y="1" width="212" height="204"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="55u-Bs-sXF" id="J9b-OJ-8GF">
-                                    <rect key="frame" x="0.0" y="0.0" width="212" height="190"/>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="4FG-26-syc" id="J9b-OJ-8GF">
+                                    <rect key="frame" x="0.0" y="0.0" width="212" height="176"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn editable="NO" width="200" minWidth="40" maxWidth="1000" id="PZ2-XG-2Uv">
+                                        <tableColumn editable="NO" width="171" minWidth="40" maxWidth="1000" id="PZ2-XG-2Uv">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Profiles">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -70,6 +71,7 @@ DQ
                                     </connections>
                                 </tableView>
                             </subviews>
+                            <nil key="backgroundColor"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Rbo-d2-Gwb">
                             <rect key="frame" x="1" y="119" width="223" height="15"/>
@@ -79,10 +81,13 @@ DQ
                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" wantsLayer="YES" id="55u-Bs-sXF">
-                            <rect key="frame" x="0.0" y="0.0" width="212" height="25"/>
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="4FG-26-syc">
+                            <rect key="frame" x="0.0" y="0.0" width="212" height="28"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
+                        <connections>
+                            <outlet property="nextKeyView" destination="H6j-NM-ziD" id="BL9-nn-vvE"/>
+                        </connections>
                     </scrollView>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kkr-75-LwY">
                         <rect key="frame" x="80" y="13" width="80" height="32"/>
@@ -96,8 +101,24 @@ Gw
                         </buttonCell>
                         <connections>
                             <action selector="cancel:" target="-2" id="Luw-fc-7eY"/>
+                            <outlet property="nextKeyView" destination="t89-jM-JW2" id="4x3-Eb-9qM"/>
                         </connections>
                     </button>
+                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H6j-NM-ziD">
+                        <rect key="frame" x="20" y="47" width="61" height="23"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="rCb-tk-tSz">
+                            <font key="font" metaFont="system"/>
+                            <segments>
+                                <segment image="plus" catalog="system" width="28"/>
+                                <segment image="minus" catalog="system" width="28" tag="1"/>
+                            </segments>
+                        </segmentedCell>
+                        <connections>
+                            <action selector="addRemoveProfile:" target="-2" id="RQs-Ps-FKH"/>
+                            <outlet property="nextKeyView" destination="kkr-75-LwY" id="LKn-DE-Hw7"/>
+                        </connections>
+                    </segmentedControl>
                 </subviews>
             </view>
             <connections>
@@ -106,4 +127,8 @@ Gw
             <point key="canvasLocation" x="27" y="161"/>
         </window>
     </objects>
+    <resources>
+        <image name="minus" catalog="system" width="14" height="4"/>
+        <image name="plus" catalog="system" width="14" height="13"/>
+    </resources>
 </document>

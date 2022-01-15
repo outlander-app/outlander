@@ -190,14 +190,14 @@ class AtomicArray<Element> {
 
     func append(_ item: Element) {
         lock.lock()
+        defer { lock.unlock() }
         list.append(item)
-        lock.unlock()
     }
 
     func removeAll() {
         lock.lock()
+        defer { lock.unlock() }
         list.removeAll()
-        lock.unlock()
     }
 }
 

@@ -472,6 +472,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 return
             }
 
+            guard self.gameContext.applicationSettings.profile.name != profile else {
+                return
+            }
+
             self.gameContext.applicationSettings.profile.name = profile
             self.loadSettings()
         })

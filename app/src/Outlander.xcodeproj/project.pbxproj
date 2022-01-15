@@ -73,6 +73,10 @@
 		7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A192759DB200035D731 /* IconLoader.swift */; };
 		7B3B9A1D275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
 		7B3B9A1E275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
+		7B8F887327924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
+		7B8F887427924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
+		7B8F887527924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
+		7B8F887627924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
 		7B917E492763F7A200887F95 /* PrintBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E482763F7A200887F95 /* PrintBox.swift */; };
 		7B917E4A2763F7A200887F95 /* PrintBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E482763F7A200887F95 /* PrintBox.swift */; };
 		7B917E4C2763FF7E00887F95 /* PrintBoxCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E4B2763FF7E00887F95 /* PrintBoxCommandHandler.swift */; };
@@ -343,6 +347,8 @@
 		7B3B9A1827596F390035D731 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7B3B9A192759DB200035D731 /* IconLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconLoader.swift; sourceTree = "<group>"; };
 		7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsCommandHandler.swift; sourceTree = "<group>"; };
+		7B8F887127924B5200713BA7 /* AddProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileWindow.swift; sourceTree = "<group>"; };
+		7B8F887227924B5200713BA7 /* AddProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProfileWindow.xib; sourceTree = "<group>"; };
 		7B917E482763F7A200887F95 /* PrintBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintBox.swift; sourceTree = "<group>"; };
 		7B917E4B2763FF7E00887F95 /* PrintBoxCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintBoxCommandHandler.swift; sourceTree = "<group>"; };
 		7B917E4E276411A300887F95 /* EpediaCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpediaCommandHandler.swift; sourceTree = "<group>"; };
@@ -646,6 +652,8 @@
 		F98B49232470F57C000E2D92 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7B8F887127924B5200713BA7 /* AddProfileWindow.swift */,
+				7B8F887227924B5200713BA7 /* AddProfileWindow.xib */,
 				7B228B04272C6D170052610B /* DirectionsView.swift */,
 				F969A0E1239B21FF00408CE5 /* Game.storyboard */,
 				F969A0E4239B2A5E00408CE5 /* GameViewController.swift */,
@@ -935,6 +943,7 @@
 				F969A0E2239B21FF00408CE5 /* Game.storyboard in Resources */,
 				F9BCF2F222E177E200C7F7F0 /* Assets.xcassets in Resources */,
 				7B956B4C2754536100346019 /* ScriptToolbar.storyboard in Resources */,
+				7B8F887527924B5200713BA7 /* AddProfileWindow.xib in Resources */,
 				7BD0FD4725C7559900ED030E /* MapWindow.xib in Resources */,
 				F9BCF2F522E177E200C7F7F0 /* Main.storyboard in Resources */,
 				F9B254082478996D0097C07F /* ProfileWindow.xib in Resources */,
@@ -947,6 +956,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F969A0E9239C7F9B00408CE5 /* Window.storyboard in Resources */,
+				7B8F887627924B5200713BA7 /* AddProfileWindow.xib in Resources */,
 				7B10A6982763468C000FEDE8 /* WindowSettings.storyboard in Resources */,
 				F9B25403247882620097C07F /* LoginWindow.xib in Resources */,
 				F969A0E3239B21FF00408CE5 /* Game.storyboard in Resources */,
@@ -1049,6 +1059,7 @@
 				7BCBBD22274750CA00219CA0 /* Exceptions.swift in Sources */,
 				7B3B9A162758BDBE0035D731 /* PresetCommandHandler.swift in Sources */,
 				F6A34F1A247A160800E68EDD /* AliasCommandHandler.swift in Sources */,
+				7B8F887327924B5200713BA7 /* AddProfileWindow.swift in Sources */,
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7BAC83FC25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */,
 				7BBBC51E2772C4E800D1CF3E /* EditCommandHandler.swift in Sources */,
@@ -1087,6 +1098,7 @@
 				F98B48FD246F61D1000E2D92 /* WindowLayoutLoaderTests.swift in Sources */,
 				F98B4919246FAC25000E2D92 /* PlayCommandHandler.swift in Sources */,
 				F9CA205C2466322B00A92736 /* VarCommandHandler.swift in Sources */,
+				7B8F887427924B5200713BA7 /* AddProfileWindow.swift in Sources */,
 				7BCBBD18274743B300219CA0 /* ExpressionEvaluatorTests.swift in Sources */,
 				7BCE4A3225C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
 				7B10A68C275FE3E3000FEDE8 /* TriggerCommandHandler.swift in Sources */,

@@ -126,6 +126,12 @@ class LocalFileSystem: FileSystem {
             try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
         }
     }
+
+    func remove(folder url: URL) throws {
+        try access {
+            try FileManager.default.removeItem(at: url)
+        }
+    }
 }
 
 extension URL {
