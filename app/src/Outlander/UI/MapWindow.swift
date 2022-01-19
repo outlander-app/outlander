@@ -77,9 +77,14 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
     var mapLevel: Int = 0 {
         didSet {
-            mapView?.mapLevel = mapLevel
-            mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
+            updateLevel()
         }
+    }
+
+    private func updateLevel() {
+        guard loaded else { return }
+        mapView?.mapLevel = mapLevel
+        mapLevelSegment.setLabel("Level \(mapLevel)", forSegment: 1)
     }
 
     var mapZoom: CGFloat = 1.0 {
@@ -114,6 +119,12 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
                     if key == "roomid" {
                         self.mapView?.currentRoomId = value
+                        
+                        if let zoneId = self.context?.globalVars["zoneid"], let zone = self.context?.maps[zoneId] {
+                            let room = self.context?.findCurrentRoom(zone)
+                            self.mapLevel = room?.position.z ?? 0
+                        }
+
                         if self.shouldCenterOnRoom {
                             self.scrollToRoom()
                         }
@@ -170,6 +181,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
         roomLabel.stringValue = ""
         zoneLabel.stringValue = ""
+        updateLevel()
 
         mapView?.nodeTravelTo = { node in
             self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "automapper")
