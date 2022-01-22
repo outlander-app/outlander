@@ -13,7 +13,7 @@ class GameStreamTests: XCTestCase {
         var commands: [StreamCommand] = []
         let context = context
 
-        let stream = GameStream(context: context) { cmd in
+        let stream = GameStream(context: context, pluginManager: InMemoryPluginManager()) { cmd in
             commands.append(cmd)
         }
         stream.monsterCountIgnoreList = monsterIgnoreList
@@ -29,7 +29,7 @@ class GameStreamTests: XCTestCase {
 
     func testBasics() {
         let context = GameContext()
-        let stream = GameStream(context: context) { _ in }
+        let stream = GameStream(context: context, pluginManager: InMemoryPluginManager()) { _ in }
         stream.stream("Please wait for connection to game server.\r\n")
     }
 

@@ -127,7 +127,7 @@ class InMemoryPluginManager: OPlugin {
         xml
     }
 
-    func parse(text: String) -> String {
+    func parse(text: String, window: String) -> String {
         text
     }
 
