@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Plugins
 
 struct Attribute {
     var key: String
@@ -717,6 +718,7 @@ enum StreamCommand: CustomStringConvertible {
 class GameStream {
     var tokenizer: GameStreamTokenizer
     var context: GameContext
+    var pluginManager: OPlugin
 
     private var isSetup = false
     private var inStream = false
@@ -794,8 +796,9 @@ class GameStream {
 
     var monsterCountIgnoreRegex: Regex?
 
-    init(context: GameContext, streamCommands: @escaping (StreamCommand) -> Void) {
+    init(context: GameContext, pluginManager: OPlugin, streamCommands: @escaping (StreamCommand) -> Void) {
         self.context = context
+        self.pluginManager = pluginManager
         self.streamCommands = streamCommands
         tokenizer = GameStreamTokenizer()
 
@@ -833,15 +836,18 @@ class GameStream {
         for token in tokens {
             processToken(token)
 
-            if let tag = tagForToken(token) {
+            if var tag = tagForToken(token) {
                 let isPrompt = token.name() == "prompt"
 
                 if isPrompt && tags.count == 0 { return }
+
+                tag.text = pluginManager.parse(text: tag.text, window: tag.window)
 
                 tags.append(tag)
 
                 if !isSetup || isPrompt {
                     let combined = TextTag.combine(tags: tags)
+
                     streamCommands(.text(combined))
                     tags.removeAll()
 

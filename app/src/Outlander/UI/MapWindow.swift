@@ -119,7 +119,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
 
                     if key == "roomid" {
                         self.mapView?.currentRoomId = value
-                        
+
                         if let zoneId = self.context?.globalVars["zoneid"], let zone = self.context?.maps[zoneId] {
                             let room = self.context?.findCurrentRoom(zone)
                             self.mapLevel = room?.position.z ?? 0

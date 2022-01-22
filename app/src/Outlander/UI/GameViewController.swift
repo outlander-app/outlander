@@ -85,7 +85,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         createScriptToolbarView()
         createStatusBarView()
-        pluginManager = PluginManager(fileSystem!, context: gameContext)
+        pluginManager = PluginManager(fileSystem!, context: gameContext, host: LocalHost(context: gameContext))
         pluginManager?.add(ExpPlugin())
         pluginManager?.add(AutoMapperPlugin(context: gameContext))
         pluginManager?.loadPlugins()
@@ -147,7 +147,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             }
         }
 
-        gameStream = GameStream(context: gameContext, streamCommands: { [weak self] command in
+        gameStream = GameStream(context: gameContext, pluginManager: pluginManager!, streamCommands: { [weak self] command in
             switch command {
             case .text:
                 break
@@ -423,8 +423,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         if result.hasPrefix("<") {
             result = pluginManager?.parse(xml: result) ?? result
-        } else {
-            result = pluginManager?.parse(text: result) ?? result
         }
 
         if gameContext.applicationSettings.profile.rawLogging {

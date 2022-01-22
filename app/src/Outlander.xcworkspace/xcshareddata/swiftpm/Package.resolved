@@ -41,9 +41,9 @@
         "package": "Outlander Plugins",
         "repositoryURL": "https://github.com/outlander-app/plugin-package.git",
         "state": {
-          "branch": "main",
-          "revision": "a457ac24c6334e5c219320250160ada2c7aea22d",
-          "version": null
+          "branch": null,
+          "revision": "bd671dca6d5ee40af3def9c993f30f1ff2c3e9c7",
+          "version": "1.0.3"
         }
       },
       {

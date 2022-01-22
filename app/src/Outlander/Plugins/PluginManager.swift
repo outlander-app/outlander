@@ -54,7 +54,8 @@ class PluginManager: OPlugin {
         "Plugin Manager"
     }
 
-    init(_ files: FileSystem, context: GameContext) {
+    init(_ files: FileSystem, context: GameContext, host: IHost) {
+        self.host = host
         self.files = files
         self.context = context
 
@@ -112,32 +113,42 @@ class PluginManager: OPlugin {
     }
 
     func load(url: URL) {
-        guard let bundle = Bundle(url: url), bundle.load() == true else {
-            return
-        }
+        files?.access {
+            guard let bundle = Bundle(url: url) else {
+                self.host?.send(text: "#echo Unable to load bundle '\(url)'")
+                print("#echo Unable to load bundle '\(url)'")
+                return
+            }
 
-//        print("loaded? \(bundle.isLoaded)")
+            guard bundle.load() == true else {
+                self.host?.send(text: "#echo Unable to load bundle '\(url)'")
+                print("#echo Unable to load bundle '\(url)'")
+                return
+            }
 
-        do {
-            try ObjC.perform {
-                if let pluginType = bundle.principalClass as? OPlugin.Type {
-                    let instance = pluginType.init()
-                    plugins.append(LocalPlugin(bundle: bundle, value: instance))
+            //        print("loaded? \(bundle.isLoaded)")
 
-                    if host != nil {
-                        host!.send(text: "#echo Initializing Plugin '\(instance.name)'")
-                        instance.initialize(host: host!)
+            do {
+                try ObjC.perform {
+                    if let pluginType = bundle.principalClass as? OPlugin.Type {
+                        let instance = pluginType.init()
+                        self.plugins.append(LocalPlugin(bundle: bundle, value: instance))
+
+                        guard let host = self.host else {
+                            return
+                        }
+
+                        host.send(text: "#echo Initializing Plugin '\(instance.name)'")
+                        instance.initialize(host: host)
                     }
                 }
+            } catch {
+                self.context?.events.echoError("Error when trying to load plugin \(url):\n\(error)")
             }
-        } catch {
-            context?.events.echoError("Error when trying to load plugin \(url):\n\(error)")
         }
     }
 
     func initialize(host: IHost) {
-        self.host = host
-
         for plugin in plugins {
             guard let p = plugin.value else {
                 continue
@@ -178,13 +189,13 @@ class PluginManager: OPlugin {
         return result
     }
 
-    func parse(text: String) -> String {
+    func parse(text: String, window: String) -> String {
         var result = text
         for plugin in plugins {
             guard let p = plugin.value else {
                 continue
             }
-            result = p.parse(text: result)
+            result = p.parse(text: result, window: window)
         }
         return result
     }

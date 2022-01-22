@@ -108,7 +108,7 @@ class AutoMapperPlugin: OPlugin {
         return result
     }
 
-    func parse(text: String) -> String {
+    func parse(text: String, window _: String) -> String {
         text
     }
 }

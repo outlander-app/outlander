@@ -200,8 +200,16 @@ class ExpPlugin: OPlugin {
         return xml
     }
 
-    func parse(text: String) -> String {
+    func parse(text: String, window: String) -> String {
+        guard window.lowercased() == "main" || window.isEmpty else {
+            return text
+        }
+
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmed.isEmpty else {
+            return text
+        }
 
         if trimmed.hasPrefix("Time Development Points:") {
             let start = trimmed.index(trimmed.startIndex, offsetBy: 24)

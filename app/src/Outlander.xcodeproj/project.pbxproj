@@ -1545,8 +1545,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/outlander-app/plugin-package.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = exactVersion;
+				version = 1.0.3;
 			};
 		};
 		7B917E7E2764A9CE00887F95 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
