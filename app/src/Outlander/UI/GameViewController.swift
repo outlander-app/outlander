@@ -85,7 +85,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         createScriptToolbarView()
         createStatusBarView()
-        pluginManager = PluginManager(fileSystem!, context: gameContext, host: LocalHost(context: gameContext))
+        pluginManager = PluginManager(fileSystem!, context: gameContext, host: LocalHost(context: gameContext, files: fileSystem!))
         pluginManager?.add(ExpPlugin())
         pluginManager?.add(AutoMapperPlugin(context: gameContext))
         pluginManager?.loadPlugins()
@@ -507,7 +507,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.loginWindow?.character = self.gameContext.applicationSettings.profile.character
             self.loginWindow?.game = self.gameContext.applicationSettings.profile.game
 
-            self.pluginManager?.initialize(host: LocalHost(context: self.gameContext))
+            self.pluginManager?.initialize(host: LocalHost(context: self.gameContext, files: self.fileSystem!))
             self.updateWindowTitle()
         }
     }

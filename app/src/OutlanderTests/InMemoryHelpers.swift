@@ -106,6 +106,16 @@ class TestHost: IHost {
     func get(preset _: String) -> String? {
         nil
     }
+
+    func write(content: String, to: String) {
+    }
+
+    func append(content: String, to: String) {
+    }
+
+    func load(from: String) ->  String? {
+        return nil
+    }
 }
 
 class InMemoryPluginManager: OPlugin {

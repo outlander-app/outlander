@@ -11,9 +11,11 @@ import Plugins
 
 class LocalHost: IHost {
     var context: GameContext
+    var files: FileSystem
 
-    init(context: GameContext) {
+    init(context: GameContext, files: FileSystem) {
         self.context = context
+        self.files = files
     }
 
     func send(text: String) {
@@ -38,5 +40,23 @@ class LocalHost: IHost {
             color = "\(color),\(bg)"
         }
         return color
+    }
+
+    func write(content: String, to: String) {
+        let fileUrl = context.applicationSettings.paths.plugins.appendingPathComponent(to)
+        files.write(content, to: fileUrl)
+    }
+
+    func append(content: String, to: String) {
+        let fileUrl = context.applicationSettings.paths.plugins.appendingPathComponent(to)
+        try? files.append(content, to: fileUrl)
+    }
+
+    func load(from: String) ->  String? {
+        let fileUrl = context.applicationSettings.paths.plugins.appendingPathComponent(from)
+        guard let data = files.load(fileUrl) else {
+            return nil
+        }
+        return String(decoding: data, as: UTF8.self)
     }
 }
