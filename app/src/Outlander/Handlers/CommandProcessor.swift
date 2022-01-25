@@ -78,25 +78,27 @@ class CommandProcesssor {
             return
         }
 
-        let replacer = VariableReplacer()
-        var maybeCommand = replacer.replace(cmdText, globalVars: context.globalVars)
-        maybeCommand = processAliases(maybeCommand, with: context)
-        maybeCommand = replacer.replace(maybeCommand, globalVars: context.globalVars)
-
         // set lastcommand _after_ variable replacement
         if !command.isSystemCommand, !cmdText.contains("$lastcommand") {
             context.globalVars["lastcommand"] = cmdText
         }
 
-        maybeCommand = pluginManager.parse(input: maybeCommand)
-
-        guard maybeCommand.count > 0 else {
-            return
-        }
+        let replacer = VariableReplacer()
+        var maybeCommand = replacer.replace(cmdText, globalVars: context.globalVars)
+        maybeCommand = processAliases(maybeCommand, with: context)
+        maybeCommand = replacer.replace(maybeCommand, globalVars: context.globalVars)
 
         let cmds = maybeCommand.commandsSeperated()
 
-        for cmd in cmds {
+        for var cmd in cmds {
+            cmd = processAliases(cmd, with: context)
+            cmd = replacer.replace(cmd, globalVars: context.globalVars)
+
+            cmd = pluginManager.parse(input: cmd)
+            guard cmd.count > 0 else {
+                return
+            }
+
             var handled = false
             for handler in handlers {
                 if handler.canHandle(cmd) {

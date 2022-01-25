@@ -96,14 +96,20 @@ class ScriptRunner: StreamHandler {
         let command = commands[0]
         let scriptName = commands[1]
         let param1 = commands.count > 2 ? commands[2] : ""
+        let rest = Array(commands.dropFirst(2))
+        var except: [String] = []
+
+        if rest.count > 0, rest[0].lowercased() == "except" {
+            except = Array(rest.dropFirst())
+        }
 
         switch command {
         case "abort", "stop":
-            abort(scriptName)
+            abort(scriptName, except: except)
         case "pause":
-            pause(scriptName)
+            pause(scriptName, except: except)
         case "resume":
-            resume(scriptName)
+            resume(scriptName, except: except)
         case "debug":
             debug(scriptName, level: param1)
         case "trace", "stacktrace":
@@ -115,8 +121,10 @@ class ScriptRunner: StreamHandler {
         }
     }
 
-    private func abort(_ scriptName: String) {
-        let aborting = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+    private func abort(_ scriptName: String, except: [String]) {
+        let aborting = scriptName == "all"
+            ? scripts.filter { !except.contains($0.fileName.lowercased()) }
+            : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
 
         for script in aborting {
             script.cancel()
@@ -126,8 +134,10 @@ class ScriptRunner: StreamHandler {
         updateActiveScriptVars()
     }
 
-    private func pause(_ scriptName: String) {
-        let pausing = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+    private func pause(_ scriptName: String, except: [String]) {
+        let pausing = scriptName == "all"
+            ? scripts.filter { !except.contains($0.fileName.lowercased()) }
+            : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
 
         for script in pausing {
             script.pause()
@@ -137,10 +147,12 @@ class ScriptRunner: StreamHandler {
         updateActiveScriptVars()
     }
 
-    private func resume(_ scriptName: String) {
-        let target = scriptName == "all" ? scripts : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
+    private func resume(_ scriptName: String, except: [String]) {
+        let resuming = scriptName == "all"
+            ? scripts.filter { !except.contains($0.fileName.lowercased()) }
+            : scripts.filter { $0.fileName.lowercased() == scriptName.lowercased() }
 
-        for script in target {
+        for script in resuming {
             script.resume()
             context.events.post("ol:script:resume", data: script.fileName)
         }

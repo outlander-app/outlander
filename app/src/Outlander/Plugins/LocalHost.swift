@@ -52,7 +52,7 @@ class LocalHost: IHost {
         try? files.append(content, to: fileUrl)
     }
 
-    func load(from: String) ->  String? {
+    func load(from: String) -> String? {
         let fileUrl = context.applicationSettings.paths.plugins.appendingPathComponent(from)
         guard let data = files.load(fileUrl) else {
             return nil

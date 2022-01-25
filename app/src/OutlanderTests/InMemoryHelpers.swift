@@ -107,14 +107,12 @@ class TestHost: IHost {
         nil
     }
 
-    func write(content: String, to: String) {
-    }
+    func write(content _: String, to _: String) {}
 
-    func append(content: String, to: String) {
-    }
+    func append(content _: String, to _: String) {}
 
-    func load(from: String) ->  String? {
-        return nil
+    func load(from _: String) -> String? {
+        nil
     }
 }
 
@@ -137,7 +135,7 @@ class InMemoryPluginManager: OPlugin {
         xml
     }
 
-    func parse(text: String, window: String) -> String {
+    func parse(text: String, window _: String) -> String {
         text
     }
 
