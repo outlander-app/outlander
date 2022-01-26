@@ -21,7 +21,7 @@ class ScriptRunnerCommandHandler: ICommandHandler {
         let name = (split.first ?? "").lowercased().trimmingCharacters(in: .whitespaces)
         let maybeArguments = split.dropFirst().joined(separator: " ").trimmingCharacters(in: .whitespaces)
 
-        context.events.post("ol:script:run", data: ["name": name, "arguments": maybeArguments])
+        context.events2.post(ScriptRunEvent(name: name, arguments: maybeArguments))
     }
 }
 
@@ -36,10 +36,10 @@ class ScriptCommandHandler: ICommandHandler {
 
         guard commandTokens.count >= 1, validCommands.contains(commandTokens[0].lowercased()) else {
             let joined = validCommands.joined(separator: ", ")
-            context.events.echoText("'\(commandTokens[0])' is not a valid #script command. Valid commands:\n  \(joined)", preset: "scripterror", mono: true)
+            context.events2.echoText("'\(commandTokens[0])' is not a valid #script command. Valid commands:\n  \(joined)", preset: "scripterror", mono: true)
             return
         }
 
-        context.events.post("ol:script", data: commands.lowercased())
+        context.events2.post(ScriptManageEvent(commands: commands.lowercased()))
     }
 }

@@ -99,36 +99,35 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         "MapWindow"
     }
 
+    deinit {
+        self.context?.events2.unregister(self, DummyEvent<AutomapperPathEvent>())
+        self.context?.events2.unregister(self, DummyEvent<VariableChangedEvent>())
+    }
+
     func initialize(context: GameContext) {
         self.context = context
-        self.context?.events.handle(self, channel: "ol:mapper:setpath") { result in
-            if let path = result as? [String] {
-                DispatchQueue.main.async {
-                    self.setWalkPath(path)
-                }
+        self.context?.events2.register(self) { (evt: AutomapperPathEvent) in
+            DispatchQueue.main.async {
+                self.setWalkPath(evt.path)
             }
         }
 
-        self.context?.events.handle(self, channel: "ol:variable:changed") { result in
-            if let dict = result as? [String: String] {
-                for (key, value) in dict {
-                    if key == "zoneid" {
-                        guard self.loaded else { return }
-                        self.setSelectedZone()
-                    }
+        self.context?.events2.register(self) { (evt: VariableChangedEvent) in
+            if evt.key == "zoneid" {
+                guard self.loaded else { return }
+                self.setSelectedZone()
+            }
 
-                    if key == "roomid" {
-                        self.mapView?.currentRoomId = value
+            if evt.key == "roomid" {
+                self.mapView?.currentRoomId = evt.value
 
-                        if let zoneId = self.context?.globalVars["zoneid"], let zone = self.context?.maps[zoneId] {
-                            let room = self.context?.findCurrentRoom(zone)
-                            self.mapLevel = room?.position.z ?? 0
-                        }
+                if let zoneId = self.context?.globalVars["zoneid"], let zone = self.context?.maps[zoneId] {
+                    let room = self.context?.findCurrentRoom(zone)
+                    self.mapLevel = room?.position.z ?? 0
+                }
 
-                        if self.shouldCenterOnRoom {
-                            self.scrollToRoom()
-                        }
-                    }
+                if self.shouldCenterOnRoom {
+                    self.scrollToRoom()
                 }
             }
         }
@@ -184,13 +183,13 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         updateLevel()
 
         mapView?.nodeTravelTo = { node in
-            self.context?.events.echoText("#goto \(node.id) (\(node.name))", preset: "automapper")
-            self.context?.events.sendCommand(Command2(command: "#goto \(node.id)", isSystemCommand: true))
+            self.context?.events2.echoText("#goto \(node.id) (\(node.name))", preset: "automapper")
+            self.context?.events2.sendCommand(Command2(command: "#goto \(node.id)", isSystemCommand: true))
         }
 
         mapView?.nodeClicked = { node in
             if node.isTransfer() {
-                self.context?.events.echoText("Switching to map \(node.id), \(node.name)", preset: "automapper")
+                self.context?.events2.echoText("Switching to map \(node.id), \(node.name)", preset: "automapper")
 
                 guard let transferMap = node.transferMap else {
                     return

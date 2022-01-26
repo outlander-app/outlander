@@ -13,7 +13,7 @@ class CommandProcessorTests: XCTestCase {
     var context = GameContext(InMemoryEvents())
 
     var events: InMemoryEvents {
-        context.events as! InMemoryEvents
+        context.events2 as! InMemoryEvents
     }
 
     func test_alias_replacement_1() {

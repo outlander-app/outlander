@@ -28,7 +28,7 @@ class EvalMathCommandHandler: ICommandHandler {
             let result = FunctionEvaluator(context, replaceVars).evaluateValue(expression)
             context.globalVars[targetVar] = result.result
         default:
-            context.events.echoError("Unable to parse input for #evalmath: \(text)")
+            context.events2.echoError("Unable to parse input for #evalmath: \(text)")
         }
     }
 }

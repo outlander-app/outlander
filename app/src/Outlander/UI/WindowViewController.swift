@@ -382,7 +382,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
     }
 
     @objc func closeWindow(sender _: Any?) {
-        gameContext?.events.sendCommand(Command2(command: "#window hide \(name)", isSystemCommand: true))
+        gameContext?.events2.sendCommand(Command2(command: "#window hide \(name)", isSystemCommand: true))
     }
 
     @objc func toggleShowBorder(sender _: Any?) {
@@ -558,7 +558,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
                 }
 
                 if h.soundFile.count > 0 {
-                    context.events.sendCommand(Command2(command: "#play \(h.soundFile)", isSystemCommand: true))
+                    context.events2.sendCommand(Command2(command: "#play \(h.soundFile)", isSystemCommand: true))
                 }
             }
         }
@@ -720,7 +720,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         if value.hasPrefix("command:") {
             let cmd = value[8...]
             if cmd.count > 0 {
-                gameContext?.events.sendCommand(Command2(command: cmd, isSystemCommand: true))
+                gameContext?.events2.sendCommand(Command2(command: cmd, isSystemCommand: true))
             }
         } else {
             guard let url = URL(string: value) else {

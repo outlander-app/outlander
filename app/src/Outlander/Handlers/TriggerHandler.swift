@@ -45,7 +45,7 @@ class TriggerHandler: StreamHandler {
 
             command = VariableReplacer().replace(command, globalVars: context.globalVars)
 
-            context.events.sendCommand(Command2(command: command))
+            context.events2.sendCommand(Command2(command: command))
         }
     }
 }

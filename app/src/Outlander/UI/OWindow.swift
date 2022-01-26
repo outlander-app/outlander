@@ -64,7 +64,7 @@ class OWindow: NSWindow {
             return false
         }
 
-        gameContext?.events.sendCommand(Command2(command: found.action))
+        gameContext?.events2.sendCommand(Command2(command: found.action))
         return true
     }
 

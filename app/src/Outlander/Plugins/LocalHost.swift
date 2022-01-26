@@ -19,7 +19,7 @@ class LocalHost: IHost {
     }
 
     func send(text: String) {
-        context.events.sendCommand(Command2(command: text, isSystemCommand: true))
+        context.events2.sendCommand(Command2(command: text, isSystemCommand: true))
     }
 
     func get(variable: String) -> String {

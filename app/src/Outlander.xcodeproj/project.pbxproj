@@ -77,6 +77,10 @@
 		7B8F887427924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
 		7B8F887527924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
 		7B8F887627924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
+		7B8F888E279FB1A500713BA7 /* Swen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F888D279FB1A500713BA7 /* Swen.swift */; };
+		7B8F888F279FB1A500713BA7 /* Swen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F888D279FB1A500713BA7 /* Swen.swift */; };
+		7B8F8891279FB25B00713BA7 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F8890279FB25B00713BA7 /* LinkedList.swift */; };
+		7B8F8892279FB25B00713BA7 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F8890279FB25B00713BA7 /* LinkedList.swift */; };
 		7B917E492763F7A200887F95 /* PrintBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E482763F7A200887F95 /* PrintBox.swift */; };
 		7B917E4A2763F7A200887F95 /* PrintBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E482763F7A200887F95 /* PrintBox.swift */; };
 		7B917E4C2763FF7E00887F95 /* PrintBoxCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B917E4B2763FF7E00887F95 /* PrintBoxCommandHandler.swift */; };
@@ -349,6 +353,8 @@
 		7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsCommandHandler.swift; sourceTree = "<group>"; };
 		7B8F887127924B5200713BA7 /* AddProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileWindow.swift; sourceTree = "<group>"; };
 		7B8F887227924B5200713BA7 /* AddProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProfileWindow.xib; sourceTree = "<group>"; };
+		7B8F888D279FB1A500713BA7 /* Swen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swen.swift; sourceTree = "<group>"; };
+		7B8F8890279FB25B00713BA7 /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 		7B917E482763F7A200887F95 /* PrintBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintBox.swift; sourceTree = "<group>"; };
 		7B917E4B2763FF7E00887F95 /* PrintBoxCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintBoxCommandHandler.swift; sourceTree = "<group>"; };
 		7B917E4E276411A300887F95 /* EpediaCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpediaCommandHandler.swift; sourceTree = "<group>"; };
@@ -623,6 +629,7 @@
 				7BBBC51A276DD0F800D1CF3E /* AtomicQueue.swift */,
 				7BDF5C7A271AB4F40020A3B0 /* BoolExtensions.swift */,
 				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
+				7BBBC5202776912700D1CF3E /* DateFormats.swift */,
 				7BCE4A3925C5281D00AF0444 /* DateTimeExtensions.swift */,
 				F9CA204B245CAA9700A92736 /* EventBus.swift */,
 				F98B49252470F685000E2D92 /* Events.swift */,
@@ -631,6 +638,7 @@
 				F98B491C2470AF16000E2D92 /* GameContext.swift */,
 				F98B49282471CC76000E2D92 /* IntervalTimer.swift */,
 				7BAC840C25E9CB7200A6C7D5 /* Keychain.swift */,
+				7B8F8890279FB25B00713BA7 /* LinkedList.swift */,
 				7BBBC517276DA3E400D1CF3E /* LogBuilder.swift */,
 				F98B492B2471F38E000E2D92 /* Logger.swift */,
 				7BDF5C87272736300020A3B0 /* MacroExtensions.swift */,
@@ -638,13 +646,13 @@
 				7B228B28273B09D70052610B /* NSViewExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
 				F9BCF31922E17F2500C7F7F0 /* StringExtensions.swift */,
+				7B8F888D279FB1A500713BA7 /* Swen.swift */,
 				F9D36E9822EFF7BB008BC6E6 /* Utilities.swift */,
 				7B9C5A6B273F327700A17134 /* Variables.swift */,
 				7B917E5827641E3600887F95 /* SimplePing.h */,
 				7B917E5B27641E5300887F95 /* SimplePing.m */,
 				7B917E5E27641E9700887F95 /* SimplePingAdapter.swift */,
 				7B917E6127641EC200887F95 /* PlainPing.swift */,
-				7BBBC5202776912700D1CF3E /* DateFormats.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -1032,6 +1040,7 @@
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA206F2466796100A92736 /* ApplicationLoader.swift in Sources */,
 				7BCBBD1D274747D900219CA0 /* ObjC.m in Sources */,
+				7B8F888E279FB1A500713BA7 /* Swen.swift in Sources */,
 				7B228B0C2734F8E80052610B /* ExpTracker.swift in Sources */,
 				7B10A569275C0CC1000FEDE8 /* PluginManager.swift in Sources */,
 				7B917E6227641EC200887F95 /* PlainPing.swift in Sources */,
@@ -1063,6 +1072,7 @@
 				F9CA206024664D4100A92736 /* VariablesLoader.swift in Sources */,
 				7BAC83FC25E0739B00A6C7D5 /* ScriptCommandHandler.swift in Sources */,
 				7BBBC51E2772C4E800D1CF3E /* EditCommandHandler.swift in Sources */,
+				7B8F8891279FB25B00713BA7 /* LinkedList.swift in Sources */,
 				F9BCF2EE22E177E100C7F7F0 /* AppDelegate.swift in Sources */,
 				F9CA20662466719600A92736 /* ApplicationSettings.swift in Sources */,
 				7B10A694275FFA25000FEDE8 /* EvalCommandHandler.swift in Sources */,
@@ -1145,6 +1155,7 @@
 				F9CA206D2466765D00A92736 /* WindowCommandHandlerTests.swift in Sources */,
 				7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */,
 				7B917E50276411A300887F95 /* EpediaCommandHandler.swift in Sources */,
+				7B8F888F279FB1A500713BA7 /* Swen.swift in Sources */,
 				F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				7B9C5A6D273F327700A17134 /* Variables.swift in Sources */,
 				F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,
@@ -1196,6 +1207,7 @@
 				7B228B2F273B82A80052610B /* StringExtensionTests.swift in Sources */,
 				7B917E4D2763FF7E00887F95 /* PrintBoxCommandHandler.swift in Sources */,
 				F98B492D2471F38E000E2D92 /* Logger.swift in Sources */,
+				7B8F8892279FB25B00713BA7 /* LinkedList.swift in Sources */,
 				7B228B06273059A90052610B /* DirectionsView.swift in Sources */,
 				F98B4914246FA438000E2D92 /* TriggerLoader.swift in Sources */,
 				F98B48FB246F5C93000E2D92 /* PresetLoaderTests.swift in Sources */,

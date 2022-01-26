@@ -37,7 +37,8 @@ class ScriptTests: XCTestCase {
         script.run(args)
 
         for (index, message) in expect.enumerated() {
-            XCTAssertEqual(message, events.history.dropFirst(index + 2).first?.text?.text)
+            let evt = events.history.dropFirst(index + 2).first as? EchoTextEvent
+            XCTAssertEqual(message, evt?.text)
         }
         return events
     }

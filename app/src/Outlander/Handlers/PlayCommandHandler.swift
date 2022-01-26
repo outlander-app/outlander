@@ -39,7 +39,7 @@ class PlayCommandHandler: NSObject, ICommandHandler, NSSoundDelegate {
         } else {
             let joined = commands.joined(separator: " ")
             guard joined.count > 0 else {
-                context.events.echoError("Usage: #play <file name.mp3>")
+                context.events2.echoError("Usage: #play <file name.mp3>")
                 removeStoppedSounds()
                 return
             }
@@ -56,7 +56,7 @@ class PlayCommandHandler: NSObject, ICommandHandler, NSSoundDelegate {
             let outlanderFile = context.applicationSettings.paths.sounds.appendingPathComponent(soundFile)
 
             if !outlanderFile.checkFileExist() {
-                context.events.echoError("Could not find audio file at '\(file.path)' or '\(outlanderFile.path)'.")
+                context.events2.echoError("Could not find audio file at '\(file.path)' or '\(outlanderFile.path)'.")
                 return
             }
 
@@ -70,7 +70,7 @@ class PlayCommandHandler: NSObject, ICommandHandler, NSSoundDelegate {
                 self.sounds.append(sound)
                 sound.play()
             } else {
-                context.events.echoError("Could not play audio file at '\(file.path)'")
+                context.events2.echoError("Could not play audio file at '\(file.path)'")
             }
         }
     }

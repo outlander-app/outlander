@@ -237,10 +237,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameStream?.addHandler(scriptRunner!)
 
         commandInput.executeCommand = { command in
-//            if command.trimmingCharacters(in: CharacterSet.whitespaces).lowercased() == "gif" {
-//                self.gameWindows["main"]?.addImage()
-//            }
-
             self.commandProcessor!.process(command, with: self.gameContext)
         }
 
@@ -251,11 +247,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
 //        addWindow(WindowSettings(name: "percwindow", visible: true, closedTarget: nil, x: 800, y: 400, height: 200, width: 350))
 //        addWindow(WindowSettings(name: "inv", visible: false, closedTarget: nil, x: 800, y: 600, height: 200, width: 350))
 
-        gameContext.events.handle(self, channel: "ol:gamecommand") { result in
-            guard let command = result as? Command2 else {
-                return
-            }
-
+        gameContext.events2.register(self) { (evt: GameCommandEvent) in
+            let command = evt.command
             let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
             let mono = command.fileName.count > 0 ? true : false
 
@@ -269,73 +262,46 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.gameServer?.sendCommand(command.command)
         }
 
-        gameContext.events.handle(self, channel: "ol:command") { result in
-            guard let command = result as? Command2 else {
-                return
-            }
-
-//            print("processing command \(command.command)")
-
-            self.commandProcessor?.process(command, with: self.gameContext)
+        gameContext.events2.register(self) { (evt: CommandEvent) in
+            self.commandProcessor?.process(evt.command, with: self.gameContext)
         }
 
-        gameContext.events.handle(self, channel: "ol:echo") { result in
-            if let tag = result as? TextTag {
-                self.logTag([tag])
-            }
+        gameContext.events2.register(self) { (evt: WindowCommandEvent) in
+            self.processWindowCommand(evt.action, window: evt.window)
         }
 
-        gameContext.events.handle(self, channel: "ol:window") { result in
-            if let dict = result as? [String: String] {
-                let action = dict["action"] ?? ""
-                let window = dict["window"] ?? ""
-                self.processWindowCommand(action, window: window)
-            }
+        gameContext.events2.register(self) { (evt: EchoTextEvent) in
+            self.logText(evt.text, preset: evt.preset, color: evt.color, mono: evt.mono)
         }
 
-        gameContext.events.handle(self, channel: "ol:text") { result in
-            if let data = result as? TextData {
-                self.logText(data.text, preset: data.preset, color: data.color, mono: data.mono)
-            }
+        gameContext.events2.register(self) { (evt: EchoTagEvent) in
+            self.logTag([evt.tag])
         }
 
-        gameContext.events.handle(self, channel: "ol:texttag") { result in
-            if let data = result as? TextTag {
-                self.logTag([data])
-            }
-        }
-
-        gameContext.events.handle(self, channel: "ol:error") { result in
-            if let text = result as? String {
-                self.logError(text)
-            }
+        gameContext.events2.register(self) { (evt: ErrorEvent) in
+            self.logError(evt.error)
         }
 
         let indicators = ["bleeding", "stunned", "poisoned", "webbed", "burning", "standing", "sitting", "kneeling", "prone", "dead", "hidden", "invisible", "joined"]
 
-        gameContext.events.handle(self, channel: "ol:variable:changed") { result in
-            if let dict = result as? [String: String] {
-                for (key, value) in dict {
-                    self.pluginManager?.variableChanged(variable: key, value: value)
+        gameContext.events2.register(self) { (evt: VariableChangedEvent) in
+            let key = evt.key
+            let value = evt.value
 
-                    if key == "zoneid" || key == "roomid" {
-                        print("GameViewController - \(key) changed to \(value)")
-                        self.shouldUpdateRoom = true
-                    }
+            self.pluginManager?.variableChanged(variable: key, value: value)
 
-                    if indicators.contains(key) {
-                        self.statusBarController?.setIndicator(name: key, enabled: value == "1")
-                    }
-                }
+            if key == "zoneid" || key == "roomid" {
+                print("GameViewController - \(key) changed to \(value)")
+                self.shouldUpdateRoom = true
+            }
+
+            if indicators.contains(key) {
+                self.statusBarController?.setIndicator(name: key, enabled: value == "1")
             }
         }
 
-        gameContext.events.handle(self, channel: "ol:game:parse") { result in
-            guard let data = result as? String else {
-                return
-            }
-
-            self.handleRawStream(data: data, streamData: false)
+        gameContext.events2.register(self) { (evt: GameParseEvent) in
+            self.handleRawStream(data: evt.text, streamData: false)
         }
 
         vitalsBar.presetFor = { name in
@@ -362,7 +328,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
-        gameContext.events.unregister(self)
+        gameContext.events2.unregister(self, DummyEvent<CommandEvent>())
+        gameContext.events2.unregister(self, DummyEvent<GameCommandEvent>())
+        gameContext.events2.unregister(self, DummyEvent<GameParseEvent>())
+        gameContext.events2.unregister(self, DummyEvent<ErrorEvent>())
+        gameContext.events2.unregister(self, DummyEvent<EchoTagEvent>())
+        gameContext.events2.unregister(self, DummyEvent<EchoTextEvent>())
+        gameContext.events2.unregister(self, DummyEvent<VariableChangedEvent>())
+        gameContext.events2.unregister(self, DummyEvent<WindowCommandEvent>())
     }
 
     func windowDidBecomeKey(_: Notification) {

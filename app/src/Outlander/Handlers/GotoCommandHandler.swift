@@ -8,6 +8,10 @@
 
 import Foundation
 
+struct AutomapperPathEvent: Event {
+    var path: [String]
+}
+
 class GotoComandHandler: ICommandHandler {
     var command = "#goto"
 
@@ -60,36 +64,36 @@ class GotoComandHandler: ICommandHandler {
                 : $0
         }.joined(separator: " ")
 
-        context.events.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
+        context.events2.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
     }
 
     func goto(to: MapNode?, from: MapNode?, matches: [MapNode], area: String, context: GameContext) {
         guard let zone = context.mapZone else {
             let msg = "no map data loaded"
-            context.events.echoError(msg)
-            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
-            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER NO MAP DATA", isSystemCommand: true))
+            context.events2.echoError(msg)
+            context.events2.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events2.sendCommand(Command2(command: "#parse AUTOMAPPER NO MAP DATA", isSystemCommand: true))
             return
         }
 
         guard let to = to, let from = from else {
             let msg = "no path found for \"\(area)\""
-            context.events.echoError(msg)
-            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
-            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER NO PATH FOUND", isSystemCommand: true))
+            context.events2.echoError(msg)
+            context.events2.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events2.sendCommand(Command2(command: "#parse AUTOMAPPER NO PATH FOUND", isSystemCommand: true))
             return
         }
 
         if to.id == from.id {
             let msg = "You are already here!"
-            context.events.echoText("[AutoMapper]: \(msg)", preset: "automapper")
-            context.events.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
-            context.events.sendCommand(Command2(command: "#parse AUTOMAPPER ALREADY HERE", isSystemCommand: true))
+            context.events2.echoText("[AutoMapper]: \(msg)", preset: "automapper")
+            context.events2.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
+            context.events2.sendCommand(Command2(command: "#parse AUTOMAPPER ALREADY HERE", isSystemCommand: true))
             return
         }
 
         for match in matches {
-            context.events.echoText("[AutoMapper]: \(match)", preset: "automapper")
+            context.events2.echoText("[AutoMapper]: \(match)", preset: "automapper")
         }
 
         let finder = Pathfinder()
@@ -97,11 +101,11 @@ class GotoComandHandler: ICommandHandler {
         let moves = zone.getMoves(ids: path)
         let diff = Date() - started
 
-        context.events.post("ol:mapper:setpath", data: path)
+        context.events2.post(AutomapperPathEvent(path: path))
 
         if context.globalVars["debugautomapper"]?.toBool() == true {
-            context.events.echoText("[AutoMapper] (debug): " + moves.joined(separator: ", "), preset: "automapper")
-            context.events.echoText("[AutoMapper] (debug): found path in: \(diff.formatted)", preset: "automapper")
+            context.events2.echoText("[AutoMapper] (debug): " + moves.joined(separator: ", "), preset: "automapper")
+            context.events2.echoText("[AutoMapper] (debug): found path in: \(diff.formatted)", preset: "automapper")
         }
         processMoves(moves: moves, context: context)
     }

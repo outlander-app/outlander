@@ -64,10 +64,10 @@ class GlobalVariables: Variables {
 
     static var dateFormatter = DateFormatter()
 
-    init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
+    init(events: Events2, settings: ApplicationSettings, clock: IClock = Clock()) {
         self.clock = clock
         self.settings = settings
-        super.init(eventKey: "ol:variable:changed", events: events)
+        super.init(events: events)
     }
 
     override func addDynamics() {
@@ -100,10 +100,10 @@ class ScriptVariables: Variables {
     private var timerStartTime: Date?
     private var timerEndTime: Date?
 
-    init(events: Events, settings: ApplicationSettings, clock: IClock = Clock()) {
+    init(events: Events2, settings: ApplicationSettings, clock: IClock = Clock()) {
         self.clock = clock
         self.settings = settings
-        super.init(eventKey: "", events: events)
+        super.init(events: events)
     }
 
     func startTimer(_ at: Date? = nil) {
@@ -136,15 +136,12 @@ class ScriptVariables: Variables {
 class Variables {
     private let lock = NSRecursiveLock()
     private var vars: [String: DynamicValue] = [:]
-    private var events: Events
-
-    private var eventKey: String
+    private var events: Events2
 
     private var dynamicKeys: [String] = []
 
-    init(eventKey: String, events: Events = NulloEvents()) {
+    init(events: Events2 = NulloEvents2()) {
         self.events = events
-        self.eventKey = eventKey
 
         addDynamics()
     }
@@ -168,10 +165,7 @@ class Variables {
             }
             vars[key] = .value(res)
             lock.unlock()
-            if eventKey.count > 0 {
-//                print("var changed: \(key): \(res)")
-                events.post(eventKey, data: [key: res])
-            }
+            events.variableChanged(key, value: res)
         }
     }
 

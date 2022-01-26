@@ -18,52 +18,25 @@ class ScriptToolbarViewController: NSViewController {
         super.viewDidLoad()
     }
 
+    deinit {
+        context?.events2.unregister(self, DummyEvent<ScriptEvent>())
+    }
+
     func setContext(_ context: GameContext) {
         self.context = context
 
-        context.events.handle(self, channel: "ol:script:add") { result in
-            guard let name = result as? String else {
-                return
-            }
-
+        context.events2.register(self) { (evt: ScriptEvent) in
             DispatchQueue.main.async {
-                self.addScript(name)
-            }
-        }
-
-        context.events.handle(self, channel: "ol:script:pause") { result in
-            guard let name = result as? String else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                self.pauseScript(name)
-            }
-        }
-
-        context.events.handle(self, channel: "ol:script:resume") { result in
-            guard let name = result as? String else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                self.resumeScript(name)
-            }
-        }
-
-        context.events.handle(self, channel: "ol:script:remove") { result in
-            guard let name = result as? String else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                self.removeScript(name)
-            }
-        }
-
-        context.events.handle(self, channel: "ol:script:removeall") { _ in
-            DispatchQueue.main.async {
-                self.removeAll()
+                switch evt.command {
+                case .add:
+                    self.addScript(evt.name)
+                case .pause:
+                    self.pauseScript(evt.name)
+                case .resume:
+                    self.resumeScript(evt.name)
+                case .abort:
+                    self.removeScript(evt.name)
+                }
             }
         }
     }
@@ -84,14 +57,6 @@ class ScriptToolbarViewController: NSViewController {
                 if button.menu?.title.lowercased() == scriptName.lowercased() || scriptName == "all" {
                     button.menu?.item(at: 0)?.image = NSImage(named: "NSStatusPartiallyAvailable")
                 }
-            }
-        }
-    }
-
-    func removeAll() {
-        for view in view.subviews {
-            if let button = view as? NSPopUpButton {
-                button.removeFromSuperview()
             }
         }
     }
@@ -123,14 +88,14 @@ class ScriptToolbarViewController: NSViewController {
                 return
             }
             let scriptName = menuItem.menu!.title
-            context?.events.sendCommand(Command2(command: "#script \(action) \(scriptName)", isSystemCommand: true))
+            context?.events2.sendCommand(Command2(command: "#script \(action) \(scriptName)", isSystemCommand: true))
         }
     }
 
     @objc func debugMenuItemSelection(_ target: NSMenuItem) {
         let level = ScriptLogLevel(rawValue: target.tag) ?? ScriptLogLevel.none
         let scriptName = target.menu!.title
-        context?.events.sendCommand(Command2(command: "#script debug \(scriptName) \(level.rawValue)", isSystemCommand: true))
+        context?.events2.sendCommand(Command2(command: "#script debug \(scriptName) \(level.rawValue)", isSystemCommand: true))
     }
 
     func updateButtonFrames() {

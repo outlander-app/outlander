@@ -68,7 +68,7 @@ class LogCommandHandler: ICommandHandler {
             let file = context.applicationSettings.paths.logs.appendingPathComponent(fileName)
             try files.append(text, to: file)
         } catch {
-            context.events.echoError("Error trying to write to file:\n  \(error)")
+            context.events2.echoError("Error trying to write to file:\n  \(error)")
         }
     }
 }

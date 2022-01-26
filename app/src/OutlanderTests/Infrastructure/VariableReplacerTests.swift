@@ -10,7 +10,7 @@ import Foundation
 import XCTest
 
 class VariableReplacerTests: XCTestCase {
-    let variables = Variables(eventKey: "")
+    let variables = Variables()
     let replacer = VariableReplacer()
 
     func test_replaces_global_vars() {

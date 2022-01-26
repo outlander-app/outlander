@@ -19,7 +19,7 @@ class WindowCommandHandlerTests: XCTestCase {
         handler = WindowCommandHandler(files)
         context = GameContext()
         events = InMemoryEvents()
-        context.events = events
+        context.events2 = events
         context.applicationSettings.paths.rootUrl = URL(fileURLWithPath: "/Users/jomc/Documents/Outlander/", isDirectory: true)
     }
 
@@ -36,9 +36,9 @@ class WindowCommandHandlerTests: XCTestCase {
     func test_handles_list_command() {
         handler.handle("#window list", with: context)
 
-        if let data = events.lastData as? [String: String] {
-            XCTAssertEqual(data["action"], "list")
-            XCTAssertEqual(data["window"], "")
+        if let data = events.lastData as? WindowCommandEvent {
+            XCTAssertEqual(data.action, "list")
+            XCTAssertEqual(data.window, "")
         } else {
             XCTFail("Did not recieve data")
         }
@@ -48,9 +48,9 @@ class WindowCommandHandlerTests: XCTestCase {
         files.contentToLoad = "{}"
         handler.handle("#window reload", with: context)
 
-        if let data = events.lastData as? [String: String] {
-            XCTAssertEqual(data["action"], "reload")
-            XCTAssertEqual(data["window"], "")
+        if let data = events.lastData as? WindowCommandEvent {
+            XCTAssertEqual(data.action, "reload")
+            XCTAssertEqual(data.window, "")
         } else {
             XCTFail("Did not recieve data")
         }
@@ -59,9 +59,9 @@ class WindowCommandHandlerTests: XCTestCase {
     func test_handles_add_command() {
         handler.handle("#window add log", with: context)
 
-        if let data = events.lastData as? [String: String] {
-            XCTAssertEqual(data["action"], "add")
-            XCTAssertEqual(data["window"], "log")
+        if let data = events.lastData as? WindowCommandEvent {
+            XCTAssertEqual(data.action, "add")
+            XCTAssertEqual(data.window, "log")
         } else {
             XCTFail("Did not recieve data")
         }
@@ -70,9 +70,9 @@ class WindowCommandHandlerTests: XCTestCase {
     func test_handles_show_command() {
         handler.handle("#window show log", with: context)
 
-        if let data = events.lastData as? [String: String] {
-            XCTAssertEqual(data["action"], "show")
-            XCTAssertEqual(data["window"], "log")
+        if let data = events.lastData as? WindowCommandEvent {
+            XCTAssertEqual(data.action, "show")
+            XCTAssertEqual(data.window, "log")
         } else {
             XCTFail("Did not recieve data")
         }
@@ -81,9 +81,9 @@ class WindowCommandHandlerTests: XCTestCase {
     func test_handles_hide_command() {
         handler.handle("#window hide log", with: context)
 
-        if let data = events.lastData as? [String: String] {
-            XCTAssertEqual(data["action"], "hide")
-            XCTAssertEqual(data["window"], "log")
+        if let data = events.lastData as? WindowCommandEvent {
+            XCTAssertEqual(data.action, "hide")
+            XCTAssertEqual(data.window, "log")
         } else {
             XCTFail("Did not recieve data")
         }

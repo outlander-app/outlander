@@ -30,13 +30,13 @@ class PresetCommandHandler: ICommandHandler {
         switch commands[0].lowercased() {
         case "clear":
             context.presets.removeAll()
-            context.events.echoText("Presets cleared")
+            context.events2.echoText("Presets cleared")
         case "load", "reload":
             PresetLoader(files).load(context.applicationSettings, context: context)
-            context.events.echoText("Presets reloaded")
+            context.events2.echoText("Presets reloaded")
         case "save":
             PresetLoader(files).save(context.applicationSettings, presets: context.presets)
-            context.events.echoText("Presets saved")
+            context.events2.echoText("Presets saved")
         case "help":
             fallthrough
         default:
@@ -45,11 +45,11 @@ class PresetCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("#preset commands:")
-        context.events.echoText("  clear, reload, save, help")
-        context.events.echoText("  ex:")
-        context.events.echoText("    #preset clear")
-        context.events.echoText("    #preset reload")
-        context.events.echoText("    #preset save")
+        context.events2.echoText("#preset commands:")
+        context.events2.echoText("  clear, reload, save, help")
+        context.events2.echoText("  ex:")
+        context.events2.echoText("    #preset clear")
+        context.events2.echoText("    #preset reload")
+        context.events2.echoText("    #preset save")
     }
 }

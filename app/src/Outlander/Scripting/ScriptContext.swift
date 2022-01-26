@@ -17,10 +17,10 @@ class ScriptContext {
     var labels: [String: Label] = [:]
     var variables: ScriptVariables
     var args: [String] = []
-    var argumentVars = Variables(eventKey: "")
-    var actionVars = Variables(eventKey: "")
-    var labelVars = Variables(eventKey: "")
-    var regexVars = Variables(eventKey: "")
+    var argumentVars = Variables()
+    var actionVars = Variables()
+    var labelVars = Variables()
+    var regexVars = Variables()
     var currentLineNumber: Int = -1
 
     var ifStack = Stack<ScriptLine>()
@@ -56,7 +56,7 @@ class ScriptContext {
 
     init(context: GameContext) {
         self.context = context
-        variables = ScriptVariables(events: context.events, settings: context.applicationSettings)
+        variables = ScriptVariables(events: context.events2, settings: context.applicationSettings)
         tokenizer = ScriptTokenizer()
     }
 

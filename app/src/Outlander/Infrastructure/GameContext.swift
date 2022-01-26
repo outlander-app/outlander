@@ -9,7 +9,7 @@
 import Foundation
 
 class GameContext {
-    var events: Events
+    var events2: Events2
 
     var applicationSettings = ApplicationSettings()
     var layout: WindowLayout?
@@ -30,8 +30,8 @@ class GameContext {
         }
     }
 
-    init(_ events: Events = SwiftEventBusEvents()) {
-        self.events = events
+    init(_ events: Events2 = SwenEvents()) {
+        events2 = events
         globalVars = GlobalVariables(events: events, settings: applicationSettings)
     }
 

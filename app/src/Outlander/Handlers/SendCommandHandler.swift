@@ -32,13 +32,13 @@ class SendCommandHandler: ICommandHandler {
         let data = text[commandLength...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !data.isEmpty else {
-            context.events.echoText("#send queue:")
+            context.events2.echoText("#send queue:")
             let messages = queue.all
             for cmd in messages {
-                context.events.echoText("  \(cmd)")
+                context.events2.echoText("  \(cmd)")
             }
             if messages.count > 0 {
-                context.events.echoText("\n")
+                context.events2.echoText("\n")
             }
             return
         }
@@ -75,7 +75,7 @@ class SendCommandHandler: ICommandHandler {
 
     func processQueue(_ context: GameContext) {
         while let data = queue.dequeue() {
-            context.events.sendCommand(Command2(command: data, preset: "scriptinput"))
+            context.events2.sendCommand(Command2(command: data, preset: "scriptinput"))
         }
     }
 }

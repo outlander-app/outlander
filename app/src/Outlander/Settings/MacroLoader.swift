@@ -359,7 +359,7 @@ class MacroLoader {
             if let macro = Macro.from(&line) {
                 context.macros[macro.description] = macro
             } else {
-                context.events.echoError("Invalid macro: \(line)")
+                context.events2.echoError("Invalid macro: \(line)")
             }
         }
     }

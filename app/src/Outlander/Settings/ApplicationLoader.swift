@@ -100,7 +100,7 @@ class ApplicationLoader {
             do {
                 try files.ensure(folder: folder)
             } catch {
-                context.events.echoError("Error creating to create folder \(folder.path)")
+                context.events2.echoError("Error creating to create folder \(folder.path)")
             }
         }
     }

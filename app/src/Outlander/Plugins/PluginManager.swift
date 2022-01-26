@@ -43,6 +43,11 @@ class LocalPlugin {
     }
 }
 
+struct PluginEvent: Event {
+    var command: String
+    var name: String
+}
+
 class PluginManager: OPlugin {
     private var host: IHost?
     private var files: FileSystem?
@@ -59,17 +64,13 @@ class PluginManager: OPlugin {
         self.files = files
         self.context = context
 
-        context.events.handle(self, channel: "ol:plugin") { result in
-            guard let (command, name) = result as? (String, String) else {
-                return
-            }
-
+        context.events2.register(self) { (evt: PluginEvent) in
             DispatchQueue.main.async {
-                switch command.lowercased() {
+                switch evt.command.lowercased() {
                 case "load", "reload":
-                    self.load(name)
+                    self.load(evt.name)
                 case "unload":
-                    self.unload(name)
+                    self.unload(evt.name)
                 default:
                     print("hrm")
                 }
@@ -78,6 +79,10 @@ class PluginManager: OPlugin {
     }
 
     required init() {}
+
+    deinit {
+        context?.events2.unregister(self, DummyEvent<PluginEvent>())
+    }
 
     func add(_ plugin: OPlugin) {
         plugins.append(LocalPlugin(value: plugin))
@@ -108,7 +113,7 @@ class PluginManager: OPlugin {
                 }
             }
         } catch {
-            context.events.echoError("Error when trying to load plugin \(name):\n\(error)")
+            context.events2.echoError("Error when trying to load plugin \(name):\n\(error)")
         }
     }
 
@@ -143,7 +148,7 @@ class PluginManager: OPlugin {
                     }
                 }
             } catch {
-                self.context?.events.echoError("Error when trying to load plugin \(url):\n\(error)")
+                self.context?.events2.echoError("Error when trying to load plugin \(url):\n\(error)")
             }
         }
     }

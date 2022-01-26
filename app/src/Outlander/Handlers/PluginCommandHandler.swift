@@ -26,19 +26,19 @@ class PluginCommandHandler: ICommandHandler {
             case "load", "reload":
                 let pluginName = commands.count > 1 ? commands[1] : ""
                 guard !pluginName.isEmpty else {
-                    context.events.echoError("Plugin name not specified")
+                    context.events2.echoError("Plugin name not specified")
                     return
                 }
-                context.events.echoText("Reloading \(pluginName)")
-                context.events.post("ol:plugin", data: ("load", pluginName))
+                context.events2.echoText("Reloading \(pluginName)")
+                context.events2.post(PluginEvent(command: "load", name: pluginName))
             case "unload":
                 let pluginName = commands.count > 1 ? commands[1] : ""
                 guard !pluginName.isEmpty else {
-                    context.events.echoError("Plugin name not specified")
+                    context.events2.echoError("Plugin name not specified")
                     return
                 }
-                context.events.echoText("Unloading \(pluginName)")
-                context.events.post("ol:plugin", data: ("unload", pluginName))
+                context.events2.echoText("Unloading \(pluginName)")
+                context.events2.post(PluginEvent(command: "unload", name: pluginName))
             default:
                 displayHelp(context)
             }
@@ -46,7 +46,7 @@ class PluginCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("#plugin")
-        context.events.echoText("  \(validCommands.joined(separator: ", "))")
+        context.events2.echoText("#plugin")
+        context.events2.echoText("  \(validCommands.joined(separator: ", "))")
     }
 }

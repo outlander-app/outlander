@@ -30,13 +30,13 @@ class TriggerCommandHandler: ICommandHandler {
         switch commands[0].lowercased() {
         case "clear":
             context.triggers.removeAll()
-            context.events.echoText("Triggers cleared")
+            context.events2.echoText("Triggers cleared")
         case "load", "reload":
             TriggerLoader(files).load(context.applicationSettings, context: context)
-            context.events.echoText("Triggers reloaded")
+            context.events2.echoText("Triggers reloaded")
         case "save":
             TriggerLoader(files).save(context.applicationSettings, triggers: context.triggers)
-            context.events.echoText("Triggers saved")
+            context.events2.echoText("Triggers saved")
         case "help":
             fallthrough
         default:
@@ -45,11 +45,11 @@ class TriggerCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("\(command) commands:")
-        context.events.echoText("  clear, reload, save, help")
-        context.events.echoText("  ex:")
-        context.events.echoText("    \(command) clear")
-        context.events.echoText("    \(command) reload")
-        context.events.echoText("    \(command) save")
+        context.events2.echoText("\(command) commands:")
+        context.events2.echoText("  clear, reload, save, help")
+        context.events2.echoText("  ex:")
+        context.events2.echoText("    \(command) clear")
+        context.events2.echoText("    \(command) reload")
+        context.events2.echoText("    \(command) save")
     }
 }

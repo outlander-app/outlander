@@ -30,13 +30,13 @@ class HighlightsCommandHandler: ICommandHandler {
         switch commands[0].lowercased() {
         case "clear":
             context.highlights.removeAll()
-            context.events.echoText("Highlights cleared")
+            context.events2.echoText("Highlights cleared")
         case "load", "reload":
             HighlightLoader(files).load(context.applicationSettings, context: context)
-            context.events.echoText("Highlights reloaded")
+            context.events2.echoText("Highlights reloaded")
         case "save":
             HighlightLoader(files).save(context.applicationSettings, highlights: context.highlights.all())
-            context.events.echoText("Highlights saved")
+            context.events2.echoText("Highlights saved")
         case "help":
             fallthrough
         default:
@@ -45,11 +45,11 @@ class HighlightsCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("\(command) commands:")
-        context.events.echoText("  clear, reload, save, help")
-        context.events.echoText("  ex:")
-        context.events.echoText("    \(command) clear")
-        context.events.echoText("    \(command) reload")
-        context.events.echoText("    \(command) save")
+        context.events2.echoText("\(command) commands:")
+        context.events2.echoText("  clear, reload, save, help")
+        context.events2.echoText("  ex:")
+        context.events2.echoText("    \(command) clear")
+        context.events2.echoText("    \(command) reload")
+        context.events2.echoText("    \(command) save")
     }
 }

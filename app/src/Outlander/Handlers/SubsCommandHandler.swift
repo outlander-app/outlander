@@ -30,13 +30,13 @@ class SubsCommandHandler: ICommandHandler {
         switch commands[0].lowercased() {
         case "clear":
             context.substitutes.removeAll()
-            context.events.echoText("Subs cleared")
+            context.events2.echoText("Subs cleared")
         case "load", "reload":
             SubstituteLoader(files).load(context.applicationSettings, context: context)
-            context.events.echoText("Subs reloaded")
+            context.events2.echoText("Subs reloaded")
         case "save":
             SubstituteLoader(files).save(context.applicationSettings, subsitutes: context.substitutes.all())
-            context.events.echoText("Subs saved")
+            context.events2.echoText("Subs saved")
         case "help":
             fallthrough
         default:
@@ -45,11 +45,11 @@ class SubsCommandHandler: ICommandHandler {
     }
 
     func displayHelp(_ context: GameContext) {
-        context.events.echoText("#subs commands:")
-        context.events.echoText("  clear, reload, save, help")
-        context.events.echoText("  ex:")
-        context.events.echoText("    #subs clear")
-        context.events.echoText("    #subs reload")
-        context.events.echoText("    #subs save")
+        context.events2.echoText("#subs commands:")
+        context.events2.echoText("  clear, reload, save, help")
+        context.events2.echoText("  ex:")
+        context.events2.echoText("    #subs clear")
+        context.events2.echoText("    #subs reload")
+        context.events2.echoText("    #subs save")
     }
 }

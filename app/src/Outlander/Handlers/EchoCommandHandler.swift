@@ -35,6 +35,6 @@ class EchoCommandHandler: ICommandHandler {
         tag.mono = true
         tag.preset = "scriptecho"
 
-        with.events.post("ol:echo", data: tag)
+        with.events2.echoTag(tag)
     }
 }

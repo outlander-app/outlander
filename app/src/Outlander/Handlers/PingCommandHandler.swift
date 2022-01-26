@@ -21,12 +21,12 @@ class PingCommandHandler: ICommandHandler {
 
             if !hasError {
                 context.globalVars["serverping"] = result
-                context.events.echoText("PING: \(display)")
+                context.events2.echoText("PING: \(display)")
             } else {
-                context.events.echoText("PING: \(display)", preset: "scripterror")
+                context.events2.echoText("PING: \(display)", preset: "scripterror")
             }
 
-            context.events.sendCommand(Command2(command: "#parse PING: \(display)", isSystemCommand: true))
+            context.events2.sendCommand(Command2(command: "#parse PING: \(display)", isSystemCommand: true))
             self.pinger = nil
         }
         pinger?.ping()

@@ -28,41 +28,41 @@ class AliasCommandHandler: ICommandHandler {
                     }
 
                     let added = context.upsertAlias(alias: alias)
-                    context.events.echoText(added ? "Alias added" : "Alias updated")
+                    context.events2.echoText(added ? "Alias added" : "Alias updated")
                 } else {
-                    context.events.echoText("Invalid syntax. Usage: #alias add {pattern} {replace} {class}")
+                    context.events2.echoText("Invalid syntax. Usage: #alias add {pattern} {replace} {class}")
                 }
                 return
 
             case "clear":
                 context.aliases = []
-                context.events.echoText("Aliases cleared")
+                context.events2.echoText("Aliases cleared")
                 return
 
             case "load", "reload":
                 AliasLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
-                context.events.echoText("Aliases reloaded")
+                context.events2.echoText("Aliases reloaded")
                 return
 
             case "save":
                 AliasLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, aliases: context.aliases)
-                context.events.echoText("Aliases saved")
+                context.events2.echoText("Aliases saved")
                 return
 
             case "list":
                 fallthrough
             default:
-                context.events.echoText("")
+                context.events2.echoText("")
 
                 if context.aliases.isEmpty {
-                    context.events.echoText("There are no aliases saved.")
+                    context.events2.echoText("There are no aliases saved.")
                 }
 
-                context.events.echoText("Aliases:")
+                context.events2.echoText("Aliases:")
                 for alias in context.aliases {
-                    context.events.echoText(String(describing: alias))
+                    context.events2.echoText(String(describing: alias))
                 }
-                context.events.echoText("")
+                context.events2.echoText("")
                 return
             }
         }

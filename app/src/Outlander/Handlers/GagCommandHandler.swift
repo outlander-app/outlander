@@ -27,42 +27,42 @@ class GagCommandHandler: ICommandHandler {
                         return
                     }
                     let added = context.upsertGag(gag: gag)
-                    context.events.echoText(added ? "Gag added" : "Gag already exists")
+                    context.events2.echoText(added ? "Gag added" : "Gag already exists")
                 } else {
-                    context.events.echoText("Invalid syntax. Usage: #gag add {gag} {class}")
+                    context.events2.echoText("Invalid syntax. Usage: #gag add {gag} {class}")
                 }
                 return
 
             case "clear":
                 context.gags = []
-                context.events.echoText("Gags cleared")
+                context.events2.echoText("Gags cleared")
                 return
 
             case "load", "reload":
                 GagLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
-                context.events.echoText("Gags reloaded")
+                context.events2.echoText("Gags reloaded")
                 return
 
             case "save":
                 GagLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, gags: context.gags)
-                context.events.echoText("Gags saved")
+                context.events2.echoText("Gags saved")
                 return
 
             case "list":
                 fallthrough
             default:
-                context.events.echoText("")
+                context.events2.echoText("")
 
                 if context.gags.isEmpty {
-                    context.events.echoText("There are no gags saved.")
+                    context.events2.echoText("There are no gags saved.")
                     return
                 }
 
-                context.events.echoText("Gags:")
+                context.events2.echoText("Gags:")
                 for gag in context.gags {
-                    context.events.echoText(String(describing: gag))
+                    context.events2.echoText(String(describing: gag))
                 }
-                context.events.echoText("")
+                context.events2.echoText("")
                 return
             }
         }

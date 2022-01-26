@@ -65,7 +65,7 @@ class ScriptLoader: IScriptLoader {
         let nameToUse = fileName.hasSuffix(".cmd") ? fileName : "\(fileName).cmd"
         for path in pathsToCheck() {
             if echo {
-                context.events.echoText("Searching for '\(nameToUse)' in \(path.path)", preset: "scriptecho", mono: true)
+                context.events2.echoText("Searching for '\(nameToUse)' in \(path.path)", preset: "scriptecho", mono: true)
             }
             let fullName = path.appendingPathComponent("\(nameToUse)")
             if files.fileExists(fullName) {

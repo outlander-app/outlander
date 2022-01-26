@@ -8,6 +8,11 @@
 
 import Foundation
 
+struct WindowCommandEvent: Event {
+    var action: String
+    var window: String
+}
+
 class WindowCommandHandler: ICommandHandler {
     let command = "#window"
 
@@ -26,7 +31,9 @@ class WindowCommandHandler: ICommandHandler {
             let loader = WindowLayoutLoader(files)
             if let layout = loader.load(context.applicationSettings, file: context.applicationSettings.profile.layout) {
                 context.layout = layout
-                context.events.post("ol:window", data: ["action": "reload", "window": ""])
+
+                let evt = WindowCommandEvent(action: "reload", window: "")
+                context.events2.post(evt)
             }
             return
         }
@@ -39,7 +46,8 @@ class WindowCommandHandler: ICommandHandler {
         let window = matches.valueAt(index: 3) ?? ""
 
         if validCommands.contains(action) {
-            context.events.post("ol:window", data: ["action": action, "window": window.lowercased()])
+            let evt = WindowCommandEvent(action: action, window: window.lowercased())
+            context.events2.post(evt)
         }
     }
 }

@@ -267,10 +267,6 @@ class Script {
         Script.dateFormatter.dateFormat = "hh:mm a"
     }
 
-    deinit {
-        self.gameContext.events.unregister(self)
-    }
-
     func run(_ args: [String]) {
         func doRun() {
             started = Date()
@@ -473,8 +469,7 @@ class Script {
         let diff = Date().timeIntervalSince(started!)
         sendText("[Script '\(fileName)' completed after \(diff.formatted)]")
 
-        gameContext.events.unregister(self)
-        gameContext.events.post("ol:script:complete", data: fileName)
+        gameContext.events2.post(ScriptCompleteEvent(name: fileName))
     }
 
     func setLogLevel(_ level: ScriptLogLevel) {
@@ -609,14 +604,14 @@ class Script {
 
     private func sendText(_ text: String, preset: String = "scriptinput", scriptLine: Int = -1, fileName: String = "") {
         guard fileName.count > 0 else {
-            gameContext.events.echoText("\(text)", preset: preset, mono: true)
+            gameContext.events2.echoText("\(text)", preset: preset, mono: true)
             return
         }
 
         let name = fileName == "" ? self.fileName : fileName
         let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
 
-        gameContext.events.echoText(display, preset: preset, mono: true)
+        gameContext.events2.echoText(display, preset: preset, mono: true)
     }
 
     private func notify(_ text: String, debug: ScriptLogLevel, preset: String = "scriptinfo", scriptLine: Int = -1, fileName: String = "") {
@@ -628,7 +623,7 @@ class Script {
 
         let display = scriptLine > -1 ? "[\(name)(\(scriptLine))]: \(text)" : "[\(name)]: \(text)"
 
-        gameContext.events.echoText(display, preset: preset)
+        gameContext.events2.echoText(display, preset: preset)
     }
 
     private func initialize(_ fileName: String, isInclude: Bool) {
@@ -663,7 +658,7 @@ class Script {
             context.variables["scriptname"] = scriptName
             context.variables["scriptfilepath"] = scriptFilePath
 
-            gameContext.events.post("ol:script:add", data: self.fileName)
+            gameContext.events2.post(ScriptEvent(command: .add, name: self.fileName))
         }
 
         var index = 0
@@ -993,7 +988,7 @@ class Script {
 
         let targetText = context.replaceVars(text)
 
-        gameContext.events.echoText(targetText, preset: "scriptecho", mono: true)
+        gameContext.events2.echoText(targetText, preset: "scriptecho", mono: true)
         return .next
     }
 
@@ -1593,7 +1588,7 @@ class Script {
         reactToStream.append(MoveOp())
 
         let command = Command2(command: send, fileName: fileName, preset: "scriptinput")
-        gameContext.events.sendCommand(command)
+        gameContext.events2.sendCommand(command)
 
         return .wait
     }
@@ -1636,7 +1631,7 @@ class Script {
 
         notify("printbox \(send)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
-        gameContext.events.sendCommand(Command2(command: "#printbox \(send)"))
+        gameContext.events2.sendCommand(Command2(command: "#printbox \(send)"))
 
         return .next
     }
@@ -1651,7 +1646,7 @@ class Script {
         notify("put \(send)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
 
         let command = Command2(command: send, fileName: fileName)
-        gameContext.events.sendCommand(command)
+        gameContext.events2.sendCommand(command)
 
         return .next
     }
@@ -1734,7 +1729,7 @@ class Script {
         notify("send \(result)", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
 
         let command = Command2(command: "#send \(result)", fileName: fileName, preset: "scriptinput")
-        gameContext.events.sendCommand(command)
+        gameContext.events2.sendCommand(command)
 
         return .next
     }

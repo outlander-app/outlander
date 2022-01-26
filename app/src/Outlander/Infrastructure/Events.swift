@@ -6,73 +6,113 @@
 //  Copyright © 2020 Joe McBride. All rights reserved.
 //
 
+import AppKit
 import Foundation
 
-protocol Events {
-    func post(_ channel: String, data: Any?)
-    func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void)
-    func unregister(_ target: AnyObject)
+protocol Events2 {
+    func post<EventType>(_ event: EventType) where EventType: Event
+    func register<EventType>(_ observer: AnyObject, handler: @escaping ((_ event: EventType) -> Void)) where EventType: Event
+
+    func post<EventType>(_ event: EventType) where EventType: StickyEvent
+    func register<EventType>(_ observer: AnyObject, handler: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent
+
+    func unregister<EventType>(_ observer: AnyObject, _ evt: DummyEvent<EventType>) where EventType: BaseEvent
 }
 
-extension Events {
-    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
-        let data = TextData(text: "\(text)\n".hexDecoededString(), preset: preset, color: color, mono: mono)
-        post("ol:text", data: data)
-    }
+class NulloEvents2: Events2 {
+    func post<EventType>(_: EventType) where EventType: Event {}
 
-    func echoTag(_ tag: TextTag) {
-        post("ol:texttag", data: tag)
-    }
+    func register<EventType>(_: AnyObject, handler _: @escaping ((EventType) -> Void)) where EventType: Event {}
 
-    func echoError(_ text: String) {
-        post("ol:error", data: "\(text)\n".hexDecoededString())
-    }
+    func post<EventType>(_: EventType) where EventType: StickyEvent {}
 
-    func sendCommand(_ command: Command2) {
-        post("ol:command", data: command)
-    }
+    func register<EventType>(_: AnyObject, handler _: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent {}
 
-    func variableChanged(_ key: String, value: String) {
-        post("ol:variable:changed", data: [key: value])
-    }
+    func unregister<EventType>(_: AnyObject, _: DummyEvent<EventType>) where EventType: BaseEvent {}
 }
 
-struct TextData {
+struct EchoTextEvent: StickyEvent {
     var text: String
     var preset: String?
     var color: String?
     var mono: Bool = false
 }
 
-class NulloEvents: Events {
-    func post(_: String, data _: Any?) {}
-
-    func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
-
-    func unregister(_: AnyObject) {}
+struct EchoTagEvent: StickyEvent {
+    var tag: TextTag
 }
 
-class SwiftEventBusEvents: Events {
-    public static var instance: Int = 0
+struct ErrorEvent: Event {
+    var error: String
+}
 
-    let id: Int
+struct CommandEvent: Event {
+    var command: Command2
+}
 
-    init() {
-        SwiftEventBusEvents.instance += 1
-        id = SwiftEventBusEvents.instance
+struct GameCommandEvent: Event {
+    var command: Command2
+}
+
+struct VariableChangedEvent: Event {
+    var key: String
+    var value: String
+}
+
+extension Events2 {
+    func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
+        let data = EchoTextEvent(text: "\(text)\n".hexDecoededString(), preset: preset, color: color, mono: mono)
+        post(data)
     }
 
-    func post(_ channel: String, data: Any?) {
-        SwiftEventBus.post("\(id)_\(channel)", sender: data)
+    func echoTag(_ tag: TextTag) {
+        let evt = EchoTagEvent(tag: tag)
+        post(evt)
     }
 
-    func handle(_ target: AnyObject, channel: String, handler: @escaping (Any?) -> Void) {
-        SwiftEventBus.onMainThread(target, name: "\(id)_\(channel)") { notification in
-            handler(notification?.object)
-        }
+    func echoError(_ text: String) {
+        let evt = ErrorEvent(error: "\(text)\n".hexDecoededString())
+        post(evt)
     }
 
-    func unregister(_ target: AnyObject) {
-        SwiftEventBus.unregister(target)
+    func sendCommand(_ command: Command2) {
+        let evt = CommandEvent(command: command)
+        post(evt)
+    }
+
+    func sendGameCommand(_ command: Command2) {
+        let evt = GameCommandEvent(command: command)
+        post(evt)
+    }
+
+    func variableChanged(_ key: String, value: String) {
+        let evt = VariableChangedEvent(key: key, value: value)
+        post(evt)
+    }
+}
+
+class DummyEvent<T> where T: BaseEvent {}
+
+class SwenEvents: Events2 {
+    var storage = SwenStorage()
+
+    func post<EventType>(_ event: EventType) where EventType: Event {
+        Swen<EventType>.post(event, in: storage)
+    }
+
+    func register<EventType>(_ observer: AnyObject, handler: @escaping ((_ event: EventType) -> Void)) where EventType: Event {
+        Swen<EventType>.register(observer, in: storage, handler: handler)
+    }
+
+    func post<EventType>(_ event: EventType) where EventType: StickyEvent {
+        Swen<EventType>.post(event, in: storage)
+    }
+
+    func register<EventType>(_ observer: AnyObject, handler: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent {
+        Swen<EventType>.register(observer, in: storage, handler: handler)
+    }
+
+    func unregister<EventType>(_ observer: AnyObject, _: DummyEvent<EventType>) where EventType: BaseEvent {
+        Swen<EventType>.unregister(observer, in: storage)
     }
 }

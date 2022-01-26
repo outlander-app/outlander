@@ -30,11 +30,11 @@ class VarCommandHandler: ICommandHandler {
             switch commands[0].lowercased() {
             case "save":
                 VariablesLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, variables: context.globalVars)
-                context.events.echoText("saved variables")
+                context.events2.echoText("saved variables")
                 return
             case "load", "reload":
                 VariablesLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
-                context.events.echoText("reloaded variables \(context.globalVars.count)")
+                context.events2.echoText("reloaded variables \(context.globalVars.count)")
                 return
             default:
                 return

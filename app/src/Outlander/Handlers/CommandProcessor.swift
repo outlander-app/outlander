@@ -108,7 +108,7 @@ class CommandProcesssor {
                 }
             }
             if !handled {
-                context.events.post("ol:gamecommand", data: Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
+                context.events2.sendGameCommand(Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
             }
         }
     }

@@ -41,7 +41,7 @@ class LinkCommandHandler: ICommandHandler {
         let command = match.valueAt(index: 8) ?? "#echo no command..."
 
         let tag = TextTag(text: text + "\n", window: window, color: foregroundColor, backgroundColor: backgroundColor, command: command)
-        context.events.echoTag(tag)
+        context.events2.echoTag(tag)
         return true
     }
 
@@ -66,7 +66,7 @@ class LinkCommandHandler: ICommandHandler {
         let command = match.valueAt(index: 8) ?? "#echo no command..."
 
         let tag = TextTag(text: text + "\n", window: window, color: foregroundColor, backgroundColor: backgroundColor, command: command)
-        context.events.echoTag(tag)
+        context.events2.echoTag(tag)
         return true
     }
 }

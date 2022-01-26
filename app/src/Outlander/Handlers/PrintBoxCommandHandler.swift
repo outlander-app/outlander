@@ -18,7 +18,7 @@ class PrintBoxCommandHandler: ICommandHandler {
         let lines = PrintBox.print(text)
 
         for line in lines {
-            context.events.echoText(line, preset: "scriptecho", mono: true)
+            context.events2.echoText(line, preset: "scriptecho", mono: true)
         }
     }
 }

@@ -48,43 +48,41 @@ class InMemoryFileSystem: FileSystem {
     func ensure(folder _: URL) throws {}
 }
 
-struct TestEvent {
-    var channel: String
-    var data: Any?
-    var text: TextData? {
-        data as? TextData
-    }
-}
-
-class InMemoryEvents: Events {
-    public var history: [TestEvent] = []
-    public var lastData: Any? {
-        history.last?.data
+class InMemoryEvents: Events2 {
+    public var history: [BaseEvent] = []
+    public var lastData: BaseEvent? {
+        history.last
     }
 
     public var processor: CommandProcesssor?
     public var gameContext: GameContext?
 
-    func post(_ channel: String, data: Any?) {
-        guard channel != "ol:variable:changed" else {
+    func post<EventType>(_ event: EventType) where EventType: Event {
+        guard !(event is VariableChangedEvent) else {
             return
         }
 
-        if channel == "ol:command" {
-            guard let command = data as? Command2 else {
-                return
-            }
-
-            processor?.process(command, with: gameContext!)
+        if let cmd = event as? CommandEvent {
+            processor?.process(cmd.command, with: gameContext!)
             return
         }
 
-        history.append(TestEvent(channel: channel, data: data))
+        history.append(event)
     }
 
-    func handle(_: AnyObject, channel _: String, handler _: @escaping (Any?) -> Void) {}
+    func register<EventType>(_: AnyObject, handler _: @escaping ((EventType) -> Void)) where EventType: Event {}
 
-    func unregister(_: AnyObject) {}
+    func post<EventType>(_ event: EventType) where EventType: StickyEvent {
+        guard !(event is VariableChangedEvent) else {
+            return
+        }
+
+        history.append(event)
+    }
+
+    func register<EventType>(_: AnyObject, handler _: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent {}
+
+    func unregister<EventType>(_: AnyObject, _: DummyEvent<EventType>) where EventType: BaseEvent {}
 }
 
 class TestHost: IHost {

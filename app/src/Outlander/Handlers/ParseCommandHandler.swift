@@ -8,6 +8,10 @@
 
 import Foundation
 
+struct GameParseEvent: Event {
+    var text: String
+}
+
 class ParseCommandHandler: ICommandHandler {
     var command = "#parse"
 
@@ -27,6 +31,6 @@ class ParseCommandHandler: ICommandHandler {
         }
 
         let data = text[commandLength...].trimmingCharacters(in: .whitespacesAndNewlines)
-        context.events.post("ol:game:parse", data: data)
+        context.events2.post(GameParseEvent(text: data))
     }
 }

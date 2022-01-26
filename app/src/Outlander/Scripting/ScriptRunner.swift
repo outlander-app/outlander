@@ -8,6 +8,31 @@
 
 import Foundation
 
+struct ScriptRunEvent: Event {
+    var name: String
+    var arguments: String
+}
+
+struct ScriptManageEvent: Event {
+    var commands: String
+}
+
+struct ScriptCompleteEvent: Event {
+    var name: String
+}
+
+enum ScriptCommand {
+    case add
+    case abort
+    case resume
+    case pause
+}
+
+struct ScriptEvent: Event {
+    var command: ScriptCommand
+    var name: String
+}
+
 class ScriptRunner: StreamHandler {
     // private let runQueue = DispatchQueue(label: "com.outlanderapp.scriptrunner.\(UUID().uuidString)", attributes: .concurrent)
     private var context: GameContext
@@ -19,35 +44,23 @@ class ScriptRunner: StreamHandler {
         self.context = context
         self.loader = loader
 
-        self.context.events.handle(self, channel: "ol:script:run") { result in
-            guard let arguments = result as? [String: String] else {
-                return
-            }
-
-            guard let scriptName = arguments["name"] else {
-                return
-            }
-
-            let scriptArgs = arguments["arguments"] ?? ""
-
-            self.run(scriptName, arguments: scriptArgs.argumentsSeperated())
+        self.context.events2.register(self) { (evt: ScriptRunEvent) in
+            self.run(evt.name, arguments: evt.arguments.argumentsSeperated())
         }
 
-        self.context.events.handle(self, channel: "ol:script") { result in
-            guard let commands = result as? String else {
-                return
-            }
-
-            self.manage(commands)
+        self.context.events2.register(self) { (evt: ScriptManageEvent) in
+            self.manage(evt.commands)
         }
 
-        self.context.events.handle(self, channel: "ol:script:complete") { result in
-            guard let scriptName = result as? String else {
-                return
-            }
-
-            self.remove([scriptName])
+        self.context.events2.register(self) { (evt: ScriptCompleteEvent) in
+            self.remove([evt.name])
         }
+    }
+
+    deinit {
+        self.context.events2.unregister(self, DummyEvent<ScriptRunEvent>())
+        self.context.events2.unregister(self, DummyEvent<ScriptManageEvent>())
+        self.context.events2.unregister(self, DummyEvent<ScriptCompleteEvent>())
     }
 
     func stream(_ data: String, _ tokens: [StreamCommand]) {
@@ -65,7 +78,7 @@ class ScriptRunner: StreamHandler {
     private func run(_ scriptName: String, arguments: [String]) {
         do {
             guard loader.exists(scriptName) else {
-                context.events.echoError("Script '\(scriptName)' does not exist.")
+                context.events2.echoError("Script '\(scriptName)' does not exist.")
                 return
             }
 
@@ -78,7 +91,7 @@ class ScriptRunner: StreamHandler {
             updateActiveScriptVars()
             script.run(arguments)
         } catch {
-            context.events.echoError("An error occurred running script '\(scriptName)'.")
+            context.events2.echoError("An error occurred running script '\(scriptName)'.")
         }
     }
 
@@ -117,7 +130,7 @@ class ScriptRunner: StreamHandler {
         case "vars":
             vars(scriptName)
         default:
-            context.events.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
+            context.events2.echoText("unhandled script command \(command)", preset: "scripterror", mono: true)
         }
     }
 
@@ -141,7 +154,7 @@ class ScriptRunner: StreamHandler {
 
         for script in pausing {
             script.pause()
-            context.events.post("ol:script:pause", data: script.fileName)
+            context.events2.post(ScriptEvent(command: .pause, name: script.fileName))
         }
 
         updateActiveScriptVars()
@@ -154,7 +167,7 @@ class ScriptRunner: StreamHandler {
 
         for script in resuming {
             script.resume()
-            context.events.post("ol:script:resume", data: script.fileName)
+            context.events2.post(ScriptEvent(command: .resume, name: script.fileName))
         }
 
         updateActiveScriptVars()
@@ -168,7 +181,7 @@ class ScriptRunner: StreamHandler {
 
             scripts.remove(at: idx)
 
-            context.events.post("ol:script:remove", data: name)
+            context.events2.post(ScriptEvent(command: .abort, name: name))
             updateActiveScriptVars()
         }
     }
