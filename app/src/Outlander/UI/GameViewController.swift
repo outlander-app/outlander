@@ -179,10 +179,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 let offset = Date().timeIntervalSince(Date(timeIntervalSince1970: Double(updated) ?? 0))
 
                 let diff = t - offset - 0.5
-                let rounded = ceil(diff)
+                let rounded = Int(ceil(diff))
+
+                self?.gameContext.globalVars["roundtime"] = "\(rounded)"
 
                 DispatchQueue.main.async {
-                    self?.roundtime?.set(Int(rounded))
+                    self?.roundtime?.set(rounded)
                 }
 
             case let .clearStream(name):

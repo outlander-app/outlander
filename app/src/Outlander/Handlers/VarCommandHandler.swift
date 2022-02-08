@@ -27,7 +27,7 @@ class VarCommandHandler: ICommandHandler {
         }
 
         if text.count == 1, validCommands.contains(text[0].lowercased()) {
-            switch commands[0].lowercased() {
+            switch text[0].lowercased() {
             case "save":
                 VariablesLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, variables: context.globalVars)
                 context.events2.echoText("saved variables")
