@@ -544,14 +544,20 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {
         let key = Self.string(parseMany(while: { $0 != Self.equal }))
 
-        guard key.count > 0 else { return nil }
+        guard key.count > 0 || first == Self.equal else { return nil }
 
         consume(expecting: Self.equal)
+        let value = parseAttributeValue(tagName, attributeName: key) ?? ""
+
+        return Attribute(key: key, value: value)
+    }
+
+    mutating func parseAttributeValue(_ tagName: String? = nil, attributeName: String) -> String? {
         guard let delimiter = popFirst() else { return nil }
 
         var value: [Element]
 
-        if key == "subtitle", tagName == "streamwindow" {
+        if attributeName == "subtitle", tagName == "streamwindow" {
             value = parseMany({ $0.parseQuotedCharacter() }, while: { $0 != Self.rightBracket })
             value.append(Self.rightBracket)
             consume(expecting: Self.rightBracket)
@@ -561,7 +567,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
 
         consume(expecting: delimiter)
 
-        return Attribute(key: key, value: Self.string(value))
+        return Self.string(value)
     }
 
     mutating func parseAttributes(_ tagName: String? = nil) -> [Attribute] {

@@ -333,7 +333,7 @@ class VariableReplacer {
                 list = resolved.components(separatedBy: "|")
                 // if there are any vars still left, add them to the list
                 if index < vars.count - 1 {
-                    results.append(vars.dropLast(vars.count - 1 - index).joined(separator: ""))
+                    results.append(vars.dropLast(index + 1).joined(separator: ""))
                 }
                 break
             } else {

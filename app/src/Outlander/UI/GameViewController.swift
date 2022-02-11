@@ -332,11 +332,11 @@ class GameViewController: NSViewController, NSWindowDelegate {
         super.viewWillDisappear()
     }
 
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        guard self.gameServer?.isConnected == true else {
+    func windowShouldClose(_: NSWindow) -> Bool {
+        guard gameServer?.isConnected == true else {
             return true
         }
-        
+
         let alert = NSAlert()
         alert.messageText = "Are you sure you want to close the window? You are currently connected to the game."
         alert.addButton(withTitle: "Yes")
@@ -346,7 +346,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         return response == .alertFirstButtonReturn
     }
 
-    func windowWillClose(_ notification: Notification) {
+    func windowWillClose(_: Notification) {
         gameContext.events2.unregister(self, DummyEvent<CommandEvent>())
         gameContext.events2.unregister(self, DummyEvent<GameCommandEvent>())
         gameContext.events2.unregister(self, DummyEvent<GameParseEvent>())

@@ -473,4 +473,13 @@ class GameStreamTokenizerTests: XCTestCase {
             """)
         }
     }
+
+    func test_resync_feversion__invalid_xml_stream() {
+        let tokens = reader.read("""
+            <FEVersion ="0" character="Saracus" /><FEStart name="DragonRealms" time="1644525207" />
+            """
+        )
+
+        XCTAssertEqual(tokens.count, 2)
+    }
 }

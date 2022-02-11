@@ -92,6 +92,51 @@ class VariableReplacerTests: XCTestCase {
         XCTAssertEqual("one|two|three(0  south  tankard ", result)
     }
 
+    func test_indexed_chained_variables() {
+        variables["list"] = "hisan|nemoih"
+        variables["nemoih"] = "3"
+        variables["space"] = " "
+        variables["c"] = "1"
+        let result = replacer.replace("$space$$list[$c]", globalVars: variables)
+        XCTAssertEqual(" 3", result)
+    }
+
+    func test_indexed_chained_variables_scenario_2() {
+        variables["list"] = "hisan|nemoih"
+        variables["nemoih"] = "3"
+        variables["space"] = " "
+        variables["c"] = "1"
+        let result = replacer.replace("$space$space$$list[$c]", globalVars: variables)
+        XCTAssertEqual("  3", result)
+    }
+
+    func test_indexed_chained_variables_scenario_3() {
+        variables["list"] = "hisan|nemoih"
+        variables["nemoih"] = "3"
+        variables["space"] = " "
+        variables["c"] = "1"
+        let result = replacer.replace("$space$$list[$c]$space", globalVars: variables)
+        XCTAssertEqual(" 3 ", result)
+    }
+
+    func test_indexed_chained_variables_scenario_4() {
+        variables["list"] = "hisan|nemoih"
+        variables["nemoih"] = "3"
+        variables["space"] = " "
+        variables["c"] = "1"
+        let result = replacer.replace("$$list[$c]$space$space", globalVars: variables)
+        XCTAssertEqual("3  ", result)
+    }
+
+    func test_indexed_chained_variables_scenario_5() {
+        variables["list"] = "hisan|nemoih"
+        variables["nemoih"] = "3"
+        variables["space"] = " "
+        variables["c"] = "1"
+        let result = replacer.replace("$$list[$c]$space$space$$list[$c]", globalVars: variables)
+        XCTAssertEqual("3  3", result)
+    }
+
     func test_delimiters() {
         let result = replacer.replace("( ) [] [one] \\( ]", globalVars: variables)
         XCTAssertEqual("( ) [] [one] \\( ]", result)
