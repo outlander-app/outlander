@@ -482,4 +482,37 @@ class GameStreamTokenizerTests: XCTestCase {
 
         XCTAssertEqual(tokens.count, 2)
     }
+
+    func test_invalid_xml_stream_attribue_name_with_no_value() {
+        let tokens = reader.read("""
+            <FEVersion something= character="Saracus" />
+            """
+        )
+
+        XCTAssertEqual(tokens.count, 1)
+
+        let token = tokens[0]
+        XCTAssertEqual(token.name(), "feversion")
+
+        XCTAssertTrue(token.hasAttr("something"))
+        XCTAssertEqual(token.attr("something"), "")
+
+        XCTAssertTrue(token.hasAttr("character"))
+        XCTAssertEqual(token.attr("character"), "Saracus")
+    }
+
+    func test_invalid_xml_stream_attribue_with_spaces() {
+        let tokens = reader.read("""
+            <FEVersion character = "Saracus" />
+            """
+        )
+
+        XCTAssertEqual(tokens.count, 1)
+
+        let token = tokens[0]
+        XCTAssertEqual(token.name(), "feversion")
+
+        XCTAssertTrue(token.hasAttr("character"))
+        XCTAssertEqual(token.attr("character"), "Saracus")
+    }
 }

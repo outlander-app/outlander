@@ -171,16 +171,19 @@ class FunctionExecutor {
 
     enum FunctionError: Error, CustomStringConvertible {
         case missing(String)
+        case message(String)
 
         var description: String {
             switch self {
             case let .missing(message):
                 return message
+            case let .message(m):
+                return m
             }
         }
     }
 
-    public typealias SymbolEvaluator = (_ args: [String]) -> String
+    public typealias SymbolEvaluator = (_ args: [String]) throws -> String
 
     private var functions: [Symbol: SymbolEvaluator] = [:]
     private var context: GameContext?
@@ -195,6 +198,26 @@ class FunctionExecutor {
             let start = trimmed.first?.uppercased() ?? ""
             let rest = trimmed.dropFirst().lowercased()
             return start + rest
+        }
+
+        func substring(_ args: [String]) throws -> String {
+            let source = args[0]
+            let start = Int(args[1]) ?? 0
+            let end = Int(args[2]) ?? 0
+            
+            if start < 0 || start > source.count {
+                throw FunctionError.message("substring start index is out of bounds")
+            }
+            
+            if end < 0 || end < start || end > source.count {
+                throw FunctionError.message("substring end index is out of bounds")
+            }
+            
+            let startIdx = source.index(source.startIndex, offsetBy: start)
+            let endIdx = source.index(source.startIndex, offsetBy: start + end)
+            let range = startIdx..<endIdx
+
+            return String(source[range])
         }
 
         functions = [
@@ -297,6 +320,12 @@ class FunctionExecutor {
 
                 return String(res)
             },
+            .function("substring", arity: 3): { args in
+                return try substring(args)
+            },
+            .function("substr", arity: 3): { args in
+                return try substring(args)
+            },
         ]
     }
 
@@ -305,7 +334,7 @@ class FunctionExecutor {
         guard let function = functions[symbol] else {
             throw FunctionError.missing("No function registered as \(symbol)")
         }
-        return function(args)
+        return try function(args)
     }
 
     private func trimQuotes(_ input: String) -> String {

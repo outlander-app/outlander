@@ -107,4 +107,24 @@ class FunctionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateValue(.function("floor", ["5.5"]))
         XCTAssertEqual(result.result, "5")
     }
+
+    func test_evals_substring() {
+        let result = evaluator.evaluateValue(.function("substring", ["hello", "1", "2"]))
+        XCTAssertEqual(result.result, "el")
+    }
+
+    func test_evals_substr() {
+        let result = evaluator.evaluateValue(.function("substr", ["hello", "1", "2"]))
+        XCTAssertEqual(result.result, "el")
+    }
+
+    func test_evals_substr_start_index_out_of_bounds() {
+        let result = evaluator.evaluateValue(.function("substr", ["hello", "-1", "2"]))
+        XCTAssertEqual(result.result, "substring start index is out of bounds")
+    }
+
+    func test_evals_substr_end_index_out_of_bounds() {
+        let result = evaluator.evaluateValue(.function("substring", ["hello", "1", "6"]))
+        XCTAssertEqual(result.result, "substring end index is out of bounds")
+    }
 }

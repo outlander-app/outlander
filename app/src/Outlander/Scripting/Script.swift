@@ -1402,6 +1402,7 @@ class Script {
         if replacedLabel == "clear" {
             notify("gosub clear", debug: ScriptLogLevel.gosubs, scriptLine: line.lineNumber, fileName: line.fileName)
             gosubStack.clear()
+            context.setLabelVars([""])
             return .next
         }
 

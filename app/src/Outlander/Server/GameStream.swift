@@ -544,16 +544,25 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseAttribute(_ tagName: String? = nil) -> Attribute? {
         let key = Self.string(parseMany(while: { $0 != Self.equal }))
 
-        guard key.count > 0 || first == Self.equal else { return nil }
+        let trimmedKey = key.trimmingCharacters(in: CharacterSet.whitespaces)
+
+        guard trimmedKey.count > 0 || first == Self.equal else { return nil }
 
         consume(expecting: Self.equal)
-        let value = parseAttributeValue(tagName, attributeName: key) ?? ""
+        let value = parseAttributeValue(tagName, attributeName: trimmedKey) ?? ""
 
-        return Attribute(key: key, value: value)
+        return Attribute(key: trimmedKey, value: value)
     }
 
     mutating func parseAttributeValue(_ tagName: String? = nil, attributeName: String) -> String? {
-        guard let delimiter = popFirst() else { return nil }
+        consumeSpaces()
+        guard let delimiter = first else { return nil }
+
+        guard ["'", "\""].contains(Self.string([delimiter])) else {
+            return nil
+        }
+
+        _ = popFirst()
 
         var value: [Element]
 
