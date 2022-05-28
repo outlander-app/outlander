@@ -750,6 +750,8 @@ class GameStream {
     private var tags: [TextTag] = []
 
     private var handlers: [StreamHandler] = []
+    
+    private let allowedEot = ["assess", "combat"]
 
     private let ignoredEot = [
         "app",
@@ -1079,7 +1081,8 @@ class GameStream {
             guard let tokenName = lastToken?.name(), !self.ignoredEot.contains(tokenName) else {
                 break
             }
-            guard !inStream || lastStreamId == "combat" else { break }
+
+            guard !inStream || allowedEot.contains(lastStreamId) else { break }
             guard tokenName != "prompt" else { break }
 
             guard !ignoreNextEot else {
@@ -1087,7 +1090,7 @@ class GameStream {
                 break
             }
 
-            tag = TextTag(text: "\n", window: lastStreamId == "combat" ? "combat" : "")
+            tag = TextTag(text: "\n", window: lastStreamId)
 
         case "prompt":
             tag = createTag(token)

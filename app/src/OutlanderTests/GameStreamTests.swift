@@ -208,6 +208,30 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
+
+    func test_assess_stream() {
+        let commands = streamCommands([
+            "<pushStream id=\"assess\"/><clearStream id=\"assess\"/>You assess your combat situation...\n",
+            "\n",
+            "\n",
+            "\n",
+            "<popStream/><pushStream id=\"assess\"/>You (solidly balanced) are facing <d cmd='look #60060590'>a juvenile wyvern</d> (1) at melee range.\n",
+            "<popStream/><pushStream id=\"assess\"/><d cmd='look #60060590'>A juvenile wyvern</d> (1: somewhat off balance) is facing you at melee range.  | <d cmd='face #60060590'>F</d>\n",
+            "<popStream/><pushStream id=\"assess\"/><d cmd='look #60057929'>A juvenile wyvern</d> (2: somewhat off balance) is behind you at melee range.  | <d cmd='face #60057929'>F</d>\n",
+            "<popStream/><pushStream id=\"assess\"/><d cmd='look #60057925'>A juvenile wyvern</d> (3: nimbly balanced) is behind you at melee range.  | <d cmd='face #60057925'>F</d>\n",
+            "<popStream/><pushStream id=\"assess\"/><d cmd='look #60060598'>A juvenile wyvern</d> (4: slightly off balance) is flanking you at melee range.  | <d cmd='face #60060598'>F</d>\n",
+            "<popStream/><prompt time=\"1637690082\">R&gt;</prompt>\n"
+        ])
+
+        XCTAssertEqual(commands.count, 13)
+
+        switch commands[12] {
+        case let .text(tags):
+            XCTAssertEqual(tags.count, 20)
+        default:
+            XCTFail()
+        }
+    }
 }
 
 class GameStreamTokenizerTests: XCTestCase {
