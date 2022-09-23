@@ -238,6 +238,8 @@ class Script {
         tokenHandlers["else"] = handleElse
         tokenHandlers["elsesingle"] = handleElseSingle
         tokenHandlers["elseneedsbrace"] = handleElseNeedsBrace
+        
+//        tokenHandlers["foreach"] = handleForeach
 
         tokenHandlers["gosub"] = handleGosub
         tokenHandlers["goto"] = handleGoto
@@ -487,7 +489,7 @@ class Script {
 
     func printVars() {
         let diff = Date().timeIntervalSince(started!)
-        sendText("+------- '\(fileName)' variables (running for \(diff.formatted) -------+", preset: "scriptinfo")
+        sendText("+------- '\(fileName)' variables (running for \(diff.formatted)) -------+", preset: "scriptinfo")
         for v in varsForDisplay() {
             sendText("|  \(v)", preset: "scriptinfo")
         }
@@ -1222,6 +1224,10 @@ class Script {
         let result = funcEvaluator.evaluateStrValue(expression)
 
         notify("eval \(targetVar) \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
+        
+        if result.result == "error" {
+            sendText(result.text, preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
+        }
 
         context.variables[targetVar] = result.result
 
@@ -1252,6 +1258,22 @@ class Script {
 
         return .exit
     }
+
+//    func handleForeach(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
+//        guard case let .foreach(targetVariable, targetArray) = token else {
+//            return .next
+//        }
+//
+//        let resolvedArray = context.replaceVars(targetArray)
+//
+//        notify("foreach \(targetVariable) in \(resolvedArray)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+//
+//        for item in resolvedArray.split(separator: "|") {
+//            notify("\(item)", debug: ScriptLogLevel.vars, scriptLine: line.lineNumber, fileName: line.fileName)
+//        }
+//
+//        return .next
+//    }
 
     func handleIfArgSingle(_ line: ScriptLine, _ token: ScriptTokenValue) -> ScriptExecuteResult {
         guard case let .ifArgSingle(argCount, action) = token else {

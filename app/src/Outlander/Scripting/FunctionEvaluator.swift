@@ -76,6 +76,10 @@ class FunctionEvaluator {
             }
 
             if let result: Double? = evaluator.evaluate(simp) {
+                guard result?.isNaN != true && result?.isInfinite != true else {
+                    return EvalResult(text: "'\(simp)' is infinite or not a number", result: "error", groups: evaluator.groups)
+                }
+
                 var res = "\((result ?? -1).formattedNumber)"
 
                 if result == rint(result ?? -1) {
