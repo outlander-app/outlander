@@ -112,6 +112,8 @@
 		7B956B502754A55D00346019 /* LogCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B956B4E2754A55D00346019 /* LogCommandHandler.swift */; };
 		7B9C5A6C273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
 		7B9C5A6D273F327700A17134 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9C5A6B273F327700A17134 /* Variables.swift */; };
+		7BA0E7D528DE739300A1F319 /* MacroCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA0E7D428DE739300A1F319 /* MacroCommandHandler.swift */; };
+		7BA0E7D628DE739300A1F319 /* MacroCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA0E7D428DE739300A1F319 /* MacroCommandHandler.swift */; };
 		7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3825DF6D9D00A88B80 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3625DF6D9D00A88B80 /* Script.swift */; };
 		7BA27B3D25DF707E00A88B80 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */; };
@@ -371,6 +373,7 @@
 		7B956B4B2754536000346019 /* ScriptToolbar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ScriptToolbar.storyboard; sourceTree = "<group>"; };
 		7B956B4E2754A55D00346019 /* LogCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogCommandHandler.swift; sourceTree = "<group>"; };
 		7B9C5A6B273F327700A17134 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
+		7BA0E7D428DE739300A1F319 /* MacroCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroCommandHandler.swift; sourceTree = "<group>"; };
 		7BA27B3625DF6D9D00A88B80 /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		7BA27B3C25DF707E00A88B80 /* ScriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		7BA27B4625DF8ECA00A88B80 /* ScriptTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptTokenizer.swift; sourceTree = "<group>"; };
@@ -783,6 +786,7 @@
 				7B10A68D275FE538000FEDE8 /* HighlightsCommandHandler.swift */,
 				7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */,
 				7B956B4E2754A55D00346019 /* LogCommandHandler.swift */,
+				7BA0E7D428DE739300A1F319 /* MacroCommandHandler.swift */,
 				7BCE4A3025C508C200AF0444 /* MapperCommandHandler.swift */,
 				7BAC841A25EA0B4100A6C7D5 /* ParseCommandHandler.swift */,
 				7B917E5127641B9E00887F95 /* PingCommandHandler.swift */,
@@ -1039,6 +1043,7 @@
 				7BAC841625EA064400A6C7D5 /* ScriptOperations.swift in Sources */,
 				F969A0E5239B2A5E00408CE5 /* GameViewController.swift in Sources */,
 				F9CA206F2466796100A92736 /* ApplicationLoader.swift in Sources */,
+				7BA0E7D528DE739300A1F319 /* MacroCommandHandler.swift in Sources */,
 				7BCBBD1D274747D900219CA0 /* ObjC.m in Sources */,
 				7B8F888E279FB1A500713BA7 /* Swen.swift in Sources */,
 				7B228B0C2734F8E80052610B /* ExpTracker.swift in Sources */,
@@ -1137,6 +1142,7 @@
 				F98B4904246F8EF0000E2D92 /* AliasLoaderTests.swift in Sources */,
 				7BD0FD4F25C75AD400ED030E /* MapView.swift in Sources */,
 				7BAC840425E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
+				7BA0E7D628DE739300A1F319 /* MacroCommandHandler.swift in Sources */,
 				F98B491E2470AF17000E2D92 /* GameContext.swift in Sources */,
 				F9CA2050245FC4B600A92736 /* CommandProcessor.swift in Sources */,
 				F9BCF31B22E17F2500C7F7F0 /* StringExtensions.swift in Sources */,

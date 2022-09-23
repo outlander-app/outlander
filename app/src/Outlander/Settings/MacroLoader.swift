@@ -356,6 +356,9 @@ class MacroLoader {
         context.macros.removeAll()
 
         for var line in content.components(separatedBy: .newlines) {
+            guard !line.isEmpty else {
+                continue
+            }
             if let macro = Macro.from(&line) {
                 context.macros[macro.description] = macro
             } else {
@@ -382,9 +385,5 @@ class MacroLoader {
 extension GameContext {
     func findMacro(description: String) -> Macro? {
         macros[description]
-    }
-
-    func isRegisteredMacro(description: String) -> Bool {
-        findMacro(description: description) != nil
     }
 }
