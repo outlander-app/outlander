@@ -388,7 +388,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 let charInfo = character.count > 0 ? "\(character) - " : ""
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
 
-                win.title = "\(gameInfo): \(charInfo)Outlander \(version) Beta\(connection)"
+                win.title = "\(gameInfo): \(charInfo)Outlander \(version)\(connection)"
                 if let m = win as? OWindow {
                     let font = NSFont(name: self.gameContext.layout?.primary.fontName ?? "Helvetica", size: CGFloat(Double(self.gameContext.layout?.primary.fontSize ?? 14)))!
                     m.titleFont = font
