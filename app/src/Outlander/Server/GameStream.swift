@@ -563,6 +563,8 @@ extension StringView where SubSequence == Self, Element: Equatable {
         }
 
         _ = popFirst()
+        
+        var consumeDelimiter = true
 
         var value: [Element]
 
@@ -570,11 +572,18 @@ extension StringView where SubSequence == Self, Element: Equatable {
             value = parseMany({ $0.parseQuotedCharacter() }, while: { $0 != Self.rightBracket })
             value.append(Self.rightBracket)
             consume(expecting: Self.rightBracket)
+        }
+        else if attributeName == "cmd", tagName == "d" {
+            value = parseMany({ $0.parseQuotedCharacter() }, while: { $0 != Self.greaterThan })
+            value = value.dropLast()
+            consumeDelimiter = false
         } else {
             value = parseMany({ $0.parseQuotedCharacter() }, while: { $0 != delimiter })
         }
 
-        consume(expecting: delimiter)
+        if consumeDelimiter {
+            consume(expecting: delimiter)
+        }
 
         return Self.string(value)
     }

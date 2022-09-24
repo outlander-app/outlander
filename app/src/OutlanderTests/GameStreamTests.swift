@@ -232,6 +232,22 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
+    
+//    func test_urchin_stream() {
+//        let commands = streamCommands([
+//            "Raven's Point         <d cmd='urchin guide Raven's Point, Town Square'>Raven's Point, Town Square</d>\n",
+//            "Vela'Tohr Valley      <d cmd='urchin guide Cleric Guild'>Cleric Guild</d> (*)"
+//        ])
+//
+//        XCTAssertEqual(commands.count, 3)
+//
+//        switch commands[2] {
+//        case let .text(tags):
+//            XCTAssertEqual(tags.count, 20)
+//        default:
+//            XCTFail()
+//        }
+//    }
 }
 
 class GameStreamTokenizerTests: XCTestCase {
@@ -538,5 +554,18 @@ class GameStreamTokenizerTests: XCTestCase {
 
         XCTAssertTrue(token.hasAttr("character"))
         XCTAssertEqual(token.attr("character"), "Saracus")
+    }
+
+    func test_d_tag_stream() {
+        let tokens = reader.read("""
+            Raven's Point         <d cmd='urchin guide Raven's Point, Town Square'>Raven's Point, Town Square</d>
+        """)
+
+        XCTAssertEqual(tokens.count, 2)
+
+        let token = tokens[1]
+        XCTAssertEqual(token.name(), "d")
+        XCTAssertTrue(token.hasAttr("cmd"))
+        XCTAssertEqual(token.attr("cmd"), "urchin guide Raven's Point, Town Square")
     }
 }
