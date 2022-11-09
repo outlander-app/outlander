@@ -26,9 +26,9 @@ class GotoComandHandler: ICommandHandler {
 
         DispatchQueue.global(qos: .userInteractive).async {
             if area.count > 1 {
-                self.gotoArea(area: area[0], from: area[1], context: context)
+                self.gotoArea(area: area[0].trimmingCharacters(in: .whitespaces), from: area[1].trimmingCharacters(in: .whitespaces), context: context)
             } else if area.count > 0 {
-                self.gotoArea(area: area[0], context: context)
+                self.gotoArea(area: area[0].trimmingCharacters(in: .whitespaces), context: context)
             }
         }
     }

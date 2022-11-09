@@ -105,7 +105,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         roundtime = RoundtimeTimer(gameContext, variable: "roundtime")
         roundtime?.interval = { [weak self] value in
             DispatchQueue.main.async {
-                self?.log.info("RT: \(value.value) / \(value.percent)")
+//                self?.log.info("RT: \(value.value) / \(value.percent)")
                 self?.statusBarController?.roundtime = value.value
                 self?.commandInput.progress = value.percent
             }
@@ -114,7 +114,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         spelltime = SpellTimer(gameContext, variable: "spelltime", initialPercent: 0.0)
         spelltime?.interval = { [weak self] value in
             DispatchQueue.main.async {
-                self?.log.info("Spell RT: \(value.value) / \(value.percent)")
+//                self?.log.info("Spell RT: \(value.value) / \(value.percent)")
                 var spell = "\(value.value)"
                 if value.percent > 0 {
                     spell = "(\(Int(value.percent.rounded(.down)))) \(value.value)"

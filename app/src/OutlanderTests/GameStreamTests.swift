@@ -568,4 +568,17 @@ class GameStreamTokenizerTests: XCTestCase {
         XCTAssertTrue(token.hasAttr("cmd"))
         XCTAssertEqual(token.attr("cmd"), "urchin guide Raven's Point, Town Square")
     }
+
+    func test_d_tag_stream_2() {
+        let tokens = reader.read("""
+            Raven's Point         <d cmd="urchin guide Raven's Point, Town Square">Raven's Point, Town Square</d>
+        """)
+
+        XCTAssertEqual(tokens.count, 2)
+
+        let token = tokens[1]
+        XCTAssertEqual(token.name(), "d")
+        XCTAssertTrue(token.hasAttr("cmd"))
+        XCTAssertEqual(token.attr("cmd"), "urchin guide Raven's Point, Town Square")
+    }
 }

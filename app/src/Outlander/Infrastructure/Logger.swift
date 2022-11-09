@@ -75,7 +75,7 @@ class PrintLogger: ILogger {
     }
 
     private func log(_ data: String, level: String) {
-        print("\(level): \(data)")
+        print("\(name)-\(level): \(data)")
     }
 }
 

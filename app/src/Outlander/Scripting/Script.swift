@@ -307,6 +307,7 @@ class Script {
     }
 
     func queueNext() {
+        self.log.info("script queue next")
         scriptQueue.queue(.next)
         next()
     }
@@ -322,6 +323,7 @@ class Script {
         guard !inLoop, !stopped else { return }
 
         if paused {
+            self.log.info("script nextAfterUnpause 1")
             nextAfterUnpause = true
             return
         }
@@ -338,6 +340,7 @@ class Script {
         }
         inLoop = false
         if paused {
+            self.log.info("script nextAfterUnpause 2")
             nextAfterUnpause = true
         }
     }
@@ -425,23 +428,29 @@ class Script {
     }
 
     func pause() {
-        paused = true
-        sendText("[Pausing '\(fileName)']")
+        lockQueue.async {
+            self.paused = true
+            self.log.info("script pause")
+            self.sendText("[Pausing '\(self.fileName)']")
+        }
     }
 
     func resume() {
-        if !paused {
-            return
-        }
+        lockQueue.async {
+            self.log.info("script resume paused=\(self.paused) nextAfterUnpause=\(self.nextAfterUnpause)")
+            if !self.paused {
+                return
+            }
 
-        sendText("[Resuming '\(fileName)']")
+            self.sendText("[Resuming '\(self.fileName)']")
 
-        scriptQueue.clear()
+            self.scriptQueue.clear()
 
-        paused = false
+            self.paused = false
 
-        if nextAfterUnpause {
-            queueNext()
+            if self.nextAfterUnpause {
+                self.queueNext()
+            }
         }
     }
 

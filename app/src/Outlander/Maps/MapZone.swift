@@ -84,7 +84,7 @@ final class MapZone {
             return nil
         }
 
-        return roomIdLookup[id]
+        return roomIdLookup[id.trimmingCharacters(in: .whitespacesAndNewlines)]
     }
 
     func rooms(note: String) -> [MapNode] {
