@@ -759,8 +759,8 @@ class GameStream {
     private var tags: [TextTag] = []
 
     private var handlers: [StreamHandler] = []
-    
-    private let allowedEot = ["assess", "combat"]
+
+    private let allowedEot = ["assess", "combat", "shopwindow"]
 
     private let ignoredEot = [
         "app",

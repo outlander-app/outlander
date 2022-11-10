@@ -132,8 +132,9 @@ struct WindowLayout: Codable {
             createWindow("conversation", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "log"),
             createWindow("ooc", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
             createWindow("group", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: "conversation"),
-            createWindow("inv", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false, closedTarget: ""),
+            createWindow("inv", with: NSRect(x: 0, y: 0, width: 200, height: 200), visible: false),
             createWindow("raw", with: NSRect(x: 0, y: 0, width: 900, height: 400), visible: false),
+            createWindow("shopwindow", with: NSRect(x: 0, y: 0, width: 900, height: 400), visible: false, closedTarget: "main"),
         ]
         return WindowLayout(primary: primary, windows: windows)
     }
