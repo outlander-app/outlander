@@ -18,8 +18,8 @@ extension NSColor {
         let start = hex.index(hex.startIndex, offsetBy: 1)
         let hexColor = String(hex[start...])
 
-        var rgbValue: UInt32 = 0
-        Scanner(string: hexColor).scanHexInt32(&rgbValue)
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexColor).scanHexInt64(&rgbValue)
 
         self.init(
             red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
