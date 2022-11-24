@@ -33,12 +33,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var log = LogManager.getLog(String(describing: GameViewController.self))
     var gameLog: ILogger?
 
-    var applicationSettings: ApplicationSettings? {
-        didSet {
-            gameContext.applicationSettings = applicationSettings!
-        }
-    }
-
     var gameWindows: [String: WindowViewController] = [:]
 
     var authServer: AuthenticationServer?
@@ -539,7 +533,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             gameContext.applicationSettings.profile.layout = "default.cfg"
             let layout = buildWindowsLayout()
             windowLayoutLoader?.save(
-                applicationSettings!,
+                gameContext.applicationSettings,
                 file: "default.cfg",
                 windows: layout
             )
@@ -587,7 +581,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                     print("\(l.name) \(l.order)")
                 }
                 windowLayoutLoader?.save(
-                    applicationSettings!,
+                    gameContext.applicationSettings,
                     file: url.lastPathComponent,
                     windows: layout
                 )

@@ -11,7 +11,7 @@ import Foundation
 class GameContext {
     var events2: Events2
 
-    var applicationSettings = ApplicationSettings()
+    var applicationSettings: ApplicationSettings
     var layout: WindowLayout?
     var globalVars: Variables
     var presets: [String: ColorPreset] = [:]
@@ -31,8 +31,9 @@ class GameContext {
     }
 
     init(_ events: Events2 = SwenEvents()) {
-        events2 = events
-        globalVars = GlobalVariables(events: events, settings: applicationSettings)
+        self.events2 = events
+        self.applicationSettings = ApplicationSettings()
+        self.globalVars = GlobalVariables(events: events, settings: self.applicationSettings)
     }
 
     func updateClassFilters() {

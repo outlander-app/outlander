@@ -9,7 +9,7 @@
 import Foundation
 
 class ApplicationSettingsDto: Codable {
-    static var defaultWindowsToLog = "main, assess, atmospherics, chatter, combat, conversation, death, familiar, group, logons, ooc, talk, thoughts, whispers"
+    static var defaultWindowsToLog = "main, assess, atmospherics, chatter, combat, conversation, death, familiar, group, logons, ooc, talk, thoughts, whispers, shopwindow"
 
     var defaultProfile = "Default"
     var downloadPreReleaseVersions: String = "no"

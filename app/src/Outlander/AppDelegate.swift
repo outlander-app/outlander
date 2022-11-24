@@ -69,13 +69,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let controller = storyboard.instantiateInitialController() as! GameViewController
         window.registerKeyHandlers(controller.gameContext)
 
-        let settings = ApplicationSettings()
         if let root = rootUrl {
-            settings.paths.rootUrl = root
+            controller.gameContext.applicationSettings.paths.rootUrl = root
         }
-        controller.applicationSettings = settings
 
-        ApplicationLoader(LocalFileSystem(settings)).load(settings.paths, context: controller.gameContext)
+        ApplicationLoader(LocalFileSystem(controller.gameContext.applicationSettings)).load(controller.gameContext.applicationSettings.paths, context: controller.gameContext)
 
         window.contentViewController = controller
         window.delegate = controller
