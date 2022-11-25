@@ -9,7 +9,7 @@
 import XCTest
 
 class VarCommandHandlerTests: XCTestCase {
-    var handler = VarCommandHandler()
+    var handler = VarCommandHandler(InMemoryFileSystem())
     var context = GameContext()
 
     override func setUp() {}

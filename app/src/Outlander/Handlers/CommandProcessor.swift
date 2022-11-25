@@ -28,7 +28,6 @@ class CommandProcesssor {
 
     private var handlers: [ICommandHandler] = [
         EchoCommandHandler(),
-        VarCommandHandler(),
         FlashCommandHandler(),
         BeepCommandHandler(),
         BugCommandHandler(),
@@ -49,6 +48,7 @@ class CommandProcesssor {
     ]
 
     init(_ files: FileSystem, pluginManager: OPlugin) {
+        handlers.append(VarCommandHandler(files))
         handlers.append(MapperComandHandler(files))
         handlers.append(ClassCommandHandler(files))
         handlers.append(SubsCommandHandler(files))

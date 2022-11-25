@@ -9,10 +9,17 @@
 import Foundation
 
 class VarCommandHandler: ICommandHandler {
+    private let files: FileSystem
+    private let log = LogManager.getLog(String(describing: VarCommandHandler.self))
+    
     var command = "#var"
 
     let aliases = ["#var", "#tvar"]
     let validCommands = ["save", "load", "reload"]
+    
+    init(_ files: FileSystem) {
+        self.files = files
+    }
 
     func canHandle(_ command: String) -> Bool {
         let commands = command.split(separator: " ", maxSplits: 1)
@@ -29,11 +36,11 @@ class VarCommandHandler: ICommandHandler {
         if text.count == 1, validCommands.contains(text[0].lowercased()) {
             switch text[0].lowercased() {
             case "save":
-                VariablesLoader(LocalFileSystem(context.applicationSettings)).save(context.applicationSettings, variables: context.globalVars)
+                VariablesLoader(files).save(context.applicationSettings, variables: context.globalVars)
                 context.events2.echoText("saved variables")
                 return
             case "load", "reload":
-                VariablesLoader(LocalFileSystem(context.applicationSettings)).load(context.applicationSettings, context: context)
+                VariablesLoader(files).load(context.applicationSettings, context: context)
                 context.events2.echoText("reloaded variables \(context.globalVars.count)")
                 return
             default:
