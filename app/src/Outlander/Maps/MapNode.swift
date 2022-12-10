@@ -37,7 +37,24 @@ struct MapArc {
     }
 
     var moveCost: Int {
-        (cardinalDirs.contains(exit) ? 0 : 1000) + (hidden ? 1000 : 0)
+        var cost = 0
+
+        if move.hasAnyPrefix(cardinalDirs) {
+            cost += 5
+        }
+        else if move.hasAnyPrefix(["go"]) {
+            cost += 20
+        }
+        else if move.hasAnyPrefix(["muck", "pull", "rt", "slow", "swim", "wait", "web"]) {
+            cost += 100
+        }
+        else {
+            cost += 50
+        }
+
+        cost += hidden ? 50 : 0
+        
+        return cost * 10
     }
 }
 

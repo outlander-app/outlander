@@ -287,7 +287,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             self.pluginManager?.variableChanged(variable: key, value: value)
 
             if key == "zoneid" || key == "roomid" {
-                print("GameViewController - \(key) changed to \(value)")
+//                print("GameViewController - \(key) changed to \(value)")
                 self.shouldUpdateRoom = true
             }
 
@@ -465,6 +465,17 @@ class GameViewController: NSViewController, NSWindowDelegate {
         })
     }
 
+    // HACK: mapWindow.window.isVisible is always true at first even if the window has never been shown
+    var firstToggle = true
+    func toggleMapWindow() {
+        if !firstToggle && mapWindow?.window?.isVisible == true {
+            mapWindow?.close()
+        } else {
+            firstToggle = false
+            showMapWindow()
+        }
+    }
+
     func showMapWindow() {
         let character = gameContext.globalVars["charactername"] ?? ""
         let game = gameContext.globalVars["game"] ?? ""
@@ -600,8 +611,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
 
         if command == "show:mapwindow" {
-            showMapWindow()
-
+            toggleMapWindow()
             return
         }
 

@@ -136,7 +136,7 @@ struct Atomic<Value> {
 
 class Script {
     private let lockQueue = AtomicQueue(label: "com.outlanderapp.script.\(UUID().uuidString)", qos: .userInteractive, autoreleaseFrequency: .never)
-    private let log = LogManager.getLog("Script")
+    private let log = LogManager.getLog(String(describing: Script.self))
 
     var async = true {
         didSet {

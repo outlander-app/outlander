@@ -50,7 +50,7 @@ final class MapInfo {
 }
 
 final class MapLoader {
-    var files: FileSystem
+    private var files: FileSystem
 
     init(_ files: FileSystem) {
         self.files = files

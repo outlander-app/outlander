@@ -69,6 +69,16 @@ class MapperComandHandler: ICommandHandler {
             let timeElapsed = Date() - startTime
             context.events2.echoText("[AutoMapper]: \(maps.count) maps loaded in \(timeElapsed.formatted)", preset: "automapper", mono: true)
             context.resetMap()
+
+            // find the largest map
+//            var largeMap: MapZone?
+//            for (id, map) in context.maps {
+//                if largeMap == nil || map.rooms.count > largeMap!.rooms.count {
+//                    largeMap = map
+//                }
+//            }
+//
+//            context.events2.echoText("Largest map: \(largeMap!.id) \(largeMap!.name) \(largeMap!.rooms.count)")
         }
     }
 }

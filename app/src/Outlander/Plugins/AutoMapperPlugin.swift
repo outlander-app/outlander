@@ -15,7 +15,7 @@ class AutoMapperPlugin: OPlugin {
     private var movedRooms: Bool = false
     private var showAfterPrompt: Bool = false
 
-    private var logger = LogManager.getLog("AutoMapperPlugin")
+    private let logger = LogManager.getLog(String(describing: AutoMapperPlugin.self))
 
     var name: String {
         "AutoMapper"
@@ -37,7 +37,7 @@ class AutoMapperPlugin: OPlugin {
             return
         }
 
-        print("Automapper Plugin - var changed \(variable) to \(value)")
+        logger.info("var changed \(variable) to \(value)")
 
         if context?.mapZone?.id != value {
             context?.mapZone = context?.maps[value]

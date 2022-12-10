@@ -108,6 +108,7 @@ final class MapZone {
         for id in ids {
             if let to = last {
                 if let arc = to.arc(with: id) {
+                    print("move \(id) - \(arc.move)")
                     moves.append(arc.move)
                 }
             }
@@ -119,16 +120,29 @@ final class MapZone {
     }
 
     func moveCostForNode(node: MapNode, toNode: MapNode, arc: MapArc) -> Int {
-        let index = node.position
-        let toIndex = toNode.position
-
-        return ((abs(index.x - toIndex.x) > 0 && abs(index.y - toIndex.y) > 0) ? 10 : 14) + arc.moveCost
+        return arc.moveCost
     }
 
     func heuristic(node: MapNode, endNode: MapNode) -> Int {
-        let coord1 = node.position
-        let coord2 = endNode.position
+        let index = node.position
+        let toIndex = endNode.position
 
-        return (abs(coord1.x - coord2.x) + abs(coord1.y - coord2.y))
+        // calculate distance between the two points
+        let (x1, x2) = maybeSwap(a: Double(index.x), b: Double(toIndex.x))
+        let (y1, y2) = maybeSwap(a: Double(index.y), b: Double(toIndex.y))
+
+        let x = pow(x1 - x2, 2.0)
+        let y = pow(y1 - y2, 2.0)
+        let res = sqrt(x + y)
+
+        return Int(res)
+    }
+    
+    func maybeSwap(a: Double, b: Double) -> (Double, Double) {
+        if a > b {
+            return (a, b)
+        }
+        
+        return (b, a)
     }
 }
