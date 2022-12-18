@@ -357,6 +357,7 @@ class Script {
         guard lastNextCount <= 1000 else {
             printStacktrace()
             sendText("Possible infinite loop detected. Please review the above stack trace and check the commands you are sending for an infinite loop.", preset: "scripterror", fileName: fileName)
+            gameContext.events2.sendCommand(Command2(command: "#parse Possible infinite loop detected."))
             cancel()
             return
         }
