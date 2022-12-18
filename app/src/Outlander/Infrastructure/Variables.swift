@@ -91,6 +91,18 @@ class GlobalVariables: Variables {
             let str = "\(interval.formattedNumber)"
             return str
         })
+
+        addDynamic(key: "version", value: .dynamic {
+            let dictionary = Bundle.main.infoDictionary!
+            let version = dictionary["CFBundleShortVersionString"] as! String
+            let buildStr = dictionary["CFBundleVersion"] as! String
+            var build = ""
+            if !buildStr.isEmpty, buildStr != "0" {
+                build = ".\(buildStr)"
+            }
+            let str: String = "Outlander \(version)\(build)"
+            return str
+        })
     }
 }
 
