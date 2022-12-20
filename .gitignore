@@ -6,3 +6,4 @@ xcuserdata
 .build
 *.resolved
 *.pbxproj
+app/src/Outlander.xcodeproj/project.pbxproj

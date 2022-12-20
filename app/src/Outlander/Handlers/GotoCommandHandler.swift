@@ -64,6 +64,14 @@ class GotoComandHandler: ICommandHandler {
                 : $0
         }.joined(separator: " ")
 
+        // what if I saved \(args) to $mapperpath global var? ~DAH
+        let mapperpath = moves.map {
+            $0.range(of: " ") != nil
+                ? "\"\($0)\""
+                : $0
+        }.joined(separator: "|")
+        context.globalVars["mapperpath"] = mapperpath
+
         context.events2.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
     }
 
