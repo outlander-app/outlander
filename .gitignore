@@ -10,7 +10,8 @@
 *.pbxuser
 *.xcworkspace
 xcuserdata
-*.pbxproj
+# Ignore cruft in the project bundle
+*xcodeproj*
 
 # Build products
 build/
