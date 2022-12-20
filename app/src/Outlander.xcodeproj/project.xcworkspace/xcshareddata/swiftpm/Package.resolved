@@ -1,25 +1,59 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "CocoaAsyncSocket",
-        "repositoryURL": "https://github.com/robbiehanson/CocoaAsyncSocket",
-        "state": {
-          "branch": null,
-          "revision": "0e00c967a010fc43ce528bd633d032f17158d393",
-          "version": "7.6.4"
-        }
-      },
-      {
-        "package": "Fuzi",
-        "repositoryURL": "https://github.com/cezheng/Fuzi",
-        "state": {
-          "branch": null,
-          "revision": "f08c8323da21e985f3772610753bcfc652c2103f",
-          "version": "3.1.3"
-        }
+  "pins" : [
+    {
+      "identity" : "cocoaasyncsocket",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/robbiehanson/CocoaAsyncSocket",
+      "state" : {
+        "revision" : "dbdc00669c1ced63b27c3c5f052ee4d28f10150c",
+        "version" : "7.6.5"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "expression",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nicklockwood/Expression",
+      "state" : {
+        "revision" : "8fb79f95df29f98565039586fe722323f91ce0c7",
+        "version" : "0.13.6"
+      }
+    },
+    {
+      "identity" : "fuzi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cezheng/Fuzi",
+      "state" : {
+        "revision" : "f08c8323da21e985f3772610753bcfc652c2103f",
+        "version" : "3.1.3"
+      }
+    },
+    {
+      "identity" : "keychain-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/evgenyneu/keychain-swift.git",
+      "state" : {
+        "revision" : "96fb84f45a96630e7583903bd7e08cf095c7a7ef",
+        "version" : "19.0.0"
+      }
+    },
+    {
+      "identity" : "plugin-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/outlander-app/plugin-package.git",
+      "state" : {
+        "revision" : "b48163e08d834a6d6eb6649fc6e33a236bd3deab",
+        "version" : "1.0.5"
+      }
+    },
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "branch" : "2.x",
+        "revision" : "8cd13b0cfd8cb721a3221e1dc52c02f8473cda6a"
+      }
+    }
+  ],
+  "version" : 2
 }
