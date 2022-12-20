@@ -1,9 +1,26 @@
+# OS X Finder
 .DS_Store
-Carthage
-xcuserdata
-.idea
 
-.build
-*.resolved
+# Xcode per-user config
+*.mode1
+*.mode1v3
+*.mode2v3
+*.perspective
+*.perspectivev3
+*.pbxuser
+*.xcworkspace
+xcuserdata
 *.pbxproj
-app/src/Outlander.xcodeproj/project.pbxproj
+
+# Build products
+build/
+*.o
+*.LinkFileList
+*.hmap
+
+# Automatic backup files
+*~.nib/
+*.swp
+*~
+*.dat
+*.dep
