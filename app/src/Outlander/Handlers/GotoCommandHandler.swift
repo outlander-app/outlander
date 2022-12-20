@@ -65,6 +65,7 @@ class GotoComandHandler: ICommandHandler {
         }.joined(separator: " ")
 
         // what if I saved \(args) to $mapperpath global var? ~DAH
+        // fill mapperpath with list|of|moves then save to global
         let mapperpath = moves.map {
             $0.range(of: " ") != nil
                 ? "\"\($0)\""
