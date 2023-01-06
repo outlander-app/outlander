@@ -76,7 +76,7 @@ class FunctionEvaluator {
             }
 
             if let result: Double? = evaluator.evaluate(simp) {
-                guard result?.isNaN != true && result?.isInfinite != true else {
+                guard result?.isNaN != true, result?.isInfinite != true else {
                     return EvalResult(text: "'\(simp)' is infinite or not a number", result: "error", groups: evaluator.groups)
                 }
 
@@ -208,18 +208,18 @@ class FunctionExecutor {
             let source = args[0]
             let start = Int(args[1]) ?? 0
             let end = Int(args[2]) ?? 0
-            
+
             if start < 0 || start > source.count {
                 throw FunctionError.message("substring start index is out of bounds")
             }
-            
+
             if end < 0 || end < start || end > source.count {
                 throw FunctionError.message("substring end index is out of bounds")
             }
-            
+
             let startIdx = source.index(source.startIndex, offsetBy: start)
             let endIdx = source.index(source.startIndex, offsetBy: start + end)
-            let range = startIdx..<endIdx
+            let range = startIdx ..< endIdx
 
             return String(source[range])
         }
@@ -325,10 +325,10 @@ class FunctionExecutor {
                 return String(res)
             },
             .function("substring", arity: 3): { args in
-                return try substring(args)
+                try substring(args)
             },
             .function("substr", arity: 3): { args in
-                return try substring(args)
+                try substring(args)
             },
         ]
     }

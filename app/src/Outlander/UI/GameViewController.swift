@@ -468,7 +468,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     // HACK: mapWindow.window.isVisible is always true at first even if the window has never been shown
     var firstToggle = true
     func toggleMapWindow() {
-        if !firstToggle && mapWindow?.window?.isVisible == true {
+        if !firstToggle, mapWindow?.window?.isVisible == true {
             mapWindow?.close()
         } else {
             firstToggle = false

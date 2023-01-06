@@ -291,7 +291,9 @@ class MapView: NSView {
             let hasDest = room.arcs.filter { $0.destination.count > 0 && !$0.hidden }
 
             for dest in hasDest {
-                let arc = zone.room(id: dest.destination)!
+                guard let arc = zone.room(id: dest.destination) else {
+                    continue
+                }
                 let arcPoint = arc.position.translatePosition(rect: rect)
 
                 NSBezierPath.strokeLine(from: point, to: arcPoint)

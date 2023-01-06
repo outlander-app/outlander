@@ -220,7 +220,7 @@ class GameStreamTests: XCTestCase {
             "<popStream/><pushStream id=\"assess\"/><d cmd='look #60057929'>A juvenile wyvern</d> (2: somewhat off balance) is behind you at melee range.  | <d cmd='face #60057929'>F</d>\n",
             "<popStream/><pushStream id=\"assess\"/><d cmd='look #60057925'>A juvenile wyvern</d> (3: nimbly balanced) is behind you at melee range.  | <d cmd='face #60057925'>F</d>\n",
             "<popStream/><pushStream id=\"assess\"/><d cmd='look #60060598'>A juvenile wyvern</d> (4: slightly off balance) is flanking you at melee range.  | <d cmd='face #60060598'>F</d>\n",
-            "<popStream/><prompt time=\"1637690082\">R&gt;</prompt>\n"
+            "<popStream/><prompt time=\"1637690082\">R&gt;</prompt>\n",
         ])
 
         XCTAssertEqual(commands.count, 13)
@@ -232,7 +232,7 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
-    
+
 //    func test_urchin_stream() {
 //        let commands = streamCommands([
 //            "Raven's Point         <d cmd='urchin guide Raven's Point, Town Square'>Raven's Point, Town Square</d>\n",

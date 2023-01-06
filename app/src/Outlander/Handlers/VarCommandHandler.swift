@@ -11,12 +11,12 @@ import Foundation
 class VarCommandHandler: ICommandHandler {
     private let files: FileSystem
     private let log = LogManager.getLog(String(describing: VarCommandHandler.self))
-    
+
     var command = "#var"
 
     let aliases = ["#var", "#tvar"]
     let validCommands = ["save", "load", "reload"]
-    
+
     init(_ files: FileSystem) {
         self.files = files
     }

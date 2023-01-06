@@ -238,7 +238,7 @@ class Script {
         tokenHandlers["else"] = handleElse
         tokenHandlers["elsesingle"] = handleElseSingle
         tokenHandlers["elseneedsbrace"] = handleElseNeedsBrace
-        
+
 //        tokenHandlers["foreach"] = handleForeach
 
         tokenHandlers["gosub"] = handleGosub
@@ -307,7 +307,7 @@ class Script {
     }
 
     func queueNext() {
-        self.log.info("script queue next")
+        log.info("script queue next")
         scriptQueue.queue(.next)
         next()
     }
@@ -323,7 +323,7 @@ class Script {
         guard !inLoop, !stopped else { return }
 
         if paused {
-            self.log.info("script nextAfterUnpause 1")
+            log.info("script nextAfterUnpause 1")
             nextAfterUnpause = true
             return
         }
@@ -340,7 +340,7 @@ class Script {
         }
         inLoop = false
         if paused {
-            self.log.info("script nextAfterUnpause 2")
+            log.info("script nextAfterUnpause 2")
             nextAfterUnpause = true
         }
     }
@@ -1234,7 +1234,7 @@ class Script {
         let result = funcEvaluator.evaluateStrValue(expression)
 
         notify("eval \(targetVar) \(result.text) = \(result.result)", debug: ScriptLogLevel.if, scriptLine: line.lineNumber, fileName: line.fileName)
-        
+
         if result.result == "error" {
             sendText(result.text, preset: "scripterror", scriptLine: line.lineNumber, fileName: line.fileName)
         }

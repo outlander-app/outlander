@@ -53,7 +53,7 @@ class MacroCommandHandler: ICommandHandler {
             displayHelp(context)
         }
     }
-    
+
     func displayHelp(_ context: GameContext) {
         context.events2.echoText("\(command) commands:")
         context.events2.echoText("  clear, reload, save, help")

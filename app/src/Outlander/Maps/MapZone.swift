@@ -119,8 +119,8 @@ final class MapZone {
         return moves
     }
 
-    func moveCostForNode(node: MapNode, toNode: MapNode, arc: MapArc) -> Int {
-        return arc.moveCost
+    func moveCostForNode(node _: MapNode, toNode _: MapNode, arc: MapArc) -> Int {
+        arc.moveCost
     }
 
     func heuristic(node: MapNode, endNode: MapNode) -> Int {
@@ -137,12 +137,12 @@ final class MapZone {
 
         return Int(res)
     }
-    
+
     func maybeSwap(a: Double, b: Double) -> (Double, Double) {
         if a > b {
             return (a, b)
         }
-        
+
         return (b, a)
     }
 }

@@ -31,9 +31,9 @@ class GameContext {
     }
 
     init(_ events: Events2 = SwenEvents()) {
-        self.events2 = events
-        self.applicationSettings = ApplicationSettings()
-        self.globalVars = GlobalVariables(events: events, settings: self.applicationSettings)
+        events2 = events
+        applicationSettings = ApplicationSettings()
+        globalVars = GlobalVariables(events: events, settings: applicationSettings)
     }
 
     func updateClassFilters() {

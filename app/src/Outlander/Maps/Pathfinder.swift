@@ -25,7 +25,7 @@ class TreeNode {
     }
 
     func print() -> String {
-        return "TreeNode id=\(id) h=\(h) g=\(g) f=\(f)"
+        "TreeNode id=\(id) h=\(h) g=\(g) f=\(f)"
     }
 }
 
@@ -51,7 +51,7 @@ extension TreeNode: Comparable, Hashable {
 
 class Pathfinder {
     private let log = LogManager.getLog(String(describing: Pathfinder.self))
-    
+
     func findPath(start: String, target: String, zone: MapZone) -> [String] {
         var openList: [TreeNode] = []
         var closedList: [TreeNode] = []
@@ -63,7 +63,7 @@ class Pathfinder {
         openList.append(TreeNode(id: startNode.id))
 
         var found: TreeNode?
-        
+
         var count = 0
 
         while let current = nodeWithLowestFScore(openList) {
@@ -81,7 +81,7 @@ class Pathfinder {
             guard let currentMapNode = zone.room(id: current.id) else {
                 return []
             }
-            
+
             var currentArcs: [TreeNode] = []
 
             for arc in currentMapNode.filteredArcs {
@@ -92,7 +92,7 @@ class Pathfinder {
 
                 // ignore arcs that point to the current room
                 // ignore duplicate arcs that point to a room that already has been evaluated
-                guard room.id != current.id && !isInList(currentArcs, node: room) else {
+                guard room.id != current.id, !isInList(currentArcs, node: room) else {
                     continue
                 }
 
@@ -100,25 +100,25 @@ class Pathfinder {
                 guard !isInList(closedList, node: room) else {
                     continue
                 }
-                
+
                 let moveCost = zone.moveCostForNode(node: currentMapNode, toNode: endNode, arc: arc)
 
                 let newNode = TreeNode(id: room.id, parent: current)
                 newNode.g = current.g + moveCost
                 newNode.h = zone.heuristic(node: room, endNode: endNode)
-                
+
                 currentArcs.append(newNode)
             }
 
             var arcsToAdd: [TreeNode] = []
 
             for node in currentArcs {
-                if let openNode = openList.first(where: { $0.id == node.id}) {
+                if let openNode = openList.first(where: { $0.id == node.id }) {
                     if node.f > openNode.f {
                         continue
                     }
                 }
-                
+
                 arcsToAdd.append(node)
             }
 
@@ -141,7 +141,7 @@ class Pathfinder {
         // there is no route
         return []
     }
-    
+
     func nodeWithLowestFScore(_ list: [TreeNode]) -> TreeNode? {
         list.sorted { $0.f < $1.f }.first
     }
