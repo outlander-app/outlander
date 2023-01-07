@@ -58,11 +58,14 @@ class GotoComandHandler: ICommandHandler {
     }
 
     func processMoves(moves: [String], context: GameContext) {
-        let args = moves.map {
-            $0.range(of: " ") != nil
-                ? "\"\($0)\""
-                : $0
-        }.joined(separator: " ")
+        let argList = moves.map {
+          $0.range(of: " ") != nil
+              ? "\"\($0)\""
+               : $0
+        }
+
+        let args = argList.joined(separator: " ")
+        let mapperpath = argList.joined(separator: "|")
 
         context.events2.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
     }
