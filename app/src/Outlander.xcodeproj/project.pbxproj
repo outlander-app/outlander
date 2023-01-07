@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B0A8AAB296A14DD0036C5BF /* ApplicationVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0A8AAA296A14DD0036C5BF /* ApplicationVersion.swift */; };
+		7B0A8AAC296A14DD0036C5BF /* ApplicationVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0A8AAA296A14DD0036C5BF /* ApplicationVersion.swift */; };
 		7B10A569275C0CC1000FEDE8 /* PluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A568275C0CC1000FEDE8 /* PluginManager.swift */; };
 		7B10A56A275C0CC1000FEDE8 /* PluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A568275C0CC1000FEDE8 /* PluginManager.swift */; };
 		7B10A59A275C1F26000FEDE8 /* LocalHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A599275C1F26000FEDE8 /* LocalHost.swift */; };
@@ -316,6 +318,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7B0A8AAA296A14DD0036C5BF /* ApplicationVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationVersion.swift; sourceTree = "<group>"; };
 		7B10A568275C0CC1000FEDE8 /* PluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginManager.swift; sourceTree = "<group>"; };
 		7B10A599275C1F26000FEDE8 /* LocalHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHost.swift; sourceTree = "<group>"; };
 		7B10A66B275C9C40000FEDE8 /* PluginCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginCommandHandler.swift; sourceTree = "<group>"; };
@@ -629,6 +632,7 @@
 		F98B49222470F502000E2D92 /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				7B0A8AAA296A14DD0036C5BF /* ApplicationVersion.swift */,
 				7BBBC51A276DD0F800D1CF3E /* AtomicQueue.swift */,
 				7BDF5C7A271AB4F40020A3B0 /* BoolExtensions.swift */,
 				F9BCF32022E28EFB00C7F7F0 /* DataExtensions.swift */,
@@ -1017,6 +1021,7 @@
 				7B917E5F27641E9700887F95 /* SimplePingAdapter.swift in Sources */,
 				F9CA205B2466322B00A92736 /* VarCommandHandler.swift in Sources */,
 				F9D36E9922EFF7BB008BC6E6 /* Utilities.swift in Sources */,
+				7B0A8AAB296A14DD0036C5BF /* ApplicationVersion.swift in Sources */,
 				F9B254062478996D0097C07F /* ProfileWindow.swift in Sources */,
 				7B228B05272C6D170052610B /* DirectionsView.swift in Sources */,
 				7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */,
@@ -1155,6 +1160,7 @@
 				7B10A69B276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */,
 				F98B4911246FA149000E2D92 /* SubstituteLoaderTests.swift in Sources */,
 				7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */,
+				7B0A8AAC296A14DD0036C5BF /* ApplicationVersion.swift in Sources */,
 				7BA27B5825DF966400A88B80 /* ScriptTokenizerTests.swift in Sources */,
 				F969A0F223A41DD000408CE5 /* HistoryTextField.swift in Sources */,
 				7B956B442750557000346019 /* ScriptLoader.swift in Sources */,

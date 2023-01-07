@@ -41,7 +41,7 @@ class VariablesLoaderTests: XCTestCase {
 
         loader!.load(context.applicationSettings, context: context)
 
-        XCTAssertEqual(context.globalVars.count, 12)
+        XCTAssertEqual(context.globalVars.count, 13)
         XCTAssertEqual(context.globalVars["Alchemy.LearningRate"], "0")
         XCTAssertEqual(context.globalVars["Alchemy.LearningRateName"], "clear")
     }
@@ -53,6 +53,7 @@ class VariablesLoaderTests: XCTestCase {
         loader!.save(context.applicationSettings, variables: context.globalVars)
 
         let unixTime = clock.now.timeIntervalSince1970.formattedNumber
+        let version = ApplicationVersion.version
 
         XCTAssertEqual(fileSystem.savedContent ?? "",
                        """
@@ -68,6 +69,7 @@ class VariablesLoaderTests: XCTestCase {
                        #var {tdp} {0}
                        #var {time} {12:00:00 AM}
                        #var {unixtime} {\(unixTime)}
+                       #var {version} {\(version)}
 
                        """)
     }

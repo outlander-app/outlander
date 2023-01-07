@@ -377,7 +377,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 let character = self.gameContext.globalVars["charactername"] ?? ""
                 let game = self.gameContext.globalVars["game"] ?? ""
 
-                let version = self.appVersion()
+                let version = ApplicationVersion.version
                 let gameInfo = game.count > 0 ? "\(game)" : ""
                 let charInfo = character.count > 0 ? "\(character) - " : ""
                 let connection = self.gameServer?.isConnected == true ? "" : " [disconnected]"
@@ -391,17 +391,6 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 }
             }
         }
-    }
-
-    func appVersion() -> String {
-        let dictionary = Bundle.main.infoDictionary!
-        let version = dictionary["CFBundleShortVersionString"] as! String
-        let buildStr = dictionary["CFBundleVersion"] as! String
-        var build = ""
-        if !buildStr.isEmpty, buildStr != "0" {
-            build = ".\(buildStr)"
-        }
-        return "\(version)\(build)"
     }
 
     func handleRawStream(data: String, streamData: Bool = false) {
