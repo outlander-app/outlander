@@ -66,6 +66,8 @@ class GotoComandHandler: ICommandHandler {
 
         let args = argList.joined(separator: " ")
         let mapperpath = argList.joined(separator: "|")
+        
+        context.globalVars["mapperpath"] = mapperpath
 
         context.events2.sendCommand(Command2(command: ".automapper \(args)", isSystemCommand: true))
     }
