@@ -98,6 +98,7 @@ class GotoComandHandler: ICommandHandler {
 
         let finder = Pathfinder()
         let path = finder.findPath(start: from.id, target: to.id, zone: zone)
+        context.globalVars["destination"] = to.id
         let moves = zone.getMoves(ids: path)
         let diff = Date() - started
 
