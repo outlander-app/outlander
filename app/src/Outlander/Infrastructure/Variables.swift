@@ -93,10 +93,10 @@ class GlobalVariables: Variables {
         })
 
         addDynamic(key: "version", value: .dynamic {
-            return "Outlander \(ApplicationVersion.version)"
+            return ApplicationVersion.version
         })
 
-        addDynamic(key: "frontend", value: .dynamic {
+        addDynamic(key: "client", value: .dynamic {
             return "Outlander"
         })
     }
