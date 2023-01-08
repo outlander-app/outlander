@@ -28,6 +28,6 @@ struct ApplicationVersion {
         if !buildStr.isEmpty, buildStr != "0" {
             build = ".\(buildStr)"
         }
-        return "\(version)\(build)"
+        return "Outlander \(version)\(build)"
     }
 }
