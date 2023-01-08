@@ -91,9 +91,13 @@ class GlobalVariables: Variables {
             let str = "\(interval.formattedNumber)"
             return str
         })
-        
+
         addDynamic(key: "version", value: .dynamic {
-            return ApplicationVersion.version
+            return "Outlander \(ApplicationVersion.version)"
+        })
+
+        addDynamic(key: "frontend", value: .dynamic {
+            return "Outlander"
         })
     }
 }
