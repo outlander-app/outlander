@@ -41,7 +41,7 @@ class SkillExp: CustomStringConvertible {
         self.name = name
         self.mindState = mindState
         self.ranks = ranks
-        self.originalRanks = ranks
+        originalRanks = ranks
         self.isNew = isNew
     }
 
