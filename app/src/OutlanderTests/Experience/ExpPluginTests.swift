@@ -114,6 +114,44 @@ class ExpPluginTests: XCTestCase {
         XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER Sorcery 0")
     }
 
+    func test_lowest_skill_ranks_no_mindstate() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Forging'><preset id='whisper'>          Forging:   1661 87% clear   </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Engineering'><preset id='whisper'>          Engineering:   1356 88% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Outfitting'><preset id='whisper'>          Outfitting:   1629 64% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Alchemy'><preset id='whisper'>          Alchemy:   1127 01% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Enchanting'><preset id='whisper'>          Enchanting:    966 60% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Scholarship'><preset id='whisper'>          Scholarship:   1515 59% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Performance'><preset id='whisper'>          Performance:   1334 56% clear   </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Tactics'><preset id='whisper'>          Tactics:   1626 67% clear    </preset></component>")
+
+        _ = plugin.parse(input: "/tracker lowest Alchemy|Performance|Enchanting|Engineering|Outfitting|Forging")
+
+        XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER Enchanting 2")
+    }
+    
+    func test_lowest_skill_mindstate_() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp Forging'><preset id='whisper'>          Forging:   1661 87% clear   </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Engineering'><preset id='whisper'>          Engineering:   1356 88% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Outfitting'><preset id='whisper'>          Outfitting:   1629 64% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Alchemy'><preset id='whisper'>          Alchemy:   1127 01% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Enchanting'><preset id='whisper'>          Enchanting:    966 60% dabbling    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Scholarship'><preset id='whisper'>          Scholarship:   1515 59% clear    </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Performance'><preset id='whisper'>          Performance:   1334 56% clear   </preset></component>")
+        _ = plugin.parse(xml: "<component id='exp Tactics'><preset id='whisper'>          Tactics:   1626 67% clear    </preset></component>")
+
+        _ = plugin.parse(input: "/tracker lowest Alchemy|Performance|Engineering|Outfitting|Forging|Enchanting")
+
+        XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER Alchemy 0")
+    }
+
     func test_highest_skill_mindstate() {
         let host = TestHost()
         let plugin = ExpPlugin()

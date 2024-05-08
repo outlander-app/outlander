@@ -60,7 +60,7 @@ class BookmarkHelper {
         let openPanel = NSOpenPanel()
         openPanel.message = "Choose your Outlander settings directory"
         openPanel.prompt = "Choose"
-        openPanel.allowedFileTypes = ["none"]
+        openPanel.allowedContentTypes = []
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true

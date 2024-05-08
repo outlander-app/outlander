@@ -6,6 +6,7 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
+import AppKit
 import Cocoa
 import Foundation
 

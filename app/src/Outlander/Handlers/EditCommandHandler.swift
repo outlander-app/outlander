@@ -31,13 +31,13 @@ class EditCommandHandler: ICommandHandler {
             try? files.append("#  \(scriptFileName)\n", to: newFileUrl)
 
             files.access {
-                NSWorkspace.shared.openFile(newFileUrl.absoluteString)
+                NSWorkspace.shared.open(newFileUrl)
             }
             return
         }
 
         files.access {
-            NSWorkspace.shared.openFile(url.absoluteString)
+            NSWorkspace.shared.open(url)
         }
     }
 }

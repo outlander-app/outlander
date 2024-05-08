@@ -6,8 +6,10 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
+import AppKit
 import Cocoa
 import Foundation
+import UniformTypeIdentifiers
 
 struct Credentials {
     var account: String
@@ -540,12 +542,14 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
             return
         }
+        
+        let fileType = UTType(filenameExtension: "cfg")!
 
         if command == "layout:Load" {
             let openPanel = NSOpenPanel()
             openPanel.message = "Choose your Outlander layout file"
             openPanel.prompt = "Choose"
-            openPanel.allowedFileTypes = ["cfg"]
+            openPanel.allowedContentTypes = [fileType]
             openPanel.allowsMultipleSelection = false
             openPanel.allowsOtherFileTypes = false
             openPanel.canChooseFiles = true
@@ -568,7 +572,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             let savePanel = NSSavePanel()
             savePanel.message = "Choose your Outlander layout file"
             savePanel.prompt = "Choose"
-            savePanel.allowedFileTypes = ["cfg"]
+            savePanel.allowedContentTypes = [fileType]
             savePanel.allowsOtherFileTypes = false
             savePanel.nameFieldStringValue = gameContext.applicationSettings.profile.layout
             savePanel.directoryURL = gameContext.applicationSettings.paths.layout

@@ -6,6 +6,7 @@
 //  Copyright © 2019 Joe McBride. All rights reserved.
 //
 
+import AppKit
 import Cocoa
 import Foundation
 
@@ -42,6 +43,14 @@ public class HistoryTextField: NSTextField {
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         focusRingType = .none
+        drawsBackground = false
+        isBezeled = false
+    }
+
+    override public func becomeFirstResponder() -> Bool {
+        let textView = window?.fieldEditor(true, for: nil) as? NSTextView
+        textView?.insertionPointColor = textColor ?? NSColor.white
+        return super.becomeFirstResponder()
     }
 
     func hasFocus() -> Bool {
@@ -55,6 +64,8 @@ public class HistoryTextField: NSTextField {
         let fullRect = bounds
         promptBackgroundColor.setFill()
         fullRect.fill(using: .sourceOver)
+        
+        print(promptBackgroundColor.getHexString())
 
         var progressRect = bounds
         progressRect.size.width *= CGFloat(progress)
