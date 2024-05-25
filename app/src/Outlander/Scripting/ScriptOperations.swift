@@ -78,6 +78,7 @@ class ActionOp: IAction {
                     continue
                 }
                 script.gosubClear()
+                script.matchesClear()
                 script.queueNext()
             case .exit: script.cancel()
             default: continue
@@ -139,6 +140,7 @@ class ActionEvalOp: IAction {
                     continue
                 }
                 script.gosubClear()
+                script.matchesClear()
                 script.queueNext()
             case .exit: script.cancel()
             default: continue

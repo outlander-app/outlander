@@ -89,7 +89,11 @@ protocol IWantStreamInfo {
     func execute(_ script: Script, _ context: ScriptContext)
 }
 
-protocol IAction: IWantStreamInfo {
+protocol IAction {
+    var id: String { get }
+    func stream(_ text: String, _ tokens: [StreamCommand], _ context: ScriptContext) -> CheckStreamResult
+    func execute(_ script: Script, _ context: ScriptContext)
+
     var className: String { get set }
     var enabled: Bool { get set }
     var line: ScriptLine { get set }
@@ -304,6 +308,11 @@ class Script {
 
     func gosubClear() {
         gosubStack.clear()
+    }
+
+    func matchesClear() {
+        matchStack.removeAll()
+        reactToStream.removeAll()
     }
 
     func queueNext() {
