@@ -75,6 +75,8 @@
 		7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A192759DB200035D731 /* IconLoader.swift */; };
 		7B3B9A1D275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
 		7B3B9A1E275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
+		7B6820472C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
+		7B6820482C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
 		7B8F887327924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
 		7B8F887427924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
 		7B8F887527924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
@@ -356,6 +358,7 @@
 		7B3B9A1827596F390035D731 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7B3B9A192759DB200035D731 /* IconLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconLoader.swift; sourceTree = "<group>"; };
 		7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsCommandHandler.swift; sourceTree = "<group>"; };
+		7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulateTextCommandHandler.swift; sourceTree = "<group>"; };
 		7B8F887127924B5200713BA7 /* AddProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileWindow.swift; sourceTree = "<group>"; };
 		7B8F887227924B5200713BA7 /* AddProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProfileWindow.xib; sourceTree = "<group>"; };
 		7B8F888D279FB1A500713BA7 /* Swen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swen.swift; sourceTree = "<group>"; };
@@ -782,6 +785,7 @@
 				F9CA204E245FC4B600A92736 /* CommandProcessor.swift */,
 				F9CA20452453AEBB00A92736 /* EchoCommandHandler.swift */,
 				7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */,
+				7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */,
 				7B917E4E276411A300887F95 /* EpediaCommandHandler.swift */,
 				7B10A693275FFA25000FEDE8 /* EvalCommandHandler.swift */,
 				7B10A690275FEA01000FEDE8 /* EvalMathCommandHandler.swift */,
@@ -1095,6 +1099,7 @@
 				F98B492C2471F38E000E2D92 /* Logger.swift in Sources */,
 				7B27C5B0274B23760095B9BF /* ScriptContext.swift in Sources */,
 				7B917E5227641B9E00887F95 /* PingCommandHandler.swift in Sources */,
+				7B6820472C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */,
 				7B917E4C2763FF7E00887F95 /* PrintBoxCommandHandler.swift in Sources */,
 				7BCE4A2725C5011B00AF0444 /* MapLoader.swift in Sources */,
 				7B228B1D273871720052610B /* Pathfinder.swift in Sources */,
@@ -1169,6 +1174,7 @@
 				7B228B24273880320052610B /* GotoCommandHandler.swift in Sources */,
 				7B917E50276411A300887F95 /* EpediaCommandHandler.swift in Sources */,
 				7B8F888F279FB1A500713BA7 /* Swen.swift in Sources */,
+				7B6820482C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */,
 				F9CA20792467849700A92736 /* ClassCommandHandler.swift in Sources */,
 				7B9C5A6D273F327700A17134 /* Variables.swift in Sources */,
 				F9CA204A245C9E2300A92736 /* WindowCommandHandler.swift in Sources */,

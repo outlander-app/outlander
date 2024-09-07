@@ -883,6 +883,85 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["3.1\n"])
     }
+    
+    func test_counter_works_without_variable_previously_defined() throws {
+        try scenario([
+            "counter - 1",
+            "echo %c",
+        ],
+        expect: ["-1\n"])
+    }
+    
+    func test_counter_set_number() throws {
+        try scenario([
+            "counter set 5",
+            "echo %c",
+        ],
+        expect: ["5\n"])
+    }
+    
+    func test_counter_add_numbers_senario_1() throws {
+        try scenario([
+            "counter set 2",
+            "counter + 1",
+            "echo %c",
+        ],
+        expect: ["3\n"])
+    }
+
+    func test_counter_add_numbers_senario_2() throws {
+        try scenario([
+            "counter set 2",
+            "counter add 1",
+            "echo %c",
+        ],
+        expect: ["3\n"])
+    }
+
+    func test_counter_subtract_numbers_senario_1() throws {
+        try scenario([
+            "counter set 2",
+            "counter - 1",
+            "echo %c",
+        ],
+        expect: ["1\n"])
+    }
+
+    func test_counter_subtract_numbers_senario_2() throws {
+        try scenario([
+            "counter set 2",
+            "counter sub 1",
+            "echo %c",
+        ],
+        expect: ["1\n"])
+    }
+
+    func test_counter_subtract_numbers_senario_3() throws {
+        try scenario([
+            "counter set 2",
+            "counter subtract 1",
+            "echo %c",
+        ],
+        expect: ["1\n"])
+    }
+    
+    func test_counter_multiply_numbers_senario_1() throws {
+        try scenario([
+            "counter set 2",
+            "counter * 2",
+            "echo %c",
+        ],
+        expect: ["4\n"])
+    }
+
+    func test_counter_multiply_numbers_senario_2() throws {
+        try scenario([
+            "counter set 2",
+            "counter multiply 2",
+            "echo %c",
+        ],
+        expect: ["4\n"])
+    }
 
     func test_math_works_without_variable_previously_defined() throws {
         try scenario([
@@ -905,6 +984,24 @@ class ScriptTests: XCTestCase {
         try scenario([
             "var temp 2",
             "math temp - 1",
+            "echo %temp",
+        ],
+        expect: ["1\n"])
+    }
+    
+    func test_math_subtract_numbers_senario_2() throws {
+        try scenario([
+            "var temp 2",
+            "math temp sub 1",
+            "echo %temp",
+        ],
+        expect: ["1\n"])
+    }
+    
+    func test_math_subtract_numbers_senario_3() throws {
+        try scenario([
+            "var temp 2",
+            "math temp subtract 1",
             "echo %temp",
         ],
         expect: ["1\n"])

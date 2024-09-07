@@ -929,6 +929,8 @@ class Script {
 
         case "-":
             fallthrough
+        case "sub":
+            fallthrough
         case "subtract":
             result = existingValue - numberValue
 
@@ -1574,6 +1576,8 @@ class Script {
             result = existingValue + numberValue
 
         case "-":
+            fallthrough
+        case "sub":
             fallthrough
         case "subtract":
             result = existingValue - numberValue

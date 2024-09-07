@@ -59,6 +59,10 @@ struct VariableChangedEvent: Event {
     var value: String
 }
 
+struct EmulatedTextEvent: Event {
+    var data: String
+}
+
 extension Events2 {
     func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
         let data = EchoTextEvent(text: "\(text)\n".hexDecoededString(), preset: preset, color: color, mono: mono)
@@ -87,6 +91,11 @@ extension Events2 {
 
     func variableChanged(_ key: String, value: String) {
         let evt = VariableChangedEvent(key: key, value: value)
+        post(evt)
+    }
+
+    func emulateGameText(_ data: String) {
+        let evt = EmulatedTextEvent(data: data)
         post(evt)
     }
 }

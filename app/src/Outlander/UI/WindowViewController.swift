@@ -203,7 +203,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         }
 
         addMenu(title: "Close Window", action: #selector(closeWindow(sender:)))
-        // addMenu(title: "Show Settings", action: #selector(toggleSettingsAction(sender:)))
+//        addMenu(title: "Show Settings", action: #selector(toggleSettingsAction(sender:)))
         addMenu(title: "Show Border", action: #selector(toggleShowBorder(sender:)))
         addMenu(title: "Timestamp", action: #selector(toggleTimestamp(sender:)))
         addMenu(title: "Auto Scroll", action: #selector(toggleAutoScroll(sender:)))
@@ -720,7 +720,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         if value.hasPrefix("command:") {
             let cmd = value[8...]
             if cmd.count > 0 {
-                gameContext?.events2.sendCommand(Command2(command: cmd, isSystemCommand: true))
+                gameContext?.events2.sendCommand(Command2(command: cmd, isSystemCommand: true, window: self.name))
             }
         } else {
             guard let url = URL(string: value) else {

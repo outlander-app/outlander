@@ -21,6 +21,7 @@ struct Command2 {
     var isSystemCommand: Bool = false
     var fileName: String = ""
     var preset: String = ""
+    var window: String = ""
 }
 
 class CommandProcesssor {
@@ -60,6 +61,8 @@ class CommandProcesssor {
         handlers.append(TriggerCommandHandler(files))
         handlers.append(EditCommandHandler(files))
         handlers.append(MacroCommandHandler(files))
+        // for local testing only
+//        handlers.append(EmulateTextCommandHandler(files))
 
         self.pluginManager = pluginManager
     }
@@ -103,13 +106,13 @@ class CommandProcesssor {
             var handled = false
             for handler in handlers {
                 if handler.canHandle(cmd) {
-                    handler.handle(cmd, with: context)
                     handled = true
+                    handler.handle(cmd, with: context)
                     break
                 }
             }
             if !handled {
-                context.events2.sendGameCommand(Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset))
+                context.events2.sendGameCommand(Command2(command: cmd, isSystemCommand: command.isSystemCommand, fileName: command.fileName, preset: command.preset, window: command.window))
             }
         }
     }

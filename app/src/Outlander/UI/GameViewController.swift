@@ -184,12 +184,12 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 }
 
             case let .clearStream(name):
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     self?.clearWindow(name)
                 }
 
             case let .createWindow(name, title, closedTarget):
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     self?.maybeCreateWindow(name, title: title, closedTarget: closedTarget)
                 }
 
@@ -249,6 +249,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
             let command = evt.command
             let text = command.fileName.count > 0 ? "[\(command.fileName)]: \(command.command)\n" : "\(command.command)\n"
             let mono = command.fileName.count > 0 ? true : false
+            let window = evt.command.window.isEmpty ? "main" : evt.command.window
 
             var preset = command.fileName.count > 0 ? "scriptinput" : nil
 
@@ -256,7 +257,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
                 preset = command.preset
             }
 
-            self.logText(text, preset: preset, mono: mono, playerCommand: !command.isSystemCommand)
+            self.logText(text, preset: preset, mono: mono, playerCommand: !command.isSystemCommand, window: window)
             self.gameServer?.sendCommand(command.command)
         }
 
@@ -300,6 +301,10 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
         gameContext.events2.register(self) { (evt: GameParseEvent) in
             self.handleRawStream(data: evt.text, streamData: false)
+        }
+
+        gameContext.events2.register(self) { (evt: EmulatedTextEvent) in
+            self.handleRawStream(data: evt.data, streamData: true)
         }
 
         vitalsBar.presetFor = { name in
@@ -349,6 +354,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
         gameContext.events2.unregister(self, DummyEvent<ErrorEvent>())
         gameContext.events2.unregister(self, DummyEvent<EchoTagEvent>())
         gameContext.events2.unregister(self, DummyEvent<EchoTextEvent>())
+        gameContext.events2.unregister(self, DummyEvent<EmulatedTextEvent>())
         gameContext.events2.unregister(self, DummyEvent<VariableChangedEvent>())
         gameContext.events2.unregister(self, DummyEvent<WindowCommandEvent>())
     }
@@ -963,8 +969,8 @@ class GameViewController: NSViewController, NSWindowDelegate {
         }
     }
 
-    func logText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false, playerCommand: Bool = false) {
-        logTag([TextTag.tagFor(text, window: "main", mono: mono, color: color, preset: preset, playerCommand: playerCommand)])
+    func logText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false, playerCommand: Bool = false, window: String = "main") {
+        logTag([TextTag.tagFor(text, window: window, mono: mono, color: color, preset: preset, playerCommand: playerCommand)])
     }
 
     func logError(_ text: String) {

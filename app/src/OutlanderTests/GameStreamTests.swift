@@ -81,6 +81,24 @@ class GameStreamTests: XCTestCase {
         }
     }
 
+    func test_stream_room_exit_multi_tags() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<component id='room exits'>Obvious paths: clockwise, widdershins.\r\n",
+            "\r\n",
+            "<compass></compass></component>\r\n"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 4)
+
+        switch commands[1] {
+        case .room:
+            XCTAssertEqual(context.globalVars["roomexits"], "Obvious paths: clockwise, widdershins.")
+        default:
+            XCTFail()
+        }
+    }
+
     func testStreamRoomDescTags() {
         let context = GameContext()
         let commands = streamCommands([
@@ -158,6 +176,26 @@ class GameStreamTests: XCTestCase {
 
         XCTAssertEqual(context.globalVars["monstercount"], "3")
         XCTAssertEqual(context.globalVars["monsterlist"], "a juvenile wyvern|a juvenile wyvern|a juvenile wyvern")
+    }
+
+    func test_stream_preset() {
+        let context = GameContext()
+        let commands = streamCommands([
+            "<preset id='roomDesc'>Fragrant smoke drifts from censers to carry periodic ripples of sound from the rooms beyond.</preset>  You also see an iron-bound oak door set in the far wall.\r\n",
+            "<prompt time=\"1725664159\">&gt;</prompt>"
+        ], context: context)
+
+        XCTAssertEqual(commands.count, 4)
+
+        switch commands[3] {
+        case let .text(tags):
+            XCTAssertEqual(tags[0].text, "Fragrant smoke drifts from censers to carry periodic ripples of sound from the rooms beyond.\nYou also see an iron-bound oak door set in the far wall.\n")
+            XCTAssertEqual(tags[0].preset, "roomdesc")
+            XCTAssertEqual(tags[1].text, ">")
+            XCTAssertEqual(tags[1].isPrompt, true)
+        default:
+            XCTFail()
+        }
     }
 
     func test_stream_hand_ids() {
@@ -580,5 +618,23 @@ class GameStreamTokenizerTests: XCTestCase {
         XCTAssertEqual(token.name(), "d")
         XCTAssertTrue(token.hasAttr("cmd"))
         XCTAssertEqual(token.attr("cmd"), "urchin guide Raven's Point, Town Square")
+    }
+
+    func test_invalid_component() {
+        let tokens = reader.read("<component id='room exits'>Obvious paths: clockwise, widdershins.\n")
+
+        XCTAssertEqual(tokens.count, 1)
+
+        let token = tokens[0]
+        XCTAssertEqual(token.children().count, 1)
+    }
+    
+    func test_preset() {
+        let tokens = reader.read("<preset id='automapper'>Mapped exits: go oak door, go clockwise, go widdershins</preset>")
+
+        XCTAssertEqual(tokens.count, 1)
+
+        let token = tokens[0]
+        XCTAssertEqual(token.children().count, 1)
     }
 }

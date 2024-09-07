@@ -240,6 +240,7 @@ class TagMode: IReaderMode {
         let childContext = StreamContext([], text: context.text)
 
         guard TextMode().read(childContext) != nil else {
+            context.text = childContext.text
             return childContext.target
         }
 
@@ -856,6 +857,11 @@ class GameStream {
         let rawTag = TextTag.tagFor(data, window: "raw", mono: true)
         streamCommands(.text([rawTag]))
 
+        // this currently gets sent in the Crossing Temple, a multi-line component
+        if data == "<compass></compass></component>\r\n" {
+            return
+        }
+
         let tokens = tokenizer.read(data.replacingOccurrences(of: "\r\n", with: "\n"))
 
         for token in tokens {
@@ -985,6 +991,10 @@ class GameStream {
                 let value = token.value("") ?? ""
                 context.globalVars[id] = value
 
+                if id == "roomexits" {
+                    context.globalVars[id] = value.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+
                 if id == "roomobjs" {
                     let monsters = token.monsters(monsterCountIgnoreRegex)
                     context.globalVars["monsterlist"] = monsters.map { t in t.value() ?? "" }.joined(separator: "|")
@@ -1076,7 +1086,7 @@ class GameStream {
             }
 
             if lastToken?.name() == "preset", tag!.text.count > 0, tag!.text.hasPrefix("  You also see") {
-                tag?.preset = lastToken?.attr("id")
+                tag?.preset = lastToken?.attr("id")?.lowercased()
                 let text = "\n\(tag!.text.dropFirst(2))"
                 tag?.text = text
             }
