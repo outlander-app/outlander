@@ -81,7 +81,7 @@ public class RoundtimeTimer: BaseIntervalTimer<Int> {
     override public func onTick() {
         current -= 1
 
-        var percent: Double = 0.0
+        var percent = 0.0
 
         if current <= 0 {
             current = 0

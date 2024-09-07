@@ -34,7 +34,7 @@ class PingCommandHandler: ICommandHandler {
 }
 
 class Pinger {
-    typealias PingCompletion = ((String) -> Void)
+    typealias PingCompletion = (String) -> Void
 
     var target: String
     var count: Int

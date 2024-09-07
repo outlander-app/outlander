@@ -548,7 +548,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
 
             return
         }
-        
+
         let fileType = UTType(filenameExtension: "cfg")!
 
         if command == "layout:Load" {

@@ -11,7 +11,7 @@ import Cocoa
 import Foundation
 
 class OView: NSView {
-    typealias OnPositionChanged = ((CGPoint) -> Void)
+    typealias OnPositionChanged = (CGPoint) -> Void
 
     private let resizableArea: CGFloat = 8
     private let borderPadding: CGFloat = 0

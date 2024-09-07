@@ -1,5 +1,5 @@
 //
-//  WindowLoaderTests.swift
+//  WindowLayoutLoaderTests.swift
 //  OutlanderTests
 //
 //  Created by Joseph McBride on 5/15/20.

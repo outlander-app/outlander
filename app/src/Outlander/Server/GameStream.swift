@@ -1,5 +1,5 @@
 //
-//  Tokenizer.swift
+//  GameStream.swift
 //  Outlander
 //
 //  Created by Joseph McBride on 7/29/19.
@@ -398,7 +398,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseWords(while cond: (String) -> Bool) -> (String, String) {
         var results: [String] = []
 
-        var word: String = ""
+        var word = ""
 
         while let _ = first {
             consumeSpaces()
@@ -437,7 +437,7 @@ extension StringView where SubSequence == Self, Element: Equatable {
     mutating func parseToComponents() -> (String, Bool) {
         var result: [String] = []
         var current: [Element] = []
-        var lastWord: String = ""
+        var lastWord = ""
         var inQuote = false
         var previous: Element?
 

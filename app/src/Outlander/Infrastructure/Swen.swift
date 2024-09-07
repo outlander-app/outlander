@@ -39,7 +39,7 @@ public class SwenStorage {
 }
 
 public class Swen<EventType: BaseEvent> {
-    internal var listeners = LinkedList<EventListener<EventType>>()
+    var listeners = LinkedList<EventListener<EventType>>()
     public typealias EventListenerClosure = (_ event: EventType) -> Void
     fileprivate var sticky: EventType?
     fileprivate let editListenersMutex = Mutex()
@@ -92,7 +92,7 @@ public extension Swen {
 
 // MARK: instantiation
 
-internal extension Swen {
+extension Swen {
     static func instance(in storage: SwenStorage) -> Swen<EventType> {
         storage.instanceMutex.wait()
         defer { storage.instanceMutex.signal() }
@@ -169,7 +169,7 @@ private extension Swen {
 
 // MARK: subscriber holder
 
-internal class EventListener<EventType: BaseEvent> {
+class EventListener<EventType: BaseEvent> {
     typealias EventListenerClosure = Swen<EventType>.EventListenerClosure
     weak var observer: AnyObject?
     let observerPointer: UnsafeRawPointer

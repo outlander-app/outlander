@@ -1,5 +1,5 @@
 //
-//  GameWindowViewController.swift
+//  WindowViewController.swift
 //  Outlander
 //
 //  Created by Joseph McBride on 12/7/19.
@@ -720,7 +720,7 @@ class WindowViewController: NSViewController, NSUserInterfaceValidations, NSText
         if value.hasPrefix("command:") {
             let cmd = value[8...]
             if cmd.count > 0 {
-                gameContext?.events2.sendCommand(Command2(command: cmd, isSystemCommand: true, window: self.name))
+                gameContext?.events2.sendCommand(Command2(command: cmd, isSystemCommand: true, window: name))
             }
         } else {
             guard let url = URL(string: value) else {

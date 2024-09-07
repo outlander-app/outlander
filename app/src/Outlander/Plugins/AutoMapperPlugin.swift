@@ -1,5 +1,5 @@
 //
-//  RoomChangedPlugin.swift
+//  AutoMapperPlugin.swift
 //  Outlander
 //
 //  Created by Joe McBride on 11/9/21.

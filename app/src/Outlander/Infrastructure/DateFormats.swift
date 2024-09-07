@@ -9,9 +9,9 @@
 import Foundation
 
 struct DateFormats {
-    internal static var sharedFormatter = DateFormatter()
+    static var sharedFormatter = DateFormatter()
 
-    internal static let builtInAutoFormat: [String] = [
+    static let builtInAutoFormat: [String] = [
         "yyyy-MM-dd HH:mm",
         "yyyy-MM-dd HH:mm:ss",
         "yyyy-MM-dd hh:mm:ss a",

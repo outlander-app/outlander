@@ -86,7 +86,7 @@ class GameStreamTests: XCTestCase {
         let commands = streamCommands([
             "<component id='room exits'>Obvious paths: clockwise, widdershins.\r\n",
             "\r\n",
-            "<compass></compass></component>\r\n"
+            "<compass></compass></component>\r\n",
         ], context: context)
 
         XCTAssertEqual(commands.count, 4)
@@ -182,7 +182,7 @@ class GameStreamTests: XCTestCase {
         let context = GameContext()
         let commands = streamCommands([
             "<preset id='roomDesc'>Fragrant smoke drifts from censers to carry periodic ripples of sound from the rooms beyond.</preset>  You also see an iron-bound oak door set in the far wall.\r\n",
-            "<prompt time=\"1725664159\">&gt;</prompt>"
+            "<prompt time=\"1725664159\">&gt;</prompt>",
         ], context: context)
 
         XCTAssertEqual(commands.count, 4)
@@ -628,7 +628,7 @@ class GameStreamTokenizerTests: XCTestCase {
         let token = tokens[0]
         XCTAssertEqual(token.children().count, 1)
     }
-    
+
     func test_preset() {
         let tokens = reader.read("<preset id='automapper'>Mapped exits: go oak door, go clockwise, go widdershins</preset>")
 

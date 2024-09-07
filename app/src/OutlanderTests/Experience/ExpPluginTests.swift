@@ -132,7 +132,7 @@ class ExpPluginTests: XCTestCase {
 
         XCTAssertEqual(host.sendHistory[0], "#parse EXPTRACKER Enchanting 2")
     }
-    
+
     func test_lowest_skill_mindstate_() {
         let host = TestHost()
         let plugin = ExpPlugin()

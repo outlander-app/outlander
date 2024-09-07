@@ -64,7 +64,7 @@ public class HistoryTextField: NSTextField {
         let fullRect = bounds
         promptBackgroundColor.setFill()
         fullRect.fill(using: .sourceOver)
-        
+
         print(promptBackgroundColor.getHexString())
 
         var progressRect = bounds

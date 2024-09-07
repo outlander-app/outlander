@@ -195,7 +195,7 @@ extension String {
 
     func hexDecoededString() -> String {
         var newData = Data()
-        var emojiStr: String = ""
+        var emojiStr = ""
         for char in replacingOccurrences(of: "\\\\x", with: "\\x").replacingOccurrences(of: "\\\\X", with: "\\X") {
             let str = String(char)
             if str == "\\" || str == "%" {

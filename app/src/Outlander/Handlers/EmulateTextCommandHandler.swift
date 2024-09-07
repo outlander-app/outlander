@@ -21,7 +21,7 @@ class EmulateTextCommandHandler: ICommandHandler {
 
     func handle(_ input: String, with: GameContext) {
         let commands = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ").filter { !$0.isEmpty }
-        
+
         if commands.isEmpty {
             return
         }
@@ -29,8 +29,8 @@ class EmulateTextCommandHandler: ICommandHandler {
         let fileName = commands[0]
         let filePath = with.applicationSettings.paths.logs.appendingPathComponent(fileName)
 
-        if self.files.fileExists(filePath) {
-            guard let data = self.files.load(filePath) else {
+        if files.fileExists(filePath) {
+            guard let data = files.load(filePath) else {
                 return
             }
 

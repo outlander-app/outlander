@@ -883,7 +883,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["3.1\n"])
     }
-    
+
     func test_counter_works_without_variable_previously_defined() throws {
         try scenario([
             "counter - 1",
@@ -891,7 +891,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["-1\n"])
     }
-    
+
     func test_counter_set_number() throws {
         try scenario([
             "counter set 5",
@@ -899,7 +899,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["5\n"])
     }
-    
+
     func test_counter_add_numbers_senario_1() throws {
         try scenario([
             "counter set 2",
@@ -944,7 +944,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["1\n"])
     }
-    
+
     func test_counter_multiply_numbers_senario_1() throws {
         try scenario([
             "counter set 2",
@@ -988,7 +988,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["1\n"])
     }
-    
+
     func test_math_subtract_numbers_senario_2() throws {
         try scenario([
             "var temp 2",
@@ -997,7 +997,7 @@ class ScriptTests: XCTestCase {
         ],
         expect: ["1\n"])
     }
-    
+
     func test_math_subtract_numbers_senario_3() throws {
         try scenario([
             "var temp 2",

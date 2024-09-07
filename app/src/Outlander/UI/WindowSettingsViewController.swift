@@ -23,7 +23,7 @@ class WindowSettingsViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet var wField: NSTextField!
     @IBOutlet var paddingField: NSTextField!
 
-    typealias SettingsChanged = ((WindowViewSettings) -> Void)
+    typealias SettingsChanged = (WindowViewSettings) -> Void
 
     private var loaded = false
 
