@@ -64,7 +64,7 @@ class AuthenticationServer {
                 self?.handleData(data: data, str: str, state: AuthSocketState(rawValue: tag)!)
 
             case let .closed(error):
-                if let error = error {
+                if let error {
                     self?._callback?(.error(error.localizedDescription))
                 } else { self?._callback?(.closed) }
 
@@ -91,7 +91,7 @@ class AuthenticationServer {
             _socket?.writeAndRead(request, tag: AuthSocketState.authenticate.rawValue)
 
         case .authenticate:
-            guard let str = str else {
+            guard let str else {
                 disconnectWithError("unknown error")
                 return
             }
@@ -119,7 +119,7 @@ class AuthenticationServer {
 
             log.info("socket data: \(str ?? "")")
 
-            guard let str = str else {
+            guard let str else {
                 disconnectWithError("unable to get character list")
                 return
             }
@@ -142,7 +142,7 @@ class AuthenticationServer {
         case .character:
             log.info("socket data: \(str ?? "")")
 
-            guard let str = str else {
+            guard let str else {
                 disconnectWithError("unable to get login key")
                 return
             }

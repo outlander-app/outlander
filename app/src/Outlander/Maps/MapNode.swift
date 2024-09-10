@@ -86,7 +86,7 @@ final class MapNode: CustomStringConvertible {
 
     var transferMap: String? {
         if isTransfer() {
-            guard var notes = notes else {
+            guard var notes else {
                 return nil
             }
             guard let result = RegexFactory.get("(.+\\.xml)")?.firstMatch(&notes) else {
@@ -103,7 +103,7 @@ final class MapNode: CustomStringConvertible {
 
     var filteredArcs: [MapArc] {
         arcs
-            .filter { $0.hasDestination }
+            .filter(\.hasDestination)
             .sorted { $0.moveCost < $1.moveCost }
     }
 
@@ -120,7 +120,7 @@ final class MapNode: CustomStringConvertible {
     }
 
     func cardinalExits() -> [String] {
-        arcs.filter { cardinalDirs.contains($0.exit) }.map { $0.exit }.sorted()
+        arcs.filter { cardinalDirs.contains($0.exit) }.map(\.exit).sorted()
     }
 
     func matchesExits(_ exits: [String]) -> Bool {

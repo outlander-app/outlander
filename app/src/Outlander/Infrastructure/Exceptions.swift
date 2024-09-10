@@ -21,7 +21,7 @@ public enum ObjC {
         let exception = ExecuteWithObjCExceptionHandling {
             workItem()
         }
-        if let exception = exception {
+        if let exception {
             throw NSExceptionError(exception: exception)
         }
     }

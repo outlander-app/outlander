@@ -34,7 +34,7 @@ open class PlainPing: SimplePingAdapterDelegate {
     }
 
     fileprivate func finalizePing(_ latency: TimeInterval? = nil, error: Error? = nil) {
-        if let latency = latency {
+        if let latency {
             let elapsedTimeMs = latency * 1000
             completionBlock?(elapsedTimeMs, error)
         } else {

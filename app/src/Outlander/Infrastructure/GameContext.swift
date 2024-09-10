@@ -80,7 +80,7 @@ extension GameContext {
         tags.append(TextTag.tagFor(room))
 
         if let zone = mapZone, let currentRoom = findCurrentRoom(zone) {
-            let mappedExits = currentRoom.nonCardinalExists().map { $0.move }.joined(separator: ", ")
+            let mappedExits = currentRoom.nonCardinalExists().map(\.move).joined(separator: ", ")
             if mappedExits.count > 0 {
                 tags.append(TextTag.tagFor("Mapped exits: \(mappedExits)", preset: "automapper"))
             }

@@ -132,7 +132,7 @@ private extension Swen where EventType: StickyEvent {
 
         let listener = EventListener<EventType>(observer, queue, handler)
         listeners.append(listener)
-        guard let sticky = sticky else { return }
+        guard let sticky else { return }
         listener.queue.addOperation { [weak listener] in
             listener?.post(sticky, async: false)
         }

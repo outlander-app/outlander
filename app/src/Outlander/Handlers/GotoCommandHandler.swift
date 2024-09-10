@@ -81,7 +81,7 @@ class GotoComandHandler: ICommandHandler {
             return
         }
 
-        guard let to = to, let from = from else {
+        guard let to, let from else {
             let msg = "no path found for \"\(area)\""
             context.events2.echoError(msg)
             context.events2.sendCommand(Command2(command: "#parse \(msg)", isSystemCommand: true))
@@ -117,7 +117,7 @@ class GotoComandHandler: ICommandHandler {
     }
 
     func room(for zone: MapZone?, area: String) -> (MapNode?, [MapNode]) {
-        guard let zone = zone else {
+        guard let zone else {
             return (nil, [])
         }
 

@@ -683,7 +683,7 @@ struct TextTag {
 
     static func lines(tags: [TextTag]) -> [String] {
         let combined = tags
-            .map { $0.text }
+            .map(\.text)
             .joined(separator: "")
             .components(separatedBy: "\n")
             .map { $0.trimLeadingWhitespace() }

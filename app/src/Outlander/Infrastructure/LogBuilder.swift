@@ -42,7 +42,7 @@ class LogBuilder {
     }
 
     func flush(_ log: ILogger?) {
-        guard let log = log else { return }
+        guard let log else { return }
         lock.lock()
         defer { lock.unlock() }
 

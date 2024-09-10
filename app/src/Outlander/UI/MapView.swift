@@ -33,7 +33,7 @@ class KnownColors {
     ]
 
     static func find(_ color: String?) -> NSColor? {
-        guard let color = color else { return nil }
+        guard let color else { return nil }
         guard let hex = colors[color] else {
             return nil
         }
@@ -154,7 +154,7 @@ class MapView: NSView {
             let room = self.lookupRoomFromPoint(self.lastMousePosition)
             self.nodeHover?(room)
 
-            if let room = room, room.isTransfer() {
+            if let room, room.isTransfer() {
                 NSCursor.pointingHand.set()
             } else {
                 NSCursor.arrow.set()
@@ -202,7 +202,7 @@ class MapView: NSView {
         guard let room = mapZone?.room(id: roomId) else {
             return nil
         }
-        guard let rect = rect else {
+        guard let rect else {
             return nil
         }
 
@@ -267,7 +267,7 @@ class MapView: NSView {
             return
         }
 
-        guard let rect = rect else {
+        guard let rect else {
             return
         }
 
@@ -335,7 +335,7 @@ class MapView: NSView {
                 theme.walkPath.asColor()?.setStroke()
                 theme.walkPath.asColor()?.setFill()
 
-            } else if room.color != nil && room.color!.hasPrefix("#") {
+            } else if room.color != nil, room.color!.hasPrefix("#") {
                 NSColor(hex: room.color!)?.setFill()
 
             } else if let color = KnownColors.find(room.color) {

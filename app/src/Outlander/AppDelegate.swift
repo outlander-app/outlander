@@ -9,7 +9,7 @@
 import Cocoa
 import Sparkle
 
-@NSApplicationMain
+@main
 class AppDelegate: NSObject, NSApplicationDelegate {
 //    let updaterController: SPUStandardUpdaterController
     var windows: [NSWindow] = []

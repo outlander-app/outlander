@@ -19,7 +19,7 @@ class LocalPlugin {
     }
 
     func load() {
-        guard let bundle = bundle else {
+        guard let bundle else {
             return
         }
         if !bundle.isLoaded {
@@ -101,7 +101,7 @@ class PluginManager: OPlugin {
     func load(_ name: String) {
         unload(name)
 
-        guard let files = files, let context = context else {
+        guard let files, let context else {
             return
         }
 
@@ -206,7 +206,7 @@ class PluginManager: OPlugin {
     }
 
     func loadPlugins() {
-        guard let files = files, let context = context else {
+        guard let files, let context else {
             return
         }
 

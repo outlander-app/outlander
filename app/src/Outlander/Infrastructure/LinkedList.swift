@@ -26,7 +26,7 @@ class LinkedList<Type>: Sequence {
     }
 
     func append(_ value: Type) {
-        if let last = last {
+        if let last {
             last.next = Node(value)
             last.next?.prev = last
             self.last = last.next
@@ -37,12 +37,12 @@ class LinkedList<Type>: Sequence {
     }
 
     func filter(comparator: (Type) -> (Bool)) {
-        guard let first = first else { return }
-        guard let last = last else { return }
+        guard let first else { return }
+        guard let last else { return }
 
         var item: Node<Type>? = first
         while item != nil {
-            if let item = item, !comparator(item.value) {
+            if let item, !comparator(item.value) {
                 let prev = item.prev
                 item.prev?.next = item.next
                 item.next?.prev = prev
@@ -63,7 +63,7 @@ struct LinkedListIterator<Type>: IteratorProtocol {
     var current: Node<Type>?
 
     mutating func next() -> Type? {
-        if let current = current {
+        if let current {
             self.current = current.next
             return self.current?.value
         }

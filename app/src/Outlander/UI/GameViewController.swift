@@ -708,7 +708,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     }
 
     func connect() {
-        guard let credentials = credentials else {
+        guard let credentials else {
             return
         }
 

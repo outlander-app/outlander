@@ -282,9 +282,7 @@ class ExpTracker {
     }
 
     func buildLearnedReport() -> String {
-        let learned = (learnedQueue.map {
-            $0.learnedMindstateDescription
-        }).joined(separator: ", ")
+        let learned = (learnedQueue.map(\.learnedMindstateDescription)).joined(separator: ", ")
 
         guard learned.count > 0 else {
             return ""

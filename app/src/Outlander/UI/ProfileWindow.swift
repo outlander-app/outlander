@@ -66,7 +66,7 @@ class ProfileWindow: NSWindowController, NSTableViewDelegate, NSTableViewDataSou
             }
             NSApplication.shared.runModal(for: addWindow!.window!)
         case 1:
-            if let selected = selected, !selected.isEmpty {
+            if let selected, !selected.isEmpty {
                 let alert = NSAlert()
                 alert.messageText = "Are you sure you want to delete profile '\(selected)'?\n\nThis will delete all variables, highlights, triggers, etc. for this profile."
                 alert.addButton(withTitle: "Yes")

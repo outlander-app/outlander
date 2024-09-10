@@ -20,15 +20,15 @@ protocol Events2 {
 }
 
 class NulloEvents2: Events2 {
-    func post<EventType>(_: EventType) where EventType: Event {}
+    func post(_: some Event) {}
 
     func register<EventType>(_: AnyObject, handler _: @escaping ((EventType) -> Void)) where EventType: Event {}
 
-    func post<EventType>(_: EventType) where EventType: StickyEvent {}
+    func post(_: some StickyEvent) {}
 
     func register<EventType>(_: AnyObject, handler _: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent {}
 
-    func unregister<EventType>(_: AnyObject, _: DummyEvent<EventType>) where EventType: BaseEvent {}
+    func unregister(_: AnyObject, _: DummyEvent<some BaseEvent>) {}
 }
 
 struct EchoTextEvent: StickyEvent {

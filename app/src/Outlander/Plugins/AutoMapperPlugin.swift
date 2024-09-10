@@ -63,7 +63,7 @@ class AutoMapperPlugin: OPlugin {
             return xml
         }
 
-        guard let context = context else {
+        guard let context else {
             return xml
         }
 
@@ -86,13 +86,13 @@ class AutoMapperPlugin: OPlugin {
             room = context.findRoomInZones(name: title, description: desc)
         }
 
-        guard let room = room else {
+        guard let room else {
             return xml
         }
 
         let swapped = context.swapMaps(room: room, name: title, description: desc)
 
-        let exits = swapped.nonCardinalExists().map { $0.move }.joined(separator: ", ")
+        let exits = swapped.nonCardinalExists().map(\.move).joined(separator: ", ")
         if assignRoom {
             host?.set(variable: "roomid", value: swapped.id)
             host?.set(variable: "roomname", value: swapped.name)

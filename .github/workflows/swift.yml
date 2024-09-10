@@ -2,24 +2,23 @@ name: Swift
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
-    runs-on: macos-11
+    runs-on: macos-14
     strategy:
       matrix:
         xcode-version:
-        - /Applications/Xcode_13.1.app
+          - /Applications/Xcode_15.3.app
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Force Xcode ${{ matrix.xcode-version }}
-      run: if [ "default" != "${{ matrix.xcode-version }}" ]; then sudo xcode-select -s "${{ matrix.xcode-version }}"; fi
+      - name: Force Xcode ${{ matrix.xcode-version }}
+        run: if [ "default" != "${{ matrix.xcode-version }}" ]; then sudo xcode-select -s "${{ matrix.xcode-version }}"; fi
 
-    - name: Run tests
-      run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
+      - name: Run tests
+        run: xcodebuild -workspace app/src/Outlander.xcworkspace -scheme Outlander clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO

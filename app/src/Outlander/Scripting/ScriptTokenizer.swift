@@ -57,7 +57,7 @@ extension ScriptExpression: CustomStringConvertible {
         case let .function(name, args):
             return "\(name)(\(args.joined(separator: ", "))"
         case let .values(values):
-            return values.map { $0.description }.joined(separator: " ")
+            return values.map(\.description).joined(separator: " ")
         }
     }
 }

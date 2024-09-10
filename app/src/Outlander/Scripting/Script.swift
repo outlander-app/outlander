@@ -564,7 +564,7 @@ class Script {
     }
 
     private func checkActions(_ text: String, _ tokens: [StreamCommand]) -> Bool {
-        let actions = self.actions.filter { a in
+        let actions = actions.filter { a in
             guard a.enabled else {
                 return false
             }

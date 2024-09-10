@@ -211,13 +211,13 @@ class Variables {
     var keys: [String] {
         lock.lock()
         defer { lock.unlock() }
-        return vars.map { $0.key }.sorted(by: { $0.count > $1.count })
+        return vars.map(\.key).sorted(by: { $0.count > $1.count })
     }
 
     var displayKeys: [String] {
         lock.lock()
         defer { lock.unlock() }
-        return vars.map { $0.key }.sorted(by: { $0.compare($1, options: .numeric) == .orderedAscending })
+        return vars.map(\.key).sorted(by: { $0.compare($1, options: .numeric) == .orderedAscending })
     }
 
     func addDynamic(key: String, value: DynamicValue) {
@@ -237,7 +237,7 @@ class VariableContext {
     var settings: [VariableSetting] = []
 
     var keys: [String] {
-        Array(Set(settings.map { $0.token }))
+        Array(Set(settings.map(\.token)))
     }
 
     func add(_ token: String, values: @escaping ((String) -> String?)) {

@@ -57,7 +57,7 @@ class InMemoryEvents: Events2 {
     public var processor: CommandProcesssor?
     public var gameContext: GameContext?
 
-    func post<EventType>(_ event: EventType) where EventType: Event {
+    func post(_ event: some Event) {
         guard !(event is VariableChangedEvent) else {
             return
         }
@@ -72,7 +72,7 @@ class InMemoryEvents: Events2 {
 
     func register<EventType>(_: AnyObject, handler _: @escaping ((EventType) -> Void)) where EventType: Event {}
 
-    func post<EventType>(_ event: EventType) where EventType: StickyEvent {
+    func post(_ event: some StickyEvent) {
         guard !(event is VariableChangedEvent) else {
             return
         }
@@ -82,7 +82,7 @@ class InMemoryEvents: Events2 {
 
     func register<EventType>(_: AnyObject, handler _: @escaping ((_ event: EventType) -> Void)) where EventType: StickyEvent {}
 
-    func unregister<EventType>(_: AnyObject, _: DummyEvent<EventType>) where EventType: BaseEvent {}
+    func unregister(_: AnyObject, _: DummyEvent<some BaseEvent>) {}
 }
 
 class TestHost: IHost {

@@ -55,7 +55,7 @@ class Pinger {
                 self.done("Error: \(error!.localizedDescription)")
                 return
             }
-            if let time = time {
+            if let time {
                 self.results.append(time)
             }
             if self.count > 0 {

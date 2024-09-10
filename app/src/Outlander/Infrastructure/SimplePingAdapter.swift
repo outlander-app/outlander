@@ -29,7 +29,7 @@ class SimplePingAdapter: NSObject, SimplePingDelegate {
     }
 
     func stopPinging() {
-        if let pinger = pinger {
+        if let pinger {
             pinger.stop()
         }
 

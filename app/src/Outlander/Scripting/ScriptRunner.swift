@@ -215,8 +215,8 @@ class ScriptRunner: StreamHandler {
     }
 
     private func updateActiveScriptVars() {
-        let active = scripts.filter { !$0.paused }.map { $0.fileName }
-        let paused = scripts.filter { $0.paused }.map { $0.fileName }
+        let active = scripts.filter { !$0.paused }.map(\.fileName)
+        let paused = scripts.filter(\.paused).map(\.fileName)
 
         context.globalVars["scriptlist"] = (active + paused).joined(separator: "|")
         context.globalVars["activescriptlist"] = active.joined(separator: "|")

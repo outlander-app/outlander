@@ -24,17 +24,17 @@ extension String {
         return String(self[start...])
     }
 
-    func index<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+    func index(of string: some StringProtocol, options: String.CompareOptions = []) -> Index? {
         range(of: string, options: options)?.lowerBound
     }
 
-    func endIndex<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+    func endIndex(of string: some StringProtocol, options: String.CompareOptions = []) -> Index? {
         range(of: string, options: options)?.upperBound
     }
 
-    func indices<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> [Index] {
+    func indices(of string: some StringProtocol, options: String.CompareOptions = []) -> [Index] {
         var indices: [Index] = []
-        var startIndex = self.startIndex
+        var startIndex = startIndex
         while startIndex < endIndex,
               let range = self[startIndex...]
               .range(of: string, options: options)
@@ -46,9 +46,9 @@ extension String {
         return indices
     }
 
-    func ranges<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> [Range<Index>] {
+    func ranges(of string: some StringProtocol, options: String.CompareOptions = []) -> [Range<Index>] {
         var result: [Range<Index>] = []
-        var startIndex = self.startIndex
+        var startIndex = startIndex
         while startIndex < endIndex,
               let range = self[startIndex...]
               .range(of: string, options: options)

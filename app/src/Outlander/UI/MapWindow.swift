@@ -265,7 +265,7 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         print("rendering map ... \(zone.id)")
         let rect = zone.mapSize(0, padding: 100.0)
 
-        if let context = context {
+        if let context {
             let room = context.findCurrentRoom(zone)
             mapLevel = room?.position.z ?? 0
             mapView?.currentRoomId = room?.id ?? ""

@@ -98,7 +98,7 @@ class OView: NSView {
     }
 
     override func updateLayer() {
-        guard let layer = layer else { return }
+        guard let layer else { return }
 
         layer.backgroundColor = backgroundColor?.cgColor
         layer.cornerRadius = cornerRadius
@@ -219,7 +219,7 @@ class OView: NSView {
             NSCursor.resizeUpDown.set()
             return .top
         } else {
-            if isMouseDown && isDragging {
+            if isMouseDown, isDragging {
                 NSCursor.closedHand.set()
             } else {
                 NSCursor.arrow.set()

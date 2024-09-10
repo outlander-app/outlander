@@ -57,7 +57,7 @@ final class MapLoader {
     }
 
     func loadMapMeta(atPath: URL) -> [MapMetaResult] {
-        let files = self.files.contentsOf(atPath)
+        let files = files.contentsOf(atPath)
         return files.filter { !$0.hasDirectoryPath && $0.lastPathComponent.hasSuffix(".xml") }.map {
             self.loadMeta(fileUrl: $0)
         }
@@ -102,8 +102,8 @@ final class MapLoader {
 
             for node in doc.xpath("/zone/node") {
                 let desc: [String] = descriptions(node)
-                let position: MapPosition = self.position(node)
-                let arcs: [MapArc] = self.arcs(node)
+                let position: MapPosition = position(node)
+                let arcs: [MapArc] = arcs(node)
                 let room = MapNode(
                     id: node["id"]!,
                     name: node["name"]!,

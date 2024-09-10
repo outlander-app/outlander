@@ -121,6 +121,6 @@ class ApplicationPaths {
 
 extension GameContext {
     func allProfiles() -> [String] {
-        LocalFileSystem(applicationSettings).foldersIn(directory: applicationSettings.paths.profiles).map { $0.lastPathComponent }.sorted()
+        LocalFileSystem(applicationSettings).foldersIn(directory: applicationSettings.paths.profiles).map(\.lastPathComponent).sorted()
     }
 }
