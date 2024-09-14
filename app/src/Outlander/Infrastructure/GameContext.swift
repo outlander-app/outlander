@@ -49,37 +49,43 @@ extension GameContext {
         let objects = globalVars["roomobjs"]
         let players = globalVars["roomplayers"]
         let exits = globalVars["roomexits"]
+        let obscured = globalVars["roomobscured"]
 
         var tags: [TextTag] = []
         var room = ""
 
-        if name != nil, name?.count ?? 0 > 0 {
+        if !name.isEmptyOrNil {
             let tag = TextTag.tagFor(name!, preset: "roomname")
             tags.append(tag)
             room += "\n"
         }
 
-        if desc != nil, desc?.count ?? 0 > 0 {
+        if !desc.isEmptyOrNil {
             let tag = TextTag.tagFor("\(room)\(desc!)\n", preset: "roomdesc")
             tags.append(tag)
             room = ""
         }
 
-        if objects != nil, objects?.count ?? 0 > 0 {
+        if !objects.isEmptyOrNil {
             room += "\(objects!)\n"
         }
 
-        if players != nil, players?.count ?? 0 > 0 {
+        if !players.isEmptyOrNil {
             room += "\(players!)\n"
         }
 
-        if exits != nil, exits?.count ?? 0 > 0 {
+        if !exits.isEmptyOrNil {
             room += "\(exits!)\n"
         }
 
         tags.append(TextTag.tagFor(room))
 
         if let zone = mapZone, let currentRoom = findCurrentRoom(zone) {
+            if obscured?.toBool() == true && currentRoom.cardinalExits().count > 0 {
+                let cardinalExits = currentRoom.cardinalExits().joined(separator: ", ")
+                tags.append(TextTag.tagFor("Mapped directions:: \(cardinalExits)", preset: "automapper"))
+            }
+            
             let mappedExits = currentRoom.nonCardinalExists().map(\.move).joined(separator: ", ")
             if mappedExits.count > 0 {
                 tags.append(TextTag.tagFor("Mapped exits: \(mappedExits)", preset: "automapper"))

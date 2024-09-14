@@ -142,7 +142,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func sendCommand(_ command: String) {
-        activeController?.command(command)
+        if let handler = activeWindow?.contentViewController as? IUICommandHandler {
+            handler.command(command)
+        } else if let handler = activeWindow?.windowController as? IUICommandHandler {
+            handler.command(command)
+        }
     }
 
     @IBAction func checkForUpdates(_: Any) {

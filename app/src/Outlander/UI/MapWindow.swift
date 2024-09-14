@@ -58,7 +58,7 @@ class MapsDataSource: NSObject, NSComboBoxDataSource {
     }
 }
 
-class MapWindow: NSWindowController, NSComboBoxDelegate {
+class MapWindow: NSWindowController, NSComboBoxDelegate, IUICommandHandler {
     @IBOutlet var mapView: MapView?
     @IBOutlet var scrollView: NSScrollView!
     @IBOutlet var roomLabel: NSTextField!
@@ -247,6 +247,18 @@ class MapWindow: NSWindowController, NSComboBoxDelegate {
         clipViewBounds.size.height = clipViewSize.height / mapZoom
 
         clipView.setBoundsSize(clipViewBounds.size)
+    }
+
+    func command(_ command: String) {
+        guard command == "show:mapwindow" else {
+            return
+        }
+
+        print("Closing map window")
+
+        let parent = self.window?.parent
+        self.close()
+        parent?.makeKeyAndOrderFront(self)
     }
 
     func setSelectedZone() {

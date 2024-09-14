@@ -488,7 +488,7 @@ class Script {
         context.currentLineNumber = -1
 
         let diff = Date().timeIntervalSince(started!)
-        sendText("[Script '\(fileName)' completed after \(diff.formatted)]")
+        sendText("[Script '\(fileName)' completed after \(diff.formatted)]", preset: "scriptinput")
 
         gameContext.events2.post(ScriptCompleteEvent(name: fileName))
     }
@@ -673,7 +673,7 @@ class Script {
 
             scriptFilePath = scriptFilePath.replacingOccurrences(of: homeDir, with: "~/").hexDecoededString()
 
-            sendText("[Starting '\(scriptFilePath)' at \(formattedDate)]")
+            sendText("[Starting '\(scriptFilePath)' at \(formattedDate)]", preset: "scriptinput")
 
             self.fileName = scriptName
             context.variables["scriptname"] = scriptName
@@ -701,7 +701,7 @@ class Script {
                     sendText("script '\(scriptName)' cannot include itself!", preset: "scripterror", scriptLine: index, fileName: scriptName)
                     continue
                 }
-                sendText("including '\(includeName)'", preset: "scriptecho", scriptLine: index, fileName: scriptName)
+                sendText("including '\(includeName)'", preset: "scriptinput", scriptLine: index, fileName: scriptName)
                 initialize(includeName, isInclude: true)
             } else {
                 let scriptLine = ScriptLine(

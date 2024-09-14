@@ -114,6 +114,27 @@ public extension AnyExpression {
 //        print("evaluating \(input)")
         let replaced = ExpressionEvaluator.replaceSingleOperators(input)
         let exp = Expression.parse(replaced, usingCache: true)
+        
+        func equalBools(a: Bool?, b: Bool?) -> Bool {
+            guard let a = a, let b = b else {
+                return false
+            }
+
+            return a == b
+        }
+        
+        func andBools(a: Bool?, b: Bool?) -> Bool {
+            guard let a = a, let b = b else {
+                return false
+            }
+
+            return a && b
+        }
+
+        func orBools(a: Bool?, b: Bool?) -> Bool {
+            return a == true || b == true
+        }
+        
         self.init(
             exp,
             impureSymbols: { symbol in
@@ -126,10 +147,10 @@ public extension AnyExpression {
                         case let lhs as String:
                             return !(lhs.toBool() == true)
                         case let lhs as Double:
-                            return lhs == 0 ? true : false
+                            return !(lhs.toBool() == true)
                         default:
                             let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
-                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                            throw Expression.Error.message("! arguments \(types) are not compatible with \(symbol)")
                         }
                     }
                 case .prefix("!!"):
@@ -140,13 +161,15 @@ public extension AnyExpression {
                         case let lhs as String:
                             return lhs.toBool() == true
                         case let lhs as Double:
-                            return lhs == 0 ? false : true
+                            return lhs.toBool() == true
                         default:
                             let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
-                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                            throw Expression.Error.message("!! arguments \(types) are not compatible with \(symbol)")
                         }
                     }
                 case .infix("="):
+                    fallthrough
+                case .infix("=="):
                     return { args in
                         switch (args[0], args[1]) {
                         case let (lhs as Bool, rhs as Bool):
@@ -154,18 +177,26 @@ public extension AnyExpression {
                         case let (lhs as Double, rhs as Double):
                             return lhs == rhs
                         case let (lhs as Double, rhs as Bool):
-                            return lhs != 0 && rhs
+                            return equalBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as Double):
-                            return lhs && rhs != 0
+                            return equalBools(a: lhs, b: rhs.toBool())
                         case let (lhs as String, rhs as Bool):
-                            return lhs.toBool() == true && rhs
+                            return equalBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as String):
-                            return lhs && rhs.toBool() == true
+                            return equalBools(a: lhs, b: rhs.toBool())
+                        case let (lhs as String, rhs as Double):
+                            let equal = lhs == "\(rhs)"
+                            guard !equal else { return true }
+                            return equalBools(a: lhs.toBool(), b: rhs.toBool())
+                        case let (lhs as Double, rhs as String):
+                            let equal = "\(lhs)" == rhs
+                            guard !equal else { return true }
+                            return equalBools(a: lhs.toBool(), b: rhs.toBool())
                         case let (lhs as String, rhs as String):
-                            return lhs == rhs
+                            return lhs == rhs || equalBools(a: lhs.toBool(), b: rhs.toBool())
                         default:
                             let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
-                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                            throw Expression.Error.message("== arguments \(types) are not compatible with \(symbol)")
                         }
                     }
                 case .infix("&&"):
@@ -174,20 +205,24 @@ public extension AnyExpression {
                         case let (lhs as Bool, rhs as Bool):
                             return lhs && rhs
                         case let (lhs as Double, rhs as Double):
-                            return lhs != 0 && rhs != 0
+                            return andBools(a: lhs.toBool(), b: rhs.toBool())
                         case let (lhs as Double, rhs as Bool):
-                            return lhs != 0 && rhs
+                            return andBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as Double):
-                            return lhs && rhs != 0
+                            return andBools(a: lhs, b: rhs.toBool())
                         case let (lhs as String, rhs as Bool):
-                            return lhs.toBool() == true && rhs
+                            return andBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as String):
-                            return lhs && rhs.toBool() == true
+                            return andBools(a: lhs, b: rhs.toBool())
+                        case let (lhs as String, rhs as Double):
+                            return andBools(a: lhs.toBool(), b: rhs.toBool())
+                        case let (lhs as Double, rhs as String):
+                            return andBools(a: lhs.toBool(), b: rhs.toBool())
                         case let (lhs as String, rhs as String):
-                            return lhs.toBool() == true && rhs.toBool() == true
+                            return andBools(a: lhs.toBool(), b: rhs.toBool())
                         default:
                             let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
-                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                            throw Expression.Error.message("&& arguments \(types) are not compatible with \(symbol)")
                         }
                     }
                 case .infix("||"):
@@ -196,20 +231,24 @@ public extension AnyExpression {
                         case let (lhs as Bool, rhs as Bool):
                             return lhs || rhs
                         case let (lhs as Double, rhs as Double):
-                            return lhs != 0 || rhs != 0
+                            return orBools(a: lhs.toBool(), b: rhs.toBool())
                         case let (lhs as Double, rhs as Bool):
-                            return lhs != 0 || rhs
+                            return orBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as Double):
-                            return lhs || rhs != 0
+                            return orBools(a: lhs, b: rhs.toBool())
                         case let (lhs as String, rhs as Bool):
-                            return lhs.toBool() == true || rhs
+                            return orBools(a: lhs.toBool(), b: rhs)
                         case let (lhs as Bool, rhs as String):
-                            return lhs || rhs.toBool() == true
+                            return orBools(a: lhs, b: rhs.toBool())
+                        case let (lhs as String, rhs as Double):
+                            return orBools(a: lhs.toBool(), b: rhs.toBool())
+                        case let (lhs as Double, rhs as String):
+                            return orBools(a: lhs.toBool(), b: rhs.toBool())
                         case let (lhs as String, rhs as String):
-                            return lhs.toBool() == true || rhs.toBool() == true
+                            return orBools(a: lhs.toBool(), b: rhs.toBool())
                         default:
                             let types = args.map { "\(type(of: $0))" }.joined(separator: ", ")
-                            throw Expression.Error.message("Arguments \(types) are not compatible with \(symbol)")
+                            throw Expression.Error.message("|| arguments \(types) are not compatible with \(symbol)")
                         }
                     }
                 case let .variable(name):

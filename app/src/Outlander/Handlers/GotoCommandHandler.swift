@@ -13,22 +13,38 @@ struct AutomapperPathEvent: Event {
 }
 
 class GotoComandHandler: ICommandHandler {
-    var command = "#goto"
-
     let log = LogManager.getLog(String(describing: GotoComandHandler.self))
+
+    var command = "#goto"
+    var aliases = ["#g", "#go", "#goto", "#walk", "#walkto"]
 
     private var started = Date()
 
+    func canHandle(_ command: String) -> Bool {
+        let commands = command.split(separator: " ", maxSplits: 1)
+        return commands.count > 0 && aliases.contains(String(commands[0]).lowercased())
+    }
+
     func handle(_ input: String, with context: GameContext) {
-        let area = input[command.count...].trimmingCharacters(in: .whitespacesAndNewlines).lowercased().components(separatedBy: "from")
+        let commands = input.split(separator: " ", maxSplits: 1)
+        var text = ""
+        if commands.count > 1 {
+            text = String(commands[1]).trimLeadingWhitespace()
+        }
+
+        let area = text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .components(separatedBy: "from")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
 
         started = Date()
 
         DispatchQueue.global(qos: .userInteractive).async {
             if area.count > 1 {
-                self.gotoArea(area: area[0].trimmingCharacters(in: .whitespaces), from: area[1].trimmingCharacters(in: .whitespaces), context: context)
+                self.gotoArea(area: area[0], from: area[1], context: context)
             } else if area.count > 0 {
-                self.gotoArea(area: area[0].trimmingCharacters(in: .whitespaces), context: context)
+                self.gotoArea(area: area[0], context: context)
             }
         }
     }

@@ -1,4 +1,3 @@
-
 # Commands
 
 - [x] #alias
@@ -10,7 +9,7 @@
 - [ ] #preset
 - [x] #script
 - [x] #send
-- [ ] #gag
+- [x] #gag
 - [x] #window (partially complete)
 - [x] /tracker (first plugin?)
 - [x] #beep

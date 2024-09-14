@@ -14,6 +14,8 @@ class AutoMapperPlugin: OPlugin {
     private var context: GameContext?
     private var movedRooms: Bool = false
     private var showAfterPrompt: Bool = false
+    private let risingMistsText = "obscured by a thick fog"
+    private var hasRisingMists = false
 
     private let logger = LogManager.getLog(String(describing: AutoMapperPlugin.self))
 
@@ -33,6 +35,11 @@ class AutoMapperPlugin: OPlugin {
     }
 
     func variableChanged(variable: String, value: String) {
+        if variable == "roomexits" {
+            hasRisingMists = !value.isEmpty && value.contains(risingMistsText)
+            host?.set(variable: "roomobscured", value: hasRisingMists.toZeroOneString())
+        }
+
         guard variable == "zoneid" else {
             return
         }
@@ -96,14 +103,26 @@ class AutoMapperPlugin: OPlugin {
         if assignRoom {
             host?.set(variable: "roomid", value: swapped.id)
             host?.set(variable: "roomname", value: swapped.name)
+            host?.set(variable: "roomnote", value: swapped.notes ?? "")
+            host?.set(variable: "roomcolor", value: swapped.color ?? "")
+            let roomPortals = swapped.nonCardinalExists().map(\.move).joined(separator: "|")
+            host?.set(variable: "roomportals", value: roomPortals)
+        }
+
+        var result = xml
+
+        if hasRisingMists, swapped.cardinalExits().count > 0 {
+            let cardinalExits = swapped.cardinalExits().joined(separator: ", ")
+            let tag = "<preset id='automapper'>Mapped directions: \(cardinalExits)</preset>\n"
+            result.insert(contentsOf: tag, at: insertionIdx.lowerBound)
         }
 
         guard exits.count > 0 else {
-            return xml
+            return result
         }
 
         let tag = "<preset id='automapper'>Mapped exits: \(exits)</preset>\n"
-        var result = xml
+
         result.insert(contentsOf: tag, at: insertionIdx.lowerBound)
         return result
     }

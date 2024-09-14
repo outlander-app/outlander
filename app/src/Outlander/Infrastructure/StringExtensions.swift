@@ -260,4 +260,22 @@ extension Double {
         let number = NSNumber(value: self)
         return Self.valueFormatter.string(from: number)!
     }
+
+    func toBool() -> Bool? {
+        if self == 1 {
+            return true
+        }
+
+        if self == 0 {
+            return false
+        }
+
+        return nil
+    }
+}
+
+extension Optional where Wrapped: Collection {
+    var isEmptyOrNil: Bool {
+        return self?.isEmpty ?? true
+    }
 }

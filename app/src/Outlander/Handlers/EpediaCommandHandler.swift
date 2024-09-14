@@ -11,7 +11,6 @@ import Foundation
 
 class EpediaCommandHandler: ICommandHandler {
     var command = "#epedia"
-
     var aliases = ["#epedia", "#wiki", "#drwiki"]
 
     func canHandle(_ command: String) -> Bool {

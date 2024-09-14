@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="bU7-R8-ocO">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="bU7-R8-ocO">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,7 +14,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1266" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="19" translatesAutoresizingMaskIntoConstraints="NO" id="4Qk-ET-pTL">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="19" translatesAutoresizingMaskIntoConstraints="NO" id="4Qk-ET-pTL">
                                 <rect key="frame" x="38" y="14" width="19" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="RT" id="H0A-sn-qfu">
                                     <font key="font" size="12" name="Menlo-Regular"/>
@@ -85,7 +85,7 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="imageName" value="poisoned"/>
                                 </userDefinedRuntimeAttributes>
                             </customView>
-                            <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7BZ-Gt-RQC">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7BZ-Gt-RQC">
                                 <rect key="frame" x="250" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="L: Empty" id="eXe-kJ-fuM">
                                     <font key="font" size="12" name="Menlo-Regular"/>
@@ -93,7 +93,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnM-ZN-5rr">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnM-ZN-5rr">
                                 <rect key="frame" x="475" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="R: Empty" id="pzg-93-inc">
                                     <font key="font" size="12" name="Menlo-Regular"/>
@@ -101,7 +101,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="exc-n3-J4a">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="exc-n3-J4a">
                                 <rect key="frame" x="704" y="17" width="225" height="14"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="S: None" id="d13-CM-FZj">
                                     <font key="font" size="12" name="Menlo-Regular"/>

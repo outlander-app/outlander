@@ -12,4 +12,8 @@ extension Bool {
     func toYesNoString() -> String {
         self ? "yes" : "no"
     }
+
+    func toZeroOneString() -> String {
+        self ? "1" : "0"
+    }
 }

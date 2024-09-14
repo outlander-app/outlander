@@ -18,7 +18,11 @@ struct Credentials {
     var game: String
 }
 
-class GameViewController: NSViewController, NSWindowDelegate {
+protocol IUICommandHandler {
+    func command(_ command: String) -> Void
+}
+
+class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler {
     @IBOutlet var commandInput: HistoryTextField!
     @IBOutlet var gameWindowContainer: OView!
     @IBOutlet var scriptBar: OView!
@@ -466,7 +470,7 @@ class GameViewController: NSViewController, NSWindowDelegate {
     var firstToggle = true
     func toggleMapWindow() {
         if !firstToggle, mapWindow?.window?.isVisible == true {
-            mapWindow?.close()
+            mapWindow?.showWindow(self)
         } else {
             firstToggle = false
             showMapWindow()

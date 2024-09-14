@@ -25,6 +25,114 @@ class FunctionEvaluatorTests: XCTestCase {
         let result = evaluator.evaluateBool(.value("BARD = BARD && YES = YES"))
         XCTAssertEqual(result.result, "true")
     }
+    
+    func test_and_bool_vs_number_falsy() {
+        let result = evaluator.evaluateBool(.value("0 && true"))
+        XCTAssertEqual(result.result, "false")
+    }
+
+    func test_and_bool_vs_number_truthy() {
+        let result = evaluator.evaluateBool(.value("1 && true"))
+        XCTAssertEqual(result.result, "true")
+    }
+    
+    func test_equals_number_vs_bool_falsy() {
+        let result = evaluator.evaluateBool(.value("0 == true"))
+        XCTAssertEqual(result.result, "false")
+    }
+
+    func test_equals_number_vs_bool_truthy() {
+        let result = evaluator.evaluateBool(.value("1 == true"))
+        XCTAssertEqual(result.result, "true")
+    }
+
+    func test_equals_bool_vs_number_falsy() {
+        let result = evaluator.evaluateBool(.value("false == 1"))
+        XCTAssertEqual(result.result, "false")
+    }
+
+    func test_equals_bool_vs_number_truthy() {
+        let result = evaluator.evaluateBool(.value("true == 1"))
+        XCTAssertEqual(result.result, "true")
+    }
+
+    func test_function_evaluations() {
+    let cases = [
+        (expr: "1 == 1.0", result: "true"),
+        
+        (expr: "TRUE == 1", result: "true"),
+        (expr: "TRUE == TRUE", result: "true"),
+        (expr: "TrUe == tRue", result: "true"),
+
+        (expr: "true == 1", result: "true"),
+        (expr: "true == 0", result: "false"),
+        (expr: "true == -1", result: "false"),
+        (expr: "false == 0", result: "true"),
+        (expr: "false == 1", result: "false"),
+        (expr: "false == 1.2", result: "false"),
+        (expr: "true == 1.2", result: "false"),
+        (expr: "false == what", result: "false"),
+
+        (expr: "1 == true", result: "true"),
+        (expr: "0 == true", result: "false"),
+        (expr: "0 == false", result: "true"),
+        (expr: "1 == false", result: "false"),
+        (expr: "-1 == false", result: "false"),
+        (expr: "1.2 == false", result: "false"),
+        (expr: "1.2 == true", result: "false"),
+        (expr: "what == false", result: "false"),
+
+        (expr: "true && 1", result: "true"),
+        (expr: "true && 0", result: "false"),
+        (expr: "true && 1.2", result: "false"),
+        (expr: "false && 0", result: "false"),
+        (expr: "false && 1", result: "false"),
+        (expr: "false && 1.2", result: "false"),
+        (expr: "false && what", result: "false"),
+
+        (expr: "1 && true", result: "true"),
+        (expr: "0 && true", result: "false"),
+        (expr: "-1 && true", result: "false"),
+        (expr: "1.2 && true", result: "false"),
+        (expr: "0 && false", result: "false"),
+        (expr: "1 && false", result: "false"),
+        (expr: "1.2 && false", result: "false"),
+        (expr: "what && false", result: "false"),
+        (expr: "what && 1", result: "false"),
+        (expr: "what && 0", result: "false"),
+
+        (expr: "true || 1", result: "true"),
+        (expr: "true || 0", result: "true"),
+        (expr: "true || 1.2", result: "true"),
+        (expr: "false || 0", result: "false"),
+        (expr: "false || 1", result: "true"),
+        (expr: "false || -1", result: "false"),
+        (expr: "false || 1.2", result: "false"),
+        (expr: "false || -1.2", result: "false"),
+        (expr: "false || what", result: "false"),
+        (expr: "true || what", result: "true"),
+        (expr: "1 || what", result: "true"),
+
+        (expr: "1 || true", result: "true"),
+        (expr: "0 || true", result: "true"),
+        (expr: "1.2 || true", result: "true"),
+        (expr: "-1.2 || true", result: "true"),
+        (expr: "0 || false", result: "false"),
+        (expr: "1 || false", result: "true"),
+        (expr: "1.2 || false", result: "false"),
+        (expr: "-1.2 || false", result: "false"),
+        (expr: "what || false", result: "false"),
+        (expr: "what || true", result: "true"),
+        (expr: "what || 1", result: "true"),
+    ]
+
+        for (value, result) in cases {
+            let exp = ScriptExpression.value(value)
+            let named = "test '\(exp)' results in '\(result)'"
+            let evalResult = evaluator.evaluateBool(exp)
+            XCTAssertEqual(evalResult.result, result, named)
+        }
+    }
 
     // TODO: not sure if I want to try to support this - messes with regexes - can fix it now with parsing
 //    func test_evals_logic_single_or() {

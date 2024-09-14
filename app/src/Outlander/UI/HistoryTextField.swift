@@ -61,11 +61,13 @@ public class HistoryTextField: NSTextField {
     }
 
     override public func draw(_ dirtyRect: NSRect) {
+        // TODO: causing weird error?
+        // CLIENT ERROR: TUINSRemoteViewController does not override -viewServiceDidTerminateWithError: and thus cannot react to catastrophic errors beyond logging them
+        // see https://developer.apple.com/documentation/macos-release-notes/appkit-release-notes-for-macos-14#NSView
+
         let fullRect = bounds
         promptBackgroundColor.setFill()
         fullRect.fill(using: .sourceOver)
-
-        print(promptBackgroundColor.getHexString())
 
         var progressRect = bounds
         progressRect.size.width *= CGFloat(progress)
