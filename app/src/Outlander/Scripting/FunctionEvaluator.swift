@@ -330,6 +330,25 @@ class FunctionExecutor {
             .function("substr", arity: 3): { args in
                 try substring(args)
             },
+//            .function("percentencode", arity: 1): { args in
+//                let text = self.trimQuotes(args[0])
+//                if !text.isEmpty, let encoded = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+//                    return encoded
+//                }
+//                return ""
+//            },
+            .function("element", arity: 2): { args in
+                let index = Int(self.trimQuotes(args[0]))
+                let list = self.trimQuotes(args[1])
+                if let idx = index, !list.isEmpty {
+                    let items = list.components(separatedBy: "|")
+                    if idx >= 0 && idx < items.count {
+                        return items[idx]
+                    }
+                    return ""
+                }
+                return ""
+            }
         ]
     }
 

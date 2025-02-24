@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Foundation
-
 // source: https://github.com/cesarferreira/SwiftEventBus/blob/master/SwiftEventBus/SwiftEventBus.swift
 open class SwiftEventBus {
     enum Static {
