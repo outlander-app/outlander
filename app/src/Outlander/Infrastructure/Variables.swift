@@ -10,6 +10,7 @@ import Foundation
 
 protocol IClock {
     var now: Date { get }
+    var dayOfWeek: String { get }
 }
 
 class Clock: IClock {
@@ -25,6 +26,12 @@ class Clock: IClock {
 
     public var now: Date {
         getDate()
+    }
+
+    public var dayOfWeek: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter.string(from: self.now)
     }
 }
 
@@ -71,6 +78,10 @@ class GlobalVariables: Variables {
     }
 
     override func addDynamics() {
+        addDynamic(key: "day", value: .dynamic {
+            return self.clock.dayOfWeek
+        })
+
         addDynamic(key: "date", value: .dynamic {
             GlobalVariables.dateFormatter.dateFormat = self.settings.variableDateFormat
             return GlobalVariables.dateFormatter.string(from: self.clock.now)

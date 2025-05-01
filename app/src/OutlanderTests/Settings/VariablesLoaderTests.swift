@@ -23,6 +23,12 @@ class TestClock: IClock {
         Date("2021-11-10")
 //        Date(timeIntervalSince1970: 1636502400)
     }
+
+    public var dayOfWeek: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter.string(from: self.now)
+    }
 }
 
 class VariablesLoaderTests: XCTestCase {
@@ -41,7 +47,7 @@ class VariablesLoaderTests: XCTestCase {
 
         loader!.load(context.applicationSettings, context: context)
 
-        XCTAssertEqual(context.globalVars.count, 14)
+        XCTAssertEqual(context.globalVars.count, 15)
         XCTAssertEqual(context.globalVars["Alchemy.LearningRate"], "0")
         XCTAssertEqual(context.globalVars["Alchemy.LearningRateName"], "clear")
     }
@@ -62,6 +68,7 @@ class VariablesLoaderTests: XCTestCase {
                        #var {client} {Outlander}
                        #var {date} {2021-11-10}
                        #var {datetime} {2021-11-10 12:00:00 AM}
+                       #var {day} {Wednesday}
                        #var {lefthand} {Empty}
                        #var {preparedspell} {None}
                        #var {prompt} {>}
