@@ -63,6 +63,17 @@ struct EmulatedTextEvent: Event {
     var data: String
 }
 
+struct LoadLayoutEvent: Event {
+    var layout: String
+}
+
+struct SaveLayoutEvent: Event {
+    var layout: String
+}
+
+struct ToggleLayoutSettingsEvent: Event {
+}
+
 extension Events2 {
     func echoText(_ text: String, preset: String? = nil, color: String? = nil, mono: Bool = false) {
         let data = EchoTextEvent(text: "\(text)\n".hexDecoededString(), preset: preset, color: color, mono: mono)
@@ -96,6 +107,21 @@ extension Events2 {
 
     func emulateGameText(_ data: String) {
         let evt = EmulatedTextEvent(data: data)
+        post(evt)
+    }
+
+    func loadLayout(_ layout: String) {
+        let evt = LoadLayoutEvent(layout: layout)
+        post(evt)
+    }
+
+    func saveLayout(_ layout: String) {
+        let evt = SaveLayoutEvent(layout: layout)
+        post(evt)
+    }
+
+    func toggleLayoutSettings() {
+        let evt = ToggleLayoutSettingsEvent()
         post(evt)
     }
 }

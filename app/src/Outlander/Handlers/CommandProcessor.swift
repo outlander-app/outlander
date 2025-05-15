@@ -61,6 +61,7 @@ class CommandProcesssor {
         handlers.append(TriggerCommandHandler(files))
         handlers.append(EditCommandHandler(files))
         handlers.append(MacroCommandHandler(files))
+        handlers.append(LayoutCommandHandler(files))
         // for local testing only
 //        handlers.append(EmulateTextCommandHandler(files))
 

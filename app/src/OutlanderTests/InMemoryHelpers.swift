@@ -12,13 +12,14 @@ import Plugins
 class InMemoryFileSystem: FileSystem {
     var contentToLoad: String?
     var savedContent: String?
+    var doesFileExist: Bool = false
 
     func contentsOf(_: URL) -> [URL] {
         fatalError()
     }
 
     func fileExists(_: URL) -> Bool {
-        false
+        doesFileExist
     }
 
     func load(_: URL) -> Data? {

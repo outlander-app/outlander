@@ -311,6 +311,18 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
             self.handleRawStream(data: evt.data, streamData: true)
         }
 
+        gameContext.events2.register(self) { (evt: LoadLayoutEvent) in
+            self.loadLayout(evt.layout)
+        }
+
+        gameContext.events2.register(self) { (evt: SaveLayoutEvent) in
+            self.saveLayout(evt.layout)
+        }
+
+        gameContext.events2.register(self) { (evt: ToggleLayoutSettingsEvent) in
+            self.toggleLayoutSettings()
+        }
+
         vitalsBar.presetFor = { name in
             guard self.vitalsBar.enabled == true else {
                 return (self.vitalsBar.disabledForegroundColor, self.vitalsBar.disabledBackgroundColor)
@@ -515,6 +527,7 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
         logText("Profile: \(gameContext.applicationSettings.currentProfilePath.path)\n", mono: false, playerCommand: false)
         logText("Maps: \(gameContext.applicationSettings.paths.maps.path)\n", mono: false, playerCommand: false)
         logText("Scripts: \(gameContext.applicationSettings.paths.scripts.path)\n", mono: false, playerCommand: false)
+        logText("Layouts: \(gameContext.applicationSettings.paths.layout.path)\n", mono: false, playerCommand: false)
         logText("Logs: \(gameContext.applicationSettings.paths.logs.path)\n", mono: false, playerCommand: false)
     }
 
@@ -530,26 +543,43 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
         updateWindowTitle()
     }
 
+    func loadLayout(_ layoutName: String) {
+        gameContext.applicationSettings.profile.layout = layoutName
+        gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: layoutName)
+        reloadWindows(layoutName) {
+            self.reloadTheme()
+        }
+    }
+
+    func saveLayout(_ layoutName: String) {
+        gameContext.applicationSettings.profile.layout = layoutName
+        let layout = buildWindowsLayout()
+        for l in layout.windows {
+            print("\(l.name) \(l.order)")
+        }
+        windowLayoutLoader?.save(
+            gameContext.applicationSettings,
+            file: layoutName,
+            windows: layout
+        )
+    }
+
+    func toggleLayoutSettings() {
+        for (_, win) in gameWindows {
+            if win.visible {
+                win.toggleSettings()
+            }
+        }
+    }
+
     public func command(_ command: String) {
         if command == "layout:LoadDefault" {
-            gameContext.applicationSettings.profile.layout = "default.cfg"
-            gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: "default.cfg")
-            reloadWindows("default.cfg") {
-                self.reloadTheme()
-            }
-
+            self.loadLayout("default.cfg")
             return
         }
 
         if command == "layout:SaveDefault" {
-            gameContext.applicationSettings.profile.layout = "default.cfg"
-            let layout = buildWindowsLayout()
-            windowLayoutLoader?.save(
-                gameContext.applicationSettings,
-                file: "default.cfg",
-                windows: layout
-            )
-
+            saveLayout("default.cfg")
             return
         }
 
@@ -568,11 +598,7 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
             openPanel.nameFieldStringValue = gameContext.applicationSettings.profile.layout
 
             if let url = openPanel.runModal() == .OK ? openPanel.urls.first : nil {
-                gameContext.applicationSettings.profile.layout = url.lastPathComponent
-                gameContext.layout = windowLayoutLoader?.load(gameContext.applicationSettings, file: url.lastPathComponent)
-                reloadWindows(url.lastPathComponent) {
-                    self.reloadTheme()
-                }
+                self.loadLayout(url.lastPathComponent)
             }
 
             return
@@ -588,28 +614,14 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
             savePanel.directoryURL = gameContext.applicationSettings.paths.layout
 
             if let url = savePanel.runModal() == .OK ? savePanel.url : nil {
-                gameContext.applicationSettings.profile.layout = url.lastPathComponent
-
-                let layout = buildWindowsLayout()
-                for l in layout.windows {
-                    print("\(l.name) \(l.order)")
-                }
-                windowLayoutLoader?.save(
-                    gameContext.applicationSettings,
-                    file: url.lastPathComponent,
-                    windows: layout
-                )
+                self.saveLayout(url.lastPathComponent)
             }
 
             return
         }
 
         if command == "layout:Settings" {
-            for (_, win) in gameWindows {
-                if win.visible {
-                    win.toggleSettings()
-                }
-            }
+            self.toggleLayoutSettings()
             return
         }
 
@@ -807,7 +819,7 @@ class GameViewController: NSViewController, NSWindowDelegate, IUICommandHandler 
                 }
 
                 DispatchQueue.main.async {
-                    self.logText("Loaded layout \(file)\n", mono: true, playerCommand: false)
+                    self.logText("Loaded layout: \(file)\n", mono: true, playerCommand: false)
                     callback?()
                 }
             }

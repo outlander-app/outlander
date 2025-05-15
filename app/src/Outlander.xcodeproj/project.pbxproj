@@ -75,6 +75,8 @@
 		7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A192759DB200035D731 /* IconLoader.swift */; };
 		7B3B9A1D275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
 		7B3B9A1E275B11390035D731 /* SubsCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */; };
+		7B5DD3D12DD25686009C1D99 /* LayoutCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */; };
+		7B5DD3D22DD25686009C1D99 /* LayoutCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */; };
 		7B6820472C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
 		7B6820482C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
 		7B8F887327924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
@@ -147,6 +149,7 @@
 		7BBBC51F2772C4E800D1CF3E /* EditCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */; };
 		7BBBC5212776912700D1CF3E /* DateFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC5202776912700D1CF3E /* DateFormats.swift */; };
 		7BBBC5222776912700D1CF3E /* DateFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBBC5202776912700D1CF3E /* DateFormats.swift */; };
+		7BC4DE252DD63AE500BE2592 /* LayoutCommandHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC4DE242DD63AE500BE2592 /* LayoutCommandHandlerTests.swift */; };
 		7BC74D1B2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BC74D1C2755D37300B6DF62 /* LinkCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */; };
 		7BC74D1D27575B4300B6DF62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCF2ED22E177E100C7F7F0 /* AppDelegate.swift */; };
@@ -358,6 +361,7 @@
 		7B3B9A1827596F390035D731 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7B3B9A192759DB200035D731 /* IconLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconLoader.swift; sourceTree = "<group>"; };
 		7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsCommandHandler.swift; sourceTree = "<group>"; };
+		7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutCommandHandler.swift; sourceTree = "<group>"; };
 		7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulateTextCommandHandler.swift; sourceTree = "<group>"; };
 		7B8F887127924B5200713BA7 /* AddProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileWindow.swift; sourceTree = "<group>"; };
 		7B8F887227924B5200713BA7 /* AddProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProfileWindow.xib; sourceTree = "<group>"; };
@@ -395,6 +399,7 @@
 		7BBBC51A276DD0F800D1CF3E /* AtomicQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicQueue.swift; sourceTree = "<group>"; };
 		7BBBC51D2772C4E800D1CF3E /* EditCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommandHandler.swift; sourceTree = "<group>"; };
 		7BBBC5202776912700D1CF3E /* DateFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormats.swift; sourceTree = "<group>"; };
+		7BC4DE242DD63AE500BE2592 /* LayoutCommandHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutCommandHandlerTests.swift; sourceTree = "<group>"; };
 		7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCommandHandler.swift; sourceTree = "<group>"; };
 		7BCBBD0C273F499D00219CA0 /* VariableReplacerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableReplacerTests.swift; sourceTree = "<group>"; };
 		7BCBBD0E2743ABEA00219CA0 /* VariableTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableTokenizer.swift; sourceTree = "<group>"; };
@@ -792,6 +797,7 @@
 				F62EA130247A2846004E2C1E /* GagCommandHandler.swift */,
 				7B228B22273880320052610B /* GotoCommandHandler.swift */,
 				7B10A68D275FE538000FEDE8 /* HighlightsCommandHandler.swift */,
+				7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */,
 				7BC74D1A2755D37300B6DF62 /* LinkCommandHandler.swift */,
 				7B956B4E2754A55D00346019 /* LogCommandHandler.swift */,
 				7BA0E7D428DE739300A1F319 /* MacroCommandHandler.swift */,
@@ -821,6 +827,7 @@
 				7B956B40274F8AD900346019 /* CommandProcessorTests.swift */,
 				F9CA20552466066400A92736 /* EchoCommandHandlerTests.swift */,
 				F62EA140247BE6EB004E2C1E /* GagCommandHandlerTests.swift */,
+				7BC4DE242DD63AE500BE2592 /* LayoutCommandHandlerTests.swift */,
 				F9CA205D24664A4500A92736 /* VarCommandHandlerTests.swift */,
 				F9CA206C2466765D00A92736 /* WindowCommandHandlerTests.swift */,
 			);
@@ -1067,6 +1074,7 @@
 				7BBBC5212776912700D1CF3E /* DateFormats.swift in Sources */,
 				F969A0EB239C812900408CE5 /* WindowViewController.swift in Sources */,
 				F98B491D2470AF17000E2D92 /* GameContext.swift in Sources */,
+				7B5DD3D12DD25686009C1D99 /* LayoutCommandHandler.swift in Sources */,
 				F98B4909246F9668000E2D92 /* HighlightLoader.swift in Sources */,
 				7BAC840325E08C2F00A6C7D5 /* ScriptRunner.swift in Sources */,
 				7BCE4A3125C508C200AF0444 /* MapperCommandHandler.swift in Sources */,
@@ -1131,6 +1139,7 @@
 				7B10A59B275C1F26000FEDE8 /* LocalHost.swift in Sources */,
 				F9D36E9422EF76E8008BC6E6 /* GameStream.swift in Sources */,
 				F9BCF31F22E28EC200C7F7F0 /* Socket.swift in Sources */,
+				7B5DD3D22DD25686009C1D99 /* LayoutCommandHandler.swift in Sources */,
 				7B917E4A2763F7A200887F95 /* PrintBox.swift in Sources */,
 				7B228B272738BA080052610B /* SwiftPriorityQueue.swift in Sources */,
 				7B956B502754A55D00346019 /* LogCommandHandler.swift in Sources */,
@@ -1236,6 +1245,7 @@
 				7B27C5B1274B23760095B9BF /* ScriptContext.swift in Sources */,
 				7BCBBD162746D1D800219CA0 /* ExpressionEvaluator.swift in Sources */,
 				7B917E5D27641E5300887F95 /* SimplePing.m in Sources */,
+				7BC4DE252DD63AE500BE2592 /* LayoutCommandHandlerTests.swift in Sources */,
 				F9D78D3123A9E3A500FE2343 /* PresetLoader.swift in Sources */,
 				F9B253FA247874BE0097C07F /* ProfileConfigLoaderTests.swift in Sources */,
 				7B3B9A1E275B11390035D731 /* SubsCommandHandler.swift in Sources */,
@@ -1437,7 +1447,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 53;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9TZ225FMST;
@@ -1473,7 +1483,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 53;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 9TZ225FMST;
 				ENABLE_HARDENED_RUNTIME = YES;
