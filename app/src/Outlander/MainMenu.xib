@@ -28,10 +28,47 @@
                                     <action selector="chooseSettingsDirectoryAction:" target="-1" id="tql-lx-flc"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
-                                <connections>
-                                    <action selector="preferences:" target="-1" id="VGP-Vt-cDj"/>
-                                </connections>
+                            <menuItem title="Settings..." id="BOF-NM-1cW">
+                                <menu key="submenu" title="Settings" id="xSt-ZH-w0h">
+                                    <items>
+                                        <menuItem title="General Preferences…" keyEquivalent="," id="G8h-Tm-Gen">
+                                            <connections>
+                                                <action selector="preferences:" target="-1" id="VGP-Vt-cDj"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Highlights..." id="r9N-WC-hiL">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showHighlightsPreferences:" target="-1" id="8rG-0J-l2P"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Macros" id="e7L-sH-mCr">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Macros" id="r2H-8V-mac">
+                                                <items>
+                                                    <menuItem title="A–Z Macros" id="hbU-az-001">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="showAZMacros:" target="-1" id="9kW-yY-apw"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Keypad Macros" id="hbU-az-002">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="showKeypadMacros:" target="-1" id="I0b-vq-ElS"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Function Macros" id="hbU-az-003">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="showFunctionMacros:" target="-1" id="9q0-wb-w0N"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="hUx-y0-UNZ"/>
                             <menuItem title="Check for Updates..." id="DxX-pv-pyI">

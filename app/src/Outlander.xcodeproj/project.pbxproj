@@ -32,6 +32,16 @@
 		7B10A6982763468C000FEDE8 /* WindowSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B10A6962763468C000FEDE8 /* WindowSettings.storyboard */; };
 		7B10A69A276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A699276346C9000FEDE8 /* WindowSettingsViewController.swift */; };
 		7B10A69B276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10A699276346C9000FEDE8 /* WindowSettingsViewController.swift */; };
+		7B35B1D52C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1D42C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift */; };
+		7B35B1D62C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1D42C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift */; };
+		7B35B1F12C1DB240000C5C1F /* MacroPreferencesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F02C1DB240000C5C1F /* MacroPreferencesModel.swift */; };
+		7B35B1F22C1DB240000C5C1F /* MacroPreferencesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F02C1DB240000C5C1F /* MacroPreferencesModel.swift */; };
+		7B35B1F42C1DB240000C5C1F /* MacroPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F32C1DB240000C5C1F /* MacroPreferencesViewController.swift */; };
+		7B35B1F52C1DB240000C5C1F /* MacroPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F32C1DB240000C5C1F /* MacroPreferencesViewController.swift */; };
+		7B35B1F72C1DB240000C5C1F /* GameContext+Macros.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F62C1DB240000C5C1F /* GameContext+Macros.swift */; };
+		7B35B1F82C1DB240000C5C1F /* GameContext+Macros.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B1F62C1DB240000C5C1F /* GameContext+Macros.swift */; };
+		7B35B2062C1DCA58000C5C1F /* MacroDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B2052C1DCA58000C5C1F /* MacroDefaults.swift */; };
+		7B35B2072C1DCA58000C5C1F /* MacroDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B35B2052C1DCA58000C5C1F /* MacroDefaults.swift */; };
 		7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFA272795920052610B /* SendCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AF827277BBA0052610B /* SendCommandHandler.swift */; };
 		7B228AFC2728BBB30052610B /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B228AFB2728BBB30052610B /* StatusBarViewController.swift */; };
@@ -335,6 +345,11 @@
 		7B10A693275FFA25000FEDE8 /* EvalCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvalCommandHandler.swift; sourceTree = "<group>"; };
 		7B10A6962763468C000FEDE8 /* WindowSettings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WindowSettings.storyboard; sourceTree = "<group>"; };
 		7B10A699276346C9000FEDE8 /* WindowSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettingsViewController.swift; sourceTree = "<group>"; };
+		7B35B1D42C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroPreferencesCoordinator.swift; sourceTree = "<group>"; };
+		7B35B1F02C1DB240000C5C1F /* MacroPreferencesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroPreferencesModel.swift; sourceTree = "<group>"; };
+		7B35B1F32C1DB240000C5C1F /* MacroPreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroPreferencesViewController.swift; sourceTree = "<group>"; };
+		7B35B1F62C1DB240000C5C1F /* GameContext+Macros.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameContext+Macros.swift"; sourceTree = "<group>"; };
+		7B35B2052C1DCA58000C5C1F /* MacroDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroDefaults.swift; sourceTree = "<group>"; };
 		7B228AF827277BBA0052610B /* SendCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCommandHandler.swift; sourceTree = "<group>"; };
 		7B228AFB2728BBB30052610B /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
 		7B228B002728C1670052610B /* StatusBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StatusBar.storyboard; sourceTree = "<group>"; };
@@ -657,6 +672,8 @@
 				7BBBC517276DA3E400D1CF3E /* LogBuilder.swift */,
 				F98B492B2471F38E000E2D92 /* Logger.swift */,
 				7BDF5C87272736300020A3B0 /* MacroExtensions.swift */,
+				7B35B2052C1DCA58000C5C1F /* MacroDefaults.swift */,
+				7B35B1F62C1DB240000C5C1F /* GameContext+Macros.swift */,
 				F9D36E8E22EAE326008BC6E6 /* NSColorExtensions.swift */,
 				7B228B28273B09D70052610B /* NSViewExtensions.swift */,
 				F9BCF32322E28F2400C7F7F0 /* Regex.swift */,
@@ -699,6 +716,9 @@
 				F969A0E7239C7F9B00408CE5 /* Window.storyboard */,
 				F969A0EA239C812900408CE5 /* WindowViewController.swift */,
 				7B10A699276346C9000FEDE8 /* WindowSettingsViewController.swift */,
+				7B35B1D42C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift */,
+				7B35B1F02C1DB240000C5C1F /* MacroPreferencesModel.swift */,
+				7B35B1F32C1DB240000C5C1F /* MacroPreferencesViewController.swift */,
 				7B10A6962763468C000FEDE8 /* WindowSettings.storyboard */,
 			);
 			path = UI;
@@ -1016,6 +1036,7 @@
 				F98B49262470F685000E2D92 /* Events.swift in Sources */,
 				7B3B9A1A2759DB200035D731 /* IconLoader.swift in Sources */,
 				7BDF5C88272736300020A3B0 /* MacroExtensions.swift in Sources */,
+				7B35B2062C1DCA58000C5C1F /* MacroDefaults.swift in Sources */,
 				7BCBBD0F2743ABEA00219CA0 /* VariableTokenizer.swift in Sources */,
 				7BA27B5025DF93C500A88B80 /* Combinators.swift in Sources */,
 				7B10A672275D7F37000FEDE8 /* OWindow.swift in Sources */,
@@ -1039,6 +1060,10 @@
 				7BA27B3725DF6D9D00A88B80 /* Script.swift in Sources */,
 				F9BCF31E22E28EC200C7F7F0 /* Socket.swift in Sources */,
 				7B10A69A276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */,
+				7B35B1D52C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift in Sources */,
+				7B35B1F12C1DB240000C5C1F /* MacroPreferencesModel.swift in Sources */,
+				7B35B1F42C1DB240000C5C1F /* MacroPreferencesViewController.swift in Sources */,
+				7B35B1F72C1DB240000C5C1F /* GameContext+Macros.swift in Sources */,
 				7B228AF927277BBA0052610B /* SendCommandHandler.swift in Sources */,
 				7B917E5C27641E5300887F95 /* SimplePing.m in Sources */,
 				7B10A68E275FE538000FEDE8 /* HighlightsCommandHandler.swift in Sources */,
@@ -1173,6 +1198,11 @@
 				7B228B1E273871720052610B /* Pathfinder.swift in Sources */,
 				F98B4907246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				7B10A69B276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */,
+				7B35B1D62C1DA3E9000C5C1F /* MacroPreferencesCoordinator.swift in Sources */,
+				7B35B1F22C1DB240000C5C1F /* MacroPreferencesModel.swift in Sources */,
+				7B35B1F52C1DB240000C5C1F /* MacroPreferencesViewController.swift in Sources */,
+				7B35B1F82C1DB240000C5C1F /* GameContext+Macros.swift in Sources */,
+				7B35B2072C1DCA58000C5C1F /* MacroDefaults.swift in Sources */,
 				F98B4911246FA149000E2D92 /* SubstituteLoaderTests.swift in Sources */,
 				7B3B9A1B2759DB200035D731 /* IconLoader.swift in Sources */,
 				7B0A8AAC296A14DD0036C5BF /* ApplicationVersion.swift in Sources */,
@@ -1445,12 +1475,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 53;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 9TZ225FMST;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "";
@@ -1481,11 +1512,12 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Outlander/Outlander.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 53;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9TZ225FMST;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "";

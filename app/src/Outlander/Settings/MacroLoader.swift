@@ -345,15 +345,12 @@ class MacroLoader {
     func load(_ settings: ApplicationSettings, context: GameContext) {
         let fileUrl = settings.currentProfilePath.appendingPathComponent(filename)
 
-        guard let data = files.load(fileUrl) else {
-            return
-        }
-
-        guard let content = String(data: data, encoding: .utf8) else {
-            return
-        }
-
         context.macros.removeAll()
+
+        guard let data = files.load(fileUrl), let content = String(data: data, encoding: .utf8) else {
+            applyDefaults(context: context, settings: settings)
+            return
+        }
 
         for var line in content.components(separatedBy: .newlines) {
             guard !line.isEmpty else {
@@ -364,6 +361,10 @@ class MacroLoader {
             } else {
                 context.events2.echoError("Invalid macro: \(line)")
             }
+        }
+
+        if context.macros.isEmpty {
+            applyDefaults(context: context, settings: settings)
         }
     }
 
@@ -379,6 +380,14 @@ class MacroLoader {
         }
 
         files.write(content, to: fileUrl)
+    }
+
+    private func applyDefaults(context: GameContext, settings: ApplicationSettings) {
+        let defaults = MacroDefaults.defaultMacros()
+        for macro in defaults {
+            context.macros[macro.description] = macro
+        }
+        save(settings, macros: context.macros)
     }
 }
 

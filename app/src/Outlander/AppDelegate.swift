@@ -14,6 +14,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //    let updaterController: SPUStandardUpdaterController
     var windows: [NSWindow] = []
     var rootUrl: URL?
+    private lazy var macroPreferencesCoordinator = MacroPreferencesCoordinator { [weak self] in
+        self?.activeController?.gameContext
+    }
 
     override init() {
 //        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -129,6 +132,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showWindowSettings(_: Any) {
         sendCommand("layout:Settings")
+    }
+
+    @IBAction func showHighlightsPreferences(_: Any) {
+        let alert = NSAlert()
+        alert.messageText = "Highlights preferences are not available yet."
+        alert.informativeText = "Highlight management will be added in a future update."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
+    @IBAction func showAZMacros(_: Any) {
+        macroPreferencesCoordinator.showWindow(for: .letters)
+    }
+
+    @IBAction func showKeypadMacros(_: Any) {
+        macroPreferencesCoordinator.showWindow(for: .keypad)
+    }
+
+    @IBAction func showFunctionMacros(_: Any) {
+        macroPreferencesCoordinator.showWindow(for: .function)
     }
 
     @IBAction func chooseSettingsDirectoryAction(_: Any) {
