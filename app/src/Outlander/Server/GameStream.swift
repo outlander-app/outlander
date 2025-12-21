@@ -636,6 +636,9 @@ struct TextTag {
     func canCombine(with tag: TextTag) -> Bool {
         guard window == tag.window else { return false }
         guard isPrompt == tag.isPrompt else { return false }
+        if window == "thoughts" {
+            return true
+        }
         guard mono == tag.mono else { return false }
         guard bold == tag.bold else { return false }
         guard preset == tag.preset else { return false }
@@ -875,6 +878,11 @@ class GameStream {
                 tag.text = pluginManager.parse(text: tag.text, window: tag.window)
 
                 tags.append(tag)
+
+                // wait until prompt so thoughts are combined
+                if(tag.window == "thoughts") {
+                    continue
+                }
 
                 if !isSetup || isPrompt {
                     let combined = TextTag.combine(tags: tags)

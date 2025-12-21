@@ -76,6 +76,10 @@ class OWindow: NSWindow {
             return
         }
 
+        guard let titlebarContainer = self.standardWindowButton(.closeButton)?.superview else {
+            return
+        }
+
         let titleView = findViewInSubview(contentSuperView.subviews, ignoreView: windowContentView, test: { view in
             view is NSTextField
         })
@@ -93,6 +97,16 @@ class OWindow: NSWindow {
         }
 
         titleText.attributedStringValue = NSAttributedString(string: title, attributes: attributes)
+        titleText.sizeToFit()
+
+        // center
+//        titleText.frame.origin.x = (titlebarContainer.bounds.width - titleText.frame.width) / 2
+//        titleText.frame.origin.y = (titlebarContainer.bounds.height - titleText.frame.height) / 2
+
+        // right
+        let rightPadding: CGFloat = 5
+        titleText.frame.origin.x = titlebarContainer.bounds.width - titleText.frame.width - rightPadding
+        titleText.frame.origin.y = (titlebarContainer.bounds.height - titleText.frame.height) / 2
     }
 
     func findViewInSubview(_ subviews: [NSView], ignoreView: NSView, test: (NSView) -> Bool) -> NSView? {

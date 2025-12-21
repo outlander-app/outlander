@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="tny-JT-jcH">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,7 +23,7 @@
                                     <constraint firstAttribute="height" constant="24" id="Fef-4U-bgj"/>
                                 </constraints>
                             </customView>
-                            <textField clipsToBounds="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn" customClass="HistoryTextField" customModule="Outlander" customModuleProvider="target">
+                            <textField clipsToBounds="YES" focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9lN-eF-asn" customClass="HistoryTextField" customModule="Outlander" customModuleProvider="target">
                                 <rect key="frame" x="3" y="25" width="706" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="bFl-Mm-yPl"/>

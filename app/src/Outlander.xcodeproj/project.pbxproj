@@ -79,6 +79,7 @@
 		7B5DD3D22DD25686009C1D99 /* LayoutCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */; };
 		7B6820472C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
 		7B6820482C8BC856009833B3 /* EmulateTextCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */; };
+		7B7A80CB2EF76D3300439A34 /* GameStreamTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7A80CA2EF76D3300439A34 /* GameStreamTokenizerTests.swift */; };
 		7B8F887327924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
 		7B8F887427924B5200713BA7 /* AddProfileWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8F887127924B5200713BA7 /* AddProfileWindow.swift */; };
 		7B8F887527924B5200713BA7 /* AddProfileWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B8F887227924B5200713BA7 /* AddProfileWindow.xib */; };
@@ -363,6 +364,7 @@
 		7B3B9A1C275B11390035D731 /* SubsCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsCommandHandler.swift; sourceTree = "<group>"; };
 		7B5DD3D02DD25686009C1D99 /* LayoutCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutCommandHandler.swift; sourceTree = "<group>"; };
 		7B6820462C8BC856009833B3 /* EmulateTextCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulateTextCommandHandler.swift; sourceTree = "<group>"; };
+		7B7A80CA2EF76D3300439A34 /* GameStreamTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStreamTokenizerTests.swift; sourceTree = "<group>"; };
 		7B8F887127924B5200713BA7 /* AddProfileWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileWindow.swift; sourceTree = "<group>"; };
 		7B8F887227924B5200713BA7 /* AddProfileWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProfileWindow.xib; sourceTree = "<group>"; };
 		7B8F888D279FB1A500713BA7 /* Swen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swen.swift; sourceTree = "<group>"; };
@@ -772,6 +774,7 @@
 				F9CA20512466057000A92736 /* Handlers */,
 				F9CA206A2466761B00A92736 /* InMemoryHelpers.swift */,
 				F9D36E9522EFC73B008BC6E6 /* GameStreamTests.swift */,
+				7B7A80CA2EF76D3300439A34 /* GameStreamTokenizerTests.swift */,
 				F9BCF30022E177E200C7F7F0 /* OutlanderTests.swift */,
 				F98B491F2470B63D000E2D92 /* StreamTokenTests.swift */,
 				F98B491A24709CAE000E2D92 /* RegexTester.swift */,
@@ -1170,6 +1173,7 @@
 				F98B490A246F9668000E2D92 /* HighlightLoader.swift in Sources */,
 				F9CA2073246776B800A92736 /* ClassLoaderTests.swift in Sources */,
 				7BBBC519276DA3EB00D1CF3E /* LogBuilder.swift in Sources */,
+				7B7A80CB2EF76D3300439A34 /* GameStreamTokenizerTests.swift in Sources */,
 				7B228B1E273871720052610B /* Pathfinder.swift in Sources */,
 				F98B4907246F8EFD000E2D92 /* AliasLoader.swift in Sources */,
 				7B10A69B276346C9000FEDE8 /* WindowSettingsViewController.swift in Sources */,
