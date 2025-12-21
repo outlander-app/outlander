@@ -271,7 +271,7 @@ class GameStreamTests: XCTestCase {
         }
     }
 
-    func testCombinesThoughtStream() {
+    func test_combines_concise_thoughts_stream() {
         let commands = streamCommands([
             "<pushStream id=\"thoughts\"/><preset id='thought'>[General][Someone] </preset>\"something to say\"\n",
             "<popStream/><prompt time=\"1638240815\">R&gt;</prompt>"

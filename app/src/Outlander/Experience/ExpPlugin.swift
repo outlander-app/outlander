@@ -74,8 +74,12 @@ class ExpPlugin: OPlugin {
         if inputCheck.hasPrefix("/tracker report") {
             let trimmed = inputCheck[15...]
             let sorting = trimmed.toOrderBy() ?? tracker.sortingBy
+            let rexp = host?.get(variable: "rexp") ?? ""
+            let favor = host?.get(variable: "favor") ?? ""
+            let sleep = host?.get(variable: "sleep") ?? ""
+            let tdps = host?.get(variable: "tdp") ?? ""
 
-            let report = tracker.buildReport(sorting: sorting, foreColor: foreColor, learnedColor: learnedColor)
+            let report = tracker.buildReport(sorting: sorting, foreColor: foreColor, learnedColor: learnedColor, favors: favor, rexp: rexp, sleep: sleep, tdps: tdps)
 
             for cmd in report {
                 host?.send(text: cmd)
@@ -180,6 +184,11 @@ class ExpPlugin: OPlugin {
     // cleared
     // <component id='exp Sorcery'></component>
 
+    // <component id='exp rexp'>Rested EXP Stored: 5:59 hours  Usable This Cycle: 5:53 hours  Cycle Refreshes: 22:32 hours</component>
+    // <component id='exp tdp'>            TDPs:  926</component>
+    // <component id='exp favor'>          Favors:  12</component>
+    // <component id='exp sleep'></component>
+
     func parse(xml: String) -> String {
         if updateWindow, xml.contains("<prompt") {
             updateExpWindow()
@@ -215,16 +224,14 @@ class ExpPlugin: OPlugin {
             let start = trimmed.index(trimmed.startIndex, offsetBy: 24)
             if let favorsIdx = trimmed.index(of: "Favors") {
                 let number = String(trimmed[start ..< favorsIdx]).trimmingCharacters(in: .whitespacesAndNewlines)
-                tracker.tdps = Int(number) ?? 0
-                host?.send(text: "#var tdp \(tracker.tdps)")
+                host?.send(text: "#var tdp \(number)")
             }
         }
 
         if trimmed.hasPrefix("TDPs :") {
             let start = trimmed.index(trimmed.startIndex, offsetBy: 6)
             let number = String(trimmed[start...]).trimmingCharacters(in: .whitespacesAndNewlines)
-            tracker.tdps = Int(number) ?? 0
-            host?.send(text: "#var tdp \(tracker.tdps)")
+            host?.send(text: "#var tdp \(number)")
         }
 
         if !parsing, trimmed.hasPrefix(ExpPlugin.start_check) {
@@ -276,17 +283,55 @@ class ExpPlugin: OPlugin {
 
             updateWindow = true
         } else {
-            // handle empty tag
+            // handle additional tags
             let regex = RegexFactory.get("id='exp\\s([\\w\\s]+)'")
             if let match = regex?.firstMatch(&copy) {
                 let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-                let learningRate = LearningRate.clear
 
-                tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
+                switch name {
+                case "favor":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        let value = Int(txt.replacingOccurrences(of: "Favors:", with: "").trimLeadingWhitespace()) ?? 0
+                        host?.set(variable: name, value: "\(value)")
+                    }
+                    break
+                case "rexp":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        host?.set(variable: name, value: txt)
+                    } else {
+                        host?.set(variable: name, value: "")
+                    }
+                    break
+                case "sleep":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = (match.valueAt(index: 1) ?? "").replacingOccurrences(of: "</b>", with: "")
+                        host?.set(variable: name, value: txt)
+                    } else {
+                        host?.set(variable: name, value: "")
+                    }
+                    break
+                case "tdp":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        let value = Int(txt.replacingOccurrences(of: "TDPs:", with: "").trimLeadingWhitespace()) ?? 0
+                        host?.set(variable: name, value: "\(value)")
+                    }
+                    break
+                default:
+                    let learningRate = LearningRate.clear
 
-                host?.set(variable: "\(name).Ranks", value: "0.0")
-                host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
-                host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+                    tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
+
+                    host?.set(variable: "\(name).Ranks", value: "0.0")
+                    host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+                    host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+                }
 
                 updateWindow = true
             }
@@ -313,17 +358,55 @@ class ExpPlugin: OPlugin {
 
             updateWindow = true
         } else {
-            // handle empty tag
+            // handle additional tags
             let regex = RegexFactory.get("id='exp\\s([\\w\\s]+)'")
             if let match = regex?.firstMatch(&copy) {
                 let name = match.valueAt(index: 1)?.replacingOccurrences(of: " ", with: "_") ?? ""
-                let learningRate = LearningRate.clear
+                
+                switch name {
+                case "favor":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        let value = Int(txt.replacingOccurrences(of: "Favors:", with: "").trimLeadingWhitespace()) ?? 0
+                        host?.set(variable: name, value: "\(value)")
+                    }
+                    break
+                case "rexp":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        host?.set(variable: name, value: txt)
+                    } else {
+                        host?.set(variable: name, value: "")
+                    }
+                    break
+                case "sleep":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = (match.valueAt(index: 1) ?? "").replacingOccurrences(of: "</b>", with: "")
+                        host?.set(variable: name, value: txt)
+                    } else {
+                        host?.set(variable: name, value: "")
+                    }
+                    break
+                case "tdp":
+                    let valReg = RegexFactory.get(".+>\\s*(.+)<.*")
+                    if let match = valReg?.firstMatch(&copy) {
+                        let txt = match.valueAt(index: 1) ?? ""
+                        let value = Int(txt.replacingOccurrences(of: "TDPs:", with: "").trimLeadingWhitespace()) ?? 0
+                        host?.set(variable: name, value: "\(value)")
+                    }
+                    break
+                default:
+                    let learningRate = LearningRate.clear
+                    
+                    tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
 
-                tracker.update(SkillExp(name: name, mindState: learningRate, ranks: 0, isNew: false), trackLearned: displayLearnedWithPrompt)
-
-                host?.set(variable: "\(name).Ranks", value: "0.0")
-                host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
-                host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+                    host?.set(variable: "\(name).Ranks", value: "0.0")
+                    host?.set(variable: "\(name).LearningRate", value: "\(learningRate.rawValue)")
+                    host?.set(variable: "\(name).LearningRateName", value: "\(learningRate.description)")
+                }
 
                 updateWindow = true
             }
@@ -333,8 +416,12 @@ class ExpPlugin: OPlugin {
     private func updateExpWindow() {
         let foreColor = host?.get(preset: "exptracker:text") ?? ""
         let learnedColor = host?.get(preset: "exptracker:learned") ?? ""
+        let rexp = host?.get(variable: "rexp") ?? ""
+        let favor = host?.get(variable: "favor") ?? ""
+        let sleep = host?.get(variable: "sleep") ?? ""
+        let tdps = host?.get(variable: "tdp") ?? ""
 
-        let commands = tracker.buildDisplayCommands(foreColor: foreColor, learnedColor: learnedColor)
+        let commands = tracker.buildDisplayCommands(foreColor: foreColor, learnedColor: learnedColor, favors: favor, rexp: rexp, sleep: sleep, tdps: tdps)
         for cmd in commands {
             host?.send(text: cmd)
         }

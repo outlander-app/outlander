@@ -98,8 +98,6 @@ class ExpTracker {
 
     var skillSets: [String]
 
-    var tdps = 0
-
     static var dateFormatter = DateFormatter()
 
     enum OrderBy: CustomStringConvertible {
@@ -235,7 +233,7 @@ class ExpTracker {
         }
     }
 
-    func buildDisplayCommands(foreColor: String, learnedColor: String) -> [String] {
+    func buildDisplayCommands(foreColor: String, learnedColor: String, favors: String, rexp: String, sleep: String, tdps: String) -> [String] {
         var tags: [String] = []
 
         for skill in skillsWithMindstate() {
@@ -249,7 +247,17 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
+        if !sleep.isEmpty {
+            tags.append("\(foreColor) \n\(sleep)")
+        }
+
         tags.append("\(foreColor) \nTDPs: \(tdps)")
+        tags.append("\(foreColor) Favors: \(favors)")
+
+        if !rexp.isEmpty {
+            tags.append("\(foreColor) \(rexp)")
+        }
+
         tags.append("\(foreColor) Tracking for: \(diff.formatted)")
         tags.append("\(foreColor) Last updated: \(ExpTracker.dateFormatter.string(from: Date()))")
 
@@ -258,7 +266,7 @@ class ExpTracker {
         } + ["#echo >experience @resume@"]
     }
 
-    func buildReport(sorting: OrderBy, foreColor: String, learnedColor: String) -> [String] {
+    func buildReport(sorting: OrderBy, foreColor: String, learnedColor: String, favors: String, rexp: String, sleep: String, tdps: String) -> [String] {
         var tags: [String] = ["\(foreColor) \nExperience Tracker", "\(foreColor) Showing all skills with field experience or earned ranks.\n"]
 
         for skill in skillsWithMindstateOrGain(sorting: sorting) {
@@ -272,7 +280,18 @@ class ExpTracker {
         }
 
         let diff = Date().timeIntervalSince(startOfTracking!)
+
+        if !sleep.isEmpty {
+            tags.append("\(foreColor) \n\(sleep)")
+        }
+
         tags.append("\(foreColor) \nTDPs: \(tdps)")
+        tags.append("\(foreColor) Favors: \(favors)")
+
+        if !rexp.isEmpty {
+            tags.append("\(foreColor) \(rexp)")
+        }
+
         tags.append("\(foreColor) Tracking for: \(diff.formatted)")
         tags.append("\(foreColor) Last updated: \(ExpTracker.dateFormatter.string(from: Date()))\n")
 

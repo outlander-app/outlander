@@ -76,10 +76,6 @@ class OWindow: NSWindow {
             return
         }
 
-        guard let titlebarContainer = self.standardWindowButton(.closeButton)?.superview else {
-            return
-        }
-
         let titleView = findViewInSubview(contentSuperView.subviews, ignoreView: windowContentView, test: { view in
             view is NSTextField
         })
@@ -98,6 +94,28 @@ class OWindow: NSWindow {
 
         titleText.attributedStringValue = NSAttributedString(string: title, attributes: attributes)
         titleText.sizeToFit()
+        adjustTitlebar()
+    }
+
+    func adjustTitlebar() {
+        guard let windowContentView = contentView else {
+            return
+        }
+        guard let contentSuperView = windowContentView.superview else {
+            return
+        }
+
+        guard let titlebarContainer = self.standardWindowButton(.closeButton)?.superview else {
+            return
+        }
+
+        let titleView = findViewInSubview(contentSuperView.subviews, ignoreView: windowContentView, test: { view in
+            view is NSTextField
+        })
+
+        guard let titleText = titleView as? NSTextField else {
+            return
+        }
 
         // center
 //        titleText.frame.origin.x = (titlebarContainer.bounds.width - titleText.frame.width) / 2
@@ -120,5 +138,23 @@ class OWindow: NSWindow {
             }
         }
         return nil
+    }
+    
+    override func setFrame(_ frame: NSRect, display: Bool) {
+        super.setFrame(frame, display: display)
+        
+        adjustTitlebar()
+    }
+
+    override func setFrame(_ frame: NSRect, display: Bool, animate: Bool) {
+        super.setFrame(frame, display: display, animate: false)
+        
+        adjustTitlebar()
+    }
+
+    override func setFrameOrigin(_ newOrigin: NSPoint) {
+        super.setFrameOrigin(newOrigin)
+        
+        adjustTitlebar()
     }
 }

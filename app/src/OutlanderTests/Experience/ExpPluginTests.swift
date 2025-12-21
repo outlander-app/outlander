@@ -201,4 +201,64 @@ class ExpPluginTests: XCTestCase {
         XCTAssertEqual(host.variables["Scholarship.LearningRate"], "3")
         XCTAssertEqual(host.variables["Scholarship.LearningRateName"], "learning")
     }
+
+    func test_rexp_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp rexp'>Rested EXP Stored: 5:59 hours  Usable This Cycle: 5:53 hours  Cycle Refreshes: 22:32 hours</component>")
+
+        XCTAssertEqual(host.variables["rexp"], "Rested EXP Stored: 5:59 hours  Usable This Cycle: 5:53 hours  Cycle Refreshes: 22:32 hours")
+    }
+
+    func test_rexp_empty_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp rexp'></component>")
+
+        XCTAssertEqual(host.variables["rexp"], "")
+    }
+
+    func test_sleep_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp sleep'><b>You are relaxed and your mind has entered a state of rest.  To wake up and start learning again, type: AWAKEN</b></component>")
+
+        XCTAssertEqual(host.variables["sleep"], "You are relaxed and your mind has entered a state of rest.  To wake up and start learning again, type: AWAKEN")
+    }
+
+    func test_sleep_empty_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp sleep'></component>")
+
+        XCTAssertEqual(host.variables["sleep"], "")
+    }
+
+    func test_tdp_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp tdp'>            TDPs:  926</component>")
+
+        XCTAssertEqual(host.variables["tdp"], "926")
+    }
+
+    func test_favor_parse() {
+        let host = TestHost()
+        let plugin = ExpPlugin()
+        plugin.initialize(host: host)
+
+        _ = plugin.parse(xml: "<component id='exp favor'>          Favors:  12</component>")
+
+        XCTAssertEqual(host.variables["favor"], "12")
+    }
 }

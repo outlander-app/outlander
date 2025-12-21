@@ -63,7 +63,7 @@ class CommandProcesssor {
         handlers.append(MacroCommandHandler(files))
         handlers.append(LayoutCommandHandler(files))
         // for local testing only
-//        handlers.append(EmulateTextCommandHandler(files))
+        handlers.append(EmulateTextCommandHandler(files))
 
         self.pluginManager = pluginManager
     }
