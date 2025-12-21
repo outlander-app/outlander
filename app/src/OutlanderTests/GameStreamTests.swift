@@ -8,7 +8,25 @@
 
 import XCTest
 
+class TestStreamHandler: StreamHandler {
+    var dataList: [String] = []
+    
+    func stream(_ data: String, with context: GameContext) {
+        guard !data.isEmpty else {
+            return
+        }
+
+        dataList.append(data)
+    }
+
+    func reset() {
+        dataList.removeAll()
+    }
+}
+
 class GameStreamTests: XCTestCase {
+    var testStreamHandler: TestStreamHandler = TestStreamHandler()
+
     func streamCommands(_ lines: [String], context: GameContext = GameContext(), monsterIgnoreList: String = "") -> [StreamCommand] {
         var commands: [StreamCommand] = []
         let context = context
@@ -19,6 +37,9 @@ class GameStreamTests: XCTestCase {
         stream.monsterCountIgnoreList = monsterIgnoreList
 
         stream.reset(true)
+        testStreamHandler.reset()
+
+        stream.addHandler(testStreamHandler)
 
         for line in lines {
             stream.stream(line)
@@ -277,6 +298,10 @@ class GameStreamTests: XCTestCase {
             "<popStream/><prompt time=\"1638240815\">R&gt;</prompt>"
         ])
         XCTAssertEqual(commands.count, 4)
+
+        XCTAssertEqual(testStreamHandler.dataList.count, 2)
+        XCTAssertEqual(testStreamHandler.dataList[0], "[General][Someone] \"something to say\"")
+        XCTAssertEqual(testStreamHandler.dataList[1], "R>")
 
         switch commands[3] {
         case let .text(tags):

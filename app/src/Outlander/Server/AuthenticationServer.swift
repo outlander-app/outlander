@@ -110,7 +110,8 @@ class AuthenticationServer {
                 return
             }
 
-            _socket?.writeAndRead("G\t\(_authInfo!.game)", tag: AuthSocketState.game.rawValue)
+            let upperGame = _authInfo!.game.uppercased()
+            _socket?.writeAndRead("G\t\(upperGame)", tag: AuthSocketState.game.rawValue)
 
         case .game:
             _socket?.writeAndRead("C", tag: AuthSocketState.characterlist.rawValue)
@@ -147,7 +148,16 @@ class AuthenticationServer {
                 return
             }
 
-            let info = getConnection(str)
+            if str.contains("PROBLEM") || !str.contains("GAMECODE") {
+                disconnectWithError("unable to connect, check connection options")
+                return
+            }
+
+            guard let info = getConnection(str) else {
+                disconnectWithError("unable to connect, check connection options")
+                return
+            }
+
             _socket?.disconnect()
             _callback?(.success(info))
         }
@@ -181,17 +191,30 @@ class AuthenticationServer {
         return Data(hexString: hexHash)
     }
 
-    func getConnection(_ input: String) -> GameConnectionInfo {
+    func getConnection(_ input: String) -> GameConnectionInfo? {
         let game = getData(input, pattern: "GAMECODE=(\\S+)")
         let key = getData(input, pattern: "KEY=(\\w+)")
         let host = getData(input, pattern: "GAMEHOST=(\\S+)")
         let port = getData(input, pattern: "GAMEPORT=(\\d+)")
-        let portNumber = UInt16(port)!
-        return GameConnectionInfo(game: game, key: key, host: host, port: portNumber)
+        let portNumber = UInt16(port ?? "")
+
+        if game == nil || key == nil || host == nil || port == nil || portNumber == nil {
+            return nil
+        }
+        
+        return GameConnectionInfo(game: game ?? "", key: key ?? "", host: host ?? "", port: portNumber ?? 0)
     }
 
-    func getData(_ input: String, pattern: String) -> String {
-        let range = try! Regex(pattern).matches(input)[1]
-        return String(input[range])
+    func getData(_ input: String, pattern: String) -> String? {
+        do {
+            let matches = try Regex(pattern).matches(input)
+            guard matches.count > 1 else {
+                return nil
+            }
+            let range = matches[1]
+            return String(input[range])
+        } catch {
+            return nil
+        }
     }
 }
