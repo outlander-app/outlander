@@ -286,6 +286,71 @@ class GameStreamTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func test_combines_thoughts_stream() {
+        let commands = streamCommands([
+            "<pushStream id=\"thoughts\"/><preset id='thought'>[General] Your mind hears Someone thinking, </preset>\"Yup, it works!\"\n",
+            "<popStream/><prompt time=\"1766284988\">&gt;</prompt>"
+        ])
+        XCTAssertEqual(commands.count, 4)
+
+        switch commands[3] {
+        case let .text(tags):
+            XCTAssertEqual(tags.count, 2)
+            XCTAssertEqual(tags[0].text, "[General] Your mind hears Someone thinking, \"Yup, it works!\"\n")
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_combines_personal_recieve_concise_thoughts_stream() {
+        let commands = streamCommands([
+            "<pushStream id=\"thoughts\"/><preset id='thought'>[Personal][Someone] </preset>\"&lt;to you&gt;\"  \"test thought\"\n",
+            "<popStream/><prompt time=\"1766284988\">&gt;</prompt>"
+        ])
+        XCTAssertEqual(commands.count, 4)
+
+        switch commands[3] {
+        case let .text(tags):
+            XCTAssertEqual(tags.count, 2)
+            XCTAssertEqual(tags[0].text, "[Personal][Someone] \"<to you>\"  \"test thought\"\n")
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_combines_personal_recieve_thoughts_stream() {
+        let commands = streamCommands([
+            "<pushStream id=\"thoughts\"/><preset id='thought'>[Personal] Your mind hears Someone thinking, </preset>\"&lt;to you&gt;\"  \"test thought\"\n",
+            "<popStream/><prompt time=\"1766284988\">&gt;</prompt>"
+        ])
+        XCTAssertEqual(commands.count, 4)
+
+        switch commands[3] {
+        case let .text(tags):
+            XCTAssertEqual(tags.count, 2)
+            XCTAssertEqual(tags[0].text, "[Personal] Your mind hears Someone thinking, \"<to you>\"  \"test thought\"\n")
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_combines_send_thoughts_stream() {
+        let commands = streamCommands([
+            "<pushStream id=\"thoughts\"/><preset id='thought'>You to Saracus,</preset> \"Yup, it works!\"\n",
+            "<popStream/>You project your thoughts to Saracus.",
+            "<prompt time=\"1766284988\">&gt;</prompt>"
+        ])
+        XCTAssertEqual(commands.count, 5)
+
+        switch commands[4] {
+        case let .text(tags):
+            XCTAssertEqual(tags.count, 3)
+            XCTAssertEqual(tags[0].text, "You to Saracus, \"Yup, it works!\"\n")
+        default:
+            XCTFail()
+        }
+    }
 
 //    func test_urchin_stream() {
 //        let commands = streamCommands([
