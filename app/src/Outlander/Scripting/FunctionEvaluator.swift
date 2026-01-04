@@ -255,6 +255,36 @@ class FunctionExecutor {
 
                 return "false"
             },
+            .function("max", arity: 2): { args in
+                guard let numA = Double(args[0].trimmingCharacters(in: .whitespacesAndNewlines)), let numB = Double(args[1].trimmingCharacters(in: .whitespacesAndNewlines))  else {
+                    return ""
+                }
+
+                let result = numA > numB ? numA : numB
+
+                var res = "\(result)"
+
+                if result == rint(result) {
+                    res = "\(Int(result))"
+                }
+
+                return res
+            },
+            .function("min", arity: 2): { args in
+                guard let numA = Double(args[0].trimmingCharacters(in: .whitespacesAndNewlines)), let numB = Double(args[1].trimmingCharacters(in: .whitespacesAndNewlines))  else {
+                    return ""
+                }
+
+                let result = numA > numB ? numB : numA
+
+                var res = "\(result)"
+
+                if result == rint(result) {
+                    res = "\(Int(result))"
+                }
+
+                return res
+            },
             .function("tolower", arity: 1): { args in self.trimQuotes(args[0]).lowercased() },
             .function("toupper", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
             .function("tocaps", arity: 1): { args in self.trimQuotes(args[0]).uppercased() },
@@ -293,7 +323,7 @@ class FunctionExecutor {
                     res = "\(Int(result))"
                 }
 
-                return String(res)
+                return res
             },
             .function("ceil", arity: 1): { args in
                 let num = Double(args[0]) ?? 0
@@ -305,7 +335,7 @@ class FunctionExecutor {
                     res = "\(Int(result))"
                 }
 
-                return String(res)
+                return res
             },
             .function("def", arity: 1): { args in
                 let variable = args[0]
@@ -322,7 +352,7 @@ class FunctionExecutor {
                     res = "\(Int(result))"
                 }
 
-                return String(res)
+                return res
             },
             .function("substring", arity: 3): { args in
                 try substring(args)
